@@ -1,9 +1,4 @@
-# Fabric Example Mod
+# Chest Tracker
+A [Fabric](https://fabricmc.net) mod for remembering items and recalling where on the client.
 
-## Setup
-
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+Original Forge version by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods/chestcounter").

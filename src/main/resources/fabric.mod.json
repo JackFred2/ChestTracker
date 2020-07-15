@@ -1,29 +1,32 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "chesttracker",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Chest Tracker",
+  "description": "Keep a memory of what items you've seen, and find them any time. \nOriginal Forge version by HenneGamer on CurseForge.",
   "authors": [
-    "Me!"
+    "JackFred"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/JackFred2/ChestTracker",
+    "issues": "https://github.com/JackFred2/ChestTracker/issues"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
+  "icon": "assets/chesttracker/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "client": [
+      "red.jackf.chesttracker.ChestTracker"
+    ],
+    "modmenu": [
+      "red.jackf.chesttracker.compat.ModMenuCompat"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "chesttracker.mixins.json"
   ],
 
   "depends": {
@@ -31,7 +34,7 @@
     "fabric": "*",
     "minecraft": "1.16.x"
   },
-  "suggests": {
-    "flamingo": "*"
+  "custom": {
+    "modmenu:clientsideOnly": true
   }
 }
