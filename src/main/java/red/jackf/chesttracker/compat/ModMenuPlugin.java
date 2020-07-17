@@ -8,7 +8,7 @@ import net.fabricmc.api.Environment;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 
 @Environment(EnvType.CLIENT)
-public class ModMenuCompat implements ModMenuApi {
+public class ModMenuPlugin implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return screen -> AutoConfig.getConfigScreen(ChestTrackerConfig.class, screen).get();

@@ -22,7 +22,7 @@
       "red.jackf.chesttracker.ChestTracker"
     ],
     "modmenu": [
-      "red.jackf.chesttracker.compat.ModMenuCompat"
+      "red.jackf.chesttracker.compat.ModMenuPlugin"
     ]
   },
   "mixins": [
