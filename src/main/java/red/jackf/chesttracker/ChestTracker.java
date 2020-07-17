@@ -7,6 +7,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,18 +17,22 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.AccessorHandledScreen;
+import red.jackf.chesttracker.tracker.InteractRememberType;
+import red.jackf.chesttracker.tracker.LocationStorage;
+import red.jackf.chesttracker.tracker.Tracker;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "chesttracker";
 
     public static Identifier id(String path) {
@@ -43,14 +48,23 @@ public class ChestTracker implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
         ClothClientHooks.SCREEN_KEY_PRESSED.register(((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null) {
-                tryFindItems(client, screen);
-                //client.player.closeHandledScreen();
+                ItemStack toFind = tryFindItems(client, screen);
+                LocationStorage storage = LocationStorage.get();
+
             }
             return ActionResult.PASS;
         }));
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (ChestTracker.CONFIG.miscOptions.blockInterationType == InteractRememberType.ALL || world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity()) {
+                Tracker.getInstance().setLastPos(hitResult.getBlockPos());
+            }
+            return ActionResult.PASS;
+        });
     }
 
-    private <T extends ScreenHandler> void tryFindItems(MinecraftClient client, Screen screen) {
+    @Nullable
+    private <T extends ScreenHandler> ItemStack tryFindItems(MinecraftClient client, Screen screen) {
         ItemStack item = null;
         if (screen instanceof HandledScreen) {
             @SuppressWarnings("unchecked")
@@ -65,9 +79,6 @@ public class ChestTracker implements ClientModInitializer {
             double mouseY = MinecraftClient.getInstance().mouse.getY() * gameScale;
             item = REIPlugin.tryFindItem(mouseX, mouseY);
         }
-
-        if (item != null)
-            //noinspection ConstantConditions
-            client.player.sendSystemMessage(new LiteralText("Searching for ").append(new TranslatableText(item.getTranslationKey())), Util.NIL_UUID);
+        return item;
     }
 }

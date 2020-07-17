@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.compat;
 
 import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.RecipeViewingScreen;
 import me.shedaniel.rei.gui.VillagerRecipeViewingScreen;
@@ -10,12 +11,20 @@ import me.shedaniel.rei.impl.ItemEntryStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static red.jackf.chesttracker.ChestTracker.id;
+
 @SuppressWarnings("UnstableApiUsage")
-public class REIPlugin {
+public class REIPlugin implements REIPluginV0 {
+    @Override
+    public Identifier getPluginIdentifier() {
+        return id("rei_default");
+    }
+
     @Nullable
     public static ItemStack tryFindItem(double mouseX, double mouseY) {
         // Big List

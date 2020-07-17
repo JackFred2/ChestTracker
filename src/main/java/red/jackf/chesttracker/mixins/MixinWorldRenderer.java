@@ -65,9 +65,9 @@ public abstract class MixinWorldRenderer {
 
         Iterator<RenderManager.PositionData> iterator = RenderManager.getInstance().getPositionsToRender().iterator();
 
-        float r = ((ChestTracker.CONFIG.generalOptions.borderColour >> 16) & 0xff) / 255f;
-        float g = ((ChestTracker.CONFIG.generalOptions.borderColour >> 8) & 0xff) / 255f;
-        float b = ((ChestTracker.CONFIG.generalOptions.borderColour) & 0xff) / 255f;
+        float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
+        float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
+        float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
 
         while (iterator.hasNext()) {
             RenderManager.PositionData data = iterator.next();
@@ -82,9 +82,9 @@ public abstract class MixinWorldRenderer {
                     r,
                     g,
                     b,
-                    ((ChestTracker.CONFIG.generalOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.generalOptions.fadeOutTime));
+                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
 
-            if (timeDiff >= ChestTracker.CONFIG.generalOptions.fadeOutTime)
+            if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime)
                 iterator.remove();
         }
 

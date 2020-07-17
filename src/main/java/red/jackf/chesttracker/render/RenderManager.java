@@ -57,7 +57,7 @@ public class RenderManager {
     public static RenderPhase.LineWidth getDynamicLineWidth() {
         RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
         ((AccessorRenderPhase) layer).setName("line_width_dynamic");
-        ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.generalOptions.borderWidth));
+        ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
         ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
         return layer;
     }
