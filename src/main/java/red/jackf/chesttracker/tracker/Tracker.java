@@ -6,7 +6,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import red.jackf.chesttracker.ChestTracker;
 
@@ -28,12 +30,21 @@ public class Tracker {
                 .map(Slot::getStack)
                 .collect(Collectors.toList());
 
-        if (ChestTracker.CONFIG.trackedScreens.debugPrint && MinecraftClient.getInstance().player != null)
-            MinecraftClient.getInstance().player.sendSystemMessage(new TranslatableText("chesttracker.gui_class_name", screen.getClass().getSimpleName()), Util.NIL_UUID);
+        if (ChestTracker.CONFIG.trackedScreens.debugPrint && MinecraftClient.getInstance().player != null) {
+            String className = screen.getClass().getSimpleName();
+            Text message = validScreenToTrack(className) ?
+                    new TranslatableText("chesttracker.gui_class_name_tracked", className).formatted(Formatting.GREEN) :
+                    new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED);
+            MinecraftClient.getInstance().player.sendSystemMessage(message, Util.NIL_UUID);
+        }
         System.out.println(items);
     }
 
     public <T extends ScreenHandler> boolean validScreenToTrack(HandledScreen<T> screen) {
-        return !ChestTracker.CONFIG.trackedScreens.blocklist.contains(screen.getClass().getSimpleName());
+        return validScreenToTrack(screen.getClass().getSimpleName());
+    }
+
+    public boolean validScreenToTrack(String screenClass) {
+        return !ChestTracker.CONFIG.trackedScreens.blocklist.contains(screenClass);
     }
 }

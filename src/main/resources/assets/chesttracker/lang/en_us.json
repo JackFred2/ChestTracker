@@ -1,8 +1,13 @@
 {
-  "chesttracker.gui_class_name": "Class name: %s",
+  "chesttracker.gui_class_name_tracked": "Class name: %s (Tracked)",
+  "chesttracker.gui_class_name_not_tracked": "Class name: %s (Not Tracked)",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config",
   "text.autoconfig.chesttracker.category.general": "General Options",
   "text.autoconfig.chesttracker.category.tracked_guis": "Tracked GUIs",
+  "text.autoconfig.chesttracker.option.generalOptions.displayRange": "Inventory Display Range",
+  "text.autoconfig.chesttracker.option.generalOptions.fadeOutTime": "Inventory Outline Fade Time",
+  "text.autoconfig.chesttracker.option.generalOptions.borderWidth": "Inventory Outline Width",
+  "text.autoconfig.chesttracker.option.generalOptions.borderColour": "Inventory Outline Colour",
   "text.autoconfig.chesttracker.option.trackedScreens.debugPrint.@PrefixText": "Sometimes, the mod may remember items that should not be remembered (such as a crafting table, where any items in the grid are dropped when you close out, or a horse which is an entity). This screen allows you to prevent certain GUIs from being saved. To see the correct name to use, enable \"§aPrint GUI names in chat§f\".",
   "text.autoconfig.chesttracker.option.trackedScreens.debugPrint": "Print GUI names in chat",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "Tracked GUIs block-list"

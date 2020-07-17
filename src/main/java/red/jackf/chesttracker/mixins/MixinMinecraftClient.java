@@ -16,7 +16,7 @@ import red.jackf.chesttracker.tracker.Tracker;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin {
+public abstract class MixinMinecraftClient {
 
     @Shadow
     @Nullable
@@ -32,6 +32,7 @@ public abstract class MinecraftClientMixin {
         if (currentScreen instanceof HandledScreen) {
             //noinspection unchecked
             Tracker.getInstance().handleScreen((HandledScreen<T>) currentScreen);
+            //RenderManager.getInstance().addRenderList(Collections.singletonList(MinecraftClient.getInstance().player.getBlockPos()), MinecraftClient.getInstance().world.getTime());
         }
     }
 }
