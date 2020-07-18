@@ -34,7 +34,7 @@ public class ChestTrackerConfig implements ConfigData {
     public static class MiscOptions {
         @ConfigEntry.Gui.PrefixText
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public InteractRememberType blockInterationType = InteractRememberType.BLOCK_ENTITIES;
+        public InteractRememberType blockInteractionType = InteractRememberType.BLOCK_ENTITIES;
     }
 
     public static class VisualOptions {

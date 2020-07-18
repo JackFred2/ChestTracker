@@ -8,7 +8,7 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import red.jackf.chesttracker.tracker.LocationStorage;
+import red.jackf.chesttracker.tracker.Location;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -25,7 +25,7 @@ public final class GsonHandler {
             .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
             .registerTypeAdapter(new TypeToken<BlockPos>() {
             }.getType(), new BlockPosSerializer())
-            .registerTypeAdapter(new TypeToken<LocationStorage.Location>() {
+            .registerTypeAdapter(new TypeToken<Location>() {
             }.getType(), new LocationSerializer())
             .registerTypeAdapter(new TypeToken<ItemStack>() {
             }.getType(), new ItemStackSerializer())
@@ -35,20 +35,20 @@ public final class GsonHandler {
         return GSON;
     }
 
-    private static class LocationSerializer implements JsonDeserializer<LocationStorage.Location>, JsonSerializer<LocationStorage.Location> {
+    private static class LocationSerializer implements JsonDeserializer<Location>, JsonSerializer<Location> {
 
         @Override
-        public LocationStorage.Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             BlockPos pos = GSON.fromJson(object.getAsJsonObject("position"), BlockPos.class);
             Text name = (object.has("name") ? GSON.fromJson(object.getAsJsonObject("name"), Text.class) : null);
             List<ItemStack> items = GSON.fromJson(object.getAsJsonArray("items"), new TypeToken<List<ItemStack>>() {
             }.getType());
-            return new LocationStorage.Location(pos, name, items);
+            return new Location(pos, name, items);
         }
 
         @Override
-        public JsonElement serialize(LocationStorage.Location src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.add("position", GSON.toJsonTree(src.getPosition()));
             if (src.getName() != null) object.add("name", GSON.toJsonTree(src.getName()));

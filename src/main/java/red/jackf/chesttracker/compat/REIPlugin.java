@@ -43,7 +43,7 @@ public class REIPlugin implements REIPluginV0 {
             return item;
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Nullable

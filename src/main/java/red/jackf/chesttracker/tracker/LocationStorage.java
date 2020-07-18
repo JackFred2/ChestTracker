@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +18,11 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // Per connection storage (i.e. per single player world, server ip, realm)
 public class LocationStorage {
@@ -40,10 +43,6 @@ public class LocationStorage {
 
     public Path getFilePath() {
         return ROOT_DIR.resolve(savePath + ".json");
-    }
-
-    public String getSavePath() {
-        return savePath;
     }
 
     @Nullable
@@ -122,70 +121,22 @@ public class LocationStorage {
         Location location = new Location(pos, null, items);
         storage.remove(location);
         storage.add(location);
-        System.out.println(this);
+    }
+
+    public List<Location> findItems(Identifier worldId, ItemStack toFind) {
+        WorldStorage storage = this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
+        return storage.stream()
+                .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(toFind, itemStack)))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
+        return candidate.getItem() == toFind.getItem()
+                && (!toFind.hasTag() || toFind.getTag() == candidate.getTag());
     }
 
     // Per world storage
     public static class WorldStorage extends HashSet<Location> {
-    }
-
-    public static class ServerStorage extends HashMap<Identifier, Location> {
-    }
-
-    public static class Location {
-        private final BlockPos position;
-        @Nullable
-        private Text name;
-        private List<ItemStack> items;
-
-        public Location(BlockPos position, @Nullable Text name, List<ItemStack> items) {
-            this.position = position;
-            this.name = name;
-            this.items = items;
-        }
-
-        public BlockPos getPosition() {
-            return position;
-        }
-
-        @Nullable
-        public Text getName() {
-            return name;
-        }
-
-        public void setName(@Nullable Text name) {
-            this.name = name;
-        }
-
-        public List<ItemStack> getItems() {
-            return items;
-        }
-
-        public void setItems(List<ItemStack> items) {
-            this.items = items;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Location location = (Location) o;
-            return position.equals(location.position);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(position);
-        }
-
-        @Override
-        public String toString() {
-            return "Location{" +
-                    "position=" + position +
-                    ", name=" + name +
-                    ", items=" + items +
-                    '}';
-        }
     }
 
     private static String getUsefulFileString(@NotNull SocketAddress address) {
