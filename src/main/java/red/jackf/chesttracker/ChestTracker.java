@@ -1,7 +1,7 @@
 package red.jackf.chesttracker;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -14,11 +14,18 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +33,7 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.AccessorHandledScreen;
+import red.jackf.chesttracker.render.ManagerButton;
 import red.jackf.chesttracker.render.RenderManager;
 import red.jackf.chesttracker.tracker.InteractRememberType;
 import red.jackf.chesttracker.tracker.Location;
@@ -44,36 +52,45 @@ public class ChestTracker implements ClientModInitializer {
         return new Identifier(MODID, path);
     }
 
+    public static void sendDebugMessage(PlayerEntity player, Text text) {
+        player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.BOLD, Formatting.YELLOW).append(text), Util.NIL_UUID);
+    }
+
     public static final KeyBinding SEARCH_KEY = new KeyBinding(id("search_for_items").toString(), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
 
-    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
+    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, GsonConfigSerializer::new).getConfig();
 
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
-        ClothClientHooks.SCREEN_KEY_PRESSED.register(((client, screen, keyCode, scanCode, modifiers) -> {
-            System.out.println("key");
+
+        ManagerButton.setup();
+
+        ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {
-                System.out.println("key");
                 LocationStorage storage = LocationStorage.get();
                 if (storage == null)
                     return ActionResult.PASS;
-                System.out.println("storage");
                 ItemStack toFind = tryFindItems(client, screen);
                 if (toFind == ItemStack.EMPTY)
                     return ActionResult.PASS;
-                System.out.println("toFind");
+                if (ChestTracker.CONFIG.miscOptions.debugPrint)
+                    sendDebugMessage(client.player, new TranslatableText("chesttracker.searching_for_item", toFind).formatted(Formatting.GREEN));
                 List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind);
-                System.out.println(results);
                 RenderManager.getInstance().addRenderList(results.stream().map(Location::getPosition).collect(Collectors.toList()), client.world.getTime());
             }
             return ActionResult.PASS;
-        }));
+        });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (ChestTracker.CONFIG.miscOptions.blockInteractionType == InteractRememberType.ALL || world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity()) {
+            boolean blockHasBE = world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity();
+            if (ChestTracker.CONFIG.miscOptions.blockInteractionType == InteractRememberType.ALL || blockHasBE) {
                 Tracker.getInstance().setLastPos(hitResult.getBlockPos());
             }
+            if (ChestTracker.CONFIG.miscOptions.debugPrint)
+                sendDebugMessage(player, new TranslatableText("chesttracker.block_clicked_" + (blockHasBE ? "be_provider" : "not_be_provider"),
+                        Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))
+                        .formatted(blockHasBE ? Formatting.GREEN : Formatting.YELLOW));
             return ActionResult.PASS;
         });
     }

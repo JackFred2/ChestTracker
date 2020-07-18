@@ -6,10 +6,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import red.jackf.chesttracker.ChestTracker;
 
@@ -33,11 +31,10 @@ public class Tracker {
             return;
 
         String className = screen.getClass().getSimpleName();
-        if (ChestTracker.CONFIG.trackedScreens.debugPrint) {
-            Text message = validScreenToTrack(className) ?
+        if (ChestTracker.CONFIG.miscOptions.debugPrint) {
+            ChestTracker.sendDebugMessage(MinecraftClient.getInstance().player, validScreenToTrack(className) ?
                     new TranslatableText("chesttracker.gui_class_name_tracked", className).formatted(Formatting.GREEN) :
-                    new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED);
-            MinecraftClient.getInstance().player.sendSystemMessage(message, Util.NIL_UUID);
+                    new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED));
         }
 
         if (!validScreenToTrack(className))

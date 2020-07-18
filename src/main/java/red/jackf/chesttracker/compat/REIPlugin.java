@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.compat;
 
+import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
@@ -23,6 +24,14 @@ public class REIPlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
         return id("rei_default");
+    }
+
+    @Override
+    public void registerBounds(DisplayHelper displayHelper) {
+
+        // ManagerButton
+        //BaseBoundsHandler.getInstance().registerExclusionZones(Screen.class, () -> Collections.singletonList(ManagerButton.getBounds(MinecraftClient.getInstance().currentScreen)));
+
     }
 
     @Nullable
