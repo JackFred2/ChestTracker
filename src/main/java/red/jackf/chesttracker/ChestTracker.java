@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.mixins.AccessorHandledScreen;
+import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.render.ManagerButton;
 import red.jackf.chesttracker.render.RenderManager;
 import red.jackf.chesttracker.tracker.InteractRememberType;
@@ -101,7 +101,7 @@ public class ChestTracker implements ClientModInitializer {
         if (screen instanceof HandledScreen) {
             @SuppressWarnings("unchecked")
             HandledScreen<T> handledScreen = (HandledScreen<T>) screen;
-            Slot slot = ((AccessorHandledScreen) handledScreen).getFocusedSlot();
+            Slot slot = ((ChestTrackerAccessorHandledScreen) handledScreen).getFocusedSlot();
             if (slot != null && slot.hasStack()) item = slot.getStack();
         }
 

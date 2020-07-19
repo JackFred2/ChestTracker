@@ -6,8 +6,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(HandledScreen.class)
-public interface AccessorHandledScreen {
+public interface ChestTrackerAccessorHandledScreen {
 
     @Accessor(value = "focusedSlot")
     Slot getFocusedSlot();
+
+    @Accessor(value = "backgroundWidth")
+    int getBackgroundWidth();
+
+    @Accessor(value = "backgroundHeight")
+    int getBackgroundHeight();
 }
