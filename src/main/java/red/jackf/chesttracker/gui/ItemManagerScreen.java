@@ -1,32 +1,35 @@
 package red.jackf.chesttracker.gui;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.tracker.LocationStorage;
 import spinnery.client.screen.BaseScreen;
-import spinnery.widget.WInterface;
-import spinnery.widget.WPanel;
-import spinnery.widget.WTextField;
-import spinnery.widget.WVerticalScrollableContainer;
+import spinnery.widget.*;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemManagerScreen extends BaseScreen {
     private final int width = 178;
-    private final int height = 207;
+    private final int height = 167;
 
     private final WPanel mainPanel;
     private final WVerticalScrollableContainer scrollArea;
-    private final List<ItemStack> list;
+    private final WButton resetButton;
+    private List<ItemStack> list;
     private final WTextField searchField;
+    private final WButton verifyButton;
+    private boolean resetConfirm = false;
 
     public ItemManagerScreen() {
         WInterface mainInterface = getInterface();
@@ -43,9 +46,51 @@ public class ItemManagerScreen extends BaseScreen {
 
         searchField = mainPanel.createChild(WClearedTextField::new, Position.of(mainPanel.getX() + width - 98, mainPanel.getY() + 4, 0), Size.of(94, 18));
         searchField.setFixedLength(15);
-        searchField.setText("Filter..");
+        searchField.setText("Filter...");
+        searchField.setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
+            this.update();
+        });
 
-        list = LocationStorage.get().getItems(MinecraftClient.getInstance().world.getRegistryKey().getValue());
+        verifyButton = mainPanel.createChild(WButton::new,
+            Position.of(mainPanel).add(2, -16, 0),
+            Size.of(60, 13));
+        verifyButton.setLabel(new TranslatableText("chesttracker.gui.verify_button"));
+
+        resetButton = mainPanel.createChild(WButton::new,
+            Position.of(mainPanel).add(72, -16, 0),
+            Size.of(60, 13));
+        resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button"));
+
+        LocationStorage storage = LocationStorage.get();
+
+        resetButton.setOnMouseClicked(((widget, mouseX, mouseY, mouseButton) -> {
+            if (resetConfirm) {
+                resetConfirm = false;
+                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button"));
+                LocationStorage.WorldStorage worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
+                worldStorage.clear();
+                list = worldStorage.getItems();
+                this.update();
+            } else {
+                resetConfirm = true;
+                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button_confirm"));
+            }
+        }));
+
+        if (storage != null) {
+            LocationStorage.WorldStorage worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
+            list = worldStorage.getItems();
+            verifyButton.setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
+                if (mouseButton == 0) {
+                    worldStorage.verify();
+                    list = worldStorage.getItems();
+                    this.update();
+                }
+            });
+        } else {
+            //noinspection unchecked
+            list = Collections.EMPTY_LIST;
+        }
 
         searchField.setOnCharTyped((widget, charTyped, keycode) -> update());
 
@@ -67,6 +112,10 @@ public class ItemManagerScreen extends BaseScreen {
         setChildren(stacks);
     }
 
+    protected boolean isWithinScrollArea(float mouseX, float mouseY) {
+        return scrollArea.isWithinBounds(mouseX, mouseY);
+    }
+
     private void setChildren(List<ItemStack> slots) {
         scrollArea.getWidgets().clear();
         if (slots.size() == 0) return;
@@ -74,7 +123,8 @@ public class ItemManagerScreen extends BaseScreen {
         for (int i = 0; i < slots.size(); i++) {
             WGhostSlot slot = new WGhostSlot(
                 slots.get(i),
-                Position.of(Position.ORIGIN)
+                Position.of(Position.ORIGIN),
+                scrollArea
             );
             //slot.updatePos(mainPanel.getX(), mainPanel.getY(), mainPanel.getZ());
             tempSlots.add(slot);
@@ -106,10 +156,7 @@ public class ItemManagerScreen extends BaseScreen {
         super.resize(client, width, height);
         mainPanel.center();
         mainPanel.setPosition(mainPanel.getPosition().add(-6, 0, 0));
-        mainPanel.getWidgets().forEach(w -> {
-            if (w instanceof WGhostSlot)
-                ((WGhostSlot) w).updatePos(mainPanel.getX(), mainPanel.getY(), mainPanel.getZ());
-        });
+        searchField.setPosition(Position.of(mainPanel.getX() + width - 98, mainPanel.getY() + 4, 100));
     }
 
     @Override
@@ -118,7 +165,7 @@ public class ItemManagerScreen extends BaseScreen {
         scrollArea.getWidgets().forEach(w -> {
             if (w instanceof WGhostSlot) {
                 WGhostSlot slot = (WGhostSlot) w;
-                if (w.isWithinBounds(mouseX, mouseY) && !w.isHidden()) {
+                if (w.isWithinBounds(mouseX, mouseY) && scrollArea.isWithinBounds(mouseX, mouseY)) {
                     slot.hover = true;
                     this.renderTooltip(matrices, slot.item, mouseX, mouseY);
                 } else {
@@ -126,6 +173,18 @@ public class ItemManagerScreen extends BaseScreen {
                 }
             }
         });
+
+        if (verifyButton.isWithinBounds(mouseX, mouseY)) {
+            List<Text> tooltip = Arrays.stream(new TranslatableText("chesttracker.gui.verify_button_tooltip")
+                .getString().split("\n")).map(LiteralText::new).collect(Collectors.toList());
+            this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        }
+
+        if (resetButton.isWithinBounds(mouseX, mouseY)) {
+            List<Text> tooltip = Arrays.stream(new TranslatableText(resetConfirm ? "chesttracker.gui.reset_button_confirm_tooltip" : "chesttracker.gui.reset_button_tooltip")
+                .getString().split("\n")).map(LiteralText::new).collect(Collectors.toList());
+            this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        }
     }
 
     @Override

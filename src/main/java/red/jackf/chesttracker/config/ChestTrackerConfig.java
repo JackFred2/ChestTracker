@@ -5,6 +5,7 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.util.math.MathHelper;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.tracker.InteractRememberType;
@@ -53,19 +54,19 @@ public class ChestTrackerConfig implements ConfigData {
     public static class TrackedScreens {
         @ConfigEntry.Gui.PrefixText
         public List<String> blocklist = Arrays.asList(
-                "AnvilScreen",
-                "BeaconScreen",
-                "CartographyTableScreen",
-                "CraftingScreen",
-                "CreativeInventoryScreen",
-                "EnchantmentScreen",
-                "GrindstoneScreen",
-                "HorseScreen",
-                "InventoryScreen",
-                "LoomScreen",
-                "MerchantScreen",
-                "SmithingScreen",
-                "StonecutterScreen"
+            AnvilScreen.class.getSimpleName(),
+            BeaconScreen.class.getSimpleName(),
+            CartographyTableScreen.class.getSimpleName(),
+            CraftingScreen.class.getSimpleName(),
+            CreativeInventoryScreen.class.getSimpleName(),
+            EnchantmentScreen.class.getSimpleName(),
+            GrindstoneScreen.class.getSimpleName(),
+            HorseScreen.class.getSimpleName(),
+            InventoryScreen.class.getSimpleName(),
+            LoomScreen.class.getSimpleName(),
+            MerchantScreen.class.getSimpleName(),
+            SmithingScreen.class.getSimpleName(),
+            StonecutterScreen.class.getSimpleName()
         );
     }
 

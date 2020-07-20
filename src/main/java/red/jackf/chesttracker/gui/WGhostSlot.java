@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.tracker.Tracker;
 import spinnery.widget.WAbstractWidget;
+import spinnery.widget.WVerticalScrollableContainer;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
 
@@ -19,13 +20,15 @@ public class WGhostSlot extends WAbstractWidget {
     private static final Identifier SLOT_TEX = id("slot.png");
     protected final ItemStack item;
     private final Position basePos;
+    private final WVerticalScrollableContainer scrollArea;
 
     public boolean hover;
 
-    public WGhostSlot(ItemStack item, Position pos) {
+    public WGhostSlot(ItemStack item, Position pos, WVerticalScrollableContainer scrollArea) {
         this.item = item;
         this.setSize(Size.of(18, 18));
         this.basePos = pos;
+        this.scrollArea = scrollArea;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class WGhostSlot extends WAbstractWidget {
 
     @Override
     public void onMouseClicked(float mouseX, float mouseY, int mouseButton) {
-        if (this.isWithinBounds(mouseX, mouseY) && !this.isHidden())
+        if (this.isWithinBounds(mouseX, mouseY) && this.scrollArea.isWithinBounds(mouseX, mouseY) && !this.isHidden())
             Tracker.getInstance().searchForItem(item);
     }
 

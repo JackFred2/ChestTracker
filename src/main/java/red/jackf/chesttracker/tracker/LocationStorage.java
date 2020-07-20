@@ -9,6 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -122,31 +125,59 @@ public class LocationStorage {
     }
 
     public List<Location> findItems(Identifier worldId, ItemStack toFind) {
-        WorldStorage storage = this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
-        return storage.stream()
+        WorldStorage storage = getStorage(worldId);
+        List<Location> results = storage.stream()
                 .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(toFind, itemStack)))
                 .collect(Collectors.toList());
+        storage.verifyItems(results);
+
+        return results;
+    }
+
+    public WorldStorage getStorage(Identifier worldId) {
+        return this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
     }
 
     public List<ItemStack> getItems(Identifier worldId) {
-        Map<Item, Integer> result = new HashMap<>();
-        WorldStorage storage = this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
-        storage.forEach(location -> location.getItems()
-                .forEach(itemStack -> result.merge(itemStack.getItem(), itemStack.getCount(), Integer::sum))
-                );
-        return result.keySet().stream()
-            .map(item -> new ItemStack(item, result.get(item)))
-            .sorted(Comparator.comparingInt(ItemStack::getCount).reversed())
-            .collect(Collectors.toList());
+        WorldStorage storage = getStorage(worldId);
+        return storage.getItems();
     }
 
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
         return candidate.getItem() == toFind.getItem();
-                //&& (!toFind.hasTag() || toFind.getTag() == candidate.getTag());
+                //&& (!toFind.hasTag() || Objects.equals(toFind.getTag(), candidate.getTag()));
     }
 
     // Per world storage
     public static class WorldStorage extends HashSet<Location> {
+        public void verifyItems(Collection<Location> list) {
+            if (MinecraftClient.getInstance().world != null) {
+                List<Location> toRemove = new ArrayList<>();
+                for (Iterator<Location> iterator = list.iterator(); iterator.hasNext(); ) {
+                    Location location = iterator.next();
+                    Chunk chunk = MinecraftClient.getInstance().world.getChunk(location.getPosition());
+                    if (chunk instanceof EmptyChunk || chunk.getBlockState(location.getPosition()).getBlock().hasBlockEntity())
+                        continue;
+                    iterator.remove();
+                }
+            }
+        }
+
+        public void verify() {
+            verifyItems(this);
+        }
+
+
+        public List<ItemStack> getItems() {
+            Map<Item, Integer> result = new HashMap<>();
+            this.forEach(location -> location.getItems()
+                .forEach(itemStack -> result.merge(itemStack.getItem(), itemStack.getCount(), Integer::sum))
+            );
+            return result.keySet().stream()
+                .map(item -> new ItemStack(item, result.get(item)))
+                .sorted(Comparator.comparingInt(ItemStack::getCount).reversed())
+                .collect(Collectors.toList());
+        }
     }
 
     private static String getUsefulFileString(@NotNull SocketAddress address) {
