@@ -3,6 +3,7 @@ package red.jackf.chesttracker;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
+import me.shedaniel.clothconfig2.impl.KeyBindingHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

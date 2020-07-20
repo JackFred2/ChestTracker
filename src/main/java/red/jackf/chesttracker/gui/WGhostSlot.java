@@ -6,11 +6,9 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.tracker.Tracker;
-import spinnery.client.render.TextRenderer;
 import spinnery.widget.WAbstractWidget;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
@@ -37,7 +35,9 @@ public class WGhostSlot extends WAbstractWidget {
         int x = (int) this.getX();
         int y = (int) this.getY();
         MinecraftClient.getInstance().getTextureManager().bindTexture(SLOT_TEX);
-        DrawableHelper.drawTexture(matrices, x - 1, y - 1, 0, 0, 18, 18, 18, 18);
+        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 18, 18, 18, 18);
+        x += 1;
+        y += 1;
         renderer.renderInGui(item, x, y);
         renderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, item, x, y, getCountString());
 
@@ -58,8 +58,8 @@ public class WGhostSlot extends WAbstractWidget {
     }
 
     @Override
-    public void onMouseReleased(float mouseX, float mouseY, int mouseButton) {
-        if (this.isWithinBounds(mouseX, mouseY))
+    public void onMouseClicked(float mouseX, float mouseY, int mouseButton) {
+        if (this.isWithinBounds(mouseX, mouseY) && !this.isHidden())
             Tracker.getInstance().searchForItem(item);
     }
 
