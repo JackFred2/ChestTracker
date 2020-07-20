@@ -47,7 +47,7 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         public int borderWidth = 8;
         @ConfigEntry.ColorPicker
-        public int borderColour = 0xbada55;
+        public int borderColour = 0x00baff;
     }
 
     public static class TrackedScreens {

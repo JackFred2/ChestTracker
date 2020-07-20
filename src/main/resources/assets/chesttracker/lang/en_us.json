@@ -1,6 +1,7 @@
 {
   "chesttracker.gui_class_name_tracked": "Class name: %s (Tracked)",
   "chesttracker.gui_class_name_not_tracked": "Class name: %s (Not Tracked)",
+  "chesttracker.gui.title": "ChestTracker",
   "chesttracker.searching_for_item": "Searching for %s",
   "chesttracker.block_clicked_be_provider": "Block ID: %s (BlockEntityProvider)",
   "chesttracker.block_clicked_not_be_provider": "Block ID: %s",

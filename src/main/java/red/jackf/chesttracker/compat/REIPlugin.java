@@ -15,9 +15,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.render.ManagerButton;
+import red.jackf.chesttracker.gui.ItemManagerScreen;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,10 +34,27 @@ public class REIPlugin implements REIPluginV0 {
 
     @Override
     public void registerBounds(DisplayHelper displayHelper) {
+        displayHelper.registerHandler(new DisplayHelper.DisplayBoundsProvider<ItemManagerScreen>() {
+            @Override
+            public Rectangle getScreenBounds(ItemManagerScreen screen) {
+                return new Rectangle(screen.getX(), screen.getY(), screen.getWidth(), screen.getHeight());
+            }
 
-        // ManagerButton
-        BaseBoundsHandler.getInstance().registerExclusionZones(HandledScreen.class, () -> Collections.EMPTY_LIST
-        );
+            @Override
+            public Class<?> getBaseSupportedClass() {
+                return ItemManagerScreen.class;
+            }
+
+            @Override
+            public float getPriority() {
+                return 50;
+            }
+
+            @Override
+            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
+                return ActionResult.SUCCESS;
+            }
+        });
     }
 
     @Nullable

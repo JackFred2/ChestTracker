@@ -1,15 +1,18 @@
 package red.jackf.chesttracker.tracker;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.render.RenderManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,12 +50,26 @@ public class Tracker {
                 .map(Slot::getStack)
                 .collect(Collectors.toList());
 
-        // Nothing in screen
-        if (items.size() == 0) return;
-
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
         storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world.getRegistryKey().getValue(), items);
+    }
+
+    public ActionResult searchForItem(ItemStack toFind) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null || client.world == null) return ActionResult.PASS;
+        LocationStorage storage = LocationStorage.get();
+        if (storage == null) return ActionResult.PASS;
+        if (ChestTracker.CONFIG.miscOptions.debugPrint)
+            ChestTracker.sendDebugMessage(client.player, new TranslatableText("chesttracker.searching_for_item", toFind).formatted(Formatting.GREEN));
+
+        List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind);
+        if (results.size() > 0) {
+            RenderManager.getInstance().addRenderList(results.stream().map(Location::getPosition).collect(Collectors.toList()), client.world.getTime());
+            client.player.closeHandledScreen();
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.PASS;
     }
 
     public <T extends ScreenHandler> boolean validScreenToTrack(HandledScreen<T> screen) {

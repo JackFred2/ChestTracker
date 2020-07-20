@@ -33,7 +33,7 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
-import red.jackf.chesttracker.render.ManagerButton;
+import red.jackf.chesttracker.gui.ManagerButton;
 import red.jackf.chesttracker.render.RenderManager;
 import red.jackf.chesttracker.tracker.InteractRememberType;
 import red.jackf.chesttracker.tracker.Location;
@@ -53,7 +53,7 @@ public class ChestTracker implements ClientModInitializer {
     }
 
     public static void sendDebugMessage(PlayerEntity player, Text text) {
-        player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.BOLD, Formatting.YELLOW).append(text), Util.NIL_UUID);
+        player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
     public static final KeyBinding SEARCH_KEY = new KeyBinding(id("search_for_items").toString(), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
@@ -68,16 +68,10 @@ public class ChestTracker implements ClientModInitializer {
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {
-                LocationStorage storage = LocationStorage.get();
-                if (storage == null)
-                    return ActionResult.PASS;
-                ItemStack toFind = tryFindItems(client, screen);
-                if (toFind == ItemStack.EMPTY)
-                    return ActionResult.PASS;
-                if (ChestTracker.CONFIG.miscOptions.debugPrint)
-                    sendDebugMessage(client.player, new TranslatableText("chesttracker.searching_for_item", toFind).formatted(Formatting.GREEN));
-                List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind);
-                RenderManager.getInstance().addRenderList(results.stream().map(Location::getPosition).collect(Collectors.toList()), client.world.getTime());
+                ItemStack toFind = ChestTracker.tryFindItems(screen);
+                if (toFind == ItemStack.EMPTY) return ActionResult.PASS;
+
+                return Tracker.getInstance().searchForItem(toFind);
             }
             return ActionResult.PASS;
         });
@@ -96,7 +90,7 @@ public class ChestTracker implements ClientModInitializer {
     }
 
     @NotNull
-    private <T extends ScreenHandler> ItemStack tryFindItems(MinecraftClient client, Screen screen) {
+    public static <T extends ScreenHandler> ItemStack tryFindItems(Screen screen) {
         ItemStack item = ItemStack.EMPTY;
         if (screen instanceof HandledScreen) {
             @SuppressWarnings("unchecked")

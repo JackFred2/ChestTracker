@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
@@ -127,9 +128,21 @@ public class LocationStorage {
                 .collect(Collectors.toList());
     }
 
+    public List<ItemStack> getItems(Identifier worldId) {
+        Map<Item, Integer> result = new HashMap<>();
+        WorldStorage storage = this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
+        storage.forEach(location -> location.getItems()
+                .forEach(itemStack -> result.merge(itemStack.getItem(), itemStack.getCount(), Integer::sum))
+                );
+        return result.keySet().stream()
+            .map(item -> new ItemStack(item, result.get(item)))
+            .sorted(Comparator.comparingInt(ItemStack::getCount).reversed())
+            .collect(Collectors.toList());
+    }
+
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
-        return candidate.getItem() == toFind.getItem()
-                && (!toFind.hasTag() || toFind.getTag() == candidate.getTag());
+        return candidate.getItem() == toFind.getItem();
+                //&& (!toFind.hasTag() || toFind.getTag() == candidate.getTag());
     }
 
     // Per world storage
