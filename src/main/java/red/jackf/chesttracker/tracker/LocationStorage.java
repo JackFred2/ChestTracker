@@ -6,6 +6,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
@@ -117,10 +119,10 @@ public class LocationStorage {
             storage = new HashMap<>();
     }
 
-    public void mergeItems(BlockPos pos, World world, List<ItemStack> items) {
+    public void mergeItems(BlockPos pos, World world, List<ItemStack> items, Text title) {
         WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
         List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
-        Location location = new Location(pos, null, items);
+        Location location = new Location(pos, title instanceof TranslatableText ? null : title, items);
 
         storage.removeAll(positions.stream()
             .map(storage.lookupMap::get)

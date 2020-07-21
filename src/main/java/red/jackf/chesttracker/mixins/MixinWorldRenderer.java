@@ -3,11 +3,14 @@ package red.jackf.chesttracker.mixins;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.shape.VoxelShapes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,10 +18,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.render.RenderManager;
+import red.jackf.chesttracker.tracker.Location;
+import red.jackf.chesttracker.tracker.LocationStorage;
+import red.jackf.chesttracker.tracker.Tracker;
 
 import java.util.Iterator;
+import java.util.OptionalDouble;
 
 @Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
@@ -29,14 +37,14 @@ public abstract class MixinWorldRenderer {
         RenderSystem.defaultBlendFunc();
     }, RenderSystem::disableBlend);
 
-    private static final RenderLayer TRACKER_RenderLayer = RenderLayer.of("chesttracker_blockoutline",
-            VertexFormats.POSITION_COLOR,
-            1, 256,
-            RenderLayer.MultiPhaseParameters.builder()
-                    .lineWidth(RenderManager.getDynamicLineWidth())
-                    .depthTest(new RenderPhase.DepthTest("pass", 519))
-                    .transparency(TRACKER_Transparency)
-                    .build(false)
+    private static final RenderLayer TRACKER_RENDER_OUTLINE_LAYER = RenderLayer.of("chesttracker_blockoutline",
+        VertexFormats.POSITION_COLOR,
+        1, 256,
+        RenderLayer.MultiPhaseParameters.builder()
+            .lineWidth(RenderManager.getDynamicLineWidth())
+            .depthTest(new RenderPhase.DepthTest("pass", 519))
+            .transparency(TRACKER_Transparency)
+            .build(false)
     );
 
     @Shadow
@@ -57,7 +65,7 @@ public abstract class MixinWorldRenderer {
                                        LightmapTextureManager lightmapTextureManager,
                                        Matrix4f matrix4f,
                                        CallbackInfo ci) {
-        this.world.getProfiler().swap("chesttracker_render");
+        this.world.getProfiler().swap("chesttracker_render_overlay");
         Vec3d cameraPos = camera.getPos();
         VertexConsumerProvider.Immediate immediate = this.bufferBuilders.getEntityVertexConsumers();
         RenderSystem.disableDepthTest();
@@ -74,7 +82,7 @@ public abstract class MixinWorldRenderer {
             long timeDiff = this.world.getTime() - data.getStartTime();
 
             RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
-                    immediate.getBuffer(TRACKER_RenderLayer),
+                    immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
                     VoxelShapes.fullCube(),
                     data.getPos().getX() - cameraPos.getX(),
                     data.getPos().getY() - cameraPos.getY(),
@@ -88,8 +96,23 @@ public abstract class MixinWorldRenderer {
                 iterator.remove();
         }
 
-        immediate.draw(TRACKER_RenderLayer);
+        immediate.draw(TRACKER_RENDER_OUTLINE_LAYER);
         matrices.pop();
         RenderSystem.enableDepthTest();
+    }
+
+    @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
+    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;checkEmpty(Lnet/minecraft/client/util/math/MatrixStack;)V", ordinal = 1))
+    public void renderLabelledChestOverlay(MatrixStack matrices,
+                                           float tickDelta,
+                                           long limitTime,
+                                           boolean renderBlockOutline,
+                                           Camera camera,
+                                           GameRenderer gameRenderer,
+                                           LightmapTextureManager lightmapTextureManager,
+                                           Matrix4f matrix4f,
+                                           CallbackInfo ci) {
+        this.world.getProfiler().swap("chesttracker_chestlabels");
+        RenderManager.getInstance().renderNames(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera);
     }
 }

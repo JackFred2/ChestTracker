@@ -2,17 +2,23 @@ package red.jackf.chesttracker.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorRenderPhase;
+import red.jackf.chesttracker.tracker.Location;
+import red.jackf.chesttracker.tracker.LocationStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,6 +62,22 @@ public class RenderManager {
 
     }
 
+    public void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, int light, double xRaw, double yRaw, double zRaw, Text text) {
+        Vec3d renderPos = camera.getPos().negate().add(xRaw, yRaw, zRaw);
+        matrixStack.push();
+        matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
+        matrixStack.multiply(MinecraftClient.getInstance().getEntityRenderManager().getRotation());
+        matrixStack.scale(-0.025F, -0.025F, 0.025F);
+        Matrix4f matrix4f = matrixStack.peek().getModel();
+        float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
+        int j = (int)(g * 255.0F) << 24;
+        TextRenderer textRenderer = MinecraftClient.getInstance().getEntityRenderManager().getTextRenderer();
+        float h = (float)(-textRenderer.getWidth((StringRenderable)text) / 2);
+        textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, light);
+        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, light);
+        matrixStack.pop();
+    }
+
     @SuppressWarnings("ConstantConditions")
     public static RenderPhase.LineWidth getDynamicLineWidth() {
         RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
@@ -63,6 +85,16 @@ public class RenderManager {
         ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
         ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
         return layer;
+    }
+
+    public void renderNames(MatrixStack matrices, VertexConsumerProvider.Immediate entityVertexConsumers, Camera camera) {
+        LocationStorage storage = LocationStorage.get();
+        if (storage == null) return;
+        assert MinecraftClient.getInstance().world != null;
+        for (Location location : storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue())) {
+            if (location.getName() != null && camera.getPos().squaredDistanceTo(Vec3d.of(location.getPosition())) < (ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange))
+                RenderManager.getInstance().drawTextInWorld(matrices, entityVertexConsumers, camera, 0xf000f0, location.getPosition().getX() + 0.5, location.getPosition().getY() + 1.5, location.getPosition().getZ() + 0.5, location.getName());
+        }
     }
 
     public static class PositionData {

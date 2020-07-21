@@ -48,6 +48,8 @@ public class ChestTrackerConfig implements ConfigData {
         public int fadeOutTime = 140;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         public int borderWidth = 8;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
+        public int nameRenderRange = 8;
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
     }
@@ -62,6 +64,7 @@ public class ChestTrackerConfig implements ConfigData {
             CreativeInventoryScreen.class.getSimpleName(),
             EnchantmentScreen.class.getSimpleName(),
             GrindstoneScreen.class.getSimpleName(),
+            HopperScreen.class.getSimpleName(),
             HorseScreen.class.getSimpleName(),
             InventoryScreen.class.getSimpleName(),
             LoomScreen.class.getSimpleName(),
@@ -75,7 +78,8 @@ public class ChestTrackerConfig implements ConfigData {
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
         visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
-        visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 200);
+        visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.displayRange = MathHelper.clamp(visualOptions.displayRange, 0, 64);
+        visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
     }
 }

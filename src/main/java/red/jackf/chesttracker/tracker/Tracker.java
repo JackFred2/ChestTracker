@@ -57,7 +57,8 @@ public class Tracker {
 
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
-        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items);
+
+        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, screen.getTitle());
     }
 
     public void handleInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
