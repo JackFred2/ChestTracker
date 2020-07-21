@@ -9,6 +9,9 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ButtonDisplayType;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.tracker.Tracker;
 
@@ -38,7 +41,11 @@ public class ManagerButton extends TexturedButtonWidget {
     public static void setup() {
         ClothClientHooks.SCREEN_INIT_POST.register((client, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
-                screenHooks.cloth$addButtonWidget(new ManagerButton(MinecraftClient.getInstance().getWindow().getScaledHeight() > bigHeight + getY((HandledScreen<?>) screen, true)));
+                boolean hasSpace = MinecraftClient.getInstance().getWindow().getScaledHeight() > bigHeight + getY((HandledScreen<?>) screen, true);
+                screenHooks.cloth$addButtonWidget(
+                    new ManagerButton(ChestTracker.CONFIG.visualOptions.buttonDisplayType == ButtonDisplayType.FORCE_BIG
+                    || ChestTracker.CONFIG.visualOptions.buttonDisplayType == ButtonDisplayType.AUTO && hasSpace)
+                );
             }
         });
     }

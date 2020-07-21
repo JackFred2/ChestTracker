@@ -117,10 +117,16 @@ public class LocationStorage {
             storage = new HashMap<>();
     }
 
-    public void mergeItems(BlockPos pos, Identifier worldId, List<ItemStack> items) {
-        WorldStorage storage = this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
+    public void mergeItems(BlockPos pos, World world, List<ItemStack> items) {
+        WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
+        List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
         Location location = new Location(pos, null, items);
-        storage.remove(location);
+
+        storage.removeAll(positions.stream()
+            .map(storage.lookupMap::get)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
+
         storage.add(location);
     }
 
@@ -138,11 +144,6 @@ public class LocationStorage {
         return this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
     }
 
-    public List<ItemStack> getItems(Identifier worldId) {
-        WorldStorage storage = getStorage(worldId);
-        return storage.getItems();
-    }
-
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
         return candidate.getItem() == toFind.getItem();
                 //&& (!toFind.hasTag() || Objects.equals(toFind.getTag(), candidate.getTag()));
@@ -150,9 +151,32 @@ public class LocationStorage {
 
     // Per world storage
     public static class WorldStorage extends HashSet<Location> {
+        private final Map<BlockPos, Location> lookupMap = new HashMap<>();
+
+        @Override
+        public boolean remove(Object o) {
+            lookupMap.remove(o);
+            return super.remove(o);
+        }
+
+        @Override
+        public void clear() {
+            lookupMap.clear();
+            super.clear();
+        }
+
+        @Override
+        public boolean add(Location location) {
+            lookupMap.put(location.getPosition(), location);
+            return super.add(location);
+        }
+
+        public Location getFromMap(BlockPos pos) {
+            return lookupMap.get(pos);
+        }
+
         public void verifyItems(Collection<Location> list) {
             if (MinecraftClient.getInstance().world != null) {
-                List<Location> toRemove = new ArrayList<>();
                 for (Iterator<Location> iterator = list.iterator(); iterator.hasNext(); ) {
                     Location location = iterator.next();
                     Chunk chunk = MinecraftClient.getInstance().world.getChunk(location.getPosition());
@@ -167,6 +191,9 @@ public class LocationStorage {
             verifyItems(this);
         }
 
+        private static final Comparator<ItemStack> sorter = Comparator.comparingInt(ItemStack::getCount)
+            .reversed()
+            .thenComparing(itemStack -> itemStack.getName().getString());
 
         public List<ItemStack> getItems() {
             Map<Item, Integer> result = new HashMap<>();
@@ -175,7 +202,7 @@ public class LocationStorage {
             );
             return result.keySet().stream()
                 .map(item -> new ItemStack(item, result.get(item)))
-                .sorted(Comparator.comparingInt(ItemStack::getCount).reversed())
+                .sorted(sorter)
                 .collect(Collectors.toList());
         }
     }

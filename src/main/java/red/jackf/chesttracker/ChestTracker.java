@@ -3,7 +3,6 @@ package red.jackf.chesttracker;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
-import me.shedaniel.clothconfig2.impl.KeyBindingHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,12 +20,10 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -35,14 +32,7 @@ import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.gui.ManagerButton;
-import red.jackf.chesttracker.render.RenderManager;
-import red.jackf.chesttracker.tracker.InteractRememberType;
-import red.jackf.chesttracker.tracker.Location;
-import red.jackf.chesttracker.tracker.LocationStorage;
 import red.jackf.chesttracker.tracker.Tracker;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -78,14 +68,7 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            boolean blockHasBE = world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity();
-            if (ChestTracker.CONFIG.miscOptions.blockInteractionType == InteractRememberType.ALL || blockHasBE) {
-                Tracker.getInstance().setLastPos(hitResult.getBlockPos());
-            }
-            if (ChestTracker.CONFIG.miscOptions.debugPrint)
-                sendDebugMessage(player, new TranslatableText("chesttracker.block_clicked_" + (blockHasBE ? "be_provider" : "not_be_provider"),
-                        Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))
-                        .formatted(blockHasBE ? Formatting.GREEN : Formatting.YELLOW));
+            Tracker.getInstance().handleInteract(player, world, hand, hitResult);
             return ActionResult.PASS;
         });
     }

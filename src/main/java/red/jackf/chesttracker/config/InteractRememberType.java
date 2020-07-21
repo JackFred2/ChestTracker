@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.tracker;
+package red.jackf.chesttracker.config;
 
 public enum InteractRememberType {
     BLOCK_ENTITIES,

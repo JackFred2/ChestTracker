@@ -8,7 +8,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.util.math.MathHelper;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.tracker.InteractRememberType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +39,9 @@ public class ChestTrackerConfig implements ConfigData {
     }
 
     public static class VisualOptions {
-
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip
+        public ButtonDisplayType buttonDisplayType = ButtonDisplayType.AUTO;
         @ConfigEntry.BoundedDiscrete(min = 0, max = 64)
         public int displayRange = 32;
         @ConfigEntry.BoundedDiscrete(min = 0, max = 300)
@@ -73,6 +74,7 @@ public class ChestTrackerConfig implements ConfigData {
     @Override
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
+        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 200);
         visualOptions.displayRange = MathHelper.clamp(visualOptions.displayRange, 0, 64);
     }
