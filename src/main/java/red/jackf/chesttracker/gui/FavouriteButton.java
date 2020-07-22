@@ -21,9 +21,7 @@ public class FavouriteButton extends TexturedButtonWidget {
     public static FavouriteButton current = null;
 
     public FavouriteButton() {
-        super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button -> {
-            ((FavouriteButton) button).toggleActive();
-        }));
+        super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button -> ((FavouriteButton) button).toggleActive()));
         LocationStorage storage = LocationStorage.get();
         if (storage != null && MinecraftClient.getInstance().world != null) {
             Location loc = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue()).lookupFast(Tracker.getInstance().getLastInteractedPos());
@@ -61,12 +59,12 @@ public class FavouriteButton extends TexturedButtonWidget {
         if (screen != null)
             this.setPos(ManagerButton.getX(screen) - 12, ManagerButton.getY(screen));
 
-        super.renderButton(matrices, mouseX, mouseY, delta);
-
-        if (this.isHovered())
+        if (this.isHovered()) {
             screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.favourite"), mouseX, mouseY);
+        }
+        MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
 
         RenderSystem.enableDepthTest();
-        drawTexture(matrices, this.x, this.y, toggleActive ? 9 : 0, this.isHovered() ? 9 : 0, this.width, this.height, 18, 18);
+        drawTexture(matrices, this.x, this.y, (float) (toggleActive ? 9 : 0), (float) (this.isHovered() ? 9 : 0), this.width, this.height, 18, 18);
     }
 }

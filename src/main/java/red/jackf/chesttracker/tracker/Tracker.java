@@ -46,12 +46,12 @@ public class Tracker {
 
         String className = screen.getClass().getSimpleName();
         if (ChestTracker.CONFIG.miscOptions.debugPrint) {
-            ChestTracker.sendDebugMessage(MinecraftClient.getInstance().player, validScreenToTrack(className) ?
+            ChestTracker.sendDebugMessage(MinecraftClient.getInstance().player, validScreenToTrack(screen) ?
                 new TranslatableText("chesttracker.gui_class_name_tracked", className).formatted(Formatting.GREEN) :
                 new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED));
         }
 
-        if (!validScreenToTrack(className))
+        if (!validScreenToTrack(screen))
             return;
 
         ScreenHandler handler = screen.getScreenHandler();
@@ -101,10 +101,8 @@ public class Tracker {
     }
 
     public boolean validScreenToTrack(Screen s) {
-        return s instanceof HandledScreen && validScreenToTrack(s.getClass().getSimpleName());
-    }
-
-    public boolean validScreenToTrack(String screenClass) {
-        return !ChestTracker.CONFIG.trackedScreens.blocklist.contains(screenClass);
+        return s instanceof HandledScreen
+            && !ChestTracker.CONFIG.trackedScreens.blocklist.contains(s.getClass().getSimpleName())
+            && lastInteractedPos != null;
     }
 }
