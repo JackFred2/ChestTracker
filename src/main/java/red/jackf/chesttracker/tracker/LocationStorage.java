@@ -28,6 +28,7 @@ import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 // Per connection storage (i.e. per single player world, server ip, realm)
@@ -129,10 +130,10 @@ public class LocationStorage {
         Vec3d offset = centerOf(positions).subtract(Vec3d.of(pos));
         Location location = new Location(pos, title instanceof TranslatableText ? null : title, positions.size() == 1 ? null : offset, items, favourite);
 
-        storage.removeAll(positions.stream()
+        positions.stream()
             .map(storage.lookupMap::get)
             .filter(Objects::nonNull)
-            .collect(Collectors.toList()));
+            .forEach(storage::remove);
 
         storage.add(location);
     }
@@ -170,8 +171,13 @@ public class LocationStorage {
 
         @Override
         public boolean remove(Object o) {
-            lookupMap.remove(o);
+            removeFromMap((Location) o);
             return super.remove(o);
+        }
+
+        private void removeFromMap(Location loc) {
+            for (BlockPos pos : LinkedBlocksHandler.getLinked(MinecraftClient.getInstance().world, loc.getPosition()))
+                lookupMap.remove(pos);
         }
 
         @Override
@@ -180,8 +186,26 @@ public class LocationStorage {
             super.clear();
         }
 
+        @Nullable
         public Location lookupFast(BlockPos pos) {
-            return lookupMap.get(pos);
+            for (BlockPos pos2 : LinkedBlocksHandler.getLinked(MinecraftClient.getInstance().world, pos))
+                if (lookupMap.containsKey(pos2)) return lookupMap.get(pos2);
+            return null;
+        }
+
+        @Override
+        public boolean removeIf(@NotNull Predicate<? super Location> filter) {
+            boolean removed = false;
+            Iterator<Location> iterator = this.iterator();
+            while (iterator.hasNext()) {
+                Location loc = iterator.next();
+                if (filter.test(loc)) {
+                    removeFromMap(loc);
+                    iterator.remove();
+                    removed = true;
+                }
+            }
+            return removed;
         }
 
         @Override

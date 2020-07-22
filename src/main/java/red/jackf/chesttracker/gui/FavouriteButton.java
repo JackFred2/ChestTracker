@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import red.jackf.chesttracker.tracker.Location;
 import red.jackf.chesttracker.tracker.LocationStorage;
 import red.jackf.chesttracker.tracker.Tracker;
@@ -26,8 +27,9 @@ public class FavouriteButton extends TexturedButtonWidget {
     public FavouriteButton() {
         super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button -> ((FavouriteButton) button).toggleActive()));
         LocationStorage storage = LocationStorage.get();
-        if (storage != null && MinecraftClient.getInstance().world != null) {
-            Location loc = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue()).lookupFast(Tracker.getInstance().getLastInteractedPos());
+        World world = MinecraftClient.getInstance().world;
+        if (storage != null && world != null) {
+            Location loc = storage.getStorage(world.getRegistryKey().getValue()).lookupFast(Tracker.getInstance().getLastInteractedPos());
             if (loc != null)
                 toggleActive = loc.isFavourite();
         }
