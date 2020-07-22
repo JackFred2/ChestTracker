@@ -120,11 +120,11 @@ public class LocationStorage {
             storage = new HashMap<>();
     }
 
-    public void mergeItems(BlockPos pos, World world, List<ItemStack> items, Text title) {
+    public void mergeItems(BlockPos pos, World world, List<ItemStack> items, Text title, Boolean favourite) {
         WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
         List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
         Vec3d offset = centerOf(positions).subtract(Vec3d.of(pos));
-        Location location = new Location(pos, title instanceof TranslatableText ? null : title, positions.size() == 1 ? null : offset, items);
+        Location location = new Location(pos, title instanceof TranslatableText ? null : title, positions.size() == 1 ? null : offset, items, favourite);
 
         storage.removeAll(positions.stream()
             .map(storage.lookupMap::get)
@@ -175,6 +175,10 @@ public class LocationStorage {
         public void clear() {
             lookupMap.clear();
             super.clear();
+        }
+
+        public Location lookupFast(BlockPos pos) {
+            return lookupMap.get(pos);
         }
 
         @Override

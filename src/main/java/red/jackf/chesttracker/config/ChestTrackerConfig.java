@@ -39,9 +39,9 @@ public class ChestTrackerConfig implements ConfigData {
     }
 
     public static class VisualOptions {
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        @ConfigEntry.Gui.Tooltip
-        public ButtonDisplayType buttonDisplayType = ButtonDisplayType.AUTO;
+        // @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        // @ConfigEntry.Gui.Tooltip
+        // public ButtonDisplayType buttonDisplayType = ButtonDisplayType.AUTO;
         @ConfigEntry.BoundedDiscrete(min = 0, max = 64)
         public int displayRange = 32;
         @ConfigEntry.BoundedDiscrete(min = 0, max = 300)

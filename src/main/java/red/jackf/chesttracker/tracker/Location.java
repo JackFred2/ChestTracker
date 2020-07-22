@@ -16,12 +16,14 @@ public class Location {
     @Nullable
     private final Vec3d nameOffset;
     private final List<ItemStack> items;
+    private Boolean favorite = false;
 
-    public Location(BlockPos position, @Nullable Text name, @Nullable Vec3d nameOffset, List<ItemStack> items) {
+    public Location(BlockPos position, @Nullable Text name, @Nullable Vec3d nameOffset, List<ItemStack> items, Boolean favourite) {
         this.position = position;
         this.name = name;
         this.nameOffset = nameOffset;
         this.items = items;
+        this.favorite = favourite;
     }
 
     public BlockPos getPosition() {
@@ -57,6 +59,7 @@ public class Location {
             ", name=" + name +
             ", nameOffset=" + nameOffset +
             ", items=" + items +
+            ", favorite=" + favorite +
             '}';
     }
 
@@ -67,5 +70,9 @@ public class Location {
 
     public boolean hasNameOffset() {
         return nameOffset != null;
+    }
+
+    public Boolean isFavourite() {
+        return favorite;
     }
 }

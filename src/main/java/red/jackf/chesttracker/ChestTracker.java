@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.gui.ManagerButton;
 import red.jackf.chesttracker.tracker.Tracker;
@@ -56,6 +57,7 @@ public class ChestTracker implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
 
         ManagerButton.setup();
+        FavouriteButton.setup();
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {

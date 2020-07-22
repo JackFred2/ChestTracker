@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.tracker;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,6 +18,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.InteractRememberType;
+import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.render.RenderManager;
 
 import java.util.List;
@@ -58,7 +60,7 @@ public class Tracker {
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
 
-        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, screen.getTitle());
+        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, screen.getTitle(), FavouriteButton.current.isActive());
     }
 
     public void handleInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
@@ -70,6 +72,10 @@ public class Tracker {
             ChestTracker.sendDebugMessage(player, new TranslatableText("chesttracker.block_clicked_" + (blockHasBE ? "be_provider" : "not_be_provider"),
                 Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))
                 .formatted(blockHasBE ? Formatting.GREEN : Formatting.YELLOW));
+    }
+
+    public BlockPos getLastInteractedPos() {
+        return lastInteractedPos;
     }
 
     public ActionResult searchForItem(ItemStack toFind) {
@@ -87,6 +93,10 @@ public class Tracker {
             return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
+    }
+
+    public boolean validScreenToTrack(Screen s) {
+        return s instanceof HandledScreen && validScreenToTrack(s.getClass().getSimpleName());
     }
 
     public boolean validScreenToTrack(String screenClass) {
