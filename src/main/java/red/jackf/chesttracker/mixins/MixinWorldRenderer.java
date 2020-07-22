@@ -3,14 +3,11 @@ package red.jackf.chesttracker.mixins;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.shape.VoxelShapes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,15 +15,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.render.RenderManager;
-import red.jackf.chesttracker.tracker.Location;
-import red.jackf.chesttracker.tracker.LocationStorage;
-import red.jackf.chesttracker.tracker.Tracker;
 
 import java.util.Iterator;
-import java.util.OptionalDouble;
 
 @Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
@@ -55,7 +47,7 @@ public abstract class MixinWorldRenderer {
     private ClientWorld world;
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
-            at = @At(value = "TAIL"))
+        at = @At(value = "TAIL"))
     public void renderFoundItemOverlay(MatrixStack matrices,
                                        float tickDelta,
                                        long limitTime,
@@ -82,15 +74,15 @@ public abstract class MixinWorldRenderer {
             long timeDiff = this.world.getTime() - data.getStartTime();
 
             RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
-                    immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
-                    VoxelShapes.fullCube(),
-                    data.getPos().getX() - cameraPos.getX(),
-                    data.getPos().getY() - cameraPos.getY(),
-                    data.getPos().getZ() - cameraPos.getZ(),
-                    r,
-                    g,
-                    b,
-                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
+                immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
+                VoxelShapes.fullCube(),
+                data.getPos().getX() - cameraPos.getX(),
+                data.getPos().getY() - cameraPos.getY(),
+                data.getPos().getZ() - cameraPos.getZ(),
+                r,
+                g,
+                b,
+                ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
 
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime)
                 iterator.remove();
@@ -102,7 +94,7 @@ public abstract class MixinWorldRenderer {
     }
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
-    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;checkEmpty(Lnet/minecraft/client/util/math/MatrixStack;)V", ordinal = 1))
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;checkEmpty(Lnet/minecraft/client/util/math/MatrixStack;)V", ordinal = 1))
     public void renderLabelledChestOverlay(MatrixStack matrices,
                                            float tickDelta,
                                            long limitTime,

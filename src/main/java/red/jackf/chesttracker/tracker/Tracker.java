@@ -43,8 +43,8 @@ public class Tracker {
         String className = screen.getClass().getSimpleName();
         if (ChestTracker.CONFIG.miscOptions.debugPrint) {
             ChestTracker.sendDebugMessage(MinecraftClient.getInstance().player, validScreenToTrack(className) ?
-                    new TranslatableText("chesttracker.gui_class_name_tracked", className).formatted(Formatting.GREEN) :
-                    new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED));
+                new TranslatableText("chesttracker.gui_class_name_tracked", className).formatted(Formatting.GREEN) :
+                new TranslatableText("chesttracker.gui_class_name_not_tracked", className).formatted(Formatting.RED));
         }
 
         if (!validScreenToTrack(className))
@@ -52,10 +52,10 @@ public class Tracker {
 
         ScreenHandler handler = screen.getScreenHandler();
         List<ItemStack> items = handler.slots.stream()
-                .filter(slot -> !(slot.inventory instanceof PlayerInventory))
-                .filter(Slot::hasStack)
-                .map(Slot::getStack)
-                .collect(Collectors.toList());
+            .filter(slot -> !(slot.inventory instanceof PlayerInventory))
+            .filter(Slot::hasStack)
+            .map(Slot::getStack)
+            .collect(Collectors.toList());
 
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;

@@ -19,18 +19,18 @@ public final class GsonHandler {
     }
 
     public static final Gson GSON = new GsonBuilder()
-            .setPrettyPrinting()
-            .serializeNulls()
-            .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
-            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-            .registerTypeAdapter(new TypeToken<BlockPos>() {
-            }.getType(), new BlockPosSerializer())
-            .registerTypeAdapter(new TypeToken<Location>() {
-            }.getType(), new LocationSerializer())
-            .registerTypeAdapter(new TypeToken<ItemStack>() {
-            }.getType(), new ItemStackSerializer())
-            .create();
+        .setPrettyPrinting()
+        .serializeNulls()
+        .disableHtmlEscaping()
+        .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
+        .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+        .registerTypeAdapter(new TypeToken<BlockPos>() {
+        }.getType(), new BlockPosSerializer())
+        .registerTypeAdapter(new TypeToken<Location>() {
+        }.getType(), new LocationSerializer())
+        .registerTypeAdapter(new TypeToken<ItemStack>() {
+        }.getType(), new ItemStackSerializer())
+        .create();
 
     public static Gson get() {
         return GSON;

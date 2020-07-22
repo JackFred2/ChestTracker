@@ -2,16 +2,12 @@ package red.jackf.chesttracker.gui;
 
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.config.ButtonDisplayType;
-import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.tracker.Tracker;
 
@@ -24,7 +20,7 @@ public class ManagerButton extends TexturedButtonWidget {
     public static final int smallHeight = 9;
 
     public ManagerButton() {
-        super(0, 0, smallWidth, smallHeight, 0, 0,0, TEXTURE, 9, 9, (buttonWidget) -> {
+        super(0, 0, smallWidth, smallHeight, 0, 0, 0, TEXTURE, 9, 9, (buttonWidget) -> {
             if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen)
                 Tracker.getInstance().handleScreen((HandledScreen<?>) MinecraftClient.getInstance().currentScreen);
             MinecraftClient.getInstance().openScreen(new ItemManagerScreen());

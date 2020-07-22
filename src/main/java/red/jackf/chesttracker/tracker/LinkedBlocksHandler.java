@@ -7,12 +7,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static net.minecraft.block.enums.ChestType.*;
+import static net.minecraft.block.enums.ChestType.LEFT;
+import static net.minecraft.block.enums.ChestType.SINGLE;
 
 public class LinkedBlocksHandler {
 

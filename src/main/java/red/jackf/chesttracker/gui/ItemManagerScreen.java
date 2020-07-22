@@ -34,8 +34,8 @@ public class ItemManagerScreen extends BaseScreen {
     private final WButton verifyButton;
     private boolean resetConfirm = false;
 
-    private Color RED = Color.of(Formatting.RED.getColorValue());
-    private Color DEFAULT = new Color(255, 255, 255, 255);
+    private final Color RED = Color.of(Formatting.RED.getColorValue() != null ? Formatting.RED.getColorValue() : 0xff7f7fff);
+    private final Color DEFAULT = new Color(255, 255, 255, 255);
 
     public ItemManagerScreen() {
         WInterface mainInterface = getInterface();
@@ -53,9 +53,7 @@ public class ItemManagerScreen extends BaseScreen {
         searchField = mainPanel.createChild(WClearedTextField::new, Position.of(mainPanel.getX() + width - 98, mainPanel.getY() + 4, 0), Size.of(94, 18));
         searchField.setFixedLength(15);
         searchField.setText("Filter...");
-        searchField.setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            this.update();
-        });
+        searchField.setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> this.update());
 
         verifyButton = mainPanel.createChild(WButton::new,
             Position.of(mainPanel).add(2, -16, 0),
@@ -72,8 +70,8 @@ public class ItemManagerScreen extends BaseScreen {
         resetButton.setOnMouseClicked(((widget, mouseX, mouseY, mouseButton) -> {
             if (resetConfirm) {
                 resetConfirm = false;
-                LocationStorage.WorldStorage worldStorage = null;
                 if (storage != null) {
+                    LocationStorage.WorldStorage worldStorage;
                     worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
                     if (Screen.hasShiftDown())
                         worldStorage.clear();
@@ -120,10 +118,6 @@ public class ItemManagerScreen extends BaseScreen {
         List<ItemStack> stacks = list.stream().filter(stack ->
             stack.getName().getString().toLowerCase().contains(searchField.getText().toLowerCase())).collect(Collectors.toList());
         setChildren(stacks);
-    }
-
-    protected boolean isWithinScrollArea(float mouseX, float mouseY) {
-        return scrollArea.isWithinBounds(mouseX, mouseY);
     }
 
     private void setChildren(List<ItemStack> slots) {

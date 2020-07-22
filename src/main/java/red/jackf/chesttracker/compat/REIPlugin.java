@@ -1,7 +1,6 @@
 package red.jackf.chesttracker.compat;
 
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.BaseBoundsHandler;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
@@ -13,14 +12,12 @@ import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.impl.ItemEntryStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.ItemManagerScreen;
 
-import java.util.Collections;
 import java.util.List;
 
 import static red.jackf.chesttracker.ChestTracker.id;

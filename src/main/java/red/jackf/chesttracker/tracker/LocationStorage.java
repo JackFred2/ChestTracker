@@ -139,14 +139,14 @@ public class LocationStorage {
         for (BlockPos pos : positions) {
             result = result.add(Vec3d.of(pos));
         }
-        return result.multiply(1d/positions.size());
+        return result.multiply(1d / positions.size());
     }
 
     public List<Location> findItems(Identifier worldId, ItemStack toFind) {
         WorldStorage storage = getStorage(worldId);
         List<Location> results = storage.stream()
-                .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(toFind, itemStack)))
-                .collect(Collectors.toList());
+            .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(toFind, itemStack)))
+            .collect(Collectors.toList());
         storage.verifyItems(results);
 
         return results;
@@ -158,7 +158,7 @@ public class LocationStorage {
 
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
         return candidate.getItem() == toFind.getItem();
-                //&& (!toFind.hasTag() || Objects.equals(toFind.getTag(), candidate.getTag()));
+        //&& (!toFind.hasTag() || Objects.equals(toFind.getTag(), candidate.getTag()));
     }
 
     // Per world storage
@@ -231,8 +231,8 @@ public class LocationStorage {
     @Override
     public String toString() {
         return "LocationStorage{" +
-                "savePath='" + savePath + '\'' +
-                ", storage=" + storage +
-                '}';
+            "savePath='" + savePath + '\'' +
+            ", storage=" + storage +
+            '}';
     }
 }
