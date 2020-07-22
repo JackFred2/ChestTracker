@@ -46,7 +46,7 @@ public final class GsonHandler {
             List<ItemStack> items = GSON.fromJson(object.getAsJsonArray("items"), new TypeToken<List<ItemStack>>() {
             }.getType());
             Vec3d nameOffset = (object.has("nameOffset") ? GSON.fromJson(object.getAsJsonObject("nameOffset"), Vec3d.class) : null);
-            Boolean favourite = GSON.fromJson(object.getAsJsonObject("favourite"), Boolean.class);
+            Boolean favourite = GSON.fromJson(object.getAsJsonPrimitive("favourite"), Boolean.class);
             return new Location(pos, name, nameOffset, items, favourite);
         }
 

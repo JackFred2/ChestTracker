@@ -1,15 +1,18 @@
 package red.jackf.chesttracker.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.tracker.LocationStorage;
 import spinnery.client.screen.BaseScreen;
 import spinnery.widget.*;
+import spinnery.widget.api.Color;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
 
@@ -30,6 +33,9 @@ public class ItemManagerScreen extends BaseScreen {
     private final WTextField searchField;
     private final WButton verifyButton;
     private boolean resetConfirm = false;
+
+    private Color RED = Color.of(Formatting.RED.getColorValue());
+    private Color DEFAULT = new Color(255, 255, 255, 255);
 
     public ItemManagerScreen() {
         WInterface mainInterface = getInterface();
@@ -66,14 +72,18 @@ public class ItemManagerScreen extends BaseScreen {
         resetButton.setOnMouseClicked(((widget, mouseX, mouseY, mouseButton) -> {
             if (resetConfirm) {
                 resetConfirm = false;
-                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button"));
-                LocationStorage.WorldStorage worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
-                worldStorage.clear();
-                list = worldStorage.getItems();
-                this.update();
+                LocationStorage.WorldStorage worldStorage = null;
+                if (storage != null) {
+                    worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
+                    if (Screen.hasShiftDown())
+                        worldStorage.clear();
+                    else
+                        worldStorage.removeIf(location -> !location.isFavourite());
+                    list = worldStorage.getItems();
+                    this.update();
+                }
             } else {
                 resetConfirm = true;
-                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button_confirm"));
             }
         }));
 
@@ -174,6 +184,18 @@ public class ItemManagerScreen extends BaseScreen {
             }
         });
 
+        if (resetConfirm) {
+            resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button_confirm"));
+        } else {
+            if (Screen.hasShiftDown()) {
+                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button_shift"));
+            } else {
+                resetButton.setLabel(new TranslatableText("chesttracker.gui.reset_button"));
+            }
+        }
+
+        resetButton.overrideStyle("label.color", Screen.hasShiftDown() ? RED : DEFAULT);
+
         if (verifyButton.isWithinBounds(mouseX, mouseY)) {
             List<Text> tooltip = Arrays.stream(new TranslatableText("chesttracker.gui.verify_button_tooltip")
                 .getString().split("\n")).map(LiteralText::new).collect(Collectors.toList());
@@ -181,7 +203,7 @@ public class ItemManagerScreen extends BaseScreen {
         }
 
         if (resetButton.isWithinBounds(mouseX, mouseY)) {
-            List<Text> tooltip = Arrays.stream(new TranslatableText(resetConfirm ? "chesttracker.gui.reset_button_confirm_tooltip" : "chesttracker.gui.reset_button_tooltip")
+            List<Text> tooltip = Arrays.stream(new TranslatableText(resetConfirm ? "chesttracker.gui.reset_button_confirm_tooltip" : (Screen.hasShiftDown() ? "chesttracker.gui.reset_button_tooltip_shift" : "chesttracker.gui.reset_button_tooltip"))
                 .getString().split("\n")).map(LiteralText::new).collect(Collectors.toList());
             this.renderTooltip(matrices, tooltip, mouseX, mouseY);
         }
