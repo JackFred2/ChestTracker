@@ -8,7 +8,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShapes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -73,16 +72,21 @@ public abstract class MixinWorldRenderer {
             RenderManager.PositionData data = iterator.next();
             long timeDiff = this.world.getTime() - data.getStartTime();
 
-            RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
-                immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
-                data.getShape(),
-                data.getPos().getX() - cameraPos.getX(),
-                data.getPos().getY() - cameraPos.getY(),
-                data.getPos().getZ() - cameraPos.getZ(),
-                r,
-                g,
-                b,
-                ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
+            double x = data.getPos().getX() - cameraPos.getX();
+            double y = data.getPos().getY() - cameraPos.getY();
+            double z = data.getPos().getZ() - cameraPos.getZ();
+
+            if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
+                RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
+                    immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
+                    data.getShape(),
+                    x,
+                    y,
+                    z,
+                    r,
+                    g,
+                    b,
+                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
 
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime)
                 iterator.remove();

@@ -1,6 +1,8 @@
 package red.jackf.chesttracker.gui;
 
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
@@ -13,6 +15,7 @@ import red.jackf.chesttracker.tracker.Tracker;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 public class ManagerButton extends TexturedButtonWidget {
     private static final Identifier TEXTURE = id("gui_button_small.png");
 

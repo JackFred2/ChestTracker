@@ -2,6 +2,8 @@ package red.jackf.chesttracker.tracker;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.Item;
@@ -29,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // Per connection storage (i.e. per single player world, server ip, realm)
+@Environment(EnvType.CLIENT)
 public class LocationStorage {
     private static final Path ROOT_DIR = Paths.get(MinecraftClient.getInstance().runDirectory.getAbsolutePath()).resolve("chesttracker");
     private static final Gson GSON = GsonHandler.get();

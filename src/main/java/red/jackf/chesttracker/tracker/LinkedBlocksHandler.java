@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.tracker;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.enums.ChestType;
@@ -14,6 +16,7 @@ import java.util.List;
 import static net.minecraft.block.enums.ChestType.LEFT;
 import static net.minecraft.block.enums.ChestType.SINGLE;
 
+@Environment(EnvType.CLIENT)
 public class LinkedBlocksHandler {
 
     // Gets all linked positions for multiblocks, including the start.

@@ -2,6 +2,8 @@ package red.jackf.chesttracker.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
@@ -14,6 +16,7 @@ import red.jackf.chesttracker.tracker.Tracker;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 public class FavouriteButton extends TexturedButtonWidget {
     private static final Identifier TEXTURE = id("favourite_button.png");
     private boolean toggleActive = false;

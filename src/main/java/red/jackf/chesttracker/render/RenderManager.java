@@ -8,12 +8,8 @@ import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import red.jackf.chesttracker.ChestTracker;
@@ -40,7 +36,6 @@ public class RenderManager {
 
     public void addRenderList(List<Location> newList, long time) {
         positionsToRender.addAll(newList.stream()
-            .peek(loc -> System.out.println(loc.hasNameOffset()))
             .map(loc -> {
                 double x = loc.getPosition().getX();
                 double y = loc.getPosition().getY();
@@ -82,8 +77,13 @@ public class RenderManager {
 
     }
 
-    public void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, int light, Vec3d pos, Text text) {
+    public void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, int light, Vec3d pos, Text text, boolean force) {
         Vec3d renderPos = camera.getPos().negate().add(pos);
+        if (force) {
+            double d = MathHelper.sqrt(renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z);
+            if (d > 4)
+                renderPos = renderPos.multiply(4 / d);
+        }
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
         matrixStack.multiply(MinecraftClient.getInstance().getEntityRenderManager().getRotation());
@@ -92,7 +92,7 @@ public class RenderManager {
         float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
         int j = (int) (g * 255.0F) << 24;
         TextRenderer textRenderer = MinecraftClient.getInstance().getEntityRenderManager().getTextRenderer();
-        float h = (float) (-textRenderer.getWidth((StringRenderable) text) / 2);
+        float h = (float) (-textRenderer.getWidth(text) / 2);
         textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, light);
         textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, light);
         matrixStack.pop();
@@ -111,12 +111,22 @@ public class RenderManager {
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
         assert MinecraftClient.getInstance().world != null;
+        List<BlockPos> renderedPositions = positionsToRender.stream().map(data -> data.pos).collect(Collectors.toList());
         for (Location location : storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue())) {
-            if (location.getName() != null && camera.getPos().squaredDistanceTo(Vec3d.of(location.getPosition())) <= (ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange))
-                RenderManager.getInstance().drawTextInWorld(matrices, entityVertexConsumers, camera, 0xf000f0,
-                    Vec3d.of(location.getPosition()).add(0.5, 1.5, 0.5).add(location.hasNameOffset() ? location.getNameOffset() : Vec3d.ZERO),
-                    location.getName()
-                );
+            if (location.getName() != null) {
+                if (renderedPositions.contains(location.getPosition())) {
+                    RenderManager.getInstance().drawTextInWorld(matrices, entityVertexConsumers, camera, 0xf000f0,
+                        Vec3d.of(location.getPosition()).add(0.5, 1.5, 0.5).add(location.hasNameOffset() ? location.getNameOffset() : Vec3d.ZERO),
+                        location.getName(),
+                        true
+                    );
+                } else if (location.getName() != null && camera.getPos().squaredDistanceTo(Vec3d.of(location.getPosition())) <= (ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange))
+                    RenderManager.getInstance().drawTextInWorld(matrices, entityVertexConsumers, camera, 0xf000f0,
+                        Vec3d.of(location.getPosition()).add(0.5, 1.5, 0.5).add(location.hasNameOffset() ? location.getNameOffset() : Vec3d.ZERO),
+                        location.getName(),
+                        false
+                    );
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.gui;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Environment(EnvType.CLIENT)
 public class ItemManagerScreen extends BaseScreen {
     private final int width = 178;
     private final int height = 167;

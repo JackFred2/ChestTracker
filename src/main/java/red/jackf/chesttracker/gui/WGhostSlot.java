@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.gui;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -16,6 +18,7 @@ import spinnery.widget.api.Size;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 public class WGhostSlot extends WAbstractWidget {
     private static final Identifier SLOT_TEX = id("slot.png");
     protected final ItemStack item;

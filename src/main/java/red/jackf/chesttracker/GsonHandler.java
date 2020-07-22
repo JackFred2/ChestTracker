@@ -2,6 +2,8 @@ package red.jackf.chesttracker;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
@@ -14,6 +16,7 @@ import red.jackf.chesttracker.tracker.Location;
 import java.lang.reflect.Type;
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public final class GsonHandler {
     private GsonHandler() {
     }

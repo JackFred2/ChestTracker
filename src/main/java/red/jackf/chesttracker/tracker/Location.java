@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.tracker;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -9,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+@Environment(EnvType.CLIENT)
 public class Location {
     private final BlockPos position;
     @Nullable

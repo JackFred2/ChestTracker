@@ -10,6 +10,8 @@ import me.shedaniel.rei.gui.VillagerRecipeViewingScreen;
 import me.shedaniel.rei.gui.widget.EntryWidget;
 import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.impl.ItemEntryStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.item.ItemStack;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 @SuppressWarnings("UnstableApiUsage")
 public class REIPlugin implements REIPluginV0 {
     @Override

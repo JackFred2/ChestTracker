@@ -1,7 +1,10 @@
 package red.jackf.chesttracker.gui;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import spinnery.widget.WTextField;
 
+@Environment(EnvType.CLIENT)
 public class WClearedTextField extends WTextField {
 
     @Override

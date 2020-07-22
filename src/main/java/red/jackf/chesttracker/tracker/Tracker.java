@@ -1,6 +1,8 @@
 package red.jackf.chesttracker.tracker;
 
 import jdk.internal.jline.internal.Nullable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -25,6 +27,7 @@ import red.jackf.chesttracker.render.RenderManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Environment(EnvType.CLIENT)
 public class Tracker {
     private static final Tracker TRACKER = new Tracker();
     @Nullable

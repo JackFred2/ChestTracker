@@ -39,19 +39,16 @@ public class ChestTrackerConfig implements ConfigData {
     }
 
     public static class VisualOptions {
-        // @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        // @ConfigEntry.Gui.Tooltip
-        // public ButtonDisplayType buttonDisplayType = ButtonDisplayType.AUTO;
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 64)
-        public int displayRange = 32;
         @ConfigEntry.BoundedDiscrete(min = 0, max = 300)
         public int fadeOutTime = 140;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         public int borderWidth = 8;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
-        public int nameRenderRange = 8;
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 256)
+        public int borderRenderRange = 64;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
+        public int nameRenderRange = 8;
     }
 
     public static class TrackedScreens {
@@ -79,7 +76,7 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
         visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
-        visualOptions.displayRange = MathHelper.clamp(visualOptions.displayRange, 0, 64);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
+        visualOptions.borderRenderRange = MathHelper.clamp(visualOptions.borderRenderRange, 1, 256);
     }
 }
