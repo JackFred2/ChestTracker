@@ -75,7 +75,7 @@ public abstract class MixinWorldRenderer {
 
             RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
                 immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
-                VoxelShapes.fullCube(),
+                data.getShape(),
                 data.getPos().getX() - cameraPos.getX(),
                 data.getPos().getY() - cameraPos.getY(),
                 data.getPos().getZ() - cameraPos.getZ(),

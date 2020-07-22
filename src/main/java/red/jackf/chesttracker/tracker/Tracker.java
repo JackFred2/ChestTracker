@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.tracker;
 
+import jdk.internal.jline.internal.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -26,10 +27,12 @@ import java.util.stream.Collectors;
 
 public class Tracker {
     private static final Tracker TRACKER = new Tracker();
-    private BlockPos lastInteractedPos = BlockPos.ORIGIN;
+    @Nullable
+    private BlockPos lastInteractedPos = null;
 
     public void setLastPos(BlockPos newPos) {
-        this.lastInteractedPos = newPos.toImmutable();
+        if (newPos == null) lastInteractedPos = null;
+        else this.lastInteractedPos = newPos.toImmutable();
     }
 
     public static Tracker getInstance() {
@@ -37,6 +40,7 @@ public class Tracker {
     }
 
     public <T extends ScreenHandler> void handleScreen(HandledScreen<T> screen) {
+        if (this.lastInteractedPos == null) return;
         if (MinecraftClient.getInstance().player == null)
             return;
 
@@ -61,6 +65,7 @@ public class Tracker {
         if (storage == null) return;
 
         storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, screen.getTitle(), FavouriteButton.current.isActive());
+        this.lastInteractedPos = null;
     }
 
     public void handleInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
@@ -88,7 +93,7 @@ public class Tracker {
 
         List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind);
         if (results.size() > 0) {
-            RenderManager.getInstance().addRenderList(results.stream().map(Location::getPosition).collect(Collectors.toList()), client.world.getTime());
+            RenderManager.getInstance().addRenderList(results, client.world.getTime());
             client.player.closeHandledScreen();
             return ActionResult.SUCCESS;
         }

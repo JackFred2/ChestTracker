@@ -15,8 +15,10 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorRenderPhase;
+import red.jackf.chesttracker.tracker.LinkedBlocksHandler;
 import red.jackf.chesttracker.tracker.Location;
 import red.jackf.chesttracker.tracker.LocationStorage;
 
@@ -36,10 +38,28 @@ public class RenderManager {
     private RenderManager() {
     }
 
-    public void addRenderList(List<BlockPos> newList, long time) {
+    public void addRenderList(List<Location> newList, long time) {
         positionsToRender.addAll(newList.stream()
-            .map(blockPos -> new PositionData(time, blockPos))
+            .peek(loc -> System.out.println(loc.hasNameOffset()))
+            .map(loc -> {
+                double x = loc.getPosition().getX();
+                double y = loc.getPosition().getY();
+                double z = loc.getPosition().getZ();
+                return new PositionData(time, loc.getPosition(),
+                    MinecraftClient.getInstance().world != null ?
+                        getShapeFromList(LinkedBlocksHandler.getLinked(MinecraftClient.getInstance().world, loc.getPosition())).offset(-x, -y, -z).simplify() :
+                        VoxelShapes.fullCube()
+                );
+            })
             .collect(Collectors.toList()));
+    }
+
+    private VoxelShape getShapeFromList(List<BlockPos> locations) {
+        VoxelShape base = VoxelShapes.empty();
+        for (BlockPos pos : locations)
+            base = VoxelShapes.union(base, VoxelShapes.fullCube().offset(pos.getX(), pos.getY(), pos.getZ()));
+
+        return base;
     }
 
     public List<PositionData> getPositionsToRender() {
@@ -103,10 +123,12 @@ public class RenderManager {
     public static class PositionData {
         private final long startTime;
         private final BlockPos pos;
+        private final VoxelShape shape;
 
-        public PositionData(long startTime, BlockPos pos) {
+        public PositionData(long startTime, BlockPos pos, VoxelShape shape) {
             this.startTime = startTime;
             this.pos = pos;
+            this.shape = shape;
         }
 
         public BlockPos getPos() {
@@ -115,6 +137,10 @@ public class RenderManager {
 
         public long getStartTime() {
             return startTime;
+        }
+
+        public VoxelShape getShape() {
+            return shape;
         }
     }
 

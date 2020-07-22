@@ -8,6 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -71,6 +72,11 @@ public class ChestTracker implements ClientModInitializer {
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             Tracker.getInstance().handleInteract(player, world, hand, hitResult);
+            return ActionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
+            Tracker.getInstance().setLastPos(null);
             return ActionResult.PASS;
         });
     }
