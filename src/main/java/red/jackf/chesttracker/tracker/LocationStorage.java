@@ -111,7 +111,7 @@ public class LocationStorage {
                 try {
                     storage = GSON.fromJson(new FileReader(targetFile), new TypeToken<Map<String, WorldStorage>>() {
                     }.getType());
-                } catch (FileNotFoundException e) {
+                } catch (Throwable e) {
                     ChestTracker.LOGGER.error("Error loading from file", e);
                 }
             } else {
@@ -128,7 +128,7 @@ public class LocationStorage {
         WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
         List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
         Vec3d offset = centerOf(positions).subtract(Vec3d.of(pos));
-        Location location = new Location(pos, title instanceof TranslatableText ? null : title, positions.size() == 1 ? null : offset, items, favourite);
+        Location location = new Location(pos, title, positions.size() == 1 ? null : offset, items, favourite);
 
         positions.stream()
             .map(storage.lookupMap::get)

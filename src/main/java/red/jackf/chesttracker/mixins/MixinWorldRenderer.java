@@ -72,21 +72,22 @@ public abstract class MixinWorldRenderer {
             RenderManager.PositionData data = iterator.next();
             long timeDiff = this.world.getTime() - data.getStartTime();
 
-            double x = data.getPos().getX() - cameraPos.getX();
-            double y = data.getPos().getY() - cameraPos.getY();
-            double z = data.getPos().getZ() - cameraPos.getZ();
+            Vec3d finalPos = cameraPos.subtract(data.getPos().getX(), data.getPos().getY(), data.getPos().getZ()).negate();
+            if (finalPos.lengthSquared() > 4096) {
+                finalPos = finalPos.normalize().multiply(64);
+            }
 
-            if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
-                RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
-                    immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
-                    data.getShape(),
-                    x,
-                    y,
-                    z,
-                    r,
-                    g,
-                    b,
-                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
+            //if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
+            RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
+                immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
+                data.getShape(),
+                finalPos.x,
+                finalPos.y,
+                finalPos.z,
+                r,
+                g,
+                b,
+                ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
 
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime)
                 iterator.remove();
