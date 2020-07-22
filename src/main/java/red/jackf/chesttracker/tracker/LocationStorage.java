@@ -11,6 +11,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.EmptyChunk;
@@ -122,7 +123,8 @@ public class LocationStorage {
     public void mergeItems(BlockPos pos, World world, List<ItemStack> items, Text title) {
         WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
         List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
-        Location location = new Location(pos, title instanceof TranslatableText ? null : title, items);
+        Vec3d offset = centerOf(positions).subtract(Vec3d.of(pos));
+        Location location = new Location(pos, title instanceof TranslatableText ? null : title, positions.size() == 1 ? null : offset, items);
 
         storage.removeAll(positions.stream()
             .map(storage.lookupMap::get)
@@ -130,6 +132,14 @@ public class LocationStorage {
             .collect(Collectors.toList()));
 
         storage.add(location);
+    }
+
+    private static Vec3d centerOf(List<BlockPos> positions) {
+        Vec3d result = Vec3d.ZERO;
+        for (BlockPos pos : positions) {
+            result = result.add(Vec3d.of(pos));
+        }
+        return result.multiply(1d/positions.size());
     }
 
     public List<Location> findItems(Identifier worldId, ItemStack toFind) {
@@ -171,10 +181,6 @@ public class LocationStorage {
         public boolean add(Location location) {
             lookupMap.put(location.getPosition(), location);
             return super.add(location);
-        }
-
-        public Location getFromMap(BlockPos pos) {
-            return lookupMap.get(pos);
         }
 
         public void verifyItems(Collection<Location> list) {

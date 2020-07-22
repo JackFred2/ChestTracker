@@ -8,6 +8,7 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import red.jackf.chesttracker.tracker.Location;
 
 import java.lang.reflect.Type;
@@ -44,7 +45,8 @@ public final class GsonHandler {
             Text name = (object.has("name") ? GSON.fromJson(object.getAsJsonObject("name"), Text.class) : null);
             List<ItemStack> items = GSON.fromJson(object.getAsJsonArray("items"), new TypeToken<List<ItemStack>>() {
             }.getType());
-            return new Location(pos, name, items);
+            Vec3d nameOffset = (object.has("nameOffset") ? GSON.fromJson(object.getAsJsonObject("nameOffset"), Vec3d.class) : null);
+            return new Location(pos, name, nameOffset, items);
         }
 
         @Override
@@ -53,6 +55,7 @@ public final class GsonHandler {
             object.add("position", GSON.toJsonTree(src.getPosition()));
             if (src.getName() != null) object.add("name", GSON.toJsonTree(src.getName()));
             object.add("items", GSON.toJsonTree(src.getItems()));
+            if (src.getNameOffset() != null) object.add("nameOffset", GSON.toJsonTree(src.getNameOffset()));
             return object;
         }
     }

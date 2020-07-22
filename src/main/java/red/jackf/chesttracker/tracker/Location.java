@@ -3,6 +3,7 @@ package red.jackf.chesttracker.tracker;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -11,12 +12,15 @@ import java.util.Objects;
 public class Location {
     private final BlockPos position;
     @Nullable
-    private Text name;
-    private List<ItemStack> items;
+    private final Text name;
+    @Nullable
+    private final Vec3d nameOffset;
+    private final List<ItemStack> items;
 
-    public Location(BlockPos position, @Nullable Text name, List<ItemStack> items) {
+    public Location(BlockPos position, @Nullable Text name, @Nullable Vec3d nameOffset, List<ItemStack> items) {
         this.position = position;
         this.name = name;
+        this.nameOffset = nameOffset;
         this.items = items;
     }
 
@@ -29,16 +33,8 @@ public class Location {
         return name;
     }
 
-    public void setName(@Nullable Text name) {
-        this.name = name;
-    }
-
     public List<ItemStack> getItems() {
         return items;
-    }
-
-    public void setItems(List<ItemStack> items) {
-        this.items = items;
     }
 
     @Override
@@ -57,9 +53,19 @@ public class Location {
     @Override
     public String toString() {
         return "Location{" +
-                "position=" + position +
-                ", name=" + name +
-                ", items=" + items +
-                '}';
+            "position=" + position +
+            ", name=" + name +
+            ", nameOffset=" + nameOffset +
+            ", items=" + items +
+            '}';
+    }
+
+    @Nullable
+    public Vec3d getNameOffset() {
+        return nameOffset;
+    }
+
+    public boolean hasNameOffset() {
+        return nameOffset != null;
     }
 }
