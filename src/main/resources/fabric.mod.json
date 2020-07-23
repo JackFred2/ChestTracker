@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "chesttracker",
   "version": "${version}",
-
   "name": "Chest Tracker",
   "description": "Keep a memory of what items you've seen, and find them any time. \nOriginal Forge version by HenneGamer on CurseForge.",
   "authors": [
@@ -12,10 +11,8 @@
     "homepage": "https://github.com/JackFred2/ChestTracker",
     "issues": "https://github.com/JackFred2/ChestTracker/issues"
   },
-
   "license": "MIT",
   "icon": "assets/chesttracker/icon.png",
-
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -31,7 +28,6 @@
   "mixins": [
     "chesttracker.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",

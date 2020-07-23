@@ -12,7 +12,7 @@
   "chesttracker.gui.verify_button": "Verify",
   "chesttracker.gui.verify_button_tooltip": "Check that nearby inventories still exist.",
   "chesttracker.searching_for_item": "Searching for %s",
-  "chesttracker:search_for_items":  "Search for items",
+  "chesttracker:search_for_items": "Search for items",
   "chesttracker.block_clicked_be_provider": "Block ID: %s (BlockEntityProvider)",
   "chesttracker.block_clicked_not_be_provider": "Block ID: %s",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config",

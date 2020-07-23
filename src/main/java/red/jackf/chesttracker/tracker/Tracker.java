@@ -2,8 +2,6 @@ package red.jackf.chesttracker.tracker;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,13 +18,10 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Language;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.InteractRememberType;
@@ -79,6 +74,7 @@ public class Tracker {
         storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, getTitle(MinecraftClient.getInstance().world, this.lastInteractedPos, screen.getTitle()), FavouriteButton.current.isActive());
         this.lastInteractedPos = null;
     }
+
     @Nullable
     private Text getTitle(ClientWorld world, BlockPos pos, Text title) {
         if (title instanceof TranslatableText) {

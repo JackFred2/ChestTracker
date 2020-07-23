@@ -45,6 +45,8 @@ dependencies {
     // Client GUIs
     modCompile "com.github.vini2003:spinnery:${project.spinnery_version}"
     include "com.github.vini2003:spinnery:${project.spinnery_version}"
+
+    compile 'org.jetbrains:annotations:16.0.2'
 }
 
 processResources {
