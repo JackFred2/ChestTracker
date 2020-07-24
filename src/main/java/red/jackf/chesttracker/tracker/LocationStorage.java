@@ -151,7 +151,7 @@ public class LocationStorage {
     public List<Location> findItems(Identifier worldId, ItemStack toFind) {
         WorldStorage storage = getStorage(worldId);
         List<Location> results = storage.stream()
-            .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(toFind, itemStack)))
+            .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(itemStack, toFind)))
             .collect(Collectors.toList());
         storage.verifyItems(results);
 
@@ -163,8 +163,9 @@ public class LocationStorage {
     }
 
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
+        if (candidate == null) { ChestTracker.LOGGER.warn("Candidate was null!"); return false; }
+        if (toFind == null) { ChestTracker.LOGGER.warn("ToFind was null!"); return false; }
         return candidate.getItem() == toFind.getItem();
-        //&& (!toFind.hasTag() || Objects.equals(toFind.getTag(), candidate.getTag()));
     }
 
     // Per world storage

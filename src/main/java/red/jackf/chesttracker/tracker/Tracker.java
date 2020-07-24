@@ -22,6 +22,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.InteractRememberType;
@@ -29,6 +30,7 @@ import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.render.RenderManager;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
@@ -66,6 +68,7 @@ public class Tracker {
             .filter(slot -> !(slot.inventory instanceof PlayerInventory))
             .filter(Slot::hasStack)
             .map(Slot::getStack)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
         LocationStorage storage = LocationStorage.get();
@@ -104,6 +107,7 @@ public class Tracker {
         return lastInteractedPos;
     }
 
+    @NotNull
     public ActionResult searchForItem(ItemStack toFind) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return ActionResult.PASS;

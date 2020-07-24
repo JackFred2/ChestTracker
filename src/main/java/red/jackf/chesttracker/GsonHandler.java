@@ -15,6 +15,8 @@ import red.jackf.chesttracker.tracker.Location;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public final class GsonHandler {
@@ -50,6 +52,8 @@ public final class GsonHandler {
             }.getType());
             Vec3d nameOffset = (object.has("nameOffset") ? GSON.fromJson(object.getAsJsonObject("nameOffset"), Vec3d.class) : null);
             Boolean favourite = GSON.fromJson(object.getAsJsonPrimitive("favourite"), Boolean.class);
+
+            items = items.stream().filter(Objects::nonNull).collect(Collectors.toList());
             return new Location(pos, name, nameOffset, items, favourite);
         }
 
