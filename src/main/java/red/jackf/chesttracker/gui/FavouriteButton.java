@@ -28,7 +28,7 @@ public class FavouriteButton extends TexturedButtonWidget {
         super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button -> ((FavouriteButton) button).toggleActive()));
         LocationStorage storage = LocationStorage.get();
         World world = MinecraftClient.getInstance().world;
-        if (storage != null && world != null) {
+        if (storage != null && world != null && Tracker.getInstance().getLastInteractedPos() != null) {
             Location loc = storage.getStorage(world.getRegistryKey().getValue()).lookupFast(Tracker.getInstance().getLastInteractedPos());
             if (loc != null)
                 toggleActive = loc.isFavourite();

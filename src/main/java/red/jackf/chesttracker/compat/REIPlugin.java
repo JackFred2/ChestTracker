@@ -5,6 +5,7 @@ import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
+import me.shedaniel.rei.gui.RecipeScreen;
 import me.shedaniel.rei.gui.RecipeViewingScreen;
 import me.shedaniel.rei.gui.VillagerRecipeViewingScreen;
 import me.shedaniel.rei.gui.widget.EntryWidget;
@@ -17,6 +18,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.ItemManagerScreen;
 
@@ -57,8 +59,7 @@ public class REIPlugin implements REIPluginV0 {
         });
     }
 
-    @Nullable
-    public static ItemStack tryFindItem(double mouseX, double mouseY) {
+    public static @NotNull ItemStack tryFindItem(double mouseX, double mouseY) {
         // Big List
         ItemStack item = tryFindInList(ContainerScreenOverlay.getEntryListWidget().children(), mouseX, mouseY);
         if (item != null) return item;
@@ -69,10 +70,9 @@ public class REIPlugin implements REIPluginV0 {
             if (item != null) return item;
         }
 
-        if (MinecraftClient.getInstance().currentScreen instanceof RecipeViewingScreen
-            || MinecraftClient.getInstance().currentScreen instanceof VillagerRecipeViewingScreen) {
+        if (MinecraftClient.getInstance().currentScreen instanceof RecipeScreen) {
             item = tryFindInList((MinecraftClient.getInstance().currentScreen).children(), mouseX, mouseY);
-            return item;
+            if (item != null) return item;
         }
 
         return ItemStack.EMPTY;

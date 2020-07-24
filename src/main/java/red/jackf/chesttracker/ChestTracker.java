@@ -97,7 +97,6 @@ public class ChestTracker implements ClientModInitializer {
             double mouseY = MinecraftClient.getInstance().mouse.getY() * gameScale;
             item = REIPlugin.tryFindItem(mouseX, mouseY);
         }
-        assert item != null;
         return item;
     }
 }

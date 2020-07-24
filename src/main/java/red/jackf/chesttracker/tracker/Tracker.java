@@ -103,7 +103,7 @@ public class Tracker {
                 .formatted(blockHasBE ? Formatting.GREEN : Formatting.YELLOW));
     }
 
-    public BlockPos getLastInteractedPos() {
+    public @Nullable BlockPos getLastInteractedPos() {
         return lastInteractedPos;
     }
 
