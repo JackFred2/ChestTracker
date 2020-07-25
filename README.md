@@ -5,4 +5,4 @@ Original Forge version by [HenneGamer](https://www.curseforge.com/minecraft/mc-m
 
 ## Button Positions
 
-![Available button positions](https://media.forgecdn.net/attachments/304/605/positions.png)
+Available button positions: https://www.curseforge.com/minecraft/mc-mods/chest-tracker/screenshots
