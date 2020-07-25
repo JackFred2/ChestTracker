@@ -11,6 +11,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ButtonDisplayType;
 import red.jackf.chesttracker.tracker.Location;
 import red.jackf.chesttracker.tracker.LocationStorage;
 import red.jackf.chesttracker.tracker.Tracker;
@@ -61,15 +63,21 @@ public class FavouriteButton extends TexturedButtonWidget {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         HandledScreen<?> screen = (HandledScreen<?>) MinecraftClient.getInstance().currentScreen;
-        if (screen != null)
-            this.setPos(ManagerButton.getX(screen) - 12, ManagerButton.getY(screen));
+        ButtonDisplayType type = ChestTracker.CONFIG.visualOptions.buttonDisplayType;
+        if (screen != null) {
+            if (type.isVertical()) {
+                this.setPos(type.getX(screen), type.getY(screen) + 12);
+            } else {
+                this.setPos(type.getX(screen) - 12, type.getY(screen));
+            }
 
-        if (this.isHovered()) {
-            screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.favourite"), mouseX, mouseY);
+            if (this.isHovered()) {
+                screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.favourite"), mouseX, mouseY);
+            }
+            MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+
+            RenderSystem.enableDepthTest();
+            drawTexture(matrices, this.x, this.y, (float) (toggleActive ? 9 : 0), (float) (this.isHovered() ? 9 : 0), this.width, this.height, 18, 18);
         }
-        MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
-
-        RenderSystem.enableDepthTest();
-        drawTexture(matrices, this.x, this.y, (float) (toggleActive ? 9 : 0), (float) (this.isHovered() ? 9 : 0), this.width, this.height, 18, 18);
     }
 }

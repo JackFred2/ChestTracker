@@ -28,6 +28,7 @@
   "text.autoconfig.chesttracker.option.visualOptions.borderColour": "Inventory Outline Colour",
   "text.autoconfig.chesttracker.option.visualOptions.borderRenderRange": "Inventory Outline Render Range",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Name Render Range",
+  "text.autoconfig.chesttracker.option.visualOptions.buttonDisplayType": "Button Positions",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist.@PrefixText": "Sometimes, the mod may remember items that should not be remembered (such as a crafting table, where any items in the grid are dropped when you close out, or a horse which is an entity). This screen allows you to prevent certain GUIs from being saved. To see the correct name to use, enable \"§aDebug Mode§f\" under Miscellaneous Options.",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "Tracked GUIs block-list"
 }

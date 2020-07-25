@@ -4,12 +4,16 @@ import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ButtonDisplayType;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
 import red.jackf.chesttracker.tracker.Tracker;
 
@@ -32,7 +36,7 @@ public class ManagerButton extends TexturedButtonWidget {
 
     public static void setup() {
         ClothClientHooks.SCREEN_INIT_POST.register((client, screen, screenHooks) -> {
-            if (screen instanceof HandledScreen) {
+            if (screen instanceof HandledScreen && !(screen instanceof CreativeInventoryScreen)) {
                 screenHooks.cloth$addButtonWidget(
                     new ManagerButton()
                 );
@@ -43,30 +47,10 @@ public class ManagerButton extends TexturedButtonWidget {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         HandledScreen<?> screen = (HandledScreen<?>) MinecraftClient.getInstance().currentScreen;
+        ButtonDisplayType type = ChestTracker.CONFIG.visualOptions.buttonDisplayType;
         if (screen != null)
-            this.setPos(getX(screen), getY(screen));
+            this.setPos(type.getX(screen), type.getY(screen));
 
         super.renderButton(matrices, mouseX, mouseY, delta);
-    }
-
-    public static int getX(HandledScreen<?> screen) {
-        ChestTrackerAccessorHandledScreen accessedScreen = (ChestTrackerAccessorHandledScreen) screen;
-        int x = ((MinecraftClient.getInstance().getWindow().getScaledWidth() + accessedScreen.getBackgroundWidth()) / 2) - smallWidth - 5;
-        if (adjust())
-            x += 77;
-        return x;
-    }
-
-    public static int getY(HandledScreen<?> screen) {
-        ChestTrackerAccessorHandledScreen accessedScreen = (ChestTrackerAccessorHandledScreen) screen;
-        return ((MinecraftClient.getInstance().getWindow().getScaledHeight() - accessedScreen.getBackgroundHeight()) / 2) + 5;
-    }
-
-    private static boolean adjust() {
-        if (MinecraftClient.getInstance().currentScreen instanceof RecipeBookProvider) {
-            RecipeBookWidget widget = ((RecipeBookProvider) MinecraftClient.getInstance().currentScreen).getRecipeBookWidget();
-            return widget.isOpen();
-        }
-        return false;
     }
 }

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
+import red.jackf.chesttracker.config.ButtonDisplayType;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.gui.ManagerButton;
@@ -62,6 +63,10 @@ public class ChestTracker implements ClientModInitializer {
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {
+                //if (Screen.hasShiftDown()) {
+                //    CONFIG.visualOptions.buttonDisplayType = ButtonDisplayType.values()[(CONFIG.visualOptions.buttonDisplayType.ordinal() + 1) % ButtonDisplayType.values().length];
+                //    return ActionResult.PASS;
+                //}
                 ItemStack toFind = ChestTracker.tryFindItems(screen);
                 if (toFind == ItemStack.EMPTY) return ActionResult.PASS;
 
