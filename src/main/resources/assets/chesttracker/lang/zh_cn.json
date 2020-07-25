@@ -12,7 +12,7 @@
   "chesttracker.gui.verify_button": "校验",
   "chesttracker.gui.verify_button_tooltip": "检查附近的箱子是否仍然存在.",
   "chesttracker.searching_for_item": "正在搜寻 %s",
-  "chesttracker:search_for_items":  "搜索物品",
+  "chesttracker:search_for_items": "搜索物品",
   "chesttracker.block_clicked_be_provider": "方块ID: %s (方块实体提供)",
   "chesttracker.block_clicked_not_be_provider": "方块ID: %s",
   "text.autoconfig.chesttracker.title": "Chest Tracker 箱子追踪器配置",
@@ -28,6 +28,7 @@
   "text.autoconfig.chesttracker.option.visualOptions.borderColour": "箱子轮廓颜色",
   "text.autoconfig.chesttracker.option.visualOptions.borderRenderRange": "箱子·轮廓渲染范围",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "名称渲染范围",
+  "text.autoconfig.chesttracker.option.visualOptions.buttonDisplayType": "按钮位置",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist.@PrefixText": "有时Mod可能会记住不应该记住的物品（例如在关闭制作物品界面时网格中的全部物品都会掉落，或者是实体马的背包）。此设置使您可以防止保存某些GUI。若要查看正确的名称，请在“杂项设置”下启用\"§aDebug Mode§f\" .",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "追踪器GUI 黑名单"
 }
