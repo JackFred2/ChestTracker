@@ -68,7 +68,10 @@ public class ChestTrackerConfig implements ConfigData {
             LoomScreen.class.getSimpleName(),
             MerchantScreen.class.getSimpleName(),
             SmithingScreen.class.getSimpleName(),
-            StonecutterScreen.class.getSimpleName()
+            StonecutterScreen.class.getSimpleName(),
+
+            //Inmis
+            "BackpackContainerScreen"
         );
     }
 
