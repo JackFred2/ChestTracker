@@ -23,7 +23,7 @@ public class ManagerButton extends TexturedButtonWidget {
     public static final int smallHeight = 9;
 
     public ManagerButton() {
-        super(0, 0, smallWidth, smallHeight, 0, 0, 0, TEXTURE, 9, 9, (buttonWidget) -> {
+        super(0, 0, smallWidth, smallHeight, 0, 0, 9, TEXTURE, 9, 18, (buttonWidget) -> {
             if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen)
                 Tracker.getInstance().handleScreen((HandledScreen<?>) MinecraftClient.getInstance().currentScreen);
             MinecraftClient.getInstance().openScreen(new ItemManagerScreen());
