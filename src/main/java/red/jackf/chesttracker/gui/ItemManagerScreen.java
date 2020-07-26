@@ -118,8 +118,12 @@ public class ItemManagerScreen extends BaseScreen {
     }
 
     private void update() {
-        List<ItemStack> stacks = list.stream().filter(stack ->
-            stack.getName().getString().toLowerCase().contains(searchField.getText().toLowerCase())).collect(Collectors.toList());
+        String search = searchField.getText().toLowerCase();
+        List<ItemStack> stacks = list.stream()
+                .filter(stack -> stack.getName().getString().toLowerCase().contains(search)
+                        || stack.hasTag() && stack.getTag().asString().toLowerCase().contains(search))
+                .collect(Collectors.toList());
+
         setChildren(stacks);
     }
 

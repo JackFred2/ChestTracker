@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Per connection storage (i.e. per single player world, server ip, realm)
 @Environment(EnvType.CLIENT)
@@ -239,13 +240,19 @@ public class LocationStorage {
 
         public List<ItemStack> getItems() {
             Map<Item, Integer> result = new HashMap<>();
-            this.forEach(location -> location.getItems()
-                .forEach(itemStack -> result.merge(itemStack.getItem(), itemStack.getCount(), Integer::sum))
-            );
-            return result.keySet().stream()
-                .map(item -> new ItemStack(item, result.get(item)))
-                .sorted(sorter)
-                .collect(Collectors.toList());
+            List<ItemStack> tagged = new ArrayList<>();
+            this.forEach(location -> location.getItems().forEach(itemStack -> {
+                if (itemStack.hasTag()) {
+                    tagged.add(itemStack);
+                } else {
+                    result.merge(itemStack.getItem(), itemStack.getCount(), Integer::sum);
+                }
+            }));
+
+            return Stream
+                    .concat(tagged.stream(),
+                            result.keySet().stream().map(item -> new ItemStack(item, result.get(item))))
+                    .sorted(sorter).collect(Collectors.toList());
         }
     }
 
