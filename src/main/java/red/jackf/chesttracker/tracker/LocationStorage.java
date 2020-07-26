@@ -173,7 +173,6 @@ public class LocationStorage {
             return false;
         }
         if (matchNbt && toFind.hasTag()) {
-            candidate.getDamage()
             return candidate.getItem() == toFind.getItem()
                 && Objects.equals(candidate.getTag(), toFind.getTag());
         } else {
