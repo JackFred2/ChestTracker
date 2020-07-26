@@ -6,8 +6,6 @@ import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.RecipeScreen;
-import me.shedaniel.rei.gui.RecipeViewingScreen;
-import me.shedaniel.rei.gui.VillagerRecipeViewingScreen;
 import me.shedaniel.rei.gui.widget.EntryWidget;
 import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.impl.ItemEntryStack;

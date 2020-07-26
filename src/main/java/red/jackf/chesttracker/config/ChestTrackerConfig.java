@@ -15,8 +15,9 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 @Config(name = ChestTracker.MODID)
 @Config.Gui.CategoryBackground(category = "visual_options", background = "minecraft:textures/block/fire_coral_block.png")
-@Config.Gui.CategoryBackground(category = "tracked_guis", background = "minecraft:textures/block/brain_coral_block.png")
 @Config.Gui.CategoryBackground(category = "misc_options", background = "minecraft:textures/block/tube_coral_block.png")
+@Config.Gui.CategoryBackground(category = "tracked_guis", background = "minecraft:textures/block/brain_coral_block.png")
+@Config.Gui.CategoryBackground(category = "ignored_blocks", background = "minecraft:textures/block/horn_coral_block.png")
 public class ChestTrackerConfig implements ConfigData {
 
     @ConfigEntry.Category("misc_options")
@@ -30,6 +31,10 @@ public class ChestTrackerConfig implements ConfigData {
     @ConfigEntry.Category("tracked_guis")
     @ConfigEntry.Gui.TransitiveObject
     public TrackedScreens trackedScreens = new TrackedScreens();
+
+    @ConfigEntry.Category("ignored_blocks")
+    @ConfigEntry.Gui.TransitiveObject
+    public IgnoredBlocks ignoredBlocks = new IgnoredBlocks();
 
     public static class MiscOptions {
         @ConfigEntry.Gui.PrefixText
@@ -45,10 +50,10 @@ public class ChestTrackerConfig implements ConfigData {
         public int borderWidth = 8;
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
-        //@ConfigEntry.BoundedDiscrete(min = 1, max = 256)
-        //public int borderRenderRange = 64;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
         public int nameRenderRange = 8;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public ButtonDisplayType buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
     }
 
     public static class TrackedScreens {
@@ -67,7 +72,17 @@ public class ChestTrackerConfig implements ConfigData {
             LoomScreen.class.getSimpleName(),
             MerchantScreen.class.getSimpleName(),
             SmithingScreen.class.getSimpleName(),
-            StonecutterScreen.class.getSimpleName()
+            StonecutterScreen.class.getSimpleName(),
+
+            //Inmis
+            "BackpackContainerScreen"
+        );
+    }
+
+    public static class IgnoredBlocks {
+        @ConfigEntry.Gui.PrefixText
+        public List<String> ignoredBlockList = Arrays.asList(
+            "shulker_box"
         );
     }
 
@@ -78,5 +93,7 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         //visualOptions.borderRenderRange = MathHelper.clamp(visualOptions.borderRenderRange, 1, 256);
+        if (visualOptions.buttonDisplayType == null)
+            visualOptions.buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
     }
 }

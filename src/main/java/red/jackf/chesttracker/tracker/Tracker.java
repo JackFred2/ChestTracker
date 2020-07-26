@@ -18,6 +18,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -26,11 +27,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.InteractRememberType;
+import red.jackf.chesttracker.config.LibGuiHandler;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.render.RenderManager;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
@@ -74,12 +77,15 @@ public class Tracker {
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
 
-        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, getTitle(MinecraftClient.getInstance().world, this.lastInteractedPos, screen.getTitle()), FavouriteButton.current.isActive());
+        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, getTitle(screen, MinecraftClient.getInstance().world, this.lastInteractedPos, screen.getTitle()), FavouriteButton.current.isActive());
         this.lastInteractedPos = null;
     }
 
     @Nullable
-    private Text getTitle(ClientWorld world, BlockPos pos, Text title) {
+    private Text getTitle(HandledScreen<?> screen, ClientWorld world, BlockPos pos, Text title) {
+        if (LibGuiHandler.cancel(screen))
+            return null;
+
         if (title instanceof TranslatableText) {
             return null;
         } else { // Special handling for screens that use LiteralTexts for localised names
@@ -95,12 +101,30 @@ public class Tracker {
     public void handleInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         boolean blockHasBE = world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity();
         if (ChestTracker.CONFIG.miscOptions.blockInteractionType == InteractRememberType.ALL || blockHasBE) {
-            Tracker.getInstance().setLastPos(hitResult.getBlockPos());
+            if (!ignoreDueToConfig(Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))) {
+                Tracker.getInstance().setLastPos(hitResult.getBlockPos());
+            }
         }
         if (ChestTracker.CONFIG.miscOptions.debugPrint)
             ChestTracker.sendDebugMessage(player, new TranslatableText("chesttracker.block_clicked_" + (blockHasBE ? "be_provider" : "not_be_provider"),
                 Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))
                 .formatted(blockHasBE ? Formatting.GREEN : Formatting.YELLOW));
+    }
+
+    private boolean ignoreDueToConfig(Identifier id) {
+        return ChestTracker.CONFIG.ignoredBlocks.ignoredBlockList.stream()
+            .anyMatch(s -> {
+                try {
+                    boolean matches = Pattern.matches(".*" + s + ".*", id.toString());
+                    if (matches && ChestTracker.CONFIG.miscOptions.debugPrint && MinecraftClient.getInstance().player != null) {
+                        ChestTracker.sendDebugMessage(MinecraftClient.getInstance().player, new TranslatableText("chesttracker.not_tracked_due_to_ignore_list", s).formatted(Formatting.RED));
+                    }
+                    return matches;
+                } catch (Exception ex) {
+                    ChestTracker.LOGGER.error("Regex pattern " + s + " failed to compile! Check your syntax.");
+                    return false;
+                }
+            });
     }
 
     public @Nullable BlockPos getLastInteractedPos() {

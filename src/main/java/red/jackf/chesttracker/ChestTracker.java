@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,10 +22,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +60,10 @@ public class ChestTracker implements ClientModInitializer {
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {
+                //if (Screen.hasShiftDown()) {
+                //    CONFIG.visualOptions.buttonDisplayType = ButtonDisplayType.values()[(CONFIG.visualOptions.buttonDisplayType.ordinal() + 1) % ButtonDisplayType.values().length];
+                //    return ActionResult.PASS;
+                //}
                 ItemStack toFind = ChestTracker.tryFindItems(screen);
                 if (toFind == ItemStack.EMPTY) return ActionResult.PASS;
 
@@ -69,6 +71,12 @@ public class ChestTracker implements ClientModInitializer {
             }
             return ActionResult.PASS;
         });
+
+        // In case of BEs without a screen being used then opening an inventory screen such as a backpack
+        UseItemCallback.EVENT.register(((player, world, hand) -> {
+            Tracker.getInstance().setLastPos(null);
+            return TypedActionResult.pass(ItemStack.EMPTY);
+        }));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             Tracker.getInstance().handleInteract(player, world, hand, hitResult);
