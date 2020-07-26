@@ -7,6 +7,10 @@
   "authors": [
     "JackFred"
   ],
+  "contributors": [
+    "rickybrent - NBT filters",
+    "law4x - Chinese Translation"
+  ],
   "contact": {
     "homepage": "https://github.com/JackFred2/ChestTracker",
     "issues": "https://github.com/JackFred2/ChestTracker/issues"
