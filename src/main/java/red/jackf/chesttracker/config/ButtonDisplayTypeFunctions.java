@@ -35,10 +35,12 @@ public abstract class ButtonDisplayTypeFunctions {
         return x;
     };
 
-    // LEFT_VERTICAL
+    // TOP_LEFT_VERTICAL, BOTTOM_LEFT_VERTICAL
     protected static final Function<HandledScreen<?>, Integer> leftVertX = screen -> {
         ChestTrackerAccessorHandledScreen accessedScreen = (ChestTrackerAccessorHandledScreen) screen;
         int x = ((MinecraftClient.getInstance().getWindow().getScaledWidth() - accessedScreen.getBackgroundWidth()) / 2) - 11;
+        if (adjust())
+            x -= 103;
         return x;
     };
 
