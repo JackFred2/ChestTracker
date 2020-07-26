@@ -75,7 +75,12 @@ public class ChestTrackerConfig implements ConfigData {
             StonecutterScreen.class.getSimpleName(),
 
             //Inmis
-            "BackpackContainerScreen"
+            "BackpackContainerScreen",
+
+            //EasierCrafting
+            "ExtendedGuiCrafting",
+            "ExtendedGuiInventory",
+            "ExtendedGuiStonecutter"
         );
     }
 

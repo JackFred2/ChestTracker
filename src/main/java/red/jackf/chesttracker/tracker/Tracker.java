@@ -77,7 +77,8 @@ public class Tracker {
         LocationStorage storage = LocationStorage.get();
         if (storage == null) return;
 
-        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, getTitle(screen, MinecraftClient.getInstance().world, this.lastInteractedPos, screen.getTitle()), FavouriteButton.current.isActive());
+        boolean isFavourited = (FavouriteButton.current != null && FavouriteButton.current.isActive());
+        storage.mergeItems(this.lastInteractedPos, MinecraftClient.getInstance().player.world, items, getTitle(screen, MinecraftClient.getInstance().world, this.lastInteractedPos, screen.getTitle()), isFavourited);
         this.lastInteractedPos = null;
     }
 
