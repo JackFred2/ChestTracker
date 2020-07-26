@@ -1,6 +1,7 @@
 {
-  "chesttracker.gui_class_name_tracked": "Class name: %s (Tracked)",
-  "chesttracker.gui_class_name_not_tracked": "Class name: %s (Not Tracked)",
+  "chesttracker.gui_class_name_tracked": "GUI Class name: %s (Tracked)",
+  "chesttracker.gui_class_name_not_tracked": "GUI Class name: %s (Not Tracked)",
+  "chesttracker.not_tracked_due_to_ignore_list": "Ignored due to pattern: %s",
   "chesttracker.gui.title": "ChestTracker",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.reset_button": "Reset",
@@ -19,6 +20,7 @@
   "text.autoconfig.chesttracker.category.misc_options": "Miscellaneous Options",
   "text.autoconfig.chesttracker.category.visual_options": "Visual Options",
   "text.autoconfig.chesttracker.category.tracked_guis": "Tracked GUIs",
+  "text.autoconfig.chesttracker.category.ignored_blocks": "Ignored Blocks",
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType.@PrefixText": "The mod decides what position to remember items at by using the last right clicked block. In order to compensate for over-clicking in high ping servers, this option controls whether to remember all blocks, or only blocks that might contain an inventory. Change this if the saved positions are wildly wrong.",
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType": "Block Interaction Type",
   "text.autoconfig.chesttracker.option.miscOptions.debugPrint": "Debug Printing",
@@ -30,5 +32,7 @@
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Name Render Range",
   "text.autoconfig.chesttracker.option.visualOptions.buttonDisplayType": "Button Positions",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist.@PrefixText": "Sometimes, the mod may remember items that should not be remembered (such as a crafting table, where any items in the grid are dropped when you close out, or a horse which is an entity). This screen allows you to prevent certain GUIs from being saved. To see the correct name to use, enable \"§aDebug Mode§f\" under Miscellaneous Options.",
-  "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "Tracked GUIs block-list"
+  "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "Tracked GUIs block-list",
+  "text.autoconfig.chesttracker.option.ignoredBlocks.ignoredBlockList.@PrefixText": "Here, you can add a list of block IDs to not be tracked, useful for storage such as Shulker Boxes. You can get the ID by either enabling \"§aDebug Mode§f\" or using the F3 overlay, under \"Targeted Block\" on the right. The list also supports Regex - use §chttps://www.freeformatter.com/java-regex-tester.html§f to test.",
+  "text.autoconfig.chesttracker.option.ignoredBlocks.ignoredBlockList": "Ignored Block List"
 }
