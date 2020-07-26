@@ -67,7 +67,7 @@ public class ChestTracker implements ClientModInitializer {
                 ItemStack toFind = ChestTracker.tryFindItems(screen);
                 if (toFind == ItemStack.EMPTY) return ActionResult.PASS;
 
-                return Tracker.getInstance().searchForItem(toFind);
+                return Tracker.getInstance().searchForItem(toFind, false);
             }
             return ActionResult.PASS;
         });

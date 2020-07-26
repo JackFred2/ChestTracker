@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -66,7 +67,7 @@ public class WGhostSlot extends WAbstractWidget {
     @Override
     public void onMouseClicked(float mouseX, float mouseY, int mouseButton) {
         if (this.isWithinBounds(mouseX, mouseY) && this.scrollArea.isWithinBounds(mouseX, mouseY) && !this.isHidden())
-            Tracker.getInstance().searchForItem(item);
+            Tracker.getInstance().searchForItem(item, Screen.hasShiftDown());
     }
 
     public void updatePos(float rootX, float rootY, float rootZ) {

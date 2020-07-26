@@ -149,10 +149,10 @@ public class LocationStorage {
         return result.multiply(1d / positions.size());
     }
 
-    public List<Location> findItems(Identifier worldId, ItemStack toFind) {
+    public List<Location> findItems(Identifier worldId, ItemStack toFind, boolean matchNbt) {
         WorldStorage storage = getStorage(worldId);
         List<Location> results = storage.stream()
-            .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(itemStack, toFind)))
+            .filter(location -> location.getItems().stream().anyMatch(itemStack -> stacksEqual(itemStack, toFind, matchNbt)))
             .collect(Collectors.toList());
         storage.verifyItems(results);
 
@@ -163,7 +163,7 @@ public class LocationStorage {
         return this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
     }
 
-    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
+    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind, boolean matchNbt) {
         if (candidate == null) {
             ChestTracker.LOGGER.warn("Candidate was null!");
             return false;
@@ -172,7 +172,13 @@ public class LocationStorage {
             ChestTracker.LOGGER.warn("ToFind was null!");
             return false;
         }
-        return candidate.getItem() == toFind.getItem();
+        if (matchNbt && toFind.hasTag()) {
+            candidate.getDamage()
+            return candidate.getItem() == toFind.getItem()
+                && Objects.equals(candidate.getTag(), toFind.getTag());
+        } else {
+            return candidate.getItem() == toFind.getItem();
+        }
     }
 
     // Per world storage
@@ -256,9 +262,9 @@ public class LocationStorage {
             }));
 
             return Stream
-                    .concat(tagged.stream(),
-                            result.keySet().stream().map(item -> new ItemStack(item, result.get(item))))
-                    .sorted(sorter).collect(Collectors.toList());
+                .concat(tagged.stream(),
+                    result.keySet().stream().map(item -> new ItemStack(item, result.get(item))))
+                .sorted(sorter).collect(Collectors.toList());
         }
     }
 

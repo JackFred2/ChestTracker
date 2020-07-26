@@ -133,7 +133,7 @@ public class Tracker {
     }
 
     @NotNull
-    public ActionResult searchForItem(ItemStack toFind) {
+    public ActionResult searchForItem(ItemStack toFind, boolean matchNbt) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return ActionResult.PASS;
         LocationStorage storage = LocationStorage.get();
@@ -141,7 +141,7 @@ public class Tracker {
         if (ChestTracker.CONFIG.miscOptions.debugPrint)
             ChestTracker.sendDebugMessage(client.player, new TranslatableText("chesttracker.searching_for_item", toFind).formatted(Formatting.GREEN));
 
-        List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind);
+        List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind, matchNbt);
         if (results.size() > 0) {
             RenderManager.getInstance().addRenderList(results, client.world.getTime());
             client.player.closeHandledScreen();
