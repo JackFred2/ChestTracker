@@ -5,7 +5,6 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.util.math.MathHelper;
 import red.jackf.chesttracker.ChestTracker;
@@ -94,6 +93,7 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         //visualOptions.borderRenderRange = MathHelper.clamp(visualOptions.borderRenderRange, 1, 256);
-        if (visualOptions.buttonDisplayType == null) visualOptions.buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
+        if (visualOptions.buttonDisplayType == null)
+            visualOptions.buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
     }
 }

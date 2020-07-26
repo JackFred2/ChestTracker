@@ -163,8 +163,14 @@ public class LocationStorage {
     }
 
     private static boolean stacksEqual(ItemStack candidate, ItemStack toFind) {
-        if (candidate == null) { ChestTracker.LOGGER.warn("Candidate was null!"); return false; }
-        if (toFind == null) { ChestTracker.LOGGER.warn("ToFind was null!"); return false; }
+        if (candidate == null) {
+            ChestTracker.LOGGER.warn("Candidate was null!");
+            return false;
+        }
+        if (toFind == null) {
+            ChestTracker.LOGGER.warn("ToFind was null!");
+            return false;
+        }
         return candidate.getItem() == toFind.getItem();
     }
 

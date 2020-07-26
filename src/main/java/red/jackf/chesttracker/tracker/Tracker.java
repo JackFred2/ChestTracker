@@ -31,7 +31,6 @@ import red.jackf.chesttracker.config.LibGuiHandler;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.render.RenderManager;
 
-import java.text.Normalizer;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -102,7 +101,7 @@ public class Tracker {
     public void handleInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         boolean blockHasBE = world.getBlockState(hitResult.getBlockPos()).getBlock().hasBlockEntity();
         if (ChestTracker.CONFIG.miscOptions.blockInteractionType == InteractRememberType.ALL || blockHasBE) {
-            if (!ignoreDueToConfig(Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))){
+            if (!ignoreDueToConfig(Registry.BLOCK.getId(world.getBlockState(hitResult.getBlockPos()).getBlock()))) {
                 Tracker.getInstance().setLastPos(hitResult.getBlockPos());
             }
         }

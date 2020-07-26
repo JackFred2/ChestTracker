@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
-import red.jackf.chesttracker.config.ButtonDisplayType;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.gui.ManagerButton;
