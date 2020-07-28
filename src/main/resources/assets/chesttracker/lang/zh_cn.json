@@ -1,6 +1,7 @@
 {
   "chesttracker.gui_class_name_tracked": "GUI Class name: %s (追踪器)",
   "chesttracker.gui_class_name_not_tracked": "GUI Class name: %s (禁用追踪器)",
+  "chesttracker.not_tracked_due_to_ignore_list": "Ignored due to pattern: %s",
   "chesttracker.gui.title": "箱子追踪器",
   "chesttracker.gui.favourite": "收藏",
   "chesttracker.gui.reset_button": "重置",
@@ -12,7 +13,7 @@
   "chesttracker.gui.verify_button": "校验",
   "chesttracker.gui.verify_button_tooltip": "检查附近的箱子是否仍然存在.",
   "chesttracker.searching_for_item": "正在搜寻 %s",
-  "chesttracker:search_for_items": "搜索物品",
+  "key.chesttracker.searchforitem": "搜索物品",
   "chesttracker.block_clicked_be_provider": "方块ID: %s (方块实体提供)",
   "chesttracker.block_clicked_not_be_provider": "方块ID: %s",
   "text.autoconfig.chesttracker.title": "Chest Tracker 箱子追踪器配置",
