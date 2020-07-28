@@ -24,6 +24,7 @@
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType.@PrefixText": "MOD通过使用最后一个右键单击的方块来决定记住物品的位置。 为了补偿高延迟的服务器的大量点击，此选项控制的是记住所有方块还是仅记住箱子中的方块。如果保存的位置完全错误，请更改此设置。",
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType": "方块互动类型",
   "text.autoconfig.chesttracker.option.miscOptions.debugPrint": "打印Debug信息",
+  "text.autoconfig.chesttracker.option.miscOptions.buttonsInCreativeScreen": "Show buttons in the creative menu",
   "text.autoconfig.chesttracker.option.visualOptions.displayRange": "箱子显示范围",
   "text.autoconfig.chesttracker.option.visualOptions.fadeOutTime": "箱子轮廓消失时间",
   "text.autoconfig.chesttracker.option.visualOptions.borderWidth": "箱子轮廓粗细",
