@@ -17,10 +17,9 @@ import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
 public class ManagerButton extends TexturedButtonWidget {
-    private static final Identifier TEXTURE = id("gui_button_small.png");
-
     public static final int smallWidth = 9;
     public static final int smallHeight = 9;
+    private static final Identifier TEXTURE = id("gui_button_small.png");
 
     public ManagerButton() {
         super(0, 0, smallWidth, smallHeight, 0, 0, 9, TEXTURE, 9, 18, (buttonWidget) -> {
@@ -32,7 +31,7 @@ public class ManagerButton extends TexturedButtonWidget {
 
     public static void setup() {
         ClothClientHooks.SCREEN_INIT_POST.register((client, screen, screenHooks) -> {
-            if (screen instanceof HandledScreen && !(screen instanceof CreativeInventoryScreen)) {
+            if (screen instanceof HandledScreen && !(screen instanceof CreativeInventoryScreen && !ChestTracker.CONFIG.miscOptions.buttonsInCreativeScreen)) {
                 screenHooks.cloth$addButtonWidget(
                     new ManagerButton()
                 );

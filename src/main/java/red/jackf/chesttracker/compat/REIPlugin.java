@@ -27,36 +27,6 @@ import static red.jackf.chesttracker.ChestTracker.id;
 @Environment(EnvType.CLIENT)
 @SuppressWarnings("UnstableApiUsage")
 public class REIPlugin implements REIPluginV0 {
-    @Override
-    public Identifier getPluginIdentifier() {
-        return id("rei_default");
-    }
-
-    @Override
-    public void registerBounds(DisplayHelper displayHelper) {
-        displayHelper.registerHandler(new DisplayHelper.DisplayBoundsProvider<ItemManagerScreen>() {
-            @Override
-            public Rectangle getScreenBounds(ItemManagerScreen screen) {
-                return new Rectangle(screen.getX(), screen.getY(), screen.getWidth(), screen.getHeight());
-            }
-
-            @Override
-            public Class<?> getBaseSupportedClass() {
-                return ItemManagerScreen.class;
-            }
-
-            @Override
-            public float getPriority() {
-                return 50;
-            }
-
-            @Override
-            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
-                return ActionResult.SUCCESS;
-            }
-        });
-    }
-
     public static @NotNull ItemStack tryFindItem(double mouseX, double mouseY) {
         // Big List
         ItemStack item = tryFindInList(ContainerScreenOverlay.getEntryListWidget().children(), mouseX, mouseY);
@@ -93,5 +63,35 @@ public class REIPlugin implements REIPluginV0 {
             }
         }
         return null;
+    }
+
+    @Override
+    public Identifier getPluginIdentifier() {
+        return id("rei_default");
+    }
+
+    @Override
+    public void registerBounds(DisplayHelper displayHelper) {
+        displayHelper.registerHandler(new DisplayHelper.DisplayBoundsProvider<ItemManagerScreen>() {
+            @Override
+            public Rectangle getScreenBounds(ItemManagerScreen screen) {
+                return new Rectangle(screen.getX(), screen.getY(), screen.getWidth(), screen.getHeight());
+            }
+
+            @Override
+            public Class<?> getBaseSupportedClass() {
+                return ItemManagerScreen.class;
+            }
+
+            @Override
+            public float getPriority() {
+                return 50;
+            }
+
+            @Override
+            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
+                return ActionResult.SUCCESS;
+            }
+        });
     }
 }

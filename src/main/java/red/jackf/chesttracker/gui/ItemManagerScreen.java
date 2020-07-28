@@ -32,13 +32,12 @@ public class ItemManagerScreen extends BaseScreen {
     private final WPanel mainPanel;
     private final WVerticalScrollableContainer scrollArea;
     private final WButton resetButton;
-    private List<ItemStack> list;
     private final WTextField searchField;
     private final WButton verifyButton;
-    private boolean resetConfirm = false;
-
     private final Color RED = Color.of(Formatting.RED.getColorValue() != null ? Formatting.RED.getColorValue() : 0xff7f7fff);
     private final Color DEFAULT = new Color(255, 255, 255, 255);
+    private List<ItemStack> list;
+    private boolean resetConfirm = false;
 
     public ItemManagerScreen() {
         WInterface mainInterface = getInterface();
@@ -120,9 +119,9 @@ public class ItemManagerScreen extends BaseScreen {
     private void update() {
         String search = searchField.getText().toLowerCase();
         List<ItemStack> stacks = list.stream()
-                .filter(stack -> stack.getName().getString().toLowerCase().contains(search)
-                        || stack.hasTag() && stack.getTag().asString().toLowerCase().contains(search))
-                .collect(Collectors.toList());
+            .filter(stack -> stack.getName().getString().toLowerCase().contains(search)
+                || stack.hasTag() && stack.getTag().asString().toLowerCase().contains(search))
+            .collect(Collectors.toList());
 
         setChildren(stacks);
     }

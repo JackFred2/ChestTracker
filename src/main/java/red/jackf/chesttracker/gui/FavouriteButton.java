@@ -22,9 +22,8 @@ import static red.jackf.chesttracker.ChestTracker.id;
 @Environment(EnvType.CLIENT)
 public class FavouriteButton extends TexturedButtonWidget {
     private static final Identifier TEXTURE = id("favourite_button.png");
-    private boolean toggleActive = false;
-
     public static FavouriteButton current = null;
+    private boolean toggleActive = false;
 
     public FavouriteButton() {
         super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button -> ((FavouriteButton) button).toggleActive()));
@@ -37,18 +36,6 @@ public class FavouriteButton extends TexturedButtonWidget {
         }
     }
 
-    public void toggleActive() {
-        setActive(!toggleActive);
-    }
-
-    public void setActive(boolean toggleActive) {
-        this.toggleActive = toggleActive;
-    }
-
-    public boolean isActive() {
-        return toggleActive;
-    }
-
     public static void setup() {
         ClothClientHooks.SCREEN_INIT_POST.register((client, screen, screenHooks) -> {
             if (Tracker.getInstance().validScreenToTrack(screen)) {
@@ -58,6 +45,18 @@ public class FavouriteButton extends TexturedButtonWidget {
                 );
             }
         });
+    }
+
+    public void toggleActive() {
+        setActive(!toggleActive);
+    }
+
+    public boolean isActive() {
+        return toggleActive;
+    }
+
+    public void setActive(boolean toggleActive) {
+        this.toggleActive = toggleActive;
     }
 
     @Override

@@ -42,13 +42,13 @@ public class Tracker {
     @Nullable
     private BlockPos lastInteractedPos = null;
 
+    public static Tracker getInstance() {
+        return TRACKER;
+    }
+
     public void setLastPos(BlockPos newPos) {
         if (newPos == null) lastInteractedPos = null;
         else this.lastInteractedPos = newPos.toImmutable();
-    }
-
-    public static Tracker getInstance() {
-        return TRACKER;
     }
 
     public <T extends ScreenHandler> void handleScreen(HandledScreen<T> screen) {

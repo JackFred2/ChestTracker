@@ -30,18 +30,6 @@ public enum ButtonDisplayType {
         this.vertical = vertical;
     }
 
-    public int getX(HandledScreen<?> screen) {
-        return getX.apply(screen);
-    }
-
-    public int getY(HandledScreen<?> screen) {
-        return getY.apply(screen);
-    }
-
-    public boolean isVertical() {
-        return vertical;
-    }
-
     public static ButtonDisplayType getAppropriateDefault() {
         FabricLoader loader = FabricLoader.getInstance();
         if (loader.isModLoaded("inventoryprofiles")) {
@@ -53,5 +41,17 @@ public enum ButtonDisplayType {
         } else {
             return TOP_RIGHT;
         }
+    }
+
+    public int getX(HandledScreen<?> screen) {
+        return getX.apply(screen);
+    }
+
+    public int getY(HandledScreen<?> screen) {
+        return getY.apply(screen);
+    }
+
+    public boolean isVertical() {
+        return vertical;
     }
 }

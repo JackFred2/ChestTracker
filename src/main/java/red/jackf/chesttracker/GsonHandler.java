@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public final class GsonHandler {
-    private GsonHandler() {
-    }
-
     public static final Gson GSON = new GsonBuilder()
         .setPrettyPrinting()
         .serializeNulls()
@@ -36,6 +33,9 @@ public final class GsonHandler {
         .registerTypeAdapter(new TypeToken<ItemStack>() {
         }.getType(), new ItemStackSerializer())
         .create();
+
+    private GsonHandler() {
+    }
 
     public static Gson get() {
         return GSON;

@@ -22,16 +22,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RenderManager {
-    private static final RenderManager INSTANCE = new RenderManager();
-
-    private final List<PositionData> positionsToRender = new ArrayList<>();
     public static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
+    private static final RenderManager INSTANCE = new RenderManager();
+    private final List<PositionData> positionsToRender = new ArrayList<>();
+
+    private RenderManager() {
+    }
 
     public static RenderManager getInstance() {
         return INSTANCE;
     }
 
-    private RenderManager() {
+    @SuppressWarnings("ConstantConditions")
+    public static RenderPhase.LineWidth getDynamicLineWidth() {
+        RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
+        ((AccessorRenderPhase) layer).setName("line_width_dynamic");
+        ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
+        ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
+        return layer;
     }
 
     public void addRenderList(List<Location> newList, long time) {
@@ -96,15 +104,6 @@ public class RenderManager {
         textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, light);
         textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, light);
         matrixStack.pop();
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static RenderPhase.LineWidth getDynamicLineWidth() {
-        RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
-        ((AccessorRenderPhase) layer).setName("line_width_dynamic");
-        ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
-        ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
-        return layer;
     }
 
     public void renderNames(MatrixStack matrices, VertexConsumerProvider.Immediate entityVertexConsumers, Camera camera) {

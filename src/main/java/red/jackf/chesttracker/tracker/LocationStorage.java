@@ -52,10 +52,6 @@ public class LocationStorage {
         this.load();
     }
 
-    public Path getFilePath() {
-        return ROOT_DIR.resolve(savePath + ".json");
-    }
-
     @Nullable
     public static LocationStorage get() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -82,6 +78,44 @@ public class LocationStorage {
         }
 
         return currentStorage;
+    }
+
+    private static Vec3d centerOf(List<BlockPos> positions) {
+        Vec3d result = Vec3d.ZERO;
+        for (BlockPos pos : positions) {
+            result = result.add(Vec3d.of(pos));
+        }
+        return result.multiply(1d / positions.size());
+    }
+
+    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind, boolean matchNbt) {
+        if (candidate == null) {
+            ChestTracker.LOGGER.warn("Candidate was null!");
+            return false;
+        }
+        if (toFind == null) {
+            ChestTracker.LOGGER.warn("ToFind was null!");
+            return false;
+        }
+        if (matchNbt && toFind.hasTag()) {
+            return candidate.getItem() == toFind.getItem()
+                && Objects.equals(candidate.getTag(), toFind.getTag());
+        } else {
+            return candidate.getItem() == toFind.getItem();
+        }
+    }
+
+    private static String getUsefulFileString(@NotNull SocketAddress address) {
+        if (address instanceof InetSocketAddress) {
+            InetSocketAddress inet = (InetSocketAddress) address;
+            return inet.getAddress().getHostAddress() + (inet.getPort() == 25565 ? "" : "-" + inet.getPort());
+        } else {
+            return address.toString().replace(':', '-').replace('/', '-');
+        }
+    }
+
+    public Path getFilePath() {
+        return ROOT_DIR.resolve(savePath + ".json");
     }
 
     public void closeDown() {
@@ -141,14 +175,6 @@ public class LocationStorage {
         storage.add(location);
     }
 
-    private static Vec3d centerOf(List<BlockPos> positions) {
-        Vec3d result = Vec3d.ZERO;
-        for (BlockPos pos : positions) {
-            result = result.add(Vec3d.of(pos));
-        }
-        return result.multiply(1d / positions.size());
-    }
-
     public List<Location> findItems(Identifier worldId, ItemStack toFind, boolean matchNbt) {
         WorldStorage storage = getStorage(worldId);
         List<Location> results = storage.stream()
@@ -163,25 +189,19 @@ public class LocationStorage {
         return this.storage.computeIfAbsent(worldId.toString(), (worldRegistryKey -> new WorldStorage()));
     }
 
-    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind, boolean matchNbt) {
-        if (candidate == null) {
-            ChestTracker.LOGGER.warn("Candidate was null!");
-            return false;
-        }
-        if (toFind == null) {
-            ChestTracker.LOGGER.warn("ToFind was null!");
-            return false;
-        }
-        if (matchNbt && toFind.hasTag()) {
-            return candidate.getItem() == toFind.getItem()
-                && Objects.equals(candidate.getTag(), toFind.getTag());
-        } else {
-            return candidate.getItem() == toFind.getItem();
-        }
+    @Override
+    public String toString() {
+        return "LocationStorage{" +
+            "savePath='" + savePath + '\'' +
+            ", storage=" + storage +
+            '}';
     }
 
     // Per world storage
     public static class WorldStorage extends HashSet<Location> {
+        private static final Comparator<ItemStack> sorter = Comparator.comparingInt(ItemStack::getCount)
+            .reversed()
+            .thenComparing(itemStack -> itemStack.getName().getString());
         private final Map<BlockPos, Location> lookupMap = new HashMap<>();
 
         @Override
@@ -245,10 +265,6 @@ public class LocationStorage {
             verifyItems(this);
         }
 
-        private static final Comparator<ItemStack> sorter = Comparator.comparingInt(ItemStack::getCount)
-            .reversed()
-            .thenComparing(itemStack -> itemStack.getName().getString());
-
         public List<ItemStack> getItems() {
             Map<Item, Integer> result = new HashMap<>();
             List<ItemStack> tagged = new ArrayList<>();
@@ -265,22 +281,5 @@ public class LocationStorage {
                     result.keySet().stream().map(item -> new ItemStack(item, result.get(item))))
                 .sorted(sorter).collect(Collectors.toList());
         }
-    }
-
-    private static String getUsefulFileString(@NotNull SocketAddress address) {
-        if (address instanceof InetSocketAddress) {
-            InetSocketAddress inet = (InetSocketAddress) address;
-            return inet.getAddress().getHostAddress() + (inet.getPort() == 25565 ? "" : "-" + inet.getPort());
-        } else {
-            return address.toString().replace(':', '-').replace('/', '-');
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "LocationStorage{" +
-            "savePath='" + savePath + '\'' +
-            ", storage=" + storage +
-            '}';
     }
 }

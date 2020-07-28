@@ -38,6 +38,8 @@ import red.jackf.chesttracker.tracker.Tracker;
 public class ChestTracker implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "chesttracker";
+    public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
+    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, GsonConfigSerializer::new).getConfig();
 
     public static Identifier id(String path) {
         return new Identifier(MODID, path);
@@ -47,9 +49,24 @@ public class ChestTracker implements ClientModInitializer {
         player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
-    public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
+    @NotNull
+    public static <T extends ScreenHandler> ItemStack tryFindItems(Screen screen) {
+        ItemStack item = ItemStack.EMPTY;
+        if (screen instanceof HandledScreen) {
+            @SuppressWarnings("unchecked")
+            HandledScreen<T> handledScreen = (HandledScreen<T>) screen;
+            Slot slot = ((ChestTrackerAccessorHandledScreen) handledScreen).getFocusedSlot();
+            if (slot != null && slot.hasStack()) item = slot.getStack();
+        }
 
-    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, GsonConfigSerializer::new).getConfig();
+        if (item == ItemStack.EMPTY && FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+            double gameScale = (double) MinecraftClient.getInstance().getWindow().getScaledWidth() / (double) MinecraftClient.getInstance().getWindow().getWidth();
+            double mouseX = MinecraftClient.getInstance().mouse.getX() * gameScale;
+            double mouseY = MinecraftClient.getInstance().mouse.getY() * gameScale;
+            item = REIPlugin.tryFindItem(mouseX, mouseY);
+        }
+        return item;
+    }
 
     @Override
     public void onInitializeClient() {
@@ -73,10 +90,10 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         // In case of BEs without a screen being used then opening an inventory screen such as a backpack
-        UseItemCallback.EVENT.register(((player, world, hand) -> {
+        UseItemCallback.EVENT.register((player, world, hand) -> {
             Tracker.getInstance().setLastPos(null);
             return TypedActionResult.pass(ItemStack.EMPTY);
-        }));
+        });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             Tracker.getInstance().handleInteract(player, world, hand, hitResult);
@@ -87,24 +104,5 @@ public class ChestTracker implements ClientModInitializer {
             Tracker.getInstance().setLastPos(null);
             return ActionResult.PASS;
         });
-    }
-
-    @NotNull
-    public static <T extends ScreenHandler> ItemStack tryFindItems(Screen screen) {
-        ItemStack item = ItemStack.EMPTY;
-        if (screen instanceof HandledScreen) {
-            @SuppressWarnings("unchecked")
-            HandledScreen<T> handledScreen = (HandledScreen<T>) screen;
-            Slot slot = ((ChestTrackerAccessorHandledScreen) handledScreen).getFocusedSlot();
-            if (slot != null && slot.hasStack()) item = slot.getStack();
-        }
-
-        if (item == ItemStack.EMPTY && FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-            double gameScale = (double) MinecraftClient.getInstance().getWindow().getScaledWidth() / (double) MinecraftClient.getInstance().getWindow().getWidth();
-            double mouseX = MinecraftClient.getInstance().mouse.getX() * gameScale;
-            double mouseY = MinecraftClient.getInstance().mouse.getY() * gameScale;
-            item = REIPlugin.tryFindItem(mouseX, mouseY);
-        }
-        return item;
     }
 }

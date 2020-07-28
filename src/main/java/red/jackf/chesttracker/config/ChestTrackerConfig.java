@@ -36,11 +36,29 @@ public class ChestTrackerConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     public IgnoredBlocks ignoredBlocks = new IgnoredBlocks();
 
+    @Override
+    public void validatePostLoad() {
+        visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
+        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
+        visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
+        visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
+        //visualOptions.borderRenderRange = MathHelper.clamp(visualOptions.borderRenderRange, 1, 256);
+        if (visualOptions.buttonDisplayType == null)
+            visualOptions.buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
+
+        // remove shulker box from tracked because they've now got special handling
+        if (!ignoredBlocks.updatedToPointSix) {
+            ignoredBlocks.updatedToPointSix = true;
+            ignoredBlocks.ignoredBlockList.removeIf(s -> s.equals("shulker_box"));
+        }
+    }
+
     public static class MiscOptions {
         @ConfigEntry.Gui.PrefixText
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public InteractRememberType blockInteractionType = InteractRememberType.BLOCK_ENTITIES;
         public Boolean debugPrint = false;
+        public Boolean buttonsInCreativeScreen = true;
     }
 
     public static class VisualOptions {
@@ -87,18 +105,9 @@ public class ChestTrackerConfig implements ConfigData {
     public static class IgnoredBlocks {
         @ConfigEntry.Gui.PrefixText
         public List<String> ignoredBlockList = Arrays.asList(
-            "shulker_box"
+            //"shulker_box"
         );
-    }
-
-    @Override
-    public void validatePostLoad() {
-        visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
-        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
-        visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
-        visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
-        //visualOptions.borderRenderRange = MathHelper.clamp(visualOptions.borderRenderRange, 1, 256);
-        if (visualOptions.buttonDisplayType == null)
-            visualOptions.buttonDisplayType = ButtonDisplayType.getAppropriateDefault();
+        @ConfigEntry.Gui.Excluded
+        public boolean updatedToPointSix = false;
     }
 }
