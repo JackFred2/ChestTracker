@@ -9,16 +9,15 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -31,8 +30,7 @@ import red.jackf.chesttracker.config.LibGuiHandler;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.render.RenderManager;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -154,5 +152,22 @@ public class Tracker {
         return s instanceof HandledScreen
             && !ChestTracker.CONFIG.trackedScreens.blocklist.contains(s.getClass().getSimpleName())
             && lastInteractedPos != null;
+    }
+
+    @NotNull
+    public static List<ItemStack> consolidate(List<ItemStack> items) {
+        List<ItemStack> list = new ArrayList<>();
+        for (ItemStack stack : items) {
+            Optional<ItemStack> match = list.stream()
+                .filter(currentStack -> currentStack.getItem() == stack.getItem()
+                && Objects.equals(currentStack.getTag(), stack.getTag()))
+                .findFirst();
+            if (match.isPresent()) {
+                match.get().setCount(match.get().getCount() + stack.getCount());
+            } else {
+                list.add(stack);
+            }
+        }
+        return list;
     }
 }

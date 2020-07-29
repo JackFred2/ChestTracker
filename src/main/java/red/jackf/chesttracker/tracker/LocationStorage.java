@@ -88,13 +88,13 @@ public class LocationStorage {
         return result.multiply(1d / positions.size());
     }
 
-    private static boolean stacksEqual(ItemStack candidate, ItemStack toFind, boolean matchNbt) {
+    public static boolean stacksEqual(ItemStack candidate, ItemStack toFind, boolean matchNbt) {
         if (candidate == null) {
-            ChestTracker.LOGGER.warn("Candidate was null!");
+            // ChestTracker.LOGGER.warn("Candidate was null!");
             return false;
         }
         if (toFind == null) {
-            ChestTracker.LOGGER.warn("ToFind was null!");
+            // ChestTracker.LOGGER.warn("ToFind was null!");
             return false;
         }
         if (matchNbt && toFind.hasTag()) {
@@ -165,7 +165,7 @@ public class LocationStorage {
         WorldStorage storage = this.storage.computeIfAbsent(world.getRegistryKey().getValue().toString(), (worldRegistryKey -> new WorldStorage()));
         List<BlockPos> positions = LinkedBlocksHandler.getLinked(world, pos);
         Vec3d offset = centerOf(positions).subtract(Vec3d.of(pos));
-        Location location = new Location(pos, title, positions.size() == 1 ? null : offset, items, favourite);
+        Location location = new Location(pos, title, positions.size() == 1 ? null : offset, Tracker.consolidate(items), favourite);
 
         positions.stream()
             .map(storage.lookupMap::get)
