@@ -2,6 +2,7 @@ package red.jackf.chesttracker.tracker;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.realmsclient.dto.RealmsServer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -40,6 +41,12 @@ public class LocationStorage {
     private static final Path ROOT_DIR = Paths.get(MinecraftClient.getInstance().runDirectory.getAbsolutePath()).resolve("chesttracker");
     private static final Gson GSON = GsonHandler.get();
 
+    private static RealmsServer lastServer = null;
+
+    public static void setLastServer(RealmsServer server) {
+        lastServer = server;
+    }
+
     @Nullable
     private static LocationStorage currentStorage = null;
 
@@ -62,7 +69,8 @@ public class LocationStorage {
                 // Single player, or opened to LAN.
                 path = "singleplayer-" + client.getServer().getSavePath(WorldSavePath.ROOT).getParent().getFileName();
             } else if (client.isConnectedToRealms()) { // Realms
-                path = "realms-currentlyunsupportedsorry";
+                if (lastServer == null) return null;
+                path = "realms-" + lastServer.owner + "-" + lastServer.getName();
             } else { // Multiplayer/LAN not hosted
                 path = "multiplayer-" + getUsefulFileString(handler.getConnection().getAddress());
             }

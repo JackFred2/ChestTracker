@@ -4,11 +4,12 @@
   "package": "red.jackf.chesttracker.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlock",
     "AccessorRenderPhase",
     "ChestTrackerAccessorHandledScreen",
+    "MixinBlock",
     "MixinClientConnection",
     "MixinMinecraftClient",
+    "MixinRealmsMainScreen",
     "MixinShulkerBoxBlock",
     "MixinWorldRenderer"
   ],
