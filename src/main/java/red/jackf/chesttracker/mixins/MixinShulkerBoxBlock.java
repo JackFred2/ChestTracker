@@ -28,7 +28,6 @@ public class MixinShulkerBoxBlock {
     @Inject(method = "onPlaced(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;)V",
         at = @At(value = "HEAD"))
     private void trackerLogPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, CallbackInfo ci) {
-        System.out.println("t");
         BlockEntity be = world.getBlockEntity(pos);
         LocationStorage storage = LocationStorage.get();
         if (storage != null) {

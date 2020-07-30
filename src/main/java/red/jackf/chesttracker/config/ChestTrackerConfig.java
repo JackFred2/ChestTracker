@@ -57,8 +57,10 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.Gui.PrefixText
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public InteractRememberType blockInteractionType = InteractRememberType.BLOCK_ENTITIES;
-        public Boolean debugPrint = false;
         public Boolean buttonsInCreativeScreen = true;
+        @ConfigEntry.Gui.Tooltip
+        public Boolean saveNbt = true;
+        public Boolean debugPrint = false;
     }
 
     public static class VisualOptions {

@@ -9,9 +9,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -70,6 +68,7 @@ public class Tracker {
             .filter(Slot::hasStack)
             .map(Slot::getStack)
             .filter(Objects::nonNull)
+            .peek(stack -> { if (!ChestTracker.CONFIG.miscOptions.saveNbt) stack.setTag(null); })
             .collect(Collectors.toList());
 
         LocationStorage storage = LocationStorage.get();
