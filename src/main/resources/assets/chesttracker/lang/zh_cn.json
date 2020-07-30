@@ -25,6 +25,8 @@
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType": "方块互动类型",
   "text.autoconfig.chesttracker.option.miscOptions.debugPrint": "打印Debug信息",
   "text.autoconfig.chesttracker.option.miscOptions.buttonsInCreativeScreen": "Show buttons in the creative menu",
+  "text.autoconfig.chesttracker.option.miscOptions.saveNbt": "Save item stack NBT",
+  "text.autoconfig.chesttracker.option.miscOptions.saveNbt.@Tooltip": "Whether to save itemstack NBT to file. Saves on file size, but less accurate searching.",
   "text.autoconfig.chesttracker.option.visualOptions.displayRange": "箱子显示范围",
   "text.autoconfig.chesttracker.option.visualOptions.fadeOutTime": "箱子轮廓消失时间",
   "text.autoconfig.chesttracker.option.visualOptions.borderWidth": "箱子轮廓粗细",

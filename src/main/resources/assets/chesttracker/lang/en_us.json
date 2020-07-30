@@ -25,6 +25,8 @@
   "text.autoconfig.chesttracker.option.miscOptions.blockInteractionType": "Block Interaction Type",
   "text.autoconfig.chesttracker.option.miscOptions.debugPrint": "Debug Printing",
   "text.autoconfig.chesttracker.option.miscOptions.buttonsInCreativeScreen": "Show buttons in the creative menu",
+  "text.autoconfig.chesttracker.option.miscOptions.saveNbt": "Save item stack NBT",
+  "text.autoconfig.chesttracker.option.miscOptions.saveNbt.@Tooltip": "Whether to save itemstack NBT to file. Saves on file size, but less accurate searching.",
   "text.autoconfig.chesttracker.option.visualOptions.displayRange": "Inventory Display Range",
   "text.autoconfig.chesttracker.option.visualOptions.fadeOutTime": "Inventory Outline Fade Time",
   "text.autoconfig.chesttracker.option.visualOptions.borderWidth": "Inventory Outline Width",
