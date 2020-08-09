@@ -138,7 +138,7 @@ public class Tracker {
         if (ChestTracker.CONFIG.miscOptions.debugPrint)
             ChestTracker.sendDebugMessage(client.player, new TranslatableText("chesttracker.searching_for_item", toFind).formatted(Formatting.GREEN));
 
-        List<Location> results = storage.findItems(client.player.clientWorld.getDimensionRegistryKey().getValue(), toFind, matchNbt);
+        List<Location> results = storage.findItems(client.player.clientWorld.getRegistryKey().getValue(), toFind, matchNbt);
         if (results.size() > 0) {
             RenderManager.getInstance().addRenderList(results, client.world.getTime());
             client.player.closeHandledScreen();

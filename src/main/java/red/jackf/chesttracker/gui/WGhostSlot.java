@@ -11,6 +11,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.tracker.LocationStorage;
 import red.jackf.chesttracker.tracker.Tracker;
 import spinnery.widget.WAbstractWidget;
 import spinnery.widget.WVerticalScrollableContainer;
@@ -68,6 +69,13 @@ public class WGhostSlot extends WAbstractWidget {
     public void onMouseClicked(float mouseX, float mouseY, int mouseButton) {
         if (this.isWithinBounds(mouseX, mouseY) && this.scrollArea.isWithinBounds(mouseX, mouseY) && !this.isHidden())
             Tracker.getInstance().searchForItem(item, Screen.hasShiftDown());
+
+        // Assume it has been destroyed without notification, reverify.
+        if (MinecraftClient.getInstance().currentScreen instanceof ItemManagerScreen && MinecraftClient.getInstance().world != null) {
+            LocationStorage storage = LocationStorage.get();
+            if (storage != null)
+                ((ItemManagerScreen) MinecraftClient.getInstance().currentScreen).verify(storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue()));
+        }
     }
 
     public void updatePos(float rootX, float rootY, float rootZ) {

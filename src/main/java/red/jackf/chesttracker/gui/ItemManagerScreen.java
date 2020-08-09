@@ -87,14 +87,12 @@ public class ItemManagerScreen extends BaseScreen {
             }
         }));
 
-        if (storage != null) {
+        if (storage != null && MinecraftClient.getInstance().world != null) {
             LocationStorage.WorldStorage worldStorage = storage.getStorage(MinecraftClient.getInstance().world.getRegistryKey().getValue());
             list = worldStorage.getItems();
             verifyButton.setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
-                    worldStorage.verify();
-                    list = worldStorage.getItems();
-                    this.update();
+                    verify(worldStorage);
                 }
             });
         } else {
@@ -114,6 +112,12 @@ public class ItemManagerScreen extends BaseScreen {
         }));
 
         setChildren(list);
+    }
+
+    protected void verify(LocationStorage.WorldStorage worldStorage) {
+        worldStorage.verify();
+        list = worldStorage.getItems();
+        this.update();
     }
 
     private void update() {
