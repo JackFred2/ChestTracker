@@ -2,22 +2,30 @@ package red.jackf.chesttracker;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.render.RenderUtils;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -37,5 +45,23 @@ public class ChestTracker implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
+
+        ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
+            if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
+                LOGGER.info("Pressed key");
+            }
+
+            return ActionResult.PASS;
+        });
+
+        ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
+            LOGGER.info("Screen opened");
+        });
+
+        UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
+            RenderUtils.addRenderPositions(Collections.singleton(blockHitResult.getBlockPos()), world.getTime());
+            LOGGER.info("Block Clicked");
+            return ActionResult.PASS;
+        });
     }
 }

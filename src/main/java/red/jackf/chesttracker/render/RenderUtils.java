@@ -1,26 +1,43 @@
 package red.jackf.chesttracker.render;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class RenderManager {
-    public static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
+public class RenderUtils {
+    private static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
+    private static final List<PositionData> RENDER_POSITIONS = Collections.synchronizedList(new ArrayList<>());
+
+    public static void addRenderPositions(Collection<BlockPos> positions, long startTime) {
+        synchronized (RENDER_POSITIONS) {
+            RENDER_POSITIONS.addAll(positions.stream()
+                .map(blockPos -> new PositionData(blockPos, startTime))
+                .collect(Collectors.toList()));
+        }
+    }
+
+    public static List<PositionData> getRenderPositions() {
+        synchronized (RENDER_POSITIONS) {
+            return ImmutableList.copyOf(RENDER_POSITIONS);
+        }
+    }
+
+    public static void removeRenderPositions(Collection<PositionData> positions) {
+        synchronized (RENDER_POSITIONS) {
+            RENDER_POSITIONS.removeAll(positions);
+        }
+    }
 
     @SuppressWarnings("ConstantConditions")
     public static RenderPhase.LineWidth getDynamicLineWidth() {
@@ -66,5 +83,23 @@ public class RenderManager {
         textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, light);
         textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, light);
         matrixStack.pop();
+    }
+
+    public static class PositionData {
+        private BlockPos pos;
+        private long startTime;
+
+        public PositionData(BlockPos pos, long startTime) {
+            this.pos = pos;
+            this.startTime = startTime;
+        }
+
+        public BlockPos getPos() {
+            return pos;
+        }
+
+        public long getStartTime() {
+            return startTime;
+        }
     }
 }

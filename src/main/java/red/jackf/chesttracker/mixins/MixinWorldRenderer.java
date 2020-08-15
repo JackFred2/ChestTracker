@@ -7,13 +7,20 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShapes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import red.jackf.chesttracker.render.RenderManager;
+import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.render.RenderUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
@@ -28,7 +35,7 @@ public abstract class MixinWorldRenderer {
         VertexFormats.POSITION_COLOR,
         1, 256,
         RenderLayer.MultiPhaseParameters.builder()
-            .lineWidth(RenderManager.getDynamicLineWidth())
+            .lineWidth(RenderUtils.getDynamicLineWidth())
             .depthTest(new RenderPhase.DepthTest("pass", 519))
             .transparency(TRACKER_Transparency)
             .build(false)
@@ -53,19 +60,19 @@ public abstract class MixinWorldRenderer {
                                        Matrix4f matrix4f,
                                        CallbackInfo ci) {
         this.world.getProfiler().swap("chesttracker_render_overlay");
-        /*Vec3d cameraPos = camera.getPos();
+        Vec3d cameraPos = camera.getPos();
         VertexConsumerProvider.Immediate immediate = this.bufferBuilders.getEntityVertexConsumers();
         RenderSystem.disableDepthTest();
         matrices.push();
 
-        Iterator<RenderManager.PositionData> iterator = RenderManager.getInstance().getPositionsToRender().iterator();
+        List<RenderUtils.PositionData> toRemove = new ArrayList<>();
+        List<RenderUtils.PositionData> renderPositions = RenderUtils.getRenderPositions();
 
         float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
         float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
         float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
 
-        while (iterator.hasNext()) {
-            RenderManager.PositionData data = iterator.next();
+        for (RenderUtils.PositionData data : renderPositions) {
             long timeDiff = this.world.getTime() - data.getStartTime();
 
             Vec3d finalPos = cameraPos.subtract(data.getPos().getX(), data.getPos().getY(), data.getPos().getZ()).negate();
@@ -74,9 +81,9 @@ public abstract class MixinWorldRenderer {
             }
 
             //if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
-            RenderManager.getInstance().optimizedDrawShapeOutline(matrices,
+            RenderUtils.optimizedDrawShapeOutline(matrices,
                 immediate.getBuffer(TRACKER_RENDER_OUTLINE_LAYER),
-                data.getShape(),
+                VoxelShapes.fullCube(),
                 finalPos.x,
                 finalPos.y,
                 finalPos.z,
@@ -86,12 +93,15 @@ public abstract class MixinWorldRenderer {
                 ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
 
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime)
-                iterator.remove();
+                toRemove.add(data);
         }
 
         immediate.draw(TRACKER_RENDER_OUTLINE_LAYER);
         matrices.pop();
-        RenderSystem.enableDepthTest();*/
+        RenderSystem.enableDepthTest();
+
+        if (toRemove.size() > 0)
+            RenderUtils.removeRenderPositions(toRemove);
     }
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
