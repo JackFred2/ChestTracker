@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 
@@ -18,6 +19,20 @@ import java.util.stream.Collectors;
 public class RenderUtils {
     private static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
     private static final List<PositionData> RENDER_POSITIONS = Collections.synchronizedList(new ArrayList<>());
+
+    private static final RenderPhase.Transparency RENDER_TRANSPARENCY = new RenderPhase.Transparency("chesttracker_translucent_transparency", () -> {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+    }, RenderSystem::disableBlend);
+    public static final RenderLayer OUTLINE_LAYER = RenderLayer.of("chesttracker_blockoutline",
+        VertexFormats.POSITION_COLOR,
+        1, 256,
+        RenderLayer.MultiPhaseParameters.builder()
+            .lineWidth(getDynamicLineWidth())
+            .depthTest(new RenderPhase.DepthTest("pass", 519))
+            .transparency(RENDER_TRANSPARENCY)
+            .build(false)
+    );
 
     public static void addRenderPositions(Collection<BlockPos> positions, long startTime) {
         synchronized (RENDER_POSITIONS) {
@@ -62,6 +77,49 @@ public class RenderUtils {
             vertexConsumer.vertex(matrix, (float) (box.maxX + x), (float) (box.maxY + y), (float) (box.maxZ + z)).color(r, g, b, a).next();
         }
 
+    }
+
+
+    public static void drawOutlines(MatrixStack matrices, VertexConsumerProvider.Immediate provider, Camera camera, long worldTime, float tickDelta) {
+        Vec3d cameraPos = camera.getPos();
+        RenderSystem.disableDepthTest();
+        matrices.push();
+        List<PositionData> toRemove = new ArrayList<>();
+        List<PositionData> renderPositions = getRenderPositions();
+
+        float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
+        float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
+        float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
+        for (PositionData data : renderPositions) {
+            float timeDiff = worldTime + tickDelta - data.getStartTime();
+            if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime) {
+                toRemove.add(data);
+            } else {
+                Vec3d finalPos = cameraPos.subtract(data.getPos().getX(), data.getPos().getY(), data.getPos().getZ()).negate();
+                if (finalPos.lengthSquared() > 4096) {
+                    finalPos = finalPos.normalize().multiply(64);
+                }
+
+                //if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
+                optimizedDrawShapeOutline(matrices,
+                    provider.getBuffer(OUTLINE_LAYER),
+                    VoxelShapes.fullCube(),
+                    finalPos.x,
+                    finalPos.y,
+                    finalPos.z,
+                    r,
+                    g,
+                    b,
+                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
+            }
+        }
+
+        provider.draw(RenderUtils.OUTLINE_LAYER);
+        matrices.pop();
+        RenderSystem.enableDepthTest();
+
+        if (toRemove.size() > 0)
+            removeRenderPositions(toRemove);
     }
 
     public static void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, int light, Vec3d pos, Text text, boolean force) {
