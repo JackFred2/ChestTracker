@@ -61,12 +61,14 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
-            if (Screen.hasShiftDown()) {
+            if (world.isClient) {
+                if (Screen.hasShiftDown()) {
 
-            } else {
-                RenderUtils.addRenderPositions(Collections.singleton(blockHitResult.getBlockPos()), world.getTime());
+                } else {
+                    RenderUtils.addRenderPositions(Collections.singleton(blockHitResult.getBlockPos()), world.getTime());
+                }
+                LOGGER.info("Block Clicked");
             }
-            LOGGER.info("Block Clicked");
             return ActionResult.PASS;
         });
     }

@@ -91,6 +91,8 @@ public class RenderUtils {
         float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
         float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
         for (PositionData data : renderPositions) {
+            //tickDelta = tickDelta - (tickDelta % (1f/6f));
+
             float timeDiff = worldTime + tickDelta - data.getStartTime();
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime) {
                 toRemove.add(data);
@@ -100,17 +102,35 @@ public class RenderUtils {
                     finalPos = finalPos.normalize().multiply(64);
                 }
 
-                //if (x * x + y * y + z * z < ChestTracker.CONFIG.visualOptions.borderRenderRange * ChestTracker.CONFIG.visualOptions.borderRenderRange)
+                VoxelShape shape = VoxelShapes.fullCube();
+
+                // https://www.desmos.com/calculator/bs2whnaxqp
+                // scaleFactor, transparencyFactor and offset in order
+
+                float scaleFactor = (2 * timeDiff - ChestTracker.CONFIG.visualOptions.fadeOutTime)/ChestTracker.CONFIG.visualOptions.fadeOutTime;
+                scaleFactor *= scaleFactor;
+                scaleFactor *= scaleFactor;
+                float transparencyFactor = 1 - scaleFactor;
+                scaleFactor *= scaleFactor;
+                scaleFactor *= scaleFactor;
+                float offset = 0.5f * scaleFactor;
+                scaleFactor = 1 - scaleFactor;
+
+                matrices.push();
+                matrices.scale(scaleFactor, scaleFactor, scaleFactor);
+
                 optimizedDrawShapeOutline(matrices,
                     provider.getBuffer(OUTLINE_LAYER),
                     VoxelShapes.fullCube(),
-                    finalPos.x,
-                    finalPos.y,
-                    finalPos.z,
+                    (offset + finalPos.x) * (1/scaleFactor),
+                    (offset + finalPos.y) * (1/scaleFactor),
+                    (offset + finalPos.z) * (1/scaleFactor),
                     r,
                     g,
                     b,
-                    ((ChestTracker.CONFIG.visualOptions.fadeOutTime - timeDiff) / (float) ChestTracker.CONFIG.visualOptions.fadeOutTime));
+                    transparencyFactor);
+
+                matrices.pop();
             }
         }
 
