@@ -5,12 +5,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "AccessorRenderPhase",
-    "ChestTrackerAccessorHandledScreen",
-    "MixinBlock",
-    "MixinClientConnection",
-    "MixinMinecraftClient",
-    "MixinRealmsMainScreen",
-    "MixinShulkerBoxBlock",
     "MixinWorldRenderer"
   ],
   "client": [

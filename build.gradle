@@ -17,8 +17,8 @@ repositories {
         url "maven.fabric"
     }
     maven {
-        name = "Spinnery"
-        url "https://dl.bintray.com/spinnery/Spinnery"
+        name = "CottonMC"
+        url = "https://server.bbkr.space/artifactory/libs-release"
     }
 
 }
@@ -43,8 +43,8 @@ dependencies {
     include "me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig1u_version}"
 
     // Client GUIs
-    modCompile "com.github.vini2003:spinnery:${project.spinnery_version}"
-    include "com.github.vini2003:spinnery:${project.spinnery_version}"
+    modApi "io.github.cottonmc:LibGui:${project.libgui_version}"
+    include "io.github.cottonmc:LibGui:${project.libgui_version}"
 
     compile 'org.jetbrains:annotations:16.0.2'
 }

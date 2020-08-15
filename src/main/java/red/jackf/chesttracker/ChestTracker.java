@@ -2,37 +2,22 @@ package red.jackf.chesttracker;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
-import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
-import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.FavouriteButton;
-import red.jackf.chesttracker.gui.ManagerButton;
-import red.jackf.chesttracker.mixins.ChestTrackerAccessorHandledScreen;
-import red.jackf.chesttracker.tracker.Tracker;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -49,60 +34,8 @@ public class ChestTracker implements ClientModInitializer {
         player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
-    @NotNull
-    public static <T extends ScreenHandler> ItemStack tryFindItems(Screen screen) {
-        ItemStack item = ItemStack.EMPTY;
-        if (screen instanceof HandledScreen) {
-            @SuppressWarnings("unchecked")
-            HandledScreen<T> handledScreen = (HandledScreen<T>) screen;
-            Slot slot = ((ChestTrackerAccessorHandledScreen) handledScreen).getFocusedSlot();
-            if (slot != null && slot.hasStack()) item = slot.getStack();
-        }
-
-        if (item == ItemStack.EMPTY && FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-            double gameScale = (double) MinecraftClient.getInstance().getWindow().getScaledWidth() / (double) MinecraftClient.getInstance().getWindow().getWidth();
-            double mouseX = MinecraftClient.getInstance().mouse.getX() * gameScale;
-            double mouseY = MinecraftClient.getInstance().mouse.getY() * gameScale;
-            item = REIPlugin.tryFindItem(mouseX, mouseY);
-        }
-        return item;
-    }
-
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
-
-        ManagerButton.setup();
-        FavouriteButton.setup();
-
-        ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
-            if (SEARCH_KEY.matchesKey(keyCode, scanCode) && client.player != null && client.world != null) {
-                //if (Screen.hasShiftDown()) {
-                //    CONFIG.visualOptions.buttonDisplayType = ButtonDisplayType.values()[(CONFIG.visualOptions.buttonDisplayType.ordinal() + 1) % ButtonDisplayType.values().length];
-                //    return ActionResult.PASS;
-                //}
-                ItemStack toFind = ChestTracker.tryFindItems(screen);
-                if (toFind == ItemStack.EMPTY) return ActionResult.PASS;
-
-                return Tracker.getInstance().searchForItem(toFind, false);
-            }
-            return ActionResult.PASS;
-        });
-
-        // In case of BEs without a screen being used then opening an inventory screen such as a backpack
-        UseItemCallback.EVENT.register((player, world, hand) -> {
-            Tracker.getInstance().setLastPos(null);
-            return TypedActionResult.pass(ItemStack.EMPTY);
-        });
-
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            Tracker.getInstance().handleInteract(player, world, hand, hitResult);
-            return ActionResult.PASS;
-        });
-
-        UseEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
-            Tracker.getInstance().setLastPos(null);
-            return ActionResult.PASS;
-        });
     }
 }

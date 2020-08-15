@@ -7,17 +7,13 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.render.RenderManager;
-
-import java.util.Iterator;
 
 @Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
@@ -57,7 +53,7 @@ public abstract class MixinWorldRenderer {
                                        Matrix4f matrix4f,
                                        CallbackInfo ci) {
         this.world.getProfiler().swap("chesttracker_render_overlay");
-        Vec3d cameraPos = camera.getPos();
+        /*Vec3d cameraPos = camera.getPos();
         VertexConsumerProvider.Immediate immediate = this.bufferBuilders.getEntityVertexConsumers();
         RenderSystem.disableDepthTest();
         matrices.push();
@@ -95,7 +91,7 @@ public abstract class MixinWorldRenderer {
 
         immediate.draw(TRACKER_RENDER_OUTLINE_LAYER);
         matrices.pop();
-        RenderSystem.enableDepthTest();
+        RenderSystem.enableDepthTest();*/
     }
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
@@ -110,6 +106,5 @@ public abstract class MixinWorldRenderer {
                                            Matrix4f matrix4f,
                                            CallbackInfo ci) {
         this.world.getProfiler().swap("chesttracker_chestlabels");
-        RenderManager.getInstance().renderNames(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera);
     }
 }

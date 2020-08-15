@@ -1,7 +1,5 @@
 package red.jackf.chesttracker.compat;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
@@ -14,11 +12,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.ItemManagerScreen;
 
 import java.util.List;
 
@@ -68,30 +64,5 @@ public class REIPlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
         return id("rei_default");
-    }
-
-    @Override
-    public void registerBounds(DisplayHelper displayHelper) {
-        displayHelper.registerHandler(new DisplayHelper.DisplayBoundsProvider<ItemManagerScreen>() {
-            @Override
-            public Rectangle getScreenBounds(ItemManagerScreen screen) {
-                return new Rectangle(screen.getX(), screen.getY(), screen.getWidth(), screen.getHeight());
-            }
-
-            @Override
-            public Class<?> getBaseSupportedClass() {
-                return ItemManagerScreen.class;
-            }
-
-            @Override
-            public float getPriority() {
-                return 50;
-            }
-
-            @Override
-            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
-                return ActionResult.SUCCESS;
-            }
-        });
     }
 }
