@@ -8,14 +8,13 @@ import net.minecraft.util.Identifier;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
-public class OpenItemListButton extends TexturedButtonWidget {
-    private static final Identifier TEXTURE = id("gui_button_small.png");
+public class FavouriteButton extends TexturedButtonWidget {
+    private static final Identifier TEXTURE = id("favourite_button.png");
     private final HandledScreen<?> screen;
 
-    public OpenItemListButton(HandledScreen<?> screen) {
-        super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 9, 18, (button) -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.openScreen(new ItemListScreen());
+    public FavouriteButton(HandledScreen<?> screen) {
+        super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 18, 18, (button) -> {
+
         });
         this.screen = screen;
     }
@@ -27,6 +26,6 @@ public class OpenItemListButton extends TexturedButtonWidget {
     }
 
     private void resize() {
-        this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
+        this.setPos(ButtonPositions.getX(screen, 1), ButtonPositions.getY(screen, 1));
     }
 }

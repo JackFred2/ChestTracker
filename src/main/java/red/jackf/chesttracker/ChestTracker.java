@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.gui.OpenItemListButton;
 import red.jackf.chesttracker.render.RenderUtils;
 
@@ -59,8 +60,11 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
-            if (screen instanceof HandledScreen)
-               screenHooks.cloth$addButtonWidget(new OpenItemListButton(10, 10));
+            if (screen instanceof HandledScreen) {
+                screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
+                screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
+
+            }
         });
 
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
