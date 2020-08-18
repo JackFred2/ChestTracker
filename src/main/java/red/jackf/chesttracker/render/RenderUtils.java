@@ -16,7 +16,7 @@ import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RenderUtils {
+public abstract class RenderUtils {
     private static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
     private static final List<PositionData> RENDER_POSITIONS = Collections.synchronizedList(new ArrayList<>());
 
@@ -62,6 +62,8 @@ public class RenderUtils {
         ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
         return layer;
     }
+
+    // Optimized version of a voxelshape renderer, most noticeable at large counts.
 
     public static void optimizedDrawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double x, double y, double z, float r, float g, float b, float a) {
         if (!CACHED_SHAPES.containsKey(voxelShape)) {
@@ -142,7 +144,7 @@ public class RenderUtils {
             removeRenderPositions(toRemove);
     }
 
-    public static void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, int light, Vec3d pos, Text text, boolean force) {
+    public static void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, Vec3d pos, Text text, boolean force) {
         Vec3d renderPos = camera.getPos().negate().add(pos);
         if (force) {
             double d = MathHelper.sqrt(renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z);
@@ -158,14 +160,14 @@ public class RenderUtils {
         int j = (int) (g * 255.0F) << 24;
         TextRenderer textRenderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getTextRenderer();
         float h = (float) (-textRenderer.getWidth(text) / 2);
-        textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, light);
-        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, light);
+        textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, 0xf000f0);
+        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, 0xf000f0);
         matrixStack.pop();
     }
 
     public static class PositionData {
-        private BlockPos pos;
-        private long startTime;
+        private final BlockPos pos;
+        private final long startTime;
 
         public PositionData(BlockPos pos, long startTime) {
             this.pos = pos;

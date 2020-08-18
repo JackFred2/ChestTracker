@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.OpenItemListButton;
 import red.jackf.chesttracker.render.RenderUtils;
 
 import java.util.*;
@@ -50,14 +52,15 @@ public class ChestTracker implements ClientModInitializer {
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
-                LOGGER.info("Pressed key");
+
             }
 
             return ActionResult.PASS;
         });
 
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
-            LOGGER.info("Screen opened");
+            if (screen instanceof HandledScreen)
+               screenHooks.cloth$addButtonWidget(new OpenItemListButton(10, 10));
         });
 
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
@@ -67,7 +70,6 @@ public class ChestTracker implements ClientModInitializer {
                 } else {
                     RenderUtils.addRenderPositions(Collections.singleton(blockHitResult.getBlockPos()), world.getTime());
                 }
-                LOGGER.info("Block Clicked");
             }
             return ActionResult.PASS;
         });
