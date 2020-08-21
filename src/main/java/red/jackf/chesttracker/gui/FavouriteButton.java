@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import static red.jackf.chesttracker.ChestTracker.id;
 
 public class FavouriteButton extends TexturedButtonWidget {
-    private static final Identifier TEXTURE = id("favourite_button.png");
+    private static final Identifier TEXTURE = id("textures/favourite_button.png");
     private final HandledScreen<?> screen;
 
     public FavouriteButton(HandledScreen<?> screen) {

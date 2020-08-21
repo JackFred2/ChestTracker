@@ -1,6 +1,8 @@
 package red.jackf.chesttracker.compat;
 
+import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.OverlayDecider;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.RecipeScreen;
@@ -11,10 +13,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.ItemListScreen;
 
 import java.util.List;
 
@@ -64,5 +69,21 @@ public class REIPlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
         return id("rei_default");
+    }
+
+    @Override
+    public void registerBounds(DisplayHelper displayHelper) {
+        displayHelper.registerHandler(new OverlayDecider() {
+
+            @Override
+            public boolean isHandingScreen(Class<?> screenClass) {
+                return false; // screenClass == ItemListScreen.class;
+            }
+
+            @Override
+            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
+                return ActionResult.SUCCESS;
+            }
+        });
     }
 }

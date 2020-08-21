@@ -16,7 +16,7 @@
     "issues": "https://github.com/JackFred2/ChestTracker/issues"
   },
   "license": "MIT",
-  "icon": "assets/chesttracker/icon.png",
+  "icon": "assets/chesttracker/textures/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [

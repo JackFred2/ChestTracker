@@ -12,6 +12,7 @@
   "chesttracker.gui.reset_button_confirm_tooltip": "This can not be undone.",
   "chesttracker.gui.verify_button": "Verify",
   "chesttracker.gui.verify_button_tooltip": "Check that nearby inventories still exist.",
+  "chesttracker.gui.search_filed_start": "Search...",
   "chesttracker.searching_for_item": "Searching for %s",
   "key.chesttracker.searchforitem": "Search for items",
   "chesttracker.block_clicked_be_provider": "Block ID: %s (BlockEntityProvider)",

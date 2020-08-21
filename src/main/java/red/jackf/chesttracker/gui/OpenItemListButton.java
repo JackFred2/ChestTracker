@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import static red.jackf.chesttracker.ChestTracker.id;
 
 public class OpenItemListButton extends TexturedButtonWidget {
-    private static final Identifier TEXTURE = id("gui_button_small.png");
+    private static final Identifier TEXTURE = id("textures/gui_button_small.png");
     private final HandledScreen<?> screen;
 
     public OpenItemListButton(HandledScreen<?> screen) {
