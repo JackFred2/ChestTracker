@@ -63,7 +63,6 @@ public class ChestTracker implements ClientModInitializer {
             if (screen instanceof HandledScreen) {
                 screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
                 screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
-
             }
         });
 
