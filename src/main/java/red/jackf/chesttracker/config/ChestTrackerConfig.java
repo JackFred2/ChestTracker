@@ -23,6 +23,8 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
+        visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 18);
+        visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 24);
     }
 
     public static class VisualOptions {
@@ -34,5 +36,9 @@ public class ChestTrackerConfig implements ConfigData {
         public int borderColour = 0x00baff;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
         public int nameRenderRange = 8;
+        @ConfigEntry.BoundedDiscrete(min = 6, max = 18)
+        public int rowCount = 6;
+        @ConfigEntry.BoundedDiscrete(min = 9, max = 24)
+        public int columnCount = 9;
     }
 }

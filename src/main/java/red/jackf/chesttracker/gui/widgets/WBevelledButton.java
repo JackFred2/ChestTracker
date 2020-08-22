@@ -51,7 +51,8 @@ public class WBevelledButton extends WButton {
 
     @Override
     public void onClick(int x, int y, int button) {
-        if (getOnClick()!=null) getOnClick().run();
+        if (isEnabled() && isWithinBounds(x, y))
+            if (getOnClick()!=null) getOnClick().run();
     }
 
     @Override
