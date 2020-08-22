@@ -1,10 +1,13 @@
 package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.widget.WTextField;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
 
+@Environment(EnvType.CLIENT)
 public class WUpdatableTextField extends WTextField {
     private Consumer<String> onTextChanged;
 

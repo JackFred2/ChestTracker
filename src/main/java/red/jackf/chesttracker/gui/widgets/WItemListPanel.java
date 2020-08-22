@@ -3,6 +3,8 @@ package red.jackf.chesttracker.gui.widgets;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 public class WItemListPanel extends WGridPanel {
     private static final Identifier SLOT = id("textures/slot.png");
     private static final Identifier SLOT_RED = id("textures/slot_red.png");
@@ -112,7 +115,7 @@ public class WItemListPanel extends WGridPanel {
     private void setPage(int newPage) {
         this.currentPage = MathHelper.clamp(newPage, 1, this.pageCount);
         if (this.pageChangeHook != null) this.pageChangeHook.accept(this.currentPage, this.pageCount);
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * (float) this.currentPage / this.pageCount)));
+        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * (float) (this.currentPage - 1) / this.pageCount)));
     }
 
     @Override
