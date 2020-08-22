@@ -3,6 +3,7 @@
   "chesttracker.gui_class_name_not_tracked": "GUI Class name: %s (Not Tracked)",
   "chesttracker.not_tracked_due_to_ignore_list": "Ignored due to pattern: %s",
   "chesttracker.gui.title": "ChestTracker",
+  "chesttracker.gui.page_count": "Page %s/%s",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.reset_button": "Reset",
   "chesttracker.gui.reset_button_shift": "Reset All",
