@@ -2,6 +2,8 @@ package red.jackf.chesttracker.render;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -16,6 +18,7 @@ import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Environment(EnvType.CLIENT)
 public abstract class RenderUtils {
     private static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
     private static final List<PositionData> RENDER_POSITIONS = Collections.synchronizedList(new ArrayList<>());

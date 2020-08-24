@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.memory;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
@@ -12,6 +14,7 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 public class MemoryDatabase {
     private final String name;
     private Map<Identifier, List<Memory>> locations;
