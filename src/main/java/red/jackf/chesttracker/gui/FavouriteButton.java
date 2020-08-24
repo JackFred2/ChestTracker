@@ -26,11 +26,11 @@ public class FavouriteButton extends TexturedButtonWidget {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.resize();
         super.render(matrices, mouseX, mouseY, delta);
-    }
 
-    @Override
-    public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
-        this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.favourite"), mouseX, mouseY);
+        // renderTooltip doesn't get called
+        if (this.isMouseOver(mouseX, mouseY)) {
+            this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.favourite"), mouseX, mouseY);
+        }
     }
 
     private void resize() {

@@ -6,6 +6,7 @@
   "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
   "chesttracker.gui.search_field_start": "Search...",
   "chesttracker.gui.favourite": "Favourite",
+  "key.chesttracker.searchforitem": "Search for items",
   "text.autoconfig.chesttracker.category.visual_options": "Visual Options",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config",
 
@@ -21,7 +22,6 @@
   "chesttracker.gui.verify_button": "Verify",
   "chesttracker.gui.verify_button_tooltip": "Check that nearby inventories still exist.",
   "chesttracker.searching_for_item": "Searching for %s",
-  "key.chesttracker.searchforitem": "Search for items",
   "chesttracker.block_clicked_be_provider": "Block ID: %s (BlockEntityProvider)",
   "chesttracker.block_clicked_not_be_provider": "Block ID: %s",
   "text.autoconfig.chesttracker.category.misc_options": "Miscellaneous Options",

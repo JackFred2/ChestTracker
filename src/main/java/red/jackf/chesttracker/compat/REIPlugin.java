@@ -26,7 +26,6 @@ import java.util.List;
 import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
-@SuppressWarnings("UnstableApiUsage")
 public class REIPlugin implements REIPluginV0 {
     public static @NotNull ItemStack tryFindItem(double mouseX, double mouseY) {
         // Big List

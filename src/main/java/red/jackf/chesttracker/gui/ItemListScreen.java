@@ -7,15 +7,21 @@ import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
+import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.widgets.WBevelledButton;
@@ -23,7 +29,9 @@ import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
@@ -49,12 +57,18 @@ public class ItemListScreen extends CottonClientScreen {
 
         private static final int SIDE_PADDING = 0;
         private static final int TOP_PADDING = 36;
+        private static final int LEFT_ADDITIONAL_PADDING = 24;
+
+        private static final Identifier EVERYTHING_ID = id("everything");
 
         private final WItemListPanel itemPanel;
 
+        private final Map<Identifier, WBevelledButton> dimensionFilters = new HashMap<>();
+        private Identifier selectedDimensionFilter = EVERYTHING_ID;
+
         public Gui() {
             @SuppressWarnings({"ConstantExpression", "PointlessArithmeticExpression"})
-            int width = (18 * ChestTracker.CONFIG.visualOptions.columnCount) + (2 * SIDE_PADDING);
+            int width = (18 * ChestTracker.CONFIG.visualOptions.columnCount) + (2 * SIDE_PADDING) + LEFT_ADDITIONAL_PADDING;
             int height = (18 * ChestTracker.CONFIG.visualOptions.rowCount) + SIDE_PADDING + TOP_PADDING;
 
             WPlainPanel root = new WPlainPanel();
@@ -63,7 +77,7 @@ public class ItemListScreen extends CottonClientScreen {
 
             // Item List
             itemPanel = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
-            root.add(itemPanel, SIDE_PADDING, TOP_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
+            root.add(itemPanel, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
 
             List<ItemRepresentation> stacks = new ArrayList<>();
             for (int i = 0; i < Registry.ITEM.stream().count() - 1; i++) {
@@ -72,22 +86,37 @@ public class ItemListScreen extends CottonClientScreen {
             }
 
             // Title
-            root.add(new WLabel(new TranslatableText("chesttracker.gui.title")), 0, 0);
+            root.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING, 0);
 
             // Search Field
             WUpdatableTextField searchField = new WUpdatableTextField(new TranslatableText("chesttracker.gui.search_field_start"));
             searchField.setOnTextChanged(itemPanel::setFilter);
-            root.add(searchField, SIDE_PADDING, TOP_PADDING - 24, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
+            root.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING - 24, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
             // Page Buttons
             WBevelledButton previousButton = new WBevelledButton(new TextureIcon(LEFT_BUTTON), new TranslatableText("chesttracker.gui.previous_page"));
             WBevelledButton nextButton = new WBevelledButton(new TextureIcon(RIGHT_BUTTON), new TranslatableText("chesttracker.gui.next_page"));
-            previousButton.setIconSize(16);
-            nextButton.setIconSize(16);
             previousButton.setOnClick(itemPanel::previousPage);
             nextButton.setOnClick(itemPanel::nextPage);
             root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
             root.add(nextButton, width - SIDE_PADDING - 17, TOP_PADDING - 22, 16, 16);
+
+            // Dimension Filters
+            dimensionFilters.put(selectedDimensionFilter, new WBevelledButton(new ItemIcon(Items.CRAFTING_TABLE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.everything")));
+            dimensionFilters.get(selectedDimensionFilter).setPressed(true);
+            dimensionFilters.put(DimensionType.OVERWORLD_ID, new WBevelledButton(new ItemIcon(Items.GRASS_BLOCK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.overworld")));
+            dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_nether")));
+            dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_end")));
+
+            int i = 0;
+            for (Map.Entry<Identifier, WBevelledButton> entry : dimensionFilters.entrySet()) {
+                entry.getValue().setOnClick(() -> {
+                    setDimensionFilter(entry.getKey());
+                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                });
+                root.add(entry.getValue(), SIDE_PADDING, 20 * i, 18, 18);
+                i++;
+            }
 
             // Page Count
             WLabel count = new WLabel(new LiteralText("not loaded")) {
@@ -113,6 +142,17 @@ public class ItemListScreen extends CottonClientScreen {
 
         private void setItems(List<ItemRepresentation> items) {
             this.itemPanel.setItems(items);
+        }
+
+        private void setDimensionFilter(Identifier newId) {
+            WBevelledButton current = dimensionFilters.get(selectedDimensionFilter);
+            if (current != null) current.setPressed(false);
+            if (dimensionFilters.containsKey(newId)) {
+                dimensionFilters.get(newId).setPressed(true);
+            } else {
+                dimensionFilters.get(EVERYTHING_ID).setPressed(true);
+            }
+            selectedDimensionFilter = newId;
         }
     }
 

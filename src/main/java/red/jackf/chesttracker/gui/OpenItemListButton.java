@@ -28,10 +28,6 @@ public class OpenItemListButton extends TexturedButtonWidget {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.resize();
         super.render(matrices, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
         if (this.isMouseOver(mouseX, mouseY)) {
             this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
         }

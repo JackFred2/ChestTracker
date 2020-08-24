@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -128,8 +129,13 @@ public class WItemListPanel extends WGridPanel {
 
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
-            ItemListScreen.ItemRepresentation representation = this.filteredItems.get(itemIndex);
-            System.out.println(representation);
+            if (MinecraftClient.getInstance().player != null) {
+                ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
+                Identifier worldId = playerEntity.clientWorld.getRegistryKey().getValue();
+                ItemListScreen.ItemRepresentation representation = this.filteredItems.get(itemIndex);
+                System.out.println(worldId);
+                System.out.println(representation);
+            }
         }
     }
 

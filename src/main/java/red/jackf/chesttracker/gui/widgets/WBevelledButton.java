@@ -2,6 +2,7 @@ package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import net.fabricmc.api.EnvType;
@@ -9,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.Collections;
 @Environment(EnvType.CLIENT)
 public class WBevelledButton extends WButton {
     private final Text tooltip;
-    private int iconSize = 16;
+    private boolean pressed = false;
 
     public WBevelledButton(Icon icon, Text tooltip) {
         super(icon);
@@ -31,7 +31,11 @@ public class WBevelledButton extends WButton {
         int panel;
         int bottomRight;
 
-        if (isEnabled()) {
+        if (pressed) {
+            topLeft = 0xFF000000;
+            panel = hovered ? 0xFFC6C6C6 : 0xFF969696;
+            bottomRight = 0xFFFFFFFF;
+        } else if (isEnabled()) {
             topLeft = 0xFFFFFFFF;
             panel = hovered ? 0xFF8892C9 : 0xFFC6C6C6;
             bottomRight = hovered ? 0xFF00073E : 0xFF000000;
@@ -45,16 +49,20 @@ public class WBevelledButton extends WButton {
 
         if (this.getIcon() != null) {
             if (this.getIcon() instanceof ItemIcon) {
-                this.getIcon().paint(matrices, x + 1, y + 1, iconSize);
+                this.getIcon().paint(matrices, x + 1, y + 1, 16);
             } else {
-                this.getIcon().paint(matrices, x, y, iconSize);
+                this.getIcon().paint(matrices, x, y, 16);
             }
         }
     }
 
+    public void setPressed(boolean pressed) {
+        this.pressed = pressed;
+    }
+
     @Override
     public void onClick(int x, int y, int button) {
-        if (isEnabled() && isWithinBounds(x, y))
+        if (!pressed && isEnabled() && isWithinBounds(x, y))
             if (getOnClick()!=null) getOnClick().run();
     }
 
@@ -62,10 +70,6 @@ public class WBevelledButton extends WButton {
     public void renderTooltip(MatrixStack matrices, int x, int y, int tX, int tY) {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (screen != null) screen.renderOrderedTooltip(matrices, Collections.singletonList(tooltip.asOrderedText()), tX+x, tY+y);
-    }
-
-    public void setIconSize(int iconSize) {
-        this.iconSize = iconSize;
     }
 
     @Override
