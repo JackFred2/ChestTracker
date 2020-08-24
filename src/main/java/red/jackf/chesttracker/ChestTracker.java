@@ -8,29 +8,26 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.gui.OpenItemListButton;
-import red.jackf.chesttracker.render.RenderUtils;
-
-import java.util.*;
-import java.util.stream.Stream;
+import red.jackf.chesttracker.memory.MemoryUtils;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -68,13 +65,28 @@ public class ChestTracker implements ClientModInitializer {
 
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
             if (world.isClient) {
-                if (Screen.hasShiftDown()) {
-
+                Block hit = world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+                if (hit instanceof BlockEntityProvider || hit instanceof InventoryProvider) {
+                    MemoryUtils.setLatestPos(blockHitResult.getBlockPos());
                 } else {
-                    RenderUtils.addRenderPositions(Collections.singleton(blockHitResult.getBlockPos()), world.getTime());
+                    MemoryUtils.setLatestPos(null);
                 }
             }
             return ActionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (world.isClient) {
+                MemoryUtils.setLatestPos(null);
+            }
+            return ActionResult.PASS;
+        });
+
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            if (world.isClient) {
+                MemoryUtils.setLatestPos(null);
+            }
+            return TypedActionResult.pass(ItemStack.EMPTY);
         });
     }
 }

@@ -12,7 +12,6 @@ import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -27,6 +26,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.widgets.WBevelledButton;
 import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
+import red.jackf.chesttracker.memory.MemoryDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +39,7 @@ import static red.jackf.chesttracker.ChestTracker.id;
 public class ItemListScreen extends CottonClientScreen {
     public ItemListScreen() {
         super(new Gui());
+        ChestTracker.LOGGER.info(MemoryDatabase.getCurrent());
     }
 
     @Override

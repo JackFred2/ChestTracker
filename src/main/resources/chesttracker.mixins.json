@@ -6,6 +6,8 @@
   "mixins": [
     "AccessorHandledScreen",
     "AccessorRenderPhase",
+    "AccessorMinecraftServer",
+    "MixinMinecraftClient",
     "MixinWorldRenderer"
   ],
   "client": [

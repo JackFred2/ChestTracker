@@ -19,6 +19,7 @@ public class OpenItemListButton extends TexturedButtonWidget {
     public OpenItemListButton(HandledScreen<?> screen) {
         super(0, 0, 9, 9, 0, 0, 9, TEXTURE, 9, 18, (button) -> {
             MinecraftClient client = MinecraftClient.getInstance();
+            if (client.currentScreen != null) client.currentScreen.onClose();
             client.openScreen(new ItemListScreen());
         });
         this.screen = screen;

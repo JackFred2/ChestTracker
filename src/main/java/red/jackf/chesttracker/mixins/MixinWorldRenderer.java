@@ -36,7 +36,7 @@ public abstract class MixinWorldRenderer {
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
         at = @At(value = "TAIL"))
-    public void renderFoundItemOverlay(MatrixStack matrices,
+    public void chestTracker$renderFoundItemOverlay(MatrixStack matrices,
                                        float tickDelta,
                                        long limitTime,
                                        boolean renderBlockOutline,
@@ -54,7 +54,7 @@ public abstract class MixinWorldRenderer {
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;checkEmpty(Lnet/minecraft/client/util/math/MatrixStack;)V", ordinal = 1))
-    public void renderLabelledChestOverlay(MatrixStack matrices,
+    public void chestTracker$renderLabelledChestOverlay(MatrixStack matrices,
                                            float tickDelta,
                                            long limitTime,
                                            boolean renderBlockOutline,
