@@ -19,7 +19,6 @@ public abstract class MemoryUtils {
     private static BlockPos latestPos = null;
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
-        ChestTracker.LOGGER.info("Screen: " + screen.getTitle().asString());
         if (validScreenToTrack(screen)) {
             for (Slot slot : screen.getScreenHandler().slots) {
                 if (slot.hasStack()) {
@@ -35,7 +34,6 @@ public abstract class MemoryUtils {
 
     public static void setLatestPos(@Nullable BlockPos latestPos) {
         MemoryUtils.latestPos = latestPos != null ? latestPos.toImmutable() : null;
-        ChestTracker.LOGGER.info("Latest Pos: " + latestPos);
     }
 
     public static @Nullable BlockPos getLatestPos() {

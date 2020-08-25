@@ -13,6 +13,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -24,7 +25,6 @@ import red.jackf.chesttracker.gui.ItemListScreen;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static red.jackf.chesttracker.ChestTracker.id;
@@ -33,8 +33,8 @@ import static red.jackf.chesttracker.ChestTracker.id;
 public class WItemListPanel extends WGridPanel {
     private static final Identifier SLOT = id("textures/slot.png");
     private static final Identifier SLOT_RED = id("textures/slot_red.png");
-    private List<ItemListScreen.ItemRepresentation> items = Collections.emptyList();
-    private List<ItemListScreen.ItemRepresentation> filteredItems = Collections.emptyList();
+    private List<ItemStack> items = Collections.emptyList();
+    private List<ItemStack> filteredItems = Collections.emptyList();
     @Nullable
     private BiConsumer<Integer, Integer> pageChangeHook = null;
     
@@ -54,13 +54,13 @@ public class WItemListPanel extends WGridPanel {
         this.items.clear();
     }
 
-    public void setItems(@NotNull List<ItemListScreen.ItemRepresentation> items) {
+    public void setItems(List<ItemStack> items) {
         this.items = items;
         this.updateFilter();
     }
 
     private void updateFilter() {
-        this.filteredItems = items.stream().filter(representation -> representation.getStack().getName().getString().toLowerCase().contains(this.filter)).collect(Collectors.toList());
+        this.filteredItems = items.stream().filter(stack -> stack.getName().getString().toLowerCase().contains(this.filter)).collect(Collectors.toList());
         this.pageCount = ((filteredItems.size() - 1) / (columns * rows)) + 1;
         this.currentPage = Math.min(currentPage, pageCount);
         if (this.pageChangeHook != null) this.pageChangeHook.accept(this.currentPage, this.pageCount);
@@ -78,7 +78,7 @@ public class WItemListPanel extends WGridPanel {
         int startIndex = cellsPerPage * (currentPage - 1);
 
         for (int i = startIndex; i < Math.min(startIndex + cellsPerPage, filteredItems.size()); i++) {
-            ItemListScreen.ItemRepresentation representation = filteredItems.get(i);
+            ItemStack stack = filteredItems.get(i);
             int renderX = x + 18 * ((i % cellsPerPage) % columns);
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
@@ -86,7 +86,7 @@ public class WItemListPanel extends WGridPanel {
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0, 0, 18, 18, 18, 18);
 
             renderer.zOffset = 100f;
-            renderer.renderInGui(representation.getStack(), renderX + 1, renderY + 1);
+            renderer.renderInGui(stack, renderX + 1, renderY + 1);
             renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());
@@ -132,9 +132,9 @@ public class WItemListPanel extends WGridPanel {
             if (MinecraftClient.getInstance().player != null) {
                 ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
                 Identifier worldId = playerEntity.clientWorld.getRegistryKey().getValue();
-                ItemListScreen.ItemRepresentation representation = this.filteredItems.get(itemIndex);
+                ItemStack stack = this.filteredItems.get(itemIndex);
                 System.out.println(worldId);
-                System.out.println(representation);
+                System.out.println(stack);
             }
         }
     }
@@ -149,7 +149,7 @@ public class WItemListPanel extends WGridPanel {
 
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
-            List<Text> tooltips = this.filteredItems.get(itemIndex).getStack().getTooltip(null, TooltipContext.Default.NORMAL);
+            List<Text> tooltips = this.filteredItems.get(itemIndex).getTooltip(null, TooltipContext.Default.NORMAL);
 
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null)
@@ -164,11 +164,7 @@ public class WItemListPanel extends WGridPanel {
         this.updateFilter();
     }
 
-    public BiConsumer<Integer, Integer> getPageChangeHook() {
-        return pageChangeHook;
-    }
-
-    public void setPageChangeHook(BiConsumer<Integer, Integer> pageChangeHook) {
+    public void setPageChangeHook(@Nullable BiConsumer<Integer, Integer> pageChangeHook) {
         this.pageChangeHook = pageChangeHook;
     }
 }

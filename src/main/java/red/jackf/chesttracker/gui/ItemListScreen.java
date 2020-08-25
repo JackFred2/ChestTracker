@@ -19,16 +19,13 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
-import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.widgets.WBevelledButton;
 import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +36,6 @@ import static red.jackf.chesttracker.ChestTracker.id;
 public class ItemListScreen extends CottonClientScreen {
     public ItemListScreen() {
         super(new Gui());
-        ChestTracker.LOGGER.info(MemoryDatabase.getCurrent());
     }
 
     @Override
@@ -65,7 +61,7 @@ public class ItemListScreen extends CottonClientScreen {
         private final WItemListPanel itemPanel;
 
         private final Map<Identifier, WBevelledButton> dimensionFilters = new HashMap<>();
-        private Identifier selectedDimensionFilter = EVERYTHING_ID;
+        private Identifier selectedDimensionFilter = DimensionType.OVERWORLD_ID;
 
         public Gui() {
             @SuppressWarnings({"ConstantExpression", "PointlessArithmeticExpression"})
@@ -80,11 +76,11 @@ public class ItemListScreen extends CottonClientScreen {
             itemPanel = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
             root.add(itemPanel, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
 
-            List<ItemRepresentation> stacks = new ArrayList<>();
+            /*List<ItemRepresentation> stacks = new ArrayList<>();
             for (int i = 0; i < Registry.ITEM.stream().count() - 1; i++) {
                 ItemRepresentation representation = new ItemRepresentation(new ItemStack(Registry.ITEM.get(i + 1)), id("default"));
                 stacks.add(representation);
-            }
+            }*/
 
             // Title
             root.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING, 0);
@@ -101,13 +97,6 @@ public class ItemListScreen extends CottonClientScreen {
             nextButton.setOnClick(itemPanel::nextPage);
             root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
             root.add(nextButton, width - SIDE_PADDING - 17, TOP_PADDING - 22, 16, 16);
-
-            // Dimension Filters
-            dimensionFilters.put(selectedDimensionFilter, new WBevelledButton(new ItemIcon(Items.CRAFTING_TABLE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.everything")));
-            dimensionFilters.get(selectedDimensionFilter).setPressed(true);
-            dimensionFilters.put(DimensionType.OVERWORLD_ID, new WBevelledButton(new ItemIcon(Items.GRASS_BLOCK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.overworld")));
-            dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_nether")));
-            dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_end")));
 
             int i = 0;
             for (Map.Entry<Identifier, WBevelledButton> entry : dimensionFilters.entrySet()) {
@@ -130,18 +119,24 @@ public class ItemListScreen extends CottonClientScreen {
             root.add(count, width - SIDE_PADDING - 80, 0, 80, 12);
             count.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
+            // Dimension Filters
+            dimensionFilters.put(selectedDimensionFilter, new WBevelledButton(new ItemIcon(Items.CRAFTING_TABLE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.everything")));
+            dimensionFilters.put(DimensionType.OVERWORLD_ID, new WBevelledButton(new ItemIcon(Items.GRASS_BLOCK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.overworld")));
+            dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_nether")));
+            dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_end")));
+
             itemPanel.setPageChangeHook((current, max) -> {
                 count.setText(new TranslatableText("chesttracker.gui.page_count", current, max));
                 previousButton.setEnabled(current != 1);
-                nextButton.setEnabled(current != max);
+                nextButton.setEnabled(!current.equals(max));
             });
 
-            setItems(stacks);
-
             root.validate(this);
+
+            setDimensionFilter(DimensionType.OVERWORLD_ID);
         }
 
-        private void setItems(List<ItemRepresentation> items) {
+        private void setItems(List<ItemStack> items) {
             this.itemPanel.setItems(items);
         }
 
@@ -154,35 +149,11 @@ public class ItemListScreen extends CottonClientScreen {
                 dimensionFilters.get(EVERYTHING_ID).setPressed(true);
             }
             selectedDimensionFilter = newId;
-        }
-    }
 
-    /**
-     * Extended item representation for the item list
-     */
-    public static class ItemRepresentation {
-        private final ItemStack stack;
-        private final Identifier memoryId;
-
-        private ItemRepresentation(@NotNull ItemStack stack, @NotNull Identifier dimensionId) {
-            this.stack = stack;
-            this.memoryId = dimensionId;
-        }
-
-        private Identifier getMemoryId() {
-            return memoryId;
-        }
-
-        public ItemStack getStack() {
-            return stack;
-        }
-
-        @Override
-        public String toString() {
-            return "ItemRepresentation{" +
-                "stack=" + stack +
-                ", memoryId=" + memoryId +
-                '}';
+            MemoryDatabase database = MemoryDatabase.getCurrent();
+            if (database != null) {
+                setItems(database.getItems(selectedDimensionFilter));
+            }
         }
     }
 }
