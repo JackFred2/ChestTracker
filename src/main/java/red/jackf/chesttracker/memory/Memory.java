@@ -40,4 +40,13 @@ public class Memory {
     public Text getTitle() {
         return title;
     }
+
+    @Override
+    public String toString() {
+        return "Memory{" +
+            "position=" + position +
+            ", items=" + items +
+            ", title=" + title +
+            '}';
+    }
 }

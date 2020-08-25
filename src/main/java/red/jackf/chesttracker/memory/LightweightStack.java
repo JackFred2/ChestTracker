@@ -38,4 +38,12 @@ public class LightweightStack {
     public int hashCode() {
         return Objects.hash(item, tag);
     }
+
+    @Override
+    public String toString() {
+        return "LightweightStack{" +
+            "item=" + item +
+            ", tag=" + tag +
+            '}';
+    }
 }

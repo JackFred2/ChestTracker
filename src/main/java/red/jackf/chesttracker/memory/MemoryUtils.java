@@ -5,6 +5,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
@@ -13,6 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Environment(EnvType.CLIENT)
 public abstract class MemoryUtils {
     @Nullable
@@ -20,10 +27,22 @@ public abstract class MemoryUtils {
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (validScreenToTrack(screen)) {
-            for (Slot slot : screen.getScreenHandler().slots) {
-                if (slot.hasStack()) {
-                    ChestTracker.LOGGER.info(slot.getStack());
-                }
+            MinecraftClient mc = MinecraftClient.getInstance();
+            MemoryDatabase database = MemoryDatabase.getCurrent();
+            if (database != null && mc.world != null && latestPos != null) {
+                List<ItemStack> stacks = new ArrayList<>();
+                screen.getScreenHandler().slots.stream().filter(Slot::hasStack).filter(slot -> !(slot.inventory instanceof PlayerInventory)).map(Slot::getStack).forEach(newStack -> {
+                    System.out.println("New " + newStack);
+                    boolean exists = false;
+                    for (ItemStack oldStack : stacks) {
+                        if (areStacksEquivalent(newStack, oldStack, false)) {
+                            oldStack.setCount(oldStack.getCount() + newStack.getCount());
+                            exists = true;
+                        }
+                    }
+                    if (!exists) stacks.add(newStack);
+                });
+                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, null));
             }
         }
     }
@@ -36,7 +55,8 @@ public abstract class MemoryUtils {
         MemoryUtils.latestPos = latestPos != null ? latestPos.toImmutable() : null;
     }
 
-    public static @Nullable BlockPos getLatestPos() {
+    @Nullable
+    public static BlockPos getLatestPos() {
         return latestPos;
     }
 
@@ -46,5 +66,9 @@ public abstract class MemoryUtils {
 
     public static String makeFileSafe(String name) {
         return name.replaceAll("[\\\\/:*?\"<>|&]", "_");
+    }
+
+    public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
+        return stack1.getItem() == stack2.getItem() && (ignoreNbt || Objects.equals(stack1.getTag(), stack2.getTag()));
     }
 }

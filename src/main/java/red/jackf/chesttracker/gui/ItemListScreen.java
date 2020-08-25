@@ -52,13 +52,21 @@ public class ItemListScreen extends CottonClientScreen {
         private static final Identifier LEFT_BUTTON = id("textures/left_button.png");
         private static final Identifier RIGHT_BUTTON = id("textures/right_button.png");
 
+        private static final Map<Identifier, ItemStack> knownIcons = new HashMap<>();
+        static {
+            knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
+            knownIcons.put(DimensionType.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
+            knownIcons.put(DimensionType.THE_END_ID, new ItemStack(Items.END_STONE));
+        }
+
         private static final int SIDE_PADDING = 0;
         private static final int TOP_PADDING = 36;
         private static final int LEFT_ADDITIONAL_PADDING = 24;
 
-        private static final Identifier EVERYTHING_ID = id("everything");
-
+        private final WLabel counter;
         private final WItemListPanel itemPanel;
+
+        private final Identifier currentWorldId;
 
         private final Map<Identifier, WBevelledButton> dimensionFilters = new HashMap<>();
         private Identifier selectedDimensionFilter = DimensionType.OVERWORLD_ID;
@@ -68,12 +76,20 @@ public class ItemListScreen extends CottonClientScreen {
             int width = (18 * ChestTracker.CONFIG.visualOptions.columnCount) + (2 * SIDE_PADDING) + LEFT_ADDITIONAL_PADDING;
             int height = (18 * ChestTracker.CONFIG.visualOptions.rowCount) + SIDE_PADDING + TOP_PADDING;
 
+            MinecraftClient mc = MinecraftClient.getInstance();
+
+            if (mc.world != null) {
+                this.currentWorldId = mc.world.getRegistryKey().getValue();
+            } else {
+                this.currentWorldId = DimensionType.OVERWORLD_ID;
+            }
+
             WPlainPanel root = new WPlainPanel();
             root.setSize(width, height);
             setRootPanel(root);
 
             // Item List
-            itemPanel = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
+            this.itemPanel = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
             root.add(itemPanel, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
 
             /*List<ItemRepresentation> stacks = new ArrayList<>();
@@ -98,42 +114,47 @@ public class ItemListScreen extends CottonClientScreen {
             root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
             root.add(nextButton, width - SIDE_PADDING - 17, TOP_PADDING - 22, 16, 16);
 
-            int i = 0;
-            for (Map.Entry<Identifier, WBevelledButton> entry : dimensionFilters.entrySet()) {
-                entry.getValue().setOnClick(() -> {
-                    setDimensionFilter(entry.getKey());
-                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                });
-                root.add(entry.getValue(), SIDE_PADDING, 20 * i, 18, 18);
-                i++;
-            }
-
             // Page Count
-            WLabel count = new WLabel(new LiteralText("not loaded")) {
+            counter = new WLabel(new LiteralText("not loaded")) {
                 @Override
                 public void addTooltip(TooltipBuilder tooltip) {
                     super.addTooltip(tooltip);
                     tooltip.add(new TranslatableText("chesttracker.gui.scroll_tip"));
                 }
             };
-            root.add(count, width - SIDE_PADDING - 80, 0, 80, 12);
-            count.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+            root.add(counter, width - SIDE_PADDING - 80, 0, 80, 12);
+            counter.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
             // Dimension Filters
-            dimensionFilters.put(selectedDimensionFilter, new WBevelledButton(new ItemIcon(Items.CRAFTING_TABLE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.everything")));
-            dimensionFilters.put(DimensionType.OVERWORLD_ID, new WBevelledButton(new ItemIcon(Items.GRASS_BLOCK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.overworld")));
-            dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_nether")));
-            dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new TranslatableText("chesttracker.dimension_filters.the_end")));
+            MemoryDatabase database = MemoryDatabase.getCurrent();
+            if (database != null) {
+                database.getDimensions().forEach(id -> dimensionFilters.put(id, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(id.toString()))));
+            }
+
+            if (!dimensionFilters.containsKey(this.currentWorldId)) {
+                dimensionFilters.put(this.currentWorldId, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(this.currentWorldId, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(this.currentWorldId.toString())));
+            }
+            //dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new LiteralText(DimensionType.THE_NETHER_ID.toString())));
+            //dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new LiteralText(DimensionType.THE_END_ID.toString())));
+
+            int i = 0;
+            for (Map.Entry<Identifier, WBevelledButton> entry : dimensionFilters.entrySet()) {
+                entry.getValue().setOnClick(() -> {
+                    setDimensionFilter(entry.getKey());
+                    mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                });
+                root.add(entry.getValue(), SIDE_PADDING, 20 * i, 18, 18);
+                i++;
+            }
 
             itemPanel.setPageChangeHook((current, max) -> {
-                count.setText(new TranslatableText("chesttracker.gui.page_count", current, max));
+                counter.setText(new TranslatableText("chesttracker.gui.page_count", current, max));
                 previousButton.setEnabled(current != 1);
                 nextButton.setEnabled(!current.equals(max));
             });
 
             root.validate(this);
-
-            setDimensionFilter(DimensionType.OVERWORLD_ID);
+            setDimensionFilter(currentWorldId);
         }
 
         private void setItems(List<ItemStack> items) {
@@ -146,13 +167,16 @@ public class ItemListScreen extends CottonClientScreen {
             if (dimensionFilters.containsKey(newId)) {
                 dimensionFilters.get(newId).setPressed(true);
             } else {
-                dimensionFilters.get(EVERYTHING_ID).setPressed(true);
+                dimensionFilters.get(DimensionType.OVERWORLD_ID).setPressed(true);
             }
             selectedDimensionFilter = newId;
 
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null) {
                 setItems(database.getItems(selectedDimensionFilter));
+                this.itemPanel.setUsable(selectedDimensionFilter.equals(currentWorldId));
+            } else {
+                counter.setText(new TranslatableText("chesttracker.gui.error_loading"));
             }
         }
     }

@@ -14,13 +14,17 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.ItemListScreen;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,30 +37,53 @@ import static red.jackf.chesttracker.ChestTracker.id;
 public class WItemListPanel extends WGridPanel {
     private static final Identifier SLOT = id("textures/slot.png");
     private static final Identifier SLOT_RED = id("textures/slot_red.png");
+    private static final Style TOOLTIP_STYLE = Style.EMPTY.withItalic(false).withColor(Formatting.GREEN);
     private List<ItemStack> items = Collections.emptyList();
     private List<ItemStack> filteredItems = Collections.emptyList();
     @Nullable
     private BiConsumer<Integer, Integer> pageChangeHook = null;
-    
+
     private final int columns;
     private final int rows;
 
     private String filter = "";
     private int currentPage = 1;
     private int pageCount = 1;
+    private boolean usable = true;
 
     public WItemListPanel(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
     }
 
-    public void clear() {
-        this.items.clear();
+    public void setUsable(boolean usable) {
+        this.usable = usable;
     }
 
     public void setItems(List<ItemStack> items) {
+        items.forEach(WItemListPanel::addCustomTooltip);
         this.items = items;
         this.updateFilter();
+    }
+
+    private static void addCustomTooltip(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        CompoundTag display;
+        if (tag.contains("display", 10)) {
+            display = tag.getCompound("display");
+        } else {
+            display = new CompoundTag();
+            tag.put("display", display);
+        }
+        ListTag lore;
+        if (display.getType("Lore") == 9) {
+            lore = display.getList("Lore", 8);
+        } else {
+            lore = new ListTag();
+            display.put("Lore", lore);
+        }
+        lore.add(StringTag.of(Text.Serializer.toJson(new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE))));
+        stack.setTag(tag);
     }
 
     private void updateFilter() {
@@ -82,11 +109,12 @@ public class WItemListPanel extends WGridPanel {
             int renderX = x + 18 * ((i % cellsPerPage) % columns);
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
-            mc.getTextureManager().bindTexture(SLOT);
+            mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0, 0, 18, 18, 18, 18);
 
             renderer.zOffset = 100f;
             renderer.renderInGui(stack, renderX + 1, renderY + 1);
+            renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1);
             renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());
@@ -121,20 +149,22 @@ public class WItemListPanel extends WGridPanel {
 
     @Override
     public void onClick(int x, int y, int button) {
-        int cellsPerPage = columns * rows;
-        int startIndex = cellsPerPage * (currentPage - 1);
+        if (usable) {
+            int cellsPerPage = columns * rows;
+            int startIndex = cellsPerPage * (currentPage - 1);
 
-        int relX = x / 18;
-        int relY = y / 18;
+            int relX = x / 18;
+            int relY = y / 18;
 
-        int itemIndex = startIndex + relX + (relY * columns);
-        if (itemIndex < filteredItems.size()) {
-            if (MinecraftClient.getInstance().player != null) {
-                ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-                Identifier worldId = playerEntity.clientWorld.getRegistryKey().getValue();
-                ItemStack stack = this.filteredItems.get(itemIndex);
-                System.out.println(worldId);
-                System.out.println(stack);
+            int itemIndex = startIndex + relX + (relY * columns);
+            if (itemIndex < filteredItems.size()) {
+                if (MinecraftClient.getInstance().player != null) {
+                    ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
+                    Identifier worldId = playerEntity.clientWorld.getRegistryKey().getValue();
+                    ItemStack stack = this.filteredItems.get(itemIndex);
+                    System.out.println(worldId);
+                    System.out.println(stack);
+                }
             }
         }
     }
