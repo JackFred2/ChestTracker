@@ -3,6 +3,8 @@ package red.jackf.chesttracker.gui.widgets;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -25,8 +27,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.ChestTracker;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -61,12 +65,13 @@ public class WItemListPanel extends WGridPanel {
     }
 
     public void setItems(List<ItemStack> items) {
-        items.forEach(WItemListPanel::addCustomTooltip);
+        items.sort(Collections.reverseOrder(Comparator.comparingInt(ItemStack::getCount)));
+        items.forEach(WItemListPanel::prepStackForRender);
         this.items = items;
         this.updateFilter();
     }
 
-    private static void addCustomTooltip(ItemStack stack) {
+    private static void prepStackForRender(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
         CompoundTag display;
         if (tag.contains("display", 10)) {
@@ -84,6 +89,7 @@ public class WItemListPanel extends WGridPanel {
         }
         lore.add(StringTag.of(Text.Serializer.toJson(new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE))));
         stack.setTag(tag);
+        stack.setCount(1);
     }
 
     private void updateFilter() {
@@ -160,10 +166,8 @@ public class WItemListPanel extends WGridPanel {
             if (itemIndex < filteredItems.size()) {
                 if (MinecraftClient.getInstance().player != null) {
                     ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-                    Identifier worldId = playerEntity.clientWorld.getRegistryKey().getValue();
                     ItemStack stack = this.filteredItems.get(itemIndex);
-                    System.out.println(worldId);
-                    System.out.println(stack);
+                    ChestTracker.searchForItem(stack.getItem(), playerEntity.world);
                 }
             }
         }

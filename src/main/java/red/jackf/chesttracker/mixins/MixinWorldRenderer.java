@@ -63,6 +63,9 @@ public abstract class MixinWorldRenderer {
                                            LightmapTextureManager lightmapTextureManager,
                                            Matrix4f matrix4f,
                                            CallbackInfo ci) {
-        this.world.getProfiler().swap("chesttracker_chestlabels");
+        if (!renderBlockOutline) return;
+        this.world.getProfiler().swap("chesttracker_render_chestlabels");
+        RenderUtils.drawLabels(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera);
+
     }
 }

@@ -8,7 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-
+/*
+    A representation of a saved location, along with it's items.
+ */
 @Environment(EnvType.CLIENT)
 public class Memory {
     @Nullable

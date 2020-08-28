@@ -3,6 +3,7 @@ package red.jackf.chesttracker.compat;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.OverlayDecider;
+import me.shedaniel.rei.api.REIHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.RecipeScreen;

@@ -7,9 +7,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -110,7 +112,6 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory) {
-        System.out.println("Saving " + memory);
         BiMap<BlockPos, Memory> map;
         if (!locations.containsKey(worldId)) {
             map = HashBiMap.create();
@@ -119,6 +120,21 @@ public class MemoryDatabase {
             map = locations.get(worldId);
         }
         map.put(memory.getPosition(), memory);
+    }
+
+    public List<Memory> findItems(Item item, Identifier worldId) {
+        List<Memory> found = new ArrayList<>();
+        BiMap<BlockPos, Memory> location = locations.get(worldId);
+        if (location != null) {
+            for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
+                if (entry.getKey() != null) {
+                    if (entry.getValue().getItems().stream().anyMatch(stack -> stack.getItem() == item)) {
+                        found.add(entry.getValue());
+                    }
+                }
+            }
+        }
+        return found;
     }
 
 }

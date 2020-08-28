@@ -32,7 +32,6 @@ public abstract class MemoryUtils {
             if (database != null && mc.world != null && latestPos != null) {
                 List<ItemStack> stacks = new ArrayList<>();
                 screen.getScreenHandler().slots.stream().filter(Slot::hasStack).filter(slot -> !(slot.inventory instanceof PlayerInventory)).map(Slot::getStack).forEach(newStack -> {
-                    System.out.println("New " + newStack);
                     boolean exists = false;
                     for (ItemStack oldStack : stacks) {
                         if (areStacksEquivalent(newStack, oldStack, false)) {

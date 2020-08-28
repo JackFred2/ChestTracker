@@ -12,7 +12,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.memory.Memory;
+import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 
 import java.util.*;
@@ -37,10 +40,10 @@ public abstract class RenderUtils {
             .build(false)
     );
 
-    public static void addRenderPositions(Collection<BlockPos> positions, long startTime) {
+    public static void addRenderPositions(@NotNull Collection<Memory> memories, long startTime) {
         synchronized (RENDER_POSITIONS) {
-            RENDER_POSITIONS.addAll(positions.stream()
-                .map(blockPos -> new PositionData(blockPos, startTime))
+            RENDER_POSITIONS.addAll(memories.stream()
+                .map(memory -> new PositionData(memory, startTime))
                 .collect(Collectors.toList()));
         }
     }
@@ -51,14 +54,14 @@ public abstract class RenderUtils {
         }
     }
 
-    public static void removeRenderPositions(Collection<PositionData> positions) {
+    public static void removeRenderPositions(@NotNull Collection<PositionData> positions) {
         synchronized (RENDER_POSITIONS) {
             RENDER_POSITIONS.removeAll(positions);
         }
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static RenderPhase.LineWidth getDynamicLineWidth() {
+    public static RenderPhase.@NotNull LineWidth getDynamicLineWidth() {
         RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
         ((AccessorRenderPhase) layer).setName("line_width_dynamic");
         ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
@@ -68,7 +71,7 @@ public abstract class RenderUtils {
 
     // Optimized version of a voxelshape renderer, most noticeable at large counts.
 
-    public static void optimizedDrawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double x, double y, double z, float r, float g, float b, float a) {
+    public static void optimizedDrawShapeOutline(@NotNull MatrixStack matrixStack, @NotNull VertexConsumer vertexConsumer, @NotNull VoxelShape voxelShape, double x, double y, double z, float r, float g, float b, float a) {
         if (!CACHED_SHAPES.containsKey(voxelShape)) {
             List<Box> boxes = new ArrayList<>();
             voxelShape.forEachEdge(((minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new Box(minX, minY, minZ, maxX, maxY, maxZ))));
@@ -85,7 +88,7 @@ public abstract class RenderUtils {
     }
 
 
-    public static void drawOutlines(MatrixStack matrices, VertexConsumerProvider.Immediate provider, Camera camera, long worldTime, float tickDelta) {
+    public static void drawOutlines(@NotNull MatrixStack matrices, VertexConsumerProvider.@NotNull Immediate provider, @NotNull Camera camera, long worldTime, float tickDelta) {
         Vec3d cameraPos = camera.getPos();
         RenderSystem.disableDepthTest();
         matrices.push();
@@ -102,12 +105,12 @@ public abstract class RenderUtils {
             if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime) {
                 toRemove.add(data);
             } else {
-                Vec3d finalPos = cameraPos.subtract(data.getPos().getX(), data.getPos().getY(), data.getPos().getZ()).negate();
+                Memory memory = data.getMemory();
+                if (memory.getPosition() == null) continue;
+                Vec3d finalPos = cameraPos.subtract(memory.getPosition().getX(), memory.getPosition().getY(), memory.getPosition().getZ()).negate();
                 if (finalPos.lengthSquared() > 4096) {
                     finalPos = finalPos.normalize().multiply(64);
                 }
-
-                VoxelShape shape = VoxelShapes.fullCube();
 
                 // https://www.desmos.com/calculator/bs2whnaxqp
                 // scaleFactor, transparencyFactor and offset in order
@@ -147,7 +150,7 @@ public abstract class RenderUtils {
             removeRenderPositions(toRemove);
     }
 
-    public static void drawTextInWorld(MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, Camera camera, Vec3d pos, Text text, boolean force) {
+    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, Vec3d pos, Text text, boolean force) {
         Vec3d renderPos = camera.getPos().negate().add(pos);
         if (force) {
             double d = MathHelper.sqrt(renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z);
@@ -168,17 +171,23 @@ public abstract class RenderUtils {
         matrixStack.pop();
     }
 
+    public static void drawLabels(MatrixStack matrices, VertexConsumerProvider.Immediate entityVertexConsumers, Camera camera) {
+        MemoryDatabase database = MemoryDatabase.getCurrent();
+        if (database == null) return;
+
+    }
+
     public static class PositionData {
-        private final BlockPos pos;
+        private final Memory memory;
         private final long startTime;
 
-        public PositionData(BlockPos pos, long startTime) {
-            this.pos = pos;
+        public PositionData(Memory memory, long startTime) {
+            this.memory = memory;
             this.startTime = startTime;
         }
 
-        public BlockPos getPos() {
-            return pos;
+        public Memory getMemory() {
+            return memory;
         }
 
         public long getStartTime() {

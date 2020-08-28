@@ -10,24 +10,37 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.InventoryProvider;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.FavouriteButton;
 import red.jackf.chesttracker.gui.OpenItemListButton;
+import red.jackf.chesttracker.memory.Memory;
+import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
+import red.jackf.chesttracker.mixins.AccessorHandledScreen;
+import red.jackf.chesttracker.render.RenderUtils;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -44,13 +57,37 @@ public class ChestTracker implements ClientModInitializer {
         player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
+    public static void searchForItem(Item item, @NotNull World world) {
+        MemoryDatabase database = MemoryDatabase.getCurrent();
+        if (database != null) {
+            List<Memory> found = database.findItems(item, world.getRegistryKey().getValue());
+            if (found.size() >= 1) {
+                RenderUtils.addRenderPositions(found, world.getTime());
+                if (MinecraftClient.getInstance().player != null)
+                    MinecraftClient.getInstance().player.closeHandledScreen();
+            }
+        }
+    }
+
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
-
+                MinecraftClient mc = MinecraftClient.getInstance();
+                World world = mc.world;
+                if (world != null && mc.currentScreen instanceof AccessorHandledScreen) {
+                    // Try the current screen inventory slots first
+                    Slot hovered = ((AccessorHandledScreen) mc.currentScreen).getFocusedSlot();
+                    if (hovered != null && hovered.hasStack()) {
+                        ChestTracker.searchForItem(hovered.getStack().getItem(), world);
+                    } else if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+                        double scaleFactor = (double) mc.getWindow().getScaledWidth() / (double) mc.getWindow().getWidth();
+                        ItemStack stack = REIPlugin.tryFindItem(mc.mouse.getX() * scaleFactor, mc.mouse.getY() * scaleFactor);
+                        if (!stack.isEmpty()) ChestTracker.searchForItem(stack.getItem(), world);
+                    }
+                }
             }
 
             return ActionResult.PASS;
