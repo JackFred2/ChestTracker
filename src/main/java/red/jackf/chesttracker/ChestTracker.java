@@ -57,10 +57,10 @@ public class ChestTracker implements ClientModInitializer {
         player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
-    public static void searchForItem(Item item, @NotNull World world) {
+    public static void searchForItem(ItemStack stack, @NotNull World world) {
         MemoryDatabase database = MemoryDatabase.getCurrent();
         if (database != null) {
-            List<Memory> found = database.findItems(item, world.getRegistryKey().getValue());
+            List<Memory> found = database.findItems(stack, world.getRegistryKey().getValue());
             if (found.size() >= 1) {
                 RenderUtils.addRenderPositions(found, world.getTime());
                 if (MinecraftClient.getInstance().player != null)
@@ -81,11 +81,11 @@ public class ChestTracker implements ClientModInitializer {
                     // Try the current screen inventory slots first
                     Slot hovered = ((AccessorHandledScreen) mc.currentScreen).getFocusedSlot();
                     if (hovered != null && hovered.hasStack()) {
-                        ChestTracker.searchForItem(hovered.getStack().getItem(), world);
+                        ChestTracker.searchForItem(hovered.getStack(), world);
                     } else if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
                         double scaleFactor = (double) mc.getWindow().getScaledWidth() / (double) mc.getWindow().getWidth();
                         ItemStack stack = REIPlugin.tryFindItem(mc.mouse.getX() * scaleFactor, mc.mouse.getY() * scaleFactor);
-                        if (!stack.isEmpty()) ChestTracker.searchForItem(stack.getItem(), world);
+                        if (!stack.isEmpty()) ChestTracker.searchForItem(stack, world);
                     }
                 }
             }

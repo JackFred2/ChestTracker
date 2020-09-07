@@ -122,13 +122,18 @@ public class MemoryDatabase {
         map.put(memory.getPosition(), memory);
     }
 
-    public List<Memory> findItems(Item item, Identifier worldId) {
+    public void removePos(Identifier worldId, BlockPos pos) {
+        BiMap<BlockPos, Memory> location = locations.get(worldId);
+        if (location != null) location.remove(pos);
+    }
+
+    public List<Memory> findItems(ItemStack toFind, Identifier worldId) {
         List<Memory> found = new ArrayList<>();
         BiMap<BlockPos, Memory> location = locations.get(worldId);
         if (location != null) {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
-                    if (entry.getValue().getItems().stream().anyMatch(stack -> stack.getItem() == item)) {
+                    if (entry.getValue().getItems().stream().anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, !toFind.hasTag()))) {
                         found.add(entry.getValue());
                     }
                 }

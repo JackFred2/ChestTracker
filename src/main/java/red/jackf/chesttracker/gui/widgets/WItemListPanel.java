@@ -29,6 +29,7 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -65,31 +66,14 @@ public class WItemListPanel extends WGridPanel {
     }
 
     public void setItems(List<ItemStack> items) {
-        items.sort(Collections.reverseOrder(Comparator.comparingInt(ItemStack::getCount)));
-        items.forEach(WItemListPanel::prepStackForRender);
-        this.items = items;
+        this.items = items.stream()//.map(ItemStack::copy)
+            .sorted(Collections.reverseOrder(Comparator.comparingInt(ItemStack::getCount)))
+            .collect(Collectors.toList());
         this.updateFilter();
     }
 
-    private static void prepStackForRender(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        CompoundTag display;
-        if (tag.contains("display", 10)) {
-            display = tag.getCompound("display");
-        } else {
-            display = new CompoundTag();
-            tag.put("display", display);
-        }
-        ListTag lore;
-        if (display.getType("Lore") == 9) {
-            lore = display.getList("Lore", 8);
-        } else {
-            lore = new ListTag();
-            display.put("Lore", lore);
-        }
-        lore.add(StringTag.of(Text.Serializer.toJson(new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE))));
-        stack.setTag(tag);
-        stack.setCount(1);
+    private static Text getCountText(ItemStack stack) {
+        return new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE);
     }
 
     private void updateFilter() {
@@ -120,7 +104,7 @@ public class WItemListPanel extends WGridPanel {
 
             renderer.zOffset = 100f;
             renderer.renderInGui(stack, renderX + 1, renderY + 1);
-            renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1);
+            //renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1);
             renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());
@@ -153,23 +137,27 @@ public class WItemListPanel extends WGridPanel {
         MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * (float) (this.currentPage - 1) / this.pageCount)));
     }
 
+    private void searchItem(int x, int y) {
+        int cellsPerPage = columns * rows;
+        int startIndex = cellsPerPage * (currentPage - 1);
+
+        int relX = x / 18;
+        int relY = y / 18;
+
+        int itemIndex = startIndex + relX + (relY * columns);
+        if (itemIndex < filteredItems.size()) {
+            if (MinecraftClient.getInstance().player != null) {
+                ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
+                ItemStack stack = this.filteredItems.get(itemIndex);
+                ChestTracker.searchForItem(stack, playerEntity.world);
+            }
+        }
+    }
+
     @Override
     public void onClick(int x, int y, int button) {
-        if (usable) {
-            int cellsPerPage = columns * rows;
-            int startIndex = cellsPerPage * (currentPage - 1);
-
-            int relX = x / 18;
-            int relY = y / 18;
-
-            int itemIndex = startIndex + relX + (relY * columns);
-            if (itemIndex < filteredItems.size()) {
-                if (MinecraftClient.getInstance().player != null) {
-                    ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-                    ItemStack stack = this.filteredItems.get(itemIndex);
-                    ChestTracker.searchForItem(stack.getItem(), playerEntity.world);
-                }
-            }
+        if (usable && button == 0) {
+            searchItem(x, y);
         }
     }
 
@@ -183,7 +171,9 @@ public class WItemListPanel extends WGridPanel {
 
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
-            List<Text> tooltips = this.filteredItems.get(itemIndex).getTooltip(null, TooltipContext.Default.NORMAL);
+            ItemStack stack = this.filteredItems.get(itemIndex);
+            List<Text> tooltips = stack.getTooltip(null, TooltipContext.Default.NORMAL);
+            tooltips.add(getCountText(stack));
 
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null)

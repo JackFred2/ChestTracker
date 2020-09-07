@@ -5,8 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "AccessorHandledScreen",
-    "AccessorRenderPhase",
     "AccessorMinecraftServer",
+    "AccessorRenderPhase",
+    "MixinBlock",
     "MixinMinecraftClient",
     "MixinWorldRenderer"
   ],

@@ -68,6 +68,13 @@ public abstract class MemoryUtils {
     }
 
     public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
-        return stack1.getItem() == stack2.getItem() && (ignoreNbt || Objects.equals(stack1.getTag(), stack2.getTag()));
+        boolean match = stack1.getItem() == stack2.getItem() && (ignoreNbt || Objects.equals(stack1.getTag(), stack2.getTag()));
+        System.out.println("match: " + match);
+        System.out.println("ignore nbt: " + ignoreNbt);
+        System.out.println(stack1);
+        System.out.println(stack1.getTag());
+        System.out.println(stack2);
+        System.out.println(stack2.getTag());
+        return match;
     }
 }
