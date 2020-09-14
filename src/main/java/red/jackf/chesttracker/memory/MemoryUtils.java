@@ -17,6 +17,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
@@ -48,9 +49,18 @@ public abstract class MemoryUtils {
                     if (!exists) stacks.add(newStack);
                 });
                 Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
-                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title), getConnected(mc.world, latestPos));
+                Collection<BlockPos> connected = getConnected(mc.world, latestPos);
+                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
             }
         }
+    }
+
+    private static Vec3d getAveragePos(BlockPos basePos, Collection<BlockPos> connected) {
+        Vec3d base = Vec3d.of(basePos);
+        for (BlockPos pos : connected) {
+            base = base.add(Vec3d.of(pos));
+        }
+        return base.multiply(1f/(1 + connected.size())).subtract(Vec3d.of(basePos));
     }
 
     private static Collection<BlockPos> getConnected(@NotNull World world, BlockPos pos) {

@@ -156,8 +156,7 @@ public abstract class RenderUtils {
         double d = renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z;
         if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange) return;
         if (force) {
-            if (d > 16)
-                renderPos = renderPos.multiply(4 / Math.sqrt(d));
+            if (d > 16) renderPos = renderPos.multiply(4 / Math.sqrt(d));
         }
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
@@ -180,8 +179,12 @@ public abstract class RenderUtils {
         if (mc.world != null) {
             Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
             for (Memory memory : toRender) {
-                BlockPos pos = memory.getPosition();
-                if (pos != null) drawTextAt(matrices, entityVertexConsumers, camera, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, memory.getTitle(), false);
+                BlockPos blockPos = memory.getPosition();
+                if (blockPos != null) {
+                    Vec3d pos = Vec3d.ofCenter(blockPos);
+                    if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
+                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false);
+                }
             }
         }
     }
