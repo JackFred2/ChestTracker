@@ -77,7 +77,8 @@ public class WItemListPanel extends WGridPanel {
     }
 
     private void updateFilter() {
-        this.filteredItems = items.stream().filter(stack -> stack.getName().getString().toLowerCase().contains(this.filter)).collect(Collectors.toList());
+        this.filteredItems = items.stream().filter(stack -> stack.getName().getString().toLowerCase().contains(this.filter)
+            || stack.getTag() != null && stack.getTag().toString().toLowerCase().contains(this.filter)).collect(Collectors.toList());
         this.pageCount = ((filteredItems.size() - 1) / (columns * rows)) + 1;
         this.currentPage = Math.min(currentPage, pageCount);
         if (this.pageChangeHook != null) this.pageChangeHook.accept(this.currentPage, this.pageCount);

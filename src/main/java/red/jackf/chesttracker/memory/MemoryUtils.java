@@ -2,7 +2,10 @@ package red.jackf.chesttracker.memory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -14,14 +17,13 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
@@ -46,9 +48,25 @@ public abstract class MemoryUtils {
                     if (!exists) stacks.add(newStack);
                 });
                 Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
-                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title));
+                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title), getConnected(mc.world, latestPos));
             }
         }
+    }
+
+    private static Collection<BlockPos> getConnected(@NotNull World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof ChestBlock) {
+            if (state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+                boolean left = state.get(ChestBlock.CHEST_TYPE) == ChestType.LEFT;
+                switch (state.get(ChestBlock.FACING)) {
+                    case NORTH: return Collections.singleton(pos.add(left ? 1 : -1, 0, 0));
+                    case SOUTH: return Collections.singleton(pos.add(left ? -1 : 1, 0, 0));
+                    case WEST: return Collections.singleton(pos.add(0, 0, left ? -1 : 1));
+                    case EAST: return Collections.singleton(pos.add(0, 0, left ? 1 : -1));
+                }
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Nullable
@@ -86,12 +104,12 @@ public abstract class MemoryUtils {
 
     public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
         boolean match = stack1.getItem() == stack2.getItem() && (ignoreNbt || Objects.equals(stack1.getTag(), stack2.getTag()));
-        System.out.println("match: " + match);
+        /*System.out.println("match: " + match);
         System.out.println("ignore nbt: " + ignoreNbt);
         System.out.println(stack1);
         System.out.println(stack1.getTag());
         System.out.println(stack2);
-        System.out.println(stack2.getTag());
+        System.out.println(stack2.getTag());*/
         return match;
     }
 }

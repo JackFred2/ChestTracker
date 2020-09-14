@@ -120,6 +120,12 @@ public class MemoryDatabase {
         }
     }
 
+    public void mergeItems(Identifier worldId, Memory memory, Collection<BlockPos> toRemove) {
+        if (locations.containsKey(worldId)) toRemove.forEach(locations.get(worldId)::remove);
+        if (namedLocations.containsKey(worldId)) toRemove.forEach(namedLocations.get(worldId)::remove);
+        mergeItems(worldId, memory);
+    }
+
     public void mergeItems(Identifier worldId, Memory memory) {
         BiMap<BlockPos, Memory> map;
         if (!locations.containsKey(worldId)) {
