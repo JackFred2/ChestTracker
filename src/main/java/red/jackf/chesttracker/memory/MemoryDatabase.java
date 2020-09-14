@@ -25,7 +25,8 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
     private final String id;
-    private Map<Identifier, BiMap<BlockPos, Memory>> locations = new HashMap<>();
+    private final Map<Identifier, BiMap<BlockPos, Memory>> locations = new HashMap<>();
+    private final Map<Identifier, BiMap<BlockPos, Memory>> namedLocations = new HashMap<>();
 
     @Nullable
     private static MemoryDatabase currentDatabase = null;
@@ -111,6 +112,14 @@ public class MemoryDatabase {
         }
     }
 
+    public Collection<Memory> getNamedMemories(Identifier worldId) {
+        if (namedLocations.containsKey(worldId)) {
+            return namedLocations.get(worldId).values();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     public void mergeItems(Identifier worldId, Memory memory) {
         BiMap<BlockPos, Memory> map;
         if (!locations.containsKey(worldId)) {
@@ -120,11 +129,23 @@ public class MemoryDatabase {
             map = locations.get(worldId);
         }
         map.put(memory.getPosition(), memory);
+        if (memory.getTitle() != null) {
+            BiMap<BlockPos, Memory> namedMap;
+            if (!namedLocations.containsKey(worldId)) {
+                namedMap = HashBiMap.create();
+                namedLocations.put(worldId, namedMap);
+            } else {
+                namedMap = namedLocations.get(worldId);
+            }
+            namedMap.put(memory.getPosition(), memory);
+        }
     }
 
     public void removePos(Identifier worldId, BlockPos pos) {
         BiMap<BlockPos, Memory> location = locations.get(worldId);
         if (location != null) location.remove(pos);
+        BiMap<BlockPos, Memory> namedLocation = namedLocations.get(worldId);
+        if (namedLocation != null) namedLocation.remove(pos);
     }
 
     public List<Memory> findItems(ItemStack toFind, Identifier worldId) {

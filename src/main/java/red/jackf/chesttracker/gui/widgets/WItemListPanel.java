@@ -83,6 +83,13 @@ public class WItemListPanel extends WGridPanel {
         if (this.pageChangeHook != null) this.pageChangeHook.accept(this.currentPage, this.pageCount);
     }
 
+    private static String getLabel(int count) {
+        if (count < 1_000) return "" + count;
+        if (count < 1_000_000) return count / 1_000 + "k";
+        if (count < 1_000_000_000) return count / 1_000_000 + "M";
+        return count / 1_000_000_000 + "G";
+    }
+
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         super.paint(matrices, x, y, mouseX, mouseY);
@@ -104,7 +111,7 @@ public class WItemListPanel extends WGridPanel {
 
             renderer.zOffset = 100f;
             renderer.renderInGui(stack, renderX + 1, renderY + 1);
-            //renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1);
+            renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1, getLabel(stack.getCount()));
             renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());

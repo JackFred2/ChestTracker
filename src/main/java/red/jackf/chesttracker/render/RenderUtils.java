@@ -9,6 +9,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -150,12 +151,13 @@ public abstract class RenderUtils {
             removeRenderPositions(toRemove);
     }
 
-    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, Vec3d pos, Text text, boolean force) {
-        Vec3d renderPos = camera.getPos().negate().add(pos);
+    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, Text text, boolean force) {
+        Vec3d renderPos = camera.getPos().negate().add(x, y, z);
+        double d = renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z;
+        if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange) return;
         if (force) {
-            double d = MathHelper.sqrt(renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z);
-            if (d > 4)
-                renderPos = renderPos.multiply(4 / d);
+            if (d > 16)
+                renderPos = renderPos.multiply(4 / Math.sqrt(d));
         }
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
@@ -174,7 +176,14 @@ public abstract class RenderUtils {
     public static void drawLabels(MatrixStack matrices, VertexConsumerProvider.Immediate entityVertexConsumers, Camera camera) {
         MemoryDatabase database = MemoryDatabase.getCurrent();
         if (database == null) return;
-
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.world != null) {
+            Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
+            for (Memory memory : toRender) {
+                BlockPos pos = memory.getPosition();
+                if (pos != null) drawTextAt(matrices, entityVertexConsumers, camera, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, memory.getTitle(), false);
+            }
+        }
     }
 
     public static class PositionData {

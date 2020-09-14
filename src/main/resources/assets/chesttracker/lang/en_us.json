@@ -6,7 +6,7 @@
   "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
   "chesttracker.gui.search_field_start": "Search...",
   "chesttracker.gui.favourite": "Favourite",
-  "chesttracker.gui.stack_count": "Count: %d",
+  "chesttracker.gui.stack_count": "%d",
   "key.chesttracker.searchforitem": "Search for items",
   "text.autoconfig.chesttracker.category.visual_options": "Visual Options",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config",
