@@ -3,6 +3,7 @@ package red.jackf.chesttracker.memory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.ChestType;
@@ -16,6 +17,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -27,10 +29,13 @@ import red.jackf.chesttracker.ChestTracker;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static red.jackf.chesttracker.ChestTracker.id;
+
 @Environment(EnvType.CLIENT)
 public abstract class MemoryUtils {
     @Nullable
     private static BlockPos latestPos = null;
+    public static final Identifier ENDER_CHEST_ID = id("ender_chest");
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (validScreenToTrack(screen)) {
@@ -48,9 +53,14 @@ public abstract class MemoryUtils {
                     }
                     if (!exists) stacks.add(newStack);
                 });
-                Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
-                Collection<BlockPos> connected = getConnected(mc.world, latestPos);
-                database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
+                BlockState state = mc.world.getBlockState(latestPos);
+                if (state.getBlock() == Blocks.ENDER_CHEST) {
+                    database.mergeItems(MemoryUtils.ENDER_CHEST_ID, Memory.of(BlockPos.ORIGIN, stacks, null, null));
+                } else {
+                    Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
+                    Collection<BlockPos> connected = getConnected(mc.world, latestPos);
+                    database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
+                }
             }
         }
     }

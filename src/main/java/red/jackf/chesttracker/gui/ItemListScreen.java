@@ -25,6 +25,7 @@ import red.jackf.chesttracker.gui.widgets.WBevelledButton;
 import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
 import red.jackf.chesttracker.memory.MemoryDatabase;
+import red.jackf.chesttracker.memory.MemoryUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class ItemListScreen extends CottonClientScreen {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
             knownIcons.put(DimensionType.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
             knownIcons.put(DimensionType.THE_END_ID, new ItemStack(Items.END_STONE));
+            knownIcons.put(MemoryUtils.ENDER_CHEST_ID, new ItemStack(Items.ENDER_CHEST));
         }
 
         private static final int SIDE_PADDING = 0;

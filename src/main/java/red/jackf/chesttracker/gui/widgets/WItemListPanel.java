@@ -107,7 +107,8 @@ public class WItemListPanel extends WGridPanel {
             int renderX = x + 18 * ((i % cellsPerPage) % columns);
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
-            mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
+            mc.getTextureManager().bindTexture(SLOT);
+            //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0, 0, 18, 18, 18, 18);
 
             renderer.zOffset = 100f;
