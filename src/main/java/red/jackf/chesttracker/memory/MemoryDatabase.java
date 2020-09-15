@@ -31,7 +31,7 @@ import java.util.*;
 public class MemoryDatabase {
     private transient final String id;
     private Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
-    private transient final Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
+    private transient Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
 
     @Nullable
     private static MemoryDatabase currentDatabase = null;
@@ -102,6 +102,7 @@ public class MemoryDatabase {
             GsonHandler.get().toJson(locations, writer);
             writer.flush();
             writer.close();
+            ChestTracker.LOGGER.info("Saved data for " + id);
         } catch (IOException ex) {
             ChestTracker.LOGGER.error("Error saving file for " + this.id);
             ChestTracker.LOGGER.error(ex);
@@ -111,13 +112,18 @@ public class MemoryDatabase {
     public void load() {
         Path loadPath = getFilePath();
         try {
-            FileReader reader = new FileReader(loadPath.toString());
-            this.locations = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
-            }.getType());
-            this.generateNamedLocations();
-        } catch (IOException ex) {
-            ChestTracker.LOGGER.error(ex);
-        } catch (JsonParseException ex) {
+            if (Files.exists(loadPath)) {
+                ChestTracker.LOGGER.info("Found data for " + id);
+                FileReader reader = new FileReader(loadPath.toString());
+                this.locations = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
+                }.getType());
+                this.generateNamedLocations();
+            } else {
+                ChestTracker.LOGGER.info("No data found for " + id);
+                this.locations = new HashMap<>();
+                this.namedLocations = new HashMap<>();
+            }
+        } catch (JsonParseException | IOException ex) {
             ChestTracker.LOGGER.error("Error reading file for " + this.id);
             ChestTracker.LOGGER.error(ex);
         }
@@ -125,12 +131,14 @@ public class MemoryDatabase {
 
     // Creates namedLocations list from current locations list.
     private void generateNamedLocations() {
+        Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
         for (Identifier worldId : this.locations.keySet()) {
-            Map<BlockPos, Memory> newMap = this.namedLocations.computeIfAbsent(worldId, id -> new HashMap<>());
+            Map<BlockPos, Memory> newMap = namedLocations.computeIfAbsent(worldId, id -> new HashMap<>());
             this.locations.get(worldId).forEach(((pos, memory) -> {
                 if (memory.getTitle() != null) newMap.put(pos, memory);
             }));
         }
+        this.namedLocations = namedLocations;
     }
 
     @NotNull
@@ -173,24 +181,21 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory) {
-        Map<BlockPos, Memory> map;
-        if (!locations.containsKey(worldId)) {
-            map = HashBiMap.create();
-            locations.put(worldId, map);
-        } else {
-            map = locations.get(worldId);
-        }
-        map.put(memory.getPosition(), memory);
+        addItem(worldId, memory, locations);
         if (memory.getTitle() != null) {
-            Map<BlockPos, Memory> namedMap;
-            if (!namedLocations.containsKey(worldId)) {
-                namedMap = HashBiMap.create();
-                namedLocations.put(worldId, namedMap);
-            } else {
-                namedMap = namedLocations.get(worldId);
-            }
-            namedMap.put(memory.getPosition(), memory);
+            addItem(worldId, memory, namedLocations);
         }
+    }
+
+    private void addItem(Identifier worldId, Memory memory, Map<Identifier, Map<BlockPos, Memory>> namedLocations) {
+        Map<BlockPos, Memory> namedMap = namedLocations.computeIfAbsent(worldId, (identifier -> new HashMap<>()));
+        /*if (!namedLocations.containsKey(worldId)) {
+            namedMap = HashBiMap.create();
+            namedLocations.put(worldId, namedMap);
+        } else {
+            namedMap = namedLocations.get(worldId);
+        }*/
+        namedMap.put(memory.getPosition(), memory);
     }
 
     public void removePos(Identifier worldId, BlockPos pos) {

@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class GsonHandler {
@@ -68,7 +69,13 @@ public class GsonHandler {
         @Override
         public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             try {
-                return ItemStack.fromTag(StringNbtReader.parse(json.getAsString()));
+                JsonObject object = json.getAsJsonObject();
+                Identifier id = context.deserialize(object.get("id"), Identifier.class);
+                int count = object.getAsJsonPrimitive("count").getAsInt();
+                ItemStack stack = new ItemStack(Registry.ITEM.get(id), count);
+                JsonPrimitive tagJson = object.getAsJsonPrimitive("tag");
+                if (tagJson != null) stack.setTag(StringNbtReader.parse(tagJson.getAsString()));
+                return stack;
             } catch (Exception ex) {
                 throw new JsonParseException("Could not read item", ex);
             }
@@ -76,7 +83,12 @@ public class GsonHandler {
 
         @Override
         public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.toTag(new CompoundTag()).toString());
+            JsonObject object = new JsonObject();
+            object.add("id", context.serialize(Registry.ITEM.getId(src.getItem())));
+            object.addProperty("count", src.getCount());
+            CompoundTag tag = src.getTag();
+            if (tag != null) object.addProperty("tag", tag.toString());
+            return object;
         }
     }
 }

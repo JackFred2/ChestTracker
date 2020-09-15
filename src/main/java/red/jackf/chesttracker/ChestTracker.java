@@ -74,6 +74,12 @@ public class ChestTracker implements ClientModInitializer {
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
 
+        // Save if someone just decides to X out of craft
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            MemoryDatabase database = MemoryDatabase.getCurrent();
+            if (database != null) database.save();
+        }));
+
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
                 MinecraftClient mc = MinecraftClient.getInstance();
