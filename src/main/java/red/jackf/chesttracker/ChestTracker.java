@@ -103,7 +103,7 @@ public class ChestTracker implements ClientModInitializer {
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
                 screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
-                screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
+                //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
             }
         });
 

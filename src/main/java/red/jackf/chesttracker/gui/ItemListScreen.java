@@ -109,8 +109,8 @@ public class ItemListScreen extends CottonClientScreen {
             root.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING - 24, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
             // Page Buttons
-            WBevelledButton previousButton = new WBevelledButton(new TextureIcon(LEFT_BUTTON), new TranslatableText("chesttracker.gui.previous_page"));
-            WBevelledButton nextButton = new WBevelledButton(new TextureIcon(RIGHT_BUTTON), new TranslatableText("chesttracker.gui.next_page"));
+            WBevelledButton previousButton = new WBevelledButton(new TextureIcon(LEFT_BUTTON), new TranslatableText("chesttracker.gui.previous_page"), false);
+            WBevelledButton nextButton = new WBevelledButton(new TextureIcon(RIGHT_BUTTON), new TranslatableText("chesttracker.gui.next_page"), false);
             previousButton.setOnClick(itemPanel::previousPage);
             nextButton.setOnClick(itemPanel::nextPage);
             root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
@@ -130,12 +130,14 @@ public class ItemListScreen extends CottonClientScreen {
             // Dimension Filters
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null) {
-                database.getDimensions().forEach(id -> dimensionFilters.put(id, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(id.toString()))));
+                database.getDimensions().forEach(id -> dimensionFilters.put(id, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(id.toString()), false)));
             }
 
             if (!dimensionFilters.containsKey(this.currentWorldId)) {
-                dimensionFilters.put(this.currentWorldId, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(this.currentWorldId, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(this.currentWorldId.toString())));
+                dimensionFilters.put(this.currentWorldId, new WBevelledButton(new ItemIcon(knownIcons.getOrDefault(this.currentWorldId, new ItemStack(Items.CRAFTING_TABLE))), new LiteralText(this.currentWorldId.toString()), false));
             }
+
+            dimensionFilters.get(this.currentWorldId).setHighlighted(true);
             //dimensionFilters.put(DimensionType.THE_NETHER_ID, new WBevelledButton(new ItemIcon(Items.NETHERRACK.getStackForRender()), new LiteralText(DimensionType.THE_NETHER_ID.toString())));
             //dimensionFilters.put(DimensionType.THE_END_ID, new WBevelledButton(new ItemIcon(Items.END_STONE.getStackForRender()), new LiteralText(DimensionType.THE_END_ID.toString())));
 

@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.memory;
 
-import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -10,6 +9,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
@@ -205,13 +205,19 @@ public class MemoryDatabase {
         if (namedLocation != null) namedLocation.remove(pos);
     }
 
+    private static final CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
+
+    static {
+        FULL_DURABILITY_TAG.putInt("Damage", 0);
+    }
+
     public List<Memory> findItems(ItemStack toFind, Identifier worldId) {
         List<Memory> found = new ArrayList<>();
         Map<BlockPos, Memory> location = locations.get(worldId);
         if (location != null) {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
-                    if (entry.getValue().getItems().stream().anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, !toFind.hasTag()))) {
+                    if (entry.getValue().getItems().stream().anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
                         found.add(entry.getValue());
                     }
                 }

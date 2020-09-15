@@ -2,7 +2,6 @@ package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import net.fabricmc.api.EnvType;
@@ -18,10 +17,12 @@ import java.util.Collections;
 public class WBevelledButton extends WButton {
     private final Text tooltip;
     private boolean pressed = false;
+    private boolean highlighted;
 
-    public WBevelledButton(Icon icon, Text tooltip) {
+    public WBevelledButton(Icon icon, Text tooltip, boolean highlighted) {
         super(icon);
         this.tooltip = tooltip;
+        this.highlighted = highlighted;
     }
 
     @Override
@@ -32,13 +33,13 @@ public class WBevelledButton extends WButton {
         int bottomRight;
 
         if (pressed) {
-            topLeft = 0xFF000000;
-            panel = hovered ? 0xFFC6C6C6 : 0xFF969696;
-            bottomRight = 0xFFFFFFFF;
+            topLeft = highlighted ? 0xFF003700 : 0xFF000000;
+            panel = highlighted ? (hovered ? 0xFF77CF77 : 0xFF86B686) : (hovered ? 0xFFC6C6C6 : 0xFF969696);
+            bottomRight = highlighted ? 0xFFE7FFE7 : 0xFFFFFFFF;
         } else if (isEnabled()) {
-            topLeft = 0xFFFFFFFF;
-            panel = hovered ? 0xFF8892C9 : 0xFFC6C6C6;
-            bottomRight = hovered ? 0xFF00073E : 0xFF000000;
+            topLeft = highlighted ? 0xFFE7FFE7 : 0xFFFFFFFF;
+            panel = highlighted ? (hovered ? 0xFF87E087 : 0xFFA6E6A6) : (hovered ? 0xFF8892C9 : 0xFFC6C6C6);
+            bottomRight = highlighted ? (hovered ? 0xFF005700 : 0xFF003700) : (hovered ? 0xFF00073E : 0xFF000000);
         } else {
             topLeft = 0xFFD8D8D8;
             panel = 0xFFC6C6C6;
@@ -76,5 +77,9 @@ public class WBevelledButton extends WButton {
     public void setSize(int x, int y) {
         this.width = x;
         this.height = y;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 }
