@@ -2,6 +2,7 @@ package red.jackf.chesttracker;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -47,7 +48,7 @@ public class ChestTracker implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "chesttracker";
     public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
-    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, GsonConfigSerializer::new).getConfig();
+    public static ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
 
     public static Identifier id(String path) {
         return new Identifier(MODID, path);

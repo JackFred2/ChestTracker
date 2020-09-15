@@ -7,26 +7,28 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorMinecraftServer;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
-    private final String id;
-    private final Map<Identifier, BiMap<BlockPos, Memory>> locations = new HashMap<>();
-    private final Map<Identifier, BiMap<BlockPos, Memory>> namedLocations = new HashMap<>();
+    private transient final String id;
+    private final Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
+    private transient final Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
 
     @Nullable
     private static MemoryDatabase currentDatabase = null;
@@ -37,6 +39,13 @@ public class MemoryDatabase {
 
     public Set<Identifier> getDimensions() {
         return locations.keySet();
+    }
+
+    public static void clearCurrent() {
+        if (currentDatabase != null) {
+            currentDatabase.save();
+            currentDatabase = null;
+        }
     }
 
     @Nullable
@@ -65,7 +74,7 @@ public class MemoryDatabase {
             id = "realms-canonlysupport1rightnowsorry";
         } else {
             ClientPlayNetworkHandler cpnh = mc.getNetworkHandler();
-            if (cpnh != null) {
+            if (cpnh != null && cpnh.getConnection().isOpen()) {
                 SocketAddress address = cpnh.getConnection().getAddress();
                 if (address instanceof InetSocketAddress) {
                     InetSocketAddress inet = ((InetSocketAddress) address);
@@ -81,6 +90,18 @@ public class MemoryDatabase {
 
     public void save() {
         Path savePath = getFilePath();
+        try {
+            try {
+                Files.createDirectory(savePath.getParent());
+            } catch (FileAlreadyExistsException ignored) {}
+            FileWriter writer = new FileWriter(String.valueOf(savePath));
+            GsonHandler.get().toJson(locations, writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException ex) {
+            ChestTracker.LOGGER.error("Error saving file for " + this.id);
+            ChestTracker.LOGGER.error(ex);
+        }
     }
 
     public void load() {
@@ -95,7 +116,7 @@ public class MemoryDatabase {
     public List<ItemStack> getItems(Identifier worldId) {
         if (locations.containsKey(worldId)) {
             Map<LightweightStack, Integer> count = new HashMap<>();
-            BiMap<BlockPos, Memory> location = locations.get(worldId);
+            Map<BlockPos, Memory> location = locations.get(worldId);
             location.forEach((pos, memory) -> memory.getItems().forEach(stack -> {
                 LightweightStack lightweightStack = new LightweightStack(stack.getItem(), stack.getTag());
                 count.merge(lightweightStack, stack.getCount(), Integer::sum);
@@ -127,7 +148,7 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory) {
-        BiMap<BlockPos, Memory> map;
+        Map<BlockPos, Memory> map;
         if (!locations.containsKey(worldId)) {
             map = HashBiMap.create();
             locations.put(worldId, map);
@@ -136,7 +157,7 @@ public class MemoryDatabase {
         }
         map.put(memory.getPosition(), memory);
         if (memory.getTitle() != null) {
-            BiMap<BlockPos, Memory> namedMap;
+            Map<BlockPos, Memory> namedMap;
             if (!namedLocations.containsKey(worldId)) {
                 namedMap = HashBiMap.create();
                 namedLocations.put(worldId, namedMap);
@@ -148,15 +169,15 @@ public class MemoryDatabase {
     }
 
     public void removePos(Identifier worldId, BlockPos pos) {
-        BiMap<BlockPos, Memory> location = locations.get(worldId);
+        Map<BlockPos, Memory> location = locations.get(worldId);
         if (location != null) location.remove(pos);
-        BiMap<BlockPos, Memory> namedLocation = namedLocations.get(worldId);
+        Map<BlockPos, Memory> namedLocation = namedLocations.get(worldId);
         if (namedLocation != null) namedLocation.remove(pos);
     }
 
     public List<Memory> findItems(ItemStack toFind, Identifier worldId) {
         List<Memory> found = new ArrayList<>();
-        BiMap<BlockPos, Memory> location = locations.get(worldId);
+        Map<BlockPos, Memory> location = locations.get(worldId);
         if (location != null) {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
