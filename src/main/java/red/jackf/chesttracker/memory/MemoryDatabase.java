@@ -1,7 +1,9 @@
 package red.jackf.chesttracker.memory;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.mixins.AccessorMinecraftServer;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,7 +30,7 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
     private transient final String id;
-    private final Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
+    private Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
     private transient final Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
 
     @Nullable
@@ -93,8 +96,9 @@ public class MemoryDatabase {
         try {
             try {
                 Files.createDirectory(savePath.getParent());
-            } catch (FileAlreadyExistsException ignored) {}
-            FileWriter writer = new FileWriter(String.valueOf(savePath));
+            } catch (FileAlreadyExistsException ignored) {
+            }
+            FileWriter writer = new FileWriter(savePath.toString());
             GsonHandler.get().toJson(locations, writer);
             writer.flush();
             writer.close();
@@ -106,6 +110,27 @@ public class MemoryDatabase {
 
     public void load() {
         Path loadPath = getFilePath();
+        try {
+            FileReader reader = new FileReader(loadPath.toString());
+            this.locations = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
+            }.getType());
+            this.generateNamedLocations();
+        } catch (IOException ex) {
+            ChestTracker.LOGGER.error(ex);
+        } catch (JsonParseException ex) {
+            ChestTracker.LOGGER.error("Error reading file for " + this.id);
+            ChestTracker.LOGGER.error(ex);
+        }
+    }
+
+    // Creates namedLocations list from current locations list.
+    private void generateNamedLocations() {
+        for (Identifier worldId : this.locations.keySet()) {
+            Map<BlockPos, Memory> newMap = this.namedLocations.computeIfAbsent(worldId, id -> new HashMap<>());
+            this.locations.get(worldId).forEach(((pos, memory) -> {
+                if (memory.getTitle() != null) newMap.put(pos, memory);
+            }));
+        }
     }
 
     @NotNull
