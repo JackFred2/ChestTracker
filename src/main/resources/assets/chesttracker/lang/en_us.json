@@ -7,10 +7,10 @@
   "chesttracker.gui.search_field_start": "Search...",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.stack_count": "%d",
+  "chesttracker.gui.edit_name": "Edit saved name",
   "key.chesttracker.searchforitem": "Search for items",
   "text.autoconfig.chesttracker.category.visual_options": "Visual Options",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config",
-
   "chesttracker.gui_class_name_tracked": "GUI Class name: %s (Tracked)",
   "chesttracker.gui_class_name_not_tracked": "GUI Class name: %s (Not Tracked)",
   "chesttracker.not_tracked_due_to_ignore_list": "Ignored due to pattern: %s",

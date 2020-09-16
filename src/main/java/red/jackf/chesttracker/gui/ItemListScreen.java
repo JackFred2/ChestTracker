@@ -54,16 +54,16 @@ public class ItemListScreen extends CottonClientScreen {
         private static final Identifier RIGHT_BUTTON = id("textures/right_button.png");
 
         private static final Map<Identifier, ItemStack> knownIcons = new HashMap<>();
+        private static final int SIDE_PADDING = 0;
+        private static final int TOP_PADDING = 36;
+        private static final int LEFT_ADDITIONAL_PADDING = 24;
+
         static {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
             knownIcons.put(DimensionType.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
             knownIcons.put(DimensionType.THE_END_ID, new ItemStack(Items.END_STONE));
             knownIcons.put(MemoryUtils.ENDER_CHEST_ID, new ItemStack(Items.ENDER_CHEST));
         }
-
-        private static final int SIDE_PADDING = 0;
-        private static final int TOP_PADDING = 36;
-        private static final int LEFT_ADDITIONAL_PADDING = 24;
 
         private final WLabel counter;
         private final WItemListPanel itemPanel;

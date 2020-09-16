@@ -27,7 +27,7 @@ public class WBevelledButton extends WButton {
 
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
-        boolean hovered = (mouseX>=0 && mouseY>=0 && mouseX<getWidth() && mouseY<getHeight());
+        boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
         int topLeft;
         int panel;
         int bottomRight;
@@ -64,13 +64,14 @@ public class WBevelledButton extends WButton {
     @Override
     public void onClick(int x, int y, int button) {
         if (!pressed && isEnabled() && isWithinBounds(x, y))
-            if (getOnClick()!=null) getOnClick().run();
+            if (getOnClick() != null) getOnClick().run();
     }
 
     @Override
     public void renderTooltip(MatrixStack matrices, int x, int y, int tX, int tY) {
         Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen != null) screen.renderOrderedTooltip(matrices, Collections.singletonList(tooltip.asOrderedText()), tX+x, tY+y);
+        if (screen != null)
+            screen.renderOrderedTooltip(matrices, Collections.singletonList(tooltip.asOrderedText()), tX + x, tY + y);
     }
 
     @Override

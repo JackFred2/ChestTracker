@@ -3,8 +3,6 @@ package red.jackf.chesttracker.gui.widgets;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -16,9 +14,6 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -29,7 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -43,14 +37,12 @@ public class WItemListPanel extends WGridPanel {
     private static final Identifier SLOT = id("textures/slot.png");
     private static final Identifier SLOT_RED = id("textures/slot_red.png");
     private static final Style TOOLTIP_STYLE = Style.EMPTY.withItalic(false).withColor(Formatting.GREEN);
+    private final int columns;
+    private final int rows;
     private List<ItemStack> items = Collections.emptyList();
     private List<ItemStack> filteredItems = Collections.emptyList();
     @Nullable
     private BiConsumer<Integer, Integer> pageChangeHook = null;
-
-    private final int columns;
-    private final int rows;
-
     private String filter = "";
     private int currentPage = 1;
     private int pageCount = 1;
@@ -59,6 +51,17 @@ public class WItemListPanel extends WGridPanel {
     public WItemListPanel(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
+    }
+
+    private static Text getCountText(ItemStack stack) {
+        return new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE);
+    }
+
+    private static String getLabel(int count) {
+        if (count < 1_000) return "" + count;
+        if (count < 1_000_000) return count / 1_000 + "k";
+        if (count < 1_000_000_000) return count / 1_000_000 + "M";
+        return count / 1_000_000_000 + "G";
     }
 
     public void setUsable(boolean usable) {
@@ -72,10 +75,6 @@ public class WItemListPanel extends WGridPanel {
         this.updateFilter();
     }
 
-    private static Text getCountText(ItemStack stack) {
-        return new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE);
-    }
-
     private void updateFilter() {
         this.filteredItems = items.stream().filter(stack -> stack.getName().getString().toLowerCase().contains(this.filter) // User shown name
             || (stack.hasCustomName() && stack.getItem().getName(stack).getString().toLowerCase().contains(this.filter)) // Default names for custom named items
@@ -83,13 +82,6 @@ public class WItemListPanel extends WGridPanel {
         this.pageCount = ((filteredItems.size() - 1) / (columns * rows)) + 1;
         this.currentPage = Math.min(currentPage, pageCount);
         if (this.pageChangeHook != null) this.pageChangeHook.accept(this.currentPage, this.pageCount);
-    }
-
-    private static String getLabel(int count) {
-        if (count < 1_000) return "" + count;
-        if (count < 1_000_000) return count / 1_000 + "k";
-        if (count < 1_000_000_000) return count / 1_000_000 + "M";
-        return count / 1_000_000_000 + "G";
     }
 
     @Override

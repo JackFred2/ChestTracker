@@ -11,7 +11,7 @@ public class LightweightStack {
     @Nullable
     private final CompoundTag tag;
 
-    public LightweightStack(Item item, CompoundTag tag) {
+    public LightweightStack(Item item, @Nullable CompoundTag tag) {
         this.item = item;
         this.tag = tag;
     }

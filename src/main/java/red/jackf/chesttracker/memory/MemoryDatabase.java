@@ -8,10 +8,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
@@ -31,19 +29,20 @@ import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
+    private static final CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
+    @Nullable
+    private static MemoryDatabase currentDatabase = null;
+
+    static {
+        FULL_DURABILITY_TAG.putInt("Damage", 0);
+    }
+
     private transient final String id;
     private Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
     private transient Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
 
-    @Nullable
-    private static MemoryDatabase currentDatabase = null;
-
     private MemoryDatabase(String id) {
         this.id = id;
-    }
-
-    public Set<Identifier> getDimensions() {
-        return locations.keySet();
     }
 
     public static void clearCurrent() {
@@ -63,10 +62,6 @@ public class MemoryDatabase {
         currentDatabase = database;
         ChestTracker.LOGGER.info("Loaded " + id);
         return database;
-    }
-
-    public String getId() {
-        return id;
     }
 
     @Nullable
@@ -90,6 +85,14 @@ public class MemoryDatabase {
             }
         }
 
+        return id;
+    }
+
+    public Set<Identifier> getDimensions() {
+        return locations.keySet();
+    }
+
+    public String getId() {
         return id;
     }
 
@@ -183,9 +186,11 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory) {
-        addItem(worldId, memory, locations);
-        if (memory.getTitle() != null) {
-            addItem(worldId, memory, namedLocations);
+        if (memory.getItems().size() > 0 || memory.getTitle() != null) {
+            addItem(worldId, memory, locations);
+            if (memory.getTitle() != null) {
+                addItem(worldId, memory, namedLocations);
+            }
         }
     }
 
@@ -205,12 +210,6 @@ public class MemoryDatabase {
         if (location != null) location.remove(pos);
         Map<BlockPos, Memory> namedLocation = namedLocations.get(worldId);
         if (namedLocation != null) namedLocation.remove(pos);
-    }
-
-    private static final CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
-
-    static {
-        FULL_DURABILITY_TAG.putInt("Damage", 0);
     }
 
     public List<Memory> findItems(ItemStack toFind, Identifier worldId) {

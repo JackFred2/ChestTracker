@@ -15,7 +15,7 @@ public class ChestTrackerConfig implements ConfigData {
 
     @ConfigEntry.Category("visual_options")
     @ConfigEntry.Gui.TransitiveObject
-    public VisualOptions visualOptions = new VisualOptions();
+    public final VisualOptions visualOptions = new VisualOptions();
 
     @Override
     public void validatePostLoad() {

@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,9 +32,9 @@ import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
 public abstract class MemoryUtils {
+    public static final Identifier ENDER_CHEST_ID = id("ender_chest");
     @Nullable
     private static BlockPos latestPos = null;
-    public static final Identifier ENDER_CHEST_ID = id("ender_chest");
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (validScreenToTrack(screen)) {
@@ -75,7 +74,7 @@ public abstract class MemoryUtils {
         for (BlockPos pos : connected) {
             base = base.add(Vec3d.of(pos));
         }
-        return base.multiply(1f/(1 + connected.size())).subtract(Vec3d.of(basePos));
+        return base.multiply(1f / (1 + connected.size())).subtract(Vec3d.of(basePos));
     }
 
     private static Collection<BlockPos> getConnected(@NotNull World world, BlockPos pos) {
@@ -84,10 +83,14 @@ public abstract class MemoryUtils {
             if (state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
                 boolean left = state.get(ChestBlock.CHEST_TYPE) == ChestType.LEFT;
                 switch (state.get(ChestBlock.FACING)) {
-                    case NORTH: return Collections.singleton(pos.add(left ? 1 : -1, 0, 0));
-                    case SOUTH: return Collections.singleton(pos.add(left ? -1 : 1, 0, 0));
-                    case WEST: return Collections.singleton(pos.add(0, 0, left ? -1 : 1));
-                    case EAST: return Collections.singleton(pos.add(0, 0, left ? 1 : -1));
+                    case NORTH:
+                        return Collections.singleton(pos.add(left ? 1 : -1, 0, 0));
+                    case SOUTH:
+                        return Collections.singleton(pos.add(left ? -1 : 1, 0, 0));
+                    case WEST:
+                        return Collections.singleton(pos.add(0, 0, left ? -1 : 1));
+                    case EAST:
+                        return Collections.singleton(pos.add(0, 0, left ? 1 : -1));
                 }
             }
         }
@@ -110,13 +113,13 @@ public abstract class MemoryUtils {
         return !(screen instanceof AbstractInventoryScreen) && screen != null;
     }
 
-    public static void setLatestPos(@Nullable BlockPos latestPos) {
-        MemoryUtils.latestPos = latestPos != null ? latestPos.toImmutable() : null;
-    }
-
     @Nullable
     public static BlockPos getLatestPos() {
         return latestPos;
+    }
+
+    public static void setLatestPos(@Nullable BlockPos latestPos) {
+        MemoryUtils.latestPos = latestPos != null ? latestPos.toImmutable() : null;
     }
 
     public static String getSingleplayerName(LevelStorage.Session session) {
@@ -128,11 +131,10 @@ public abstract class MemoryUtils {
     }
 
     public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
-        boolean match = stack1.getItem() == stack2.getItem()
+        return stack1.getItem() == stack2.getItem()
             && (ignoreNbt
-                || (!stack1.hasTag() && !stack2.hasTag())
-                || Objects.equals(stack1.getTag(), stack2.getTag())
-            );
-        return match;
+            || (!stack1.hasTag() && !stack2.hasTag())
+            || Objects.equals(stack1.getTag(), stack2.getTag())
+        );
     }
 }

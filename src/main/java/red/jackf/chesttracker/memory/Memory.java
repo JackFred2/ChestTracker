@@ -9,6 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
 /*
     A representation of a saved location, along with it's items.
  */
@@ -23,7 +24,7 @@ public class Memory {
     private final Vec3d nameOffset;
 
 
-    private Memory(@Nullable BlockPos position, List<ItemStack> items, @Nullable Text title, Vec3d nameOffset) {
+    private Memory(@Nullable BlockPos position, List<ItemStack> items, @Nullable Text title, @Nullable Vec3d nameOffset) {
         this.position = position;
         this.items = items;
         this.title = title;

@@ -9,8 +9,10 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import org.jetbrains.annotations.NotNull;
@@ -116,7 +118,7 @@ public abstract class RenderUtils {
                 // https://www.desmos.com/calculator/bs2whnaxqp
                 // scaleFactor, transparencyFactor and offset in order
 
-                float scaleFactor = (2 * timeDiff - ChestTracker.CONFIG.visualOptions.fadeOutTime)/ChestTracker.CONFIG.visualOptions.fadeOutTime;
+                float scaleFactor = (2 * timeDiff - ChestTracker.CONFIG.visualOptions.fadeOutTime) / ChestTracker.CONFIG.visualOptions.fadeOutTime;
                 scaleFactor *= scaleFactor;
                 scaleFactor *= scaleFactor;
                 float transparencyFactor = 1 - scaleFactor;
@@ -131,9 +133,9 @@ public abstract class RenderUtils {
                 optimizedDrawShapeOutline(matrices,
                     provider.getBuffer(OUTLINE_LAYER),
                     VoxelShapes.fullCube(),
-                    (offset + finalPos.x) * (1/scaleFactor),
-                    (offset + finalPos.y) * (1/scaleFactor),
-                    (offset + finalPos.z) * (1/scaleFactor),
+                    (offset + finalPos.x) * (1 / scaleFactor),
+                    (offset + finalPos.y) * (1 / scaleFactor),
+                    (offset + finalPos.z) * (1 / scaleFactor),
                     r,
                     g,
                     b,
@@ -154,7 +156,8 @@ public abstract class RenderUtils {
     private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, Text text, boolean force) {
         Vec3d renderPos = camera.getPos().negate().add(x, y, z);
         double d = renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z;
-        if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange) return;
+        if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange)
+            return;
         if (force) {
             if (d > 16) renderPos = renderPos.multiply(4 / Math.sqrt(d));
         }

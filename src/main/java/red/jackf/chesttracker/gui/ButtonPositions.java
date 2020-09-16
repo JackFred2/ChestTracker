@@ -12,14 +12,14 @@ import red.jackf.chesttracker.mixins.AccessorHandledScreen;
 @Environment(EnvType.CLIENT)
 public abstract class ButtonPositions {
     public static int getX(HandledScreen<?> screen, int buttonIndex) {
-        int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() + ((AccessorHandledScreen) screen).getBackgroundWidth())/2;
+        int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() + ((AccessorHandledScreen) screen).getBackgroundWidth()) / 2;
         if (doRecipeAdjust(screen))
             x += 77;
         return x - 14 - (11 * buttonIndex);
     }
 
     public static int getY(HandledScreen<?> screen, int buttonIndex) {
-        int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight())/2;
+        int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight()) / 2;
         return y + 5;
     }
 
