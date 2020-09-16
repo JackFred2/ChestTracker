@@ -194,7 +194,7 @@ public class WItemListPanel extends WGridPanel {
     }
 
     public void setFilter(String filter) {
-        this.filter = filter;
+        this.filter = filter.toLowerCase();
         this.updateFilter();
     }
 

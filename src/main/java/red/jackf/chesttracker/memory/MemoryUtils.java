@@ -42,17 +42,7 @@ public abstract class MemoryUtils {
             MinecraftClient mc = MinecraftClient.getInstance();
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null && mc.world != null && latestPos != null) {
-                List<ItemStack> stacks = new ArrayList<>();
-                screen.getScreenHandler().slots.stream().filter(Slot::hasStack).filter(slot -> !(slot.inventory instanceof PlayerInventory)).map(Slot::getStack).forEach(newStack -> {
-                    boolean exists = false;
-                    for (ItemStack oldStack : stacks) {
-                        if (areStacksEquivalent(newStack, oldStack, false)) {
-                            oldStack.setCount(oldStack.getCount() + newStack.getCount());
-                            exists = true;
-                        }
-                    }
-                    if (!exists) stacks.add(newStack);
-                });
+                List<ItemStack> stacks = condenseItems(screen.getScreenHandler().slots.stream().filter(Slot::hasStack).filter(slot -> !(slot.inventory instanceof PlayerInventory)).map(Slot::getStack).collect(Collectors.toList()));
                 BlockState state = mc.world.getBlockState(latestPos);
                 if (state.getBlock() == Blocks.ENDER_CHEST) {
                     database.mergeItems(MemoryUtils.ENDER_CHEST_ID, Memory.of(BlockPos.ORIGIN, stacks, null, null));
@@ -63,6 +53,21 @@ public abstract class MemoryUtils {
                 }
             }
         }
+    }
+
+    public static List<ItemStack> condenseItems(List<ItemStack> list) {
+        List<ItemStack> stacks = new ArrayList<>();
+        list.forEach(newStack -> {
+            boolean exists = false;
+            for (ItemStack oldStack : stacks) {
+                if (areStacksEquivalent(newStack, oldStack, false)) {
+                    oldStack.setCount(oldStack.getCount() + newStack.getCount());
+                    exists = true;
+                }
+            }
+            if (!exists) stacks.add(newStack);
+        });
+        return stacks;
     }
 
     private static Vec3d getAveragePos(BlockPos basePos, Collection<BlockPos> connected) {

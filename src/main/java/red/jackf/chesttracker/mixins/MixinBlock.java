@@ -15,7 +15,7 @@ import red.jackf.chesttracker.memory.MemoryDatabase;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Block.class)
-public class MixinBlock {
+public abstract class MixinBlock {
 
     @Inject(method = "onBreak", at = @At("TAIL"))
     private void chestTracker$handleBlockBreak(World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfo ci) {

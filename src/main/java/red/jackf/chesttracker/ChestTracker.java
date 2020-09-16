@@ -34,6 +34,7 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.FavouriteButton;
+import red.jackf.chesttracker.gui.NameEditButton;
 import red.jackf.chesttracker.gui.OpenItemListButton;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
@@ -103,6 +104,7 @@ public class ChestTracker implements ClientModInitializer {
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
                 screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
+                //screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
                 //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
             }
         });

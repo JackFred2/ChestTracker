@@ -16,7 +16,7 @@ import red.jackf.chesttracker.memory.MemoryUtils;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
+public abstract class MixinMinecraftClient {
     @Shadow
     @Nullable
     public Screen currentScreen;

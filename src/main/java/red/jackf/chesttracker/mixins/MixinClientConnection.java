@@ -12,7 +12,7 @@ import red.jackf.chesttracker.memory.MemoryDatabase;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientConnection.class)
-public class MixinClientConnection {
+public abstract class MixinClientConnection {
 
     @Inject(method = "disconnect", at = @At("HEAD"))
     public void chestTracker$onDisconnectHandler(Text ignored, CallbackInfo ci) {
