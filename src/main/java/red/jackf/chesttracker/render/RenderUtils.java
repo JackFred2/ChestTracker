@@ -153,13 +153,13 @@ public abstract class RenderUtils {
             removeRenderPositions(toRemove);
     }
 
-    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, Text text, boolean force) {
+    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, @NotNull Text text, boolean force) {
         Vec3d renderPos = camera.getPos().negate().add(x, y, z);
         double d = renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z;
-        if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange)
-            return;
         if (force) {
             if (d > 16) renderPos = renderPos.multiply(4 / Math.sqrt(d));
+        } else if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange) {
+            return;
         }
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
@@ -183,10 +183,18 @@ public abstract class RenderUtils {
             Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
             for (Memory memory : toRender) {
                 BlockPos blockPos = memory.getPosition();
-                if (blockPos != null) {
+                if (blockPos != null && memory.getTitle() != null) {
                     Vec3d pos = Vec3d.ofCenter(blockPos);
                     if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
                     drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false);
+                }
+            }
+            for (PositionData data : getRenderPositions()) {
+                BlockPos blockPos = data.memory.getPosition();
+                if (blockPos != null && data.memory.getTitle() != null) {
+                    Vec3d pos = Vec3d.ofCenter(blockPos);
+                    if (data.memory.getNameOffset() != null) pos = pos.add(data.memory.getNameOffset());
+                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), data.memory.getTitle(), true);
                 }
             }
         }

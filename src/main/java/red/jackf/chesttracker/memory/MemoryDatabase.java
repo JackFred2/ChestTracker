@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.realms.dto.RealmsServer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -71,7 +72,9 @@ public class MemoryDatabase {
         if (mc.isInSingleplayer() && mc.getServer() != null) {
             id = "singleplayer-" + MemoryUtils.getSingleplayerName(((AccessorMinecraftServer) mc.getServer()).getSession());
         } else if (mc.isConnectedToRealms()) {
-            id = "realms-canonlysupport1rightnowsorry";
+            RealmsServer server = MemoryUtils.getLastRealmsServer();
+            if (server == null) return null;
+            id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
         } else {
             ClientPlayNetworkHandler cpnh = mc.getNetworkHandler();
             if (cpnh != null && cpnh.getConnection().isOpen()) {
@@ -196,12 +199,6 @@ public class MemoryDatabase {
 
     private void addItem(Identifier worldId, Memory memory, Map<Identifier, Map<BlockPos, Memory>> namedLocations) {
         Map<BlockPos, Memory> namedMap = namedLocations.computeIfAbsent(worldId, (identifier -> new HashMap<>()));
-        /*if (!namedLocations.containsKey(worldId)) {
-            namedMap = HashBiMap.create();
-            namedLocations.put(worldId, namedMap);
-        } else {
-            namedMap = namedLocations.get(worldId);
-        }*/
         namedMap.put(memory.getPosition(), memory);
     }
 

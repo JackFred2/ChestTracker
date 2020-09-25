@@ -10,6 +10,7 @@ import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.realms.dto.RealmsServer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -35,6 +36,8 @@ public abstract class MemoryUtils {
     public static final Identifier ENDER_CHEST_ID = id("ender_chest");
     @Nullable
     private static BlockPos latestPos = null;
+    @Nullable
+    private static RealmsServer lastRealmsServer = null;
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (validScreenToTrack(screen)) {
@@ -136,5 +139,14 @@ public abstract class MemoryUtils {
             || (!stack1.hasTag() && !stack2.hasTag())
             || Objects.equals(stack1.getTag(), stack2.getTag())
         );
+    }
+
+    public static void setLastRealmsServer(@Nullable RealmsServer lastRealmsServer) {
+        MemoryUtils.lastRealmsServer = lastRealmsServer;
+    }
+
+    @Nullable
+    public static RealmsServer getLastRealmsServer() {
+        return lastRealmsServer;
     }
 }
