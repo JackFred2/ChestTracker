@@ -151,6 +151,8 @@ public class ItemListScreen extends CottonClientScreen {
                 i++;
             }
 
+            // Wrap up
+
             itemPanel.setPageChangeHook((current, max) -> {
                 counter.setText(new TranslatableText("chesttracker.gui.page_count", current, max));
                 previousButton.setEnabled(current != 1);

@@ -115,6 +115,30 @@ public abstract class RenderUtils {
                     finalPos = finalPos.normalize().multiply(64);
                 }
 
+                Vec3d offset = memory.getNameOffset();
+                double xSize;
+                double ySize;
+                double zSize;
+                double xPos;
+                double yPos;
+                double zPos;
+
+                if (offset == null) {
+                    xPos = 0;
+                    yPos = 0;
+                    zPos = 0;
+                    xSize = 1;
+                    ySize = 1;
+                    zSize = 1;
+                } else {
+                    xPos = Math.min(0, offset.getX() * 2);
+                    yPos = Math.min(0, offset.getY() * 2);
+                    zPos = Math.min(0, offset.getZ() * 2);
+                    xSize = 1 + Math.abs(offset.getX() * 2);
+                    ySize = 1 + Math.abs(offset.getY() * 2);
+                    zSize = 1 + Math.abs(offset.getZ() * 2);
+                }
+
                 // https://www.desmos.com/calculator/bs2whnaxqp
                 // scaleFactor, transparencyFactor and offset in order
 
@@ -124,7 +148,7 @@ public abstract class RenderUtils {
                 float transparencyFactor = 1 - scaleFactor;
                 scaleFactor *= scaleFactor;
                 scaleFactor *= scaleFactor;
-                float offset = 0.5f * scaleFactor;
+                float tweeningOffset = 0.5f * scaleFactor;
                 scaleFactor = 1 - scaleFactor;
 
                 matrices.push();
@@ -132,10 +156,10 @@ public abstract class RenderUtils {
 
                 optimizedDrawShapeOutline(matrices,
                     provider.getBuffer(OUTLINE_LAYER),
-                    VoxelShapes.fullCube(),
-                    (offset + finalPos.x) * (1 / scaleFactor),
-                    (offset + finalPos.y) * (1 / scaleFactor),
-                    (offset + finalPos.z) * (1 / scaleFactor),
+                    VoxelShapes.cuboid(0, 0, 0, xSize, ySize, zSize),
+                    ((xSize * tweeningOffset) + finalPos.x + xPos) * (1 / scaleFactor),
+                    ((ySize * tweeningOffset) + finalPos.y + yPos) * (1 / scaleFactor),
+                    ((zSize * tweeningOffset) + finalPos.z + zPos) * (1 / scaleFactor),
                     r,
                     g,
                     b,
