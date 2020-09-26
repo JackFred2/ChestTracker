@@ -126,7 +126,8 @@ public abstract class MemoryUtils {
     }
 
     public static String getSingleplayerName(LevelStorage.Session session) {
-        return makeFileSafe(session.getDirectoryName());
+        //return makeFileSafe(session.getDirectoryName());
+        return session.getDirectoryName();
     }
 
     public static String makeFileSafe(String name) {

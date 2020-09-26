@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.mixins;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.*;
@@ -29,7 +30,7 @@ public abstract class MixinWorldRenderer {
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
         at = @At(value = "TAIL"))
-    public void chestTracker$renderFoundItemOverlay(MatrixStack matrices,
+    public void chestTracker$render(MatrixStack matrices,
                                                     float tickDelta,
                                                     long limitTime,
                                                     boolean renderBlockOutline,
@@ -41,11 +42,13 @@ public abstract class MixinWorldRenderer {
         if (!renderBlockOutline) return;
         this.world.getProfiler().swap("chesttracker_render_overlay");
         RenderUtils.drawOutlines(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera, this.world.getTime(), tickDelta);
+        this.world.getProfiler().swap("chesttracker_render_chestlabels");
+        RenderUtils.drawLabels(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera);
     }
 
     // Text Rendering
 
-    @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
+    /*@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;checkEmpty(Lnet/minecraft/client/util/math/MatrixStack;)V", ordinal = 1))
     public void chestTracker$renderLabelledChestOverlay(MatrixStack matrices,
                                                         float tickDelta,
@@ -59,6 +62,5 @@ public abstract class MixinWorldRenderer {
         if (!renderBlockOutline) return;
         this.world.getProfiler().swap("chesttracker_render_chestlabels");
         RenderUtils.drawLabels(matrices, this.bufferBuilders.getEntityVertexConsumers(), camera);
-
-    }
+    }*/
 }

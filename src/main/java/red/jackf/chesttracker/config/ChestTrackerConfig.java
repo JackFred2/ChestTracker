@@ -20,7 +20,7 @@ public class ChestTrackerConfig implements ConfigData {
     @Override
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
-        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 0, 300);
+        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 60, 300);
         visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 18);
@@ -28,7 +28,7 @@ public class ChestTrackerConfig implements ConfigData {
     }
 
     public static class VisualOptions {
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 300)
+        @ConfigEntry.BoundedDiscrete(min = 60, max = 300)
         public int fadeOutTime = 140;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
         public int borderWidth = 8;

@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -187,7 +188,7 @@ public abstract class RenderUtils {
         }
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
-        matrixStack.multiply(MinecraftClient.getInstance().getEntityRenderDispatcher().getRotation());
+        matrixStack.multiply(camera.getRotation());
         matrixStack.scale(-0.025F, -0.025F, 0.025F);
         Matrix4f matrix4f = matrixStack.peek().getModel();
         float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
@@ -204,6 +205,7 @@ public abstract class RenderUtils {
         if (database == null) return;
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.world != null) {
+            // Named
             Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
             for (Memory memory : toRender) {
                 BlockPos blockPos = memory.getPosition();
@@ -213,6 +215,8 @@ public abstract class RenderUtils {
                     drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false);
                 }
             }
+
+            // Named Highlighted
             for (PositionData data : getRenderPositions()) {
                 BlockPos blockPos = data.memory.getPosition();
                 if (blockPos != null && data.memory.getTitle() != null) {
@@ -221,6 +225,13 @@ public abstract class RenderUtils {
                     drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), data.memory.getTitle(), true);
                 }
             }
+
+            // Some reason the last textRender.draw call doesn't account for FOV
+            // TODO: Find the reason and remove this hack
+            matrices.push();
+            matrices.scale(0, 0, 0);
+            drawTextAt(matrices, entityVertexConsumers, camera, 0, 0, 0,  new LiteralText(""), true);
+            matrices.pop();
         }
     }
 
