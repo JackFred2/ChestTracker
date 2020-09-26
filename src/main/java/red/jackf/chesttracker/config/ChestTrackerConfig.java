@@ -35,7 +35,7 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
-        public int nameRenderRange = 8;
+        public int nameRenderRange = 12;
         @ConfigEntry.BoundedDiscrete(min = 6, max = 18)
         public int rowCount = 6;
         @ConfigEntry.BoundedDiscrete(min = 9, max = 24)

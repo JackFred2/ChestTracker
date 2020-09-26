@@ -215,8 +215,14 @@ public class MemoryDatabase {
         if (location != null) {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
-                    if (entry.getValue().getItems().stream().anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
-                        found.add(entry.getValue());
+                    if (entry.getValue().getItems().stream()
+                        .anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
+                        if (MemoryUtils.checkExistsInWorld(entry.getValue())) {
+                            found.add(entry.getValue());
+                        } else {
+                            // Remove if it's disappeared.
+                            if (MemoryDatabase.getCurrent() != null) MemoryDatabase.getCurrent().removePos(worldId, entry.getKey());
+                        }
                     }
                 }
             }

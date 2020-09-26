@@ -2,9 +2,7 @@ package red.jackf.chesttracker.memory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
@@ -22,6 +20,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -149,5 +150,19 @@ public abstract class MemoryUtils {
     @Nullable
     public static RealmsServer getLastRealmsServer() {
         return lastRealmsServer;
+    }
+
+    public static boolean checkExistsInWorld(Memory memory) {
+        World world = MinecraftClient.getInstance().world;
+        BlockPos pos = memory.getPosition();
+        if (world != null && pos != null) {
+            WorldChunk chunk = world.getWorldChunk(pos);
+            return chunk instanceof EmptyChunk || isValidInventoryHolder(chunk.getBlockState(pos).getBlock());
+        }
+        return true;
+    }
+
+    public static boolean isValidInventoryHolder(Block block) {
+        return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
     }
 }
