@@ -6,14 +6,15 @@
   "mixins": [
   ],
   "client": [
+    "MixinCanvasWorldRenderer",
     "AccessorHandledScreen",
     "AccessorMinecraftServer",
     "AccessorRenderPhase",
     "MixinBlock",
     "MixinClientConnection",
     "MixinMinecraftClient",
-    "MixinShulkerBoxBlock",
     "MixinRealmsMainScreen",
+    "MixinShulkerBoxBlock",
     "MixinWorldRenderer"
   ],
   "injectors": {

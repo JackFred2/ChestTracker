@@ -178,7 +178,7 @@ public abstract class RenderUtils {
             removeRenderPositions(toRemove);
     }
 
-    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, @NotNull Text text, boolean force) {
+    private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, @NotNull Text text, boolean force, int textSizeModifier) {
         Vec3d renderPos = camera.getPos().negate().add(x, y, z);
         double d = renderPos.x * renderPos.x + renderPos.y * renderPos.y + renderPos.z * renderPos.z;
         if (force) {
@@ -186,10 +186,12 @@ public abstract class RenderUtils {
         } else if (d > ChestTracker.CONFIG.visualOptions.nameRenderRange * ChestTracker.CONFIG.visualOptions.nameRenderRange) {
             return;
         }
+        float textMod = textSizeModifier/100f;
         matrixStack.push();
         matrixStack.translate(renderPos.x, renderPos.y, renderPos.z);
         matrixStack.multiply(camera.getRotation());
-        matrixStack.scale(-0.025F, -0.025F, 0.025F);
+        matrixStack.scale(-0.025F , -0.025F, 0.025F);
+        matrixStack.scale(textMod, textMod, textMod);
         Matrix4f matrix4f = matrixStack.peek().getModel();
         float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
         int j = (int) (g * 255.0F) << 24;
@@ -212,7 +214,7 @@ public abstract class RenderUtils {
                 if (blockPos != null && memory.getTitle() != null) {
                     Vec3d pos = Vec3d.ofCenter(blockPos);
                     if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
-                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false);
+                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false, ChestTracker.CONFIG.visualOptions.textSizeModifier);
                 }
             }
 
@@ -222,7 +224,7 @@ public abstract class RenderUtils {
                 if (blockPos != null && data.memory.getTitle() != null) {
                     Vec3d pos = Vec3d.ofCenter(blockPos);
                     if (data.memory.getNameOffset() != null) pos = pos.add(data.memory.getNameOffset());
-                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), data.memory.getTitle(), true);
+                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), data.memory.getTitle(), true, ChestTracker.CONFIG.visualOptions.textSizeModifier);
                 }
             }
 
@@ -230,7 +232,7 @@ public abstract class RenderUtils {
             // TODO: Find the reason and remove this hack
             matrices.push();
             matrices.scale(0, 0, 0);
-            drawTextAt(matrices, entityVertexConsumers, camera, 0, 0, 0,  new LiteralText(""), true);
+            drawTextAt(matrices, entityVertexConsumers, camera, 0, 0, 0,  new LiteralText(""), true, ChestTracker.CONFIG.visualOptions.textSizeModifier);
             matrices.pop();
         }
     }

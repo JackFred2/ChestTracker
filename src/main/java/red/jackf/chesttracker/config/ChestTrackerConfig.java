@@ -25,6 +25,7 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 18);
         visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 24);
+        visualOptions.textSizeModifier = MathHelper.clamp(visualOptions.textSizeModifier, 50, 400);
     }
 
     public static class VisualOptions {
@@ -40,5 +41,7 @@ public class ChestTrackerConfig implements ConfigData {
         public int rowCount = 6;
         @ConfigEntry.BoundedDiscrete(min = 9, max = 24)
         public int columnCount = 9;
+        @ConfigEntry.BoundedDiscrete(min = 50, max = 400)
+        public int textSizeModifier = 100;
     }
 }
