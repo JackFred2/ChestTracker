@@ -2,8 +2,10 @@ package red.jackf.chesttracker.gui;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -20,6 +22,9 @@ public abstract class ButtonPositions {
 
     public static int getY(HandledScreen<?> screen, int buttonIndex) {
         int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight()) / 2;
+        if (!(screen instanceof CreativeInventoryScreen)) {
+            y -= 15;
+        }
         return y + 5;
     }
 

@@ -191,8 +191,16 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory, Collection<BlockPos> toRemove) {
-        if (locations.containsKey(worldId)) toRemove.forEach(locations.get(worldId)::remove);
-        if (namedLocations.containsKey(worldId)) toRemove.forEach(namedLocations.get(worldId)::remove);
+        if (locations.containsKey(worldId)) {
+            Map<BlockPos, Memory> map = locations.get(worldId);
+            map.remove(memory.getPosition());
+            toRemove.forEach(map::remove);
+        }
+        if (namedLocations.containsKey(worldId)) {
+            Map<BlockPos, Memory> map = namedLocations.get(worldId);
+            map.remove(memory.getPosition());
+            toRemove.forEach(map::remove);
+        }
         mergeItems(worldId, memory);
     }
 

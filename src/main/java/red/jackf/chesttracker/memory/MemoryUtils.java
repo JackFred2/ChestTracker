@@ -2,6 +2,7 @@ package red.jackf.chesttracker.memory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.ChestType;
@@ -51,7 +52,7 @@ public abstract class MemoryUtils {
             MinecraftClient mc = MinecraftClient.getInstance();
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null && mc.world != null && latestPos != null) {
-                List<ItemStack> stacks = condenseItems(screen.getScreenHandler().slots.stream().filter(Slot::hasStack).filter(slot -> !(slot.inventory instanceof PlayerInventory)).map(Slot::getStack).collect(Collectors.toList()));
+                List<ItemStack> stacks = condenseItems(screen.getScreenHandler().slots.stream().filter(MemoryUtils::isValidSlot).map(Slot::getStack).collect(Collectors.toList()));
                 BlockState state = mc.world.getBlockState(latestPos);
                 if (state.getBlock() == Blocks.ENDER_CHEST) {
                     database.mergeItems(MemoryUtils.ENDER_CHEST_ID, Memory.of(BlockPos.ORIGIN, stacks, null, null));
@@ -62,6 +63,12 @@ public abstract class MemoryUtils {
                 }
             }
         }
+    }
+
+    private static boolean isValidSlot(Slot slot) {
+        return slot.hasStack()
+            && !(slot.inventory instanceof PlayerInventory)
+            && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || slot.getClass().getSimpleName().equals("PlayerInvSlot"));
     }
 
     public static List<ItemStack> condenseItems(List<ItemStack> list) {
