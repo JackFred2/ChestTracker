@@ -11,20 +11,25 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import red.jackf.chesttracker.ChestTracker;
 
 import java.lang.reflect.Type;
 
 @Environment(EnvType.CLIENT)
 public class GsonHandler {
-    private static final Gson GSON = new GsonBuilder()
-        //.setPrettyPrinting()
-        .registerTypeAdapter(BlockPos.class, new BlockPosSerializer())
-        .registerTypeAdapter(Identifier.class, new IdentifierSerializer())
-        .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
-        .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-        .registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
-        .enableComplexMapKeySerialization()
-        .create();
+    private static final Gson GSON;
+
+    static {
+        GsonBuilder builder = new GsonBuilder()
+            .registerTypeAdapter(BlockPos.class, new BlockPosSerializer())
+            .registerTypeAdapter(Identifier.class, new IdentifierSerializer())
+            .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
+            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+            .registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+            .enableComplexMapKeySerialization();
+            if (ChestTracker.CONFIG.databaseOptions.readableFiles) builder.setPrettyPrinting();
+            GSON = builder.create();
+    }
 
     private GsonHandler() {
     }

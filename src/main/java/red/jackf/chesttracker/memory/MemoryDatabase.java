@@ -238,4 +238,8 @@ public class MemoryDatabase {
         return found;
     }
 
+    public void clearDimension(Identifier currentWorldId) {
+        locations.remove(currentWorldId);
+        namedLocations.remove(currentWorldId);
+    }
 }

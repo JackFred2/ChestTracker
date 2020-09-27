@@ -41,7 +41,7 @@ public class WHeldButton extends WButton {
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
         ScreenDrawing.drawBeveledPanel(x, y, this.width, this.height, 0xFFFFFFFF, hovered ? 0xFF8892C9 : 0xFFC6C6C6, hovered ? 0xFF00073E : 0xFF000000);
         int xProgress = MathHelper.floor((((float) this.timeHeldDown) / (this.timeNeededToActivate - 1)) * (this.width - 2));
-        if (xProgress > 0) ScreenDrawing.coloredRect(x + 1, y + 1, xProgress, this.height - 2, 0xFFFF7f7f);
+        if (xProgress > 0) ScreenDrawing.coloredRect(x + 1, y + 1, xProgress, this.height - 2, 0xFFFF4F4F);
         ScreenDrawing.drawString(matrices, timeHeldDown > 0 ? altText.asOrderedText() : text.asOrderedText(), x + 6, y + 6, color);
     }
 

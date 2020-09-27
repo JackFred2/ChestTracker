@@ -38,7 +38,7 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(min = 60, max = 300)
         public int fadeOutTime = 140;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        public int borderWidth = 8;
+        public int borderWidth = 3;
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
@@ -53,6 +53,10 @@ public class ChestTrackerConfig implements ConfigData {
 
     public static class DatabaseOptions {
         @ConfigEntry.BoundedDiscrete(min = 1, max = 60)
+        @ConfigEntry.Gui.PrefixText
         public int destroyedMemoryCheckInterval = 10;
+        @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.PrefixText
+        public boolean readableFiles = false;
     }
 }
