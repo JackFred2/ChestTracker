@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import red.jackf.chesttracker.ChestTracker;
@@ -40,8 +41,12 @@ public class ButtonPositionManager extends JsonDataLoader implements Identifiabl
                 ChestTracker.LOGGER.error("Parsing error loading button position override {}", entry.getKey(), e);
             }
         }
+
+        manager.streamResourcePacks().forEach(pack -> {
+            pack.findResources(ResourceType.CLIENT_RESOURCES, "chesttracker", "button_positions", Integer.MAX_VALUE, s -> s.endsWith(".json")).forEach(System.out::println);
+        });
+
         ButtonPositionManager.overrides = ImmutableMap.copyOf(overrides);
-        System.out.println(overrides);
     }
 
     @Override

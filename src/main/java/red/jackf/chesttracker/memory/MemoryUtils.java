@@ -64,7 +64,7 @@ public abstract class MemoryUtils {
                     database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
                 }
             }
-            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames) ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getCanonicalName()));
+            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames) ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getSimpleName()));
         }
     }
 
