@@ -38,6 +38,5 @@
     "minecraft": ">=1.16.2"
   },
   "custom": {
-    "modmenu:clientsideOnly": true
   }
 }

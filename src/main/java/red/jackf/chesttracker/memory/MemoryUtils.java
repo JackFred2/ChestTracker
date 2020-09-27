@@ -190,8 +190,13 @@ public abstract class MemoryUtils {
                 }
                 if (currentlyCheckedIndex >= 0) {
                     Memory memory = currentlyCheckedMemories.get(currentlyCheckedIndex);
-                    if (!checkExistsInWorld(memory, world)) {
-                        database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
+                    if (memory != null) {
+                        if (!checkExistsInWorld(memory, world)) {
+                            database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
+                        }
+                        if (memory.getTitle() == null && memory.getItems().size() == 0) {
+                            database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
+                        }
                     }
                     currentlyCheckedMemories.remove(currentlyCheckedIndex);
                     currentlyCheckedIndex--;

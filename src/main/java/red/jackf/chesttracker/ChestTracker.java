@@ -76,7 +76,7 @@ public class ChestTracker implements ClientModInitializer {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null) database.save();
-        }));
+        }, "ChestTrackerSavingThread"));
 
         // Checking for memories that are still alive
         ClientTickEvents.END_WORLD_TICK.register(MemoryUtils::checkValidCycle);
@@ -105,7 +105,7 @@ public class ChestTracker implements ClientModInitializer {
             if (screen instanceof HandledScreen) {
                 screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
                 if (MemoryUtils.getLatestPos() != null && !(screen instanceof AbstractInventoryScreen)) {
-                    screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
+                    //screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
                     //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
                 }
             }

@@ -9,7 +9,7 @@
   "chesttracker.gui.reset_button_confirm": "确定?",
   "chesttracker.gui.reset_button_tooltip": "忘记所有箱子.",
   "chesttracker.gui.reset_button_tooltip_shift": "忘记所有箱子记录，包括收藏的.",
-  "chesttracker.gui.reset_button_confirm_tooltip": "这不能被撤消.",
+  "chesttracker.gui.reset_button_alt": "这不能被撤消.",
   "chesttracker.gui.verify_button": "校验",
   "chesttracker.gui.verify_button_tooltip": "检查附近的箱子是否仍然存在.",
   "chesttracker.searching_for_item": "正在搜寻 %s",
@@ -37,5 +37,14 @@
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist.@PrefixText": "有时Mod可能会记住不应该记住的物品（例如在关闭制作物品界面时网格中的全部物品都会掉落，或者是实体马的背包）。此设置使您可以防止保存某些GUI。若要查看正确的名称，请在“杂项设置”下启用\"§aDebug Mode§f\" .",
   "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "追踪器GUI 黑名单",
   "text.autoconfig.chesttracker.option.ignoredBlocks.ignoredBlockList.@PrefixText": "Here, you can add a list of block IDs to not be tracked, useful for storage such as Shulker Boxes. You can get the ID by either enabling \"§aDebug Mode§f\" or using the F3 overlay, under \"Targeted Block\" on the right. The list also supports Regex - use §chttps://www.freeformatter.com/java-regex-tester.html§f to test.",
-  "text.autoconfig.chesttracker.option.ignoredBlocks.ignoredBlockList": "Ignored Block List"
+  "text.autoconfig.chesttracker.option.ignoredBlocks.ignoredBlockList": "Ignored Block List",
+  "chesttracker.gui.page_count": "Page %s/%s",
+  "chesttracker.gui.next_page": "Next Page",
+  "chesttracker.gui.previous_page": "Previous Page",
+  "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
+  "chesttracker.gui.search_field_start": "Search...",
+  "chesttracker.gui.stack_count": "%d",
+  "chesttracker.gui.edit_name": "Edit saved name",
+  "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Row Count",
+  "text.autoconfig.chesttracker.option.visualOptions.columnCount": "Column Count"
 }

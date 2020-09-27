@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionType;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.widgets.WBevelledButton;
+import red.jackf.chesttracker.gui.widgets.WHeldButton;
 import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
 import red.jackf.chesttracker.memory.MemoryDatabase;
@@ -161,6 +162,13 @@ public class ItemListScreen extends CottonClientScreen {
 
             root.validate(this);
             setDimensionFilter(currentWorldId);
+
+            // Reset Button
+            WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 20);
+            root.add(resetButton, -7, -32, width, 20);
+            resetButton.setOnClick(() -> {
+                mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            });
         }
 
         private void setItems(List<ItemStack> items) {
