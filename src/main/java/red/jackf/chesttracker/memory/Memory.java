@@ -32,7 +32,7 @@ public class Memory {
     }
 
     public static Memory of(@Nullable BlockPos pos, List<ItemStack> items, @Nullable Text title, @Nullable Vec3d nameOffset) {
-        return new Memory(pos, items, title, nameOffset);
+        return new Memory(pos.toImmutable(), items, title, nameOffset);
     }
 
     @Nullable

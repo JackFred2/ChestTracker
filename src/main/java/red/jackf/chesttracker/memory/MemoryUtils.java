@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.realms.dto.RealmsServer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -20,12 +21,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.ChestTracker;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +40,11 @@ public abstract class MemoryUtils {
     private static BlockPos latestPos = null;
     @Nullable
     private static RealmsServer lastRealmsServer = null;
+
+    private static int ticksPerCheck = 20;
+    private static List<Memory> currentlyCheckedMemories = new ArrayList<>();
+    private static int currentlyCheckedIndex = 0;
+    private static Identifier currentlyCheckedWorldId = null;
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (validScreenToTrack(screen)) {
@@ -153,7 +159,10 @@ public abstract class MemoryUtils {
     }
 
     public static boolean checkExistsInWorld(Memory memory) {
-        World world = MinecraftClient.getInstance().world;
+        return checkExistsInWorld(memory, MinecraftClient.getInstance().world);
+    }
+
+    public static boolean checkExistsInWorld(Memory memory, ClientWorld world) {
         BlockPos pos = memory.getPosition();
         if (world != null && pos != null) {
             WorldChunk chunk = world.getWorldChunk(pos);
@@ -164,5 +173,30 @@ public abstract class MemoryUtils {
 
     public static boolean isValidInventoryHolder(Block block) {
         return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
+    }
+
+    public static void checkValidCycle(ClientWorld world) {
+        if (world.getTime() % ChestTracker.CONFIG.databaseOptions.destroyedMemoryCheckInterval == 0) {
+            MemoryDatabase database = MemoryDatabase.getCurrent();
+            if (database != null) {
+                if (!world.getRegistryKey().getValue().equals(currentlyCheckedWorldId)) {
+                    currentlyCheckedWorldId = world.getRegistryKey().getValue();
+                    currentlyCheckedMemories.clear();
+                    currentlyCheckedIndex = 0;
+                }
+                if (currentlyCheckedMemories.size() == 0) {
+                    currentlyCheckedMemories = new ArrayList<>(database.getAllMemories(world.getRegistryKey().getValue()));
+                    currentlyCheckedIndex = currentlyCheckedMemories.size() - 1;
+                }
+                if (currentlyCheckedIndex >= 0) {
+                    Memory memory = currentlyCheckedMemories.get(currentlyCheckedIndex);
+                    if (!checkExistsInWorld(memory, world)) {
+                        database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
+                    }
+                    currentlyCheckedMemories.remove(currentlyCheckedIndex);
+                    currentlyCheckedIndex--;
+                }
+            }
+        }
     }
 }

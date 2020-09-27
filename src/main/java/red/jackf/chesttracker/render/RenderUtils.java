@@ -207,16 +207,7 @@ public abstract class RenderUtils {
         if (database == null) return;
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.world != null) {
-            // Named
-            Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
-            for (Memory memory : toRender) {
-                BlockPos blockPos = memory.getPosition();
-                if (blockPos != null && memory.getTitle() != null) {
-                    Vec3d pos = Vec3d.ofCenter(blockPos);
-                    if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
-                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false, ChestTracker.CONFIG.visualOptions.textSizeModifier);
-                }
-            }
+            Set<Memory> rendered = new HashSet<>();
 
             // Named Highlighted
             for (PositionData data : getRenderPositions()) {
@@ -225,6 +216,18 @@ public abstract class RenderUtils {
                     Vec3d pos = Vec3d.ofCenter(blockPos);
                     if (data.memory.getNameOffset() != null) pos = pos.add(data.memory.getNameOffset());
                     drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), data.memory.getTitle(), true, ChestTracker.CONFIG.visualOptions.textSizeModifier);
+                }
+                rendered.add(data.memory);
+            }
+
+            // Named nearby
+            Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
+            for (Memory memory : toRender) {
+                BlockPos blockPos = memory.getPosition();
+                if (!rendered.contains(memory) && blockPos != null && memory.getTitle() != null) {
+                    Vec3d pos = Vec3d.ofCenter(blockPos);
+                    if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
+                    drawTextAt(matrices, entityVertexConsumers, camera, pos.getX(), pos.getY() + 1, pos.getZ(), memory.getTitle(), false, ChestTracker.CONFIG.visualOptions.textSizeModifier);
                 }
             }
 

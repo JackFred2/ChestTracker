@@ -174,6 +174,14 @@ public class MemoryDatabase {
         }
     }
 
+    public Collection<Memory> getAllMemories(Identifier worldId) {
+        if (locations.containsKey(worldId)) {
+            return locations.get(worldId).values();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     public Collection<Memory> getNamedMemories(Identifier worldId) {
         if (namedLocations.containsKey(worldId)) {
             return namedLocations.get(worldId).values();
