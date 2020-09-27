@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.GsonHandler;
 import red.jackf.chesttracker.mixins.AccessorMinecraftServer;
 
 import java.io.FileReader;

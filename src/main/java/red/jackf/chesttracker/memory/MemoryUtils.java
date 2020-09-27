@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -63,6 +64,7 @@ public abstract class MemoryUtils {
                     database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
                 }
             }
+            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames) ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getCanonicalName()));
         }
     }
 

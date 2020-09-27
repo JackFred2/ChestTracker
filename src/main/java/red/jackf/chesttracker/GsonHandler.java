@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.memory;
+package red.jackf.chesttracker;
 
 import com.google.gson.*;
 import net.fabricmc.api.EnvType;

@@ -12,6 +12,7 @@ import red.jackf.chesttracker.ChestTracker;
 @Config(name = ChestTracker.MODID)
 @Config.Gui.CategoryBackground(category = "visual_options", background = "minecraft:textures/block/fire_coral_block.png")
 @Config.Gui.CategoryBackground(category = "database_options", background = "minecraft:textures/block/bubble_coral_block.png")
+@Config.Gui.CategoryBackground(category = "misc_options", background = "minecraft:textures/block/tube_coral_block.png")
 public class ChestTrackerConfig implements ConfigData {
 
     @ConfigEntry.Category("visual_options")
@@ -21,6 +22,10 @@ public class ChestTrackerConfig implements ConfigData {
     @ConfigEntry.Category("database_options")
     @ConfigEntry.Gui.TransitiveObject
     public final DatabaseOptions databaseOptions = new DatabaseOptions();
+
+    @ConfigEntry.Category("misc_options")
+    @ConfigEntry.Gui.TransitiveObject
+    public final MiscOptions miscOptions = new MiscOptions();
 
     @Override
     public void validatePostLoad() {
@@ -58,5 +63,9 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.PrefixText
         public boolean readableFiles = false;
+    }
+
+    public static class MiscOptions {
+        public boolean printGuiClassNames = false;
     }
 }

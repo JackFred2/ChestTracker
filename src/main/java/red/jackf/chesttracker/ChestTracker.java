@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
@@ -20,6 +21,8 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -31,13 +34,13 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.NameEditButton;
 import red.jackf.chesttracker.gui.OpenItemListButton;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
 import red.jackf.chesttracker.mixins.AccessorHandledScreen;
 import red.jackf.chesttracker.render.RenderUtils;
+import red.jackf.chesttracker.resource.ButtonPositionManager;
 
 import java.util.List;
 
@@ -80,6 +83,8 @@ public class ChestTracker implements ClientModInitializer {
 
         // Checking for memories that are still alive
         ClientTickEvents.END_WORLD_TICK.register(MemoryUtils::checkValidCycle);
+
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ButtonPositionManager());
 
         ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
