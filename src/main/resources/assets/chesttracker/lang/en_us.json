@@ -13,6 +13,7 @@
   "key.chesttracker.searchforitem": "Search for items",
   "text.autoconfig.chesttracker.category.database_options": "Database Options",
   "text.autoconfig.chesttracker.category.visual_options": "Visual Options",
+  "text.autoconfig.chesttracker.category.misc_options": "Misc Options",
   "text.autoconfig.chesttracker.option.databaseOptions.destroyedMemoryCheckInterval": "Destroyed Memory Check Interval",
   "text.autoconfig.chesttracker.option.databaseOptions.destroyedMemoryCheckInterval.@PrefixText": "How often to check for destroyed blocks that were remembered. A lower number will check more often, but will take more processing time.",
   "text.autoconfig.chesttracker.option.databaseOptions.readableFiles": "Readable Storage Files",
@@ -24,5 +25,6 @@
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Name Render Range",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Row Count",
   "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Text Size Modifier",
+  "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[Debug] Print GUI Class Names",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config"
 }

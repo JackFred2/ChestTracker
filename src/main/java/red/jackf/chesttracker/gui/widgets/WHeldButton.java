@@ -60,9 +60,12 @@ public class WHeldButton extends WButton {
             if (timeHeldDown == timeNeededToActivate) {
                 if (getOnClick() != null) getOnClick().run();
                 timeHeldDown = 0;
+            } else if (timeHeldDown % 4 == 0) {
+                client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * timeHeldDown/timeNeededToActivate)));
             }
         } else if (timeHeldDown > 0) {
-            timeHeldDown--;
+            timeHeldDown -= 2;
+            if (timeHeldDown < 0) timeHeldDown = 0;
         }
     }
 
