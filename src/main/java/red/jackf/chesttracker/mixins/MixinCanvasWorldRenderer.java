@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import red.jackf.chesttracker.render.RenderUtils;
 
 @Mixin(CanvasWorldRenderer.class)
+@SuppressWarnings("UnresolvedMixinReference")
 public abstract class MixinCanvasWorldRenderer {
     @Shadow
     private ClientWorld world;

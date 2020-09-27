@@ -21,6 +21,10 @@ repositories {
         url = "https://server.bbkr.space/artifactory/libs-release"
     }
     maven { url = "https://www.cursemaven.com" }
+    maven {
+        name = "Ladysnake Libs"
+        url = "https://dl.bintray.com/ladysnake/libs"
+    }
 }
 
 dependencies {
@@ -49,6 +53,9 @@ dependencies {
     compile 'org.jetbrains:annotations:16.0.2'
 
     // Compat
+
+    // cardinal components: https://dl.bintray.com/ladysnake/libs/io/github/onyxstudios/Cardinal-Components-API/cardinal-components-base/2.5.0-nightly.1.16.2-rc2/
+    modCompileOnly "io.github.cottonmc:UniversalComponents:0.7.3+1.16.2"
     modCompileOnly "curse.maven:canvas-renderer:${project.canvas_file_id}"
     // modCompileOnly "curse.maven:sodium-renderer:${project.sodium_file_id}"
 }

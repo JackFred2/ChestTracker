@@ -114,7 +114,7 @@ public class ChestTracker implements ClientModInitializer {
         UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
             if (world.isClient) {
                 Block hit = world.getBlockState(blockHitResult.getBlockPos()).getBlock();
-                if (MemoryUtils.isValidInventoryHolder(hit)) {
+                if (MemoryUtils.isValidInventoryHolder(hit, world, blockHitResult.getBlockPos())) {
                     MemoryUtils.setLatestPos(blockHitResult.getBlockPos());
                 } else {
                     MemoryUtils.setLatestPos(null);

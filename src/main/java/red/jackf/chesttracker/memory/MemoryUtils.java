@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.compat.UniversalComponentsHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,7 +69,15 @@ public abstract class MemoryUtils {
     private static boolean isValidSlot(Slot slot) {
         return slot.hasStack()
             && !(slot.inventory instanceof PlayerInventory)
-            && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || slot.getClass().getSimpleName().equals("PlayerInvSlot"));
+            && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || isNotAE2Slot(slot));
+    }
+
+    private static boolean isNotAE2Slot(Slot slot) {
+        try {
+            return !Class.forName("appeng.container.slot.AppEngSlot").isInstance(slot);
+        } catch (Exception ex) {
+            return true;
+        }
     }
 
     public static List<ItemStack> condenseItems(List<ItemStack> list) {
@@ -173,13 +182,17 @@ public abstract class MemoryUtils {
         BlockPos pos = memory.getPosition();
         if (world != null && pos != null) {
             WorldChunk chunk = world.getWorldChunk(pos);
-            return chunk instanceof EmptyChunk || isValidInventoryHolder(chunk.getBlockState(pos).getBlock());
+            return chunk instanceof EmptyChunk || isValidInventoryHolder(chunk.getBlockState(pos).getBlock(), world, pos);
         }
         return true;
     }
 
-    public static boolean isValidInventoryHolder(Block block) {
-        return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
+    public static boolean isValidInventoryHolder(Block block, World world, BlockPos pos) {
+        if (FabricLoader.getInstance().isModLoaded("universalcomponents")) {
+            return UniversalComponentsHandler.isValidInventoryHolder(block, world, pos);
+        } else {
+            return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
+        }
     }
 
     public static void checkValidCycle(ClientWorld world) {
