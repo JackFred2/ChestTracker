@@ -42,10 +42,6 @@ public class ButtonPositionManager extends JsonDataLoader implements Identifiabl
             }
         }
 
-        manager.streamResourcePacks().forEach(pack -> {
-            pack.findResources(ResourceType.CLIENT_RESOURCES, "chesttracker", "button_positions", Integer.MAX_VALUE, s -> s.endsWith(".json")).forEach(System.out::println);
-        });
-
         ButtonPositionManager.overrides = ImmutableMap.copyOf(overrides);
     }
 

@@ -69,9 +69,13 @@ public abstract class MemoryUtils {
     }
 
     private static boolean isValidSlot(Slot slot) {
-        return slot.hasStack()
-            && !(slot.inventory instanceof PlayerInventory)
-            && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || isNotAE2Slot(slot));
+        try {
+            return !(slot.inventory instanceof PlayerInventory)
+                && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || isNotAE2Slot(slot))
+                && slot.hasStack();
+        } catch (Throwable ex) {
+            return false;
+        }
     }
 
     private static boolean isNotAE2Slot(Slot slot) {
