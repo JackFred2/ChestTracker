@@ -1,11 +1,14 @@
 package red.jackf.chesttracker.memory;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+@Environment(EnvType.CLIENT)
 public class LightweightStack {
     private final Item item;
     @Nullable

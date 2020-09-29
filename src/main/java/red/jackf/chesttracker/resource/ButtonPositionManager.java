@@ -3,6 +3,8 @@ package red.jackf.chesttracker.resource;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
+@Environment(EnvType.CLIENT)
 public class ButtonPositionManager extends JsonDataLoader implements IdentifiableResourceReloadListener {
     private static ImmutableMap<String, ButtonPosition> overrides = ImmutableMap.of();
 

@@ -2,6 +2,8 @@ package red.jackf.chesttracker.mixins;
 
 import grondag.canvas.mixinterface.WorldRendererExt;
 import grondag.canvas.render.CanvasWorldRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -16,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import red.jackf.chesttracker.render.RenderUtils;
 
+@Environment(EnvType.CLIENT)
 @Mixin(CanvasWorldRenderer.class)
 @SuppressWarnings("UnresolvedMixinReference")
 public abstract class MixinCanvasWorldRenderer {
