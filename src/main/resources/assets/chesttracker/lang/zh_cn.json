@@ -24,5 +24,7 @@
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "名称渲染范围",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Row Count",
   "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Text Size Modifier",
-  "text.autoconfig.chesttracker.title": "Chest Tracker 箱子追踪器配置"
+  "text.autoconfig.chesttracker.title": "Chest Tracker 箱子追踪器配置",
+  "text.autoconfig.chesttracker.category.misc_options": "Misc Options",
+  "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[Debug] Print GUI Class Names"
 }

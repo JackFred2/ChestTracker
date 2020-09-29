@@ -1,8 +1,6 @@
 package red.jackf.chesttracker.compat;
 
-import io.github.cottonmc.component.UniversalComponents;
 import io.github.cottonmc.component.api.ComponentHelper;
-import io.github.cottonmc.component.compat.core.BlockComponentHook;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;

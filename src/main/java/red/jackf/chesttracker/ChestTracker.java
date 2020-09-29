@@ -21,7 +21,6 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;

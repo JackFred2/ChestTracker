@@ -1,12 +1,10 @@
 package red.jackf.chesttracker.gui.widgets;
 
-import io.github.cottonmc.cotton.gui.client.LibGuiClient;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
@@ -61,7 +59,7 @@ public class WHeldButton extends WButton {
                 if (getOnClick() != null) getOnClick().run();
                 timeHeldDown = 0;
             } else if (timeHeldDown % 4 == 0) {
-                client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * timeHeldDown/timeNeededToActivate)));
+                client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F + (0.4f * timeHeldDown / timeNeededToActivate)));
             }
         } else if (timeHeldDown > 0) {
             timeHeldDown -= 2;

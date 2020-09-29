@@ -238,7 +238,8 @@ public class MemoryDatabase {
                             found.add(entry.getValue());
                         } else {
                             // Remove if it's disappeared.
-                            if (MemoryDatabase.getCurrent() != null) MemoryDatabase.getCurrent().removePos(worldId, entry.getKey());
+                            if (MemoryDatabase.getCurrent() != null)
+                                MemoryDatabase.getCurrent().removePos(worldId, entry.getKey());
                         }
                     }
                 }

@@ -44,7 +44,6 @@ public abstract class MemoryUtils {
     @Nullable
     private static RealmsServer lastRealmsServer = null;
 
-    private static int ticksPerCheck = 20;
     private static List<Memory> currentlyCheckedMemories = new ArrayList<>();
     private static int currentlyCheckedIndex = 0;
     private static Identifier currentlyCheckedWorldId = null;
@@ -64,7 +63,8 @@ public abstract class MemoryUtils {
                     database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
                 }
             }
-            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames) ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getSimpleName()));
+            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames)
+                ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getSimpleName()));
         }
     }
 
@@ -171,13 +171,13 @@ public abstract class MemoryUtils {
         );
     }
 
-    public static void setLastRealmsServer(@Nullable RealmsServer lastRealmsServer) {
-        MemoryUtils.lastRealmsServer = lastRealmsServer;
-    }
-
     @Nullable
     public static RealmsServer getLastRealmsServer() {
         return lastRealmsServer;
+    }
+
+    public static void setLastRealmsServer(@Nullable RealmsServer lastRealmsServer) {
+        MemoryUtils.lastRealmsServer = lastRealmsServer;
     }
 
     public static boolean checkExistsInWorld(Memory memory) {

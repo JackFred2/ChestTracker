@@ -6,11 +6,11 @@
   "mixins": [
   ],
   "client": [
-    "MixinCanvasWorldRenderer",
     "AccessorHandledScreen",
     "AccessorMinecraftServer",
     "AccessorRenderPhase",
     "MixinBlock",
+    "MixinCanvasWorldRenderer",
     "MixinClientConnection",
     "MixinMinecraftClient",
     "MixinRealmsMainScreen",

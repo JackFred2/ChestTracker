@@ -28,7 +28,10 @@ import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 

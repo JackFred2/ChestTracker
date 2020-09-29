@@ -1,8 +1,8 @@
 {
   "classNames": [
     "KitchenCupboardScreen",
-	"DrawerScreen",
-	"TradingStationScreen"
+    "DrawerScreen",
+    "TradingStationScreen"
   ],
   "horizontalAlignment": "RIGHT",
   "horizontalOffset": -6,
