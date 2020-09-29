@@ -3,6 +3,10 @@ A [Fabric](https://fabricmc.net) mod for remembering items and recalling where o
 
 Original Forge version by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods/chestcounter).
 
+## Translations
+
+You can now contribute translations at https://poeditor.com/join/project?hash=FpMp8wEAKO
+
 ## Button Positions
 
 Button positions can be overriden on a per-screen basis using resource packs (either player made or included with mods).
