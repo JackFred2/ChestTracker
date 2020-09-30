@@ -76,17 +76,8 @@ public class MemoryDatabase {
             RealmsServer server = MemoryUtils.getLastRealmsServer();
             if (server == null) return null;
             id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
-        } else {
-            ClientPlayNetworkHandler cpnh = mc.getNetworkHandler();
-            if (cpnh != null && cpnh.getConnection().isOpen()) {
-                SocketAddress address = cpnh.getConnection().getAddress();
-                if (address instanceof InetSocketAddress) {
-                    InetSocketAddress inet = ((InetSocketAddress) address);
-                    id = "multiplayer-" + inet.getAddress() + (inet.getPort() == 25565 ? "" : "-" + inet.getPort());
-                } else {
-                    id = "multiplayer-" + MemoryUtils.makeFileSafe(address.toString());
-                }
-            }
+        } else if (mc.getCurrentServerEntry() != null) {
+            id = "multiplayer-" + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
         }
 
         return id;
