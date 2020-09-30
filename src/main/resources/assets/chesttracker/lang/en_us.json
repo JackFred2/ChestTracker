@@ -8,7 +8,6 @@
   "chesttracker.gui.reset_button_alt": "This can not be undone.",
   "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
   "chesttracker.gui.search_field_start": "Search...",
-  "chesttracker.gui.stack_count": "%d",
   "chesttracker.gui.title": "ChestTracker",
   "key.chesttracker.searchforitem": "Search for items",
   "text.autoconfig.chesttracker.category.database_options": "Database Options",

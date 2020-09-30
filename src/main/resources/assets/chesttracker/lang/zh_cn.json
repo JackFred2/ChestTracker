@@ -8,7 +8,6 @@
   "chesttracker.gui.reset_button_alt": "这不能被撤消.",
   "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
   "chesttracker.gui.search_field_start": "Search...",
-  "chesttracker.gui.stack_count": "%d",
   "chesttracker.gui.title": "箱子追踪器",
   "key.chesttracker.searchforitem": "搜索物品",
   "text.autoconfig.chesttracker.category.database_options": "Database Options",

@@ -15,6 +15,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -54,7 +55,7 @@ public class WItemListPanel extends WGridPanel {
     }
 
     private static Text getCountText(ItemStack stack) {
-        return new TranslatableText("chesttracker.gui.stack_count", stack.getCount()).setStyle(TOOLTIP_STYLE);
+        return new LiteralText("" + stack.getCount()).setStyle(TOOLTIP_STYLE);
     }
 
     private static String getLabel(int count) {
