@@ -58,7 +58,7 @@ public class ChestTracker implements ClientModInitializer {
         player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
-    public static void searchForItem(ItemStack stack, @NotNull World world) {
+    public static void searchForItem(@NotNull ItemStack stack, @NotNull World world) {
         MemoryDatabase database = MemoryDatabase.getCurrent();
         if (database != null) {
             List<Memory> found = database.findItems(stack, world.getRegistryKey().getValue());
