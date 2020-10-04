@@ -85,7 +85,7 @@ public class ChestTracker implements ClientModInitializer {
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ButtonPositionManager());
 
-        ClothClientHooks.SCREEN_KEY_PRESSED.register((client, screen, keyCode, scanCode, modifiers) -> {
+        ClothClientHooks.SCREEN_KEY_RELEASED.register((client, screen, keyCode, scanCode, modifiers) -> {
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
                 MinecraftClient mc = MinecraftClient.getInstance();
                 World world = mc.world;
@@ -94,12 +94,10 @@ public class ChestTracker implements ClientModInitializer {
                     Slot hovered = ((AccessorHandledScreen) mc.currentScreen).getFocusedSlot();
                     if (hovered != null && hovered.hasStack()) {
                         ChestTracker.searchForItem(hovered.getStack(), world);
-                    } else if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-                        double scaleFactor = (double) mc.getWindow().getScaledWidth() / (double) mc.getWindow().getWidth();
-                        ItemStack stack = REIPlugin.tryFindItem(mc.mouse.getX() * scaleFactor, mc.mouse.getY() * scaleFactor);
-                        if (!stack.isEmpty()) ChestTracker.searchForItem(stack, world);
+                    } else {
+                        tryFindInREI(mc, world);
                     }
-                }
+                } else tryFindInREI(mc, world);
             }
 
             return ActionResult.PASS;
@@ -140,5 +138,13 @@ public class ChestTracker implements ClientModInitializer {
             }
             return TypedActionResult.pass(ItemStack.EMPTY);
         });
+    }
+
+    private static void tryFindInREI(MinecraftClient mc, World world) {
+        if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+            double scaleFactor = (double) mc.getWindow().getScaledWidth() / (double) mc.getWindow().getWidth();
+            ItemStack stack = REIPlugin.tryFindItem(mc.mouse.getX() * scaleFactor, mc.mouse.getY() * scaleFactor);
+            if (!stack.isEmpty()) ChestTracker.searchForItem(stack, world);
+        }
     }
 }
