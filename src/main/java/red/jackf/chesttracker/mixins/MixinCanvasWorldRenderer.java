@@ -31,7 +31,7 @@ public abstract class MixinCanvasWorldRenderer {
 
     //@Inject(method = "renderWorld(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V", at = @At("TAIL"))
     @Inject(method = "Lgrondag/canvas/render/CanvasWorldRenderer;renderWorld(Lnet/minecraft/class_4587;FJZLnet/minecraft/class_4184;Lnet/minecraft/class_757;Lnet/minecraft/class_765;Lnet/minecraft/class_1159;)V", at = @At("TAIL"), remap = false)
-    public void whereisit$renderOutlines(MatrixStack matrices, float tickDelta, long limitTime, boolean blockOutlines, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci) {
+    public void chesttracker$renderOutlines(MatrixStack matrices, float tickDelta, long limitTime, boolean blockOutlines, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci) {
         if (!blockOutlines) return;
         this.world.getProfiler().swap("chesttracker_render_overlay");
         RenderUtils.drawOutlines(matrices, wr.canvas_bufferBuilders().getEntityVertexConsumers(), camera, this.world.getTime(), tickDelta);
