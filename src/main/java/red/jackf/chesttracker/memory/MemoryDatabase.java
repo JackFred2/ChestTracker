@@ -28,6 +28,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
@@ -117,7 +118,13 @@ public class MemoryDatabase {
                 FileReader reader = new FileReader(loadPath.toString());
                 this.locations = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
                 }.getType());
-                this.generateNamedLocations();
+                if (locations == null) {
+                    ChestTracker.LOGGER.info("Empty file found for " + id);
+                    this.locations = new HashMap<>();
+                    this.namedLocations = new HashMap<>();
+                } else {
+                    this.generateNamedLocations();
+                }
             } else {
                 ChestTracker.LOGGER.info("No data found for " + id);
                 this.locations = new HashMap<>();
@@ -205,8 +212,8 @@ public class MemoryDatabase {
         }
     }
 
-    private void addItem(Identifier worldId, Memory memory, Map<Identifier, Map<BlockPos, Memory>> namedLocations) {
-        Map<BlockPos, Memory> namedMap = namedLocations.computeIfAbsent(worldId, (identifier -> new HashMap<>()));
+    private void addItem(Identifier worldId, Memory memory, Map<Identifier, Map<BlockPos, Memory>> map) {
+        Map<BlockPos, Memory> namedMap = map.computeIfAbsent(worldId, (identifier -> new ConcurrentHashMap<>()));
         namedMap.put(memory.getPosition(), memory);
     }
 
