@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.compat.REIPlugin;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.ItemListScreen;
 import red.jackf.chesttracker.gui.OpenItemListButton;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
@@ -47,7 +48,8 @@ import java.util.List;
 public class ChestTracker implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("ChestTracker");
     public static final String MODID = "chesttracker";
-    public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.inventory");
+    public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories." + MODID);
+    public static final KeyBinding GUI_KEY = new KeyBinding("key." + MODID + ".opengui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories." + MODID);
     public static final ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
 
     public static Identifier id(String path) {
@@ -73,6 +75,7 @@ public class ChestTracker implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
+        KeyBindingHelper.registerKeyBinding(GUI_KEY);
 
         // Save if someone just decides to X out of craft
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -80,24 +83,35 @@ public class ChestTracker implements ClientModInitializer {
             if (database != null) database.save();
         }, "ChestTrackerSavingThread"));
 
+        ClientTickEvents.START_CLIENT_TICK.register((client) -> {
+            if (GUI_KEY.wasPressed() && client.world != null) {
+                if (client.currentScreen != null) client.currentScreen.onClose();
+                client.openScreen(new ItemListScreen());
+            }
+        });
+
         // Checking for memories that are still alive
         ClientTickEvents.END_WORLD_TICK.register(MemoryUtils::checkValidCycle);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ButtonPositionManager());
 
-        ClothClientHooks.SCREEN_KEY_RELEASED.register((client, screen, keyCode, scanCode, modifiers) -> {
+        ClothClientHooks.SCREEN_KEY_RELEASED.register((mc, currentScreen, keyCode, scanCode, modifiers) -> {
+            World world = mc.world;
             if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
-                MinecraftClient mc = MinecraftClient.getInstance();
-                World world = mc.world;
-                if (world != null && mc.currentScreen instanceof AccessorHandledScreen) {
+                if (world != null && currentScreen instanceof AccessorHandledScreen) {
                     // Try the current screen inventory slots first
-                    Slot hovered = ((AccessorHandledScreen) mc.currentScreen).getFocusedSlot();
+                    Slot hovered = ((AccessorHandledScreen) currentScreen).getFocusedSlot();
                     if (hovered != null && hovered.hasStack()) {
                         ChestTracker.searchForItem(hovered.getStack(), world);
                     } else {
                         tryFindInREI(mc, world);
                     }
                 } else tryFindInREI(mc, world);
+            } else if (GUI_KEY.matchesKey(keyCode, scanCode)) {
+                if (currentScreen instanceof HandledScreen) {
+                    currentScreen.onClose();
+                    mc.openScreen(new ItemListScreen());
+                }
             }
 
             return ActionResult.PASS;
@@ -105,10 +119,12 @@ public class ChestTracker implements ClientModInitializer {
 
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
-                screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
-                if (MemoryUtils.getLatestPos() != null && !(screen instanceof AbstractInventoryScreen)) {
-                    //screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
-                    //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
+                if (ChestTracker.CONFIG.visualOptions.enableButton) {
+                    screenHooks.cloth$addButtonWidget(new OpenItemListButton((HandledScreen<?>) screen));
+                    if (MemoryUtils.getLatestPos() != null && !(screen instanceof AbstractInventoryScreen)) {
+                        //screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
+                        //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
+                    }
                 }
             }
         });
