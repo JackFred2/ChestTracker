@@ -19,5 +19,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "red.jackf.chesttracker.mixins.ChestTrackerMixinConfig"
 }
