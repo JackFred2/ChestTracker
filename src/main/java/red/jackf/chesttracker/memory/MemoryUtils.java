@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.compat.ExpandedStorageHandler;
 import red.jackf.chesttracker.compat.UniversalComponentsHandler;
 
 import java.util.*;
@@ -125,6 +126,9 @@ public abstract class MemoryUtils {
                         return Collections.singleton(pos.add(0, 0, left ? 1 : -1));
                 }
             }
+        } else if (FabricLoader.getInstance().isModLoaded("expandedstorage")) {
+            Collection<BlockPos> result = ExpandedStorageHandler.check(state, world, pos);
+            if (!result.isEmpty()) return result;
         }
         return Collections.emptyList();
     }
