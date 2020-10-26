@@ -43,7 +43,7 @@
   "text.autoconfig.chesttracker.option.visualOptions.borderColour": "箱子轮廓颜色",
   "text.autoconfig.chesttracker.option.visualOptions.borderRenderRange": "箱子·轮廓渲染范围",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "名称渲染范围",
-  "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "追踪器 GUI 黑名单"
+  "text.autoconfig.chesttracker.option.trackedScreens.blocklist": "追踪器 GUI 黑名单",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "行数",
-  "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "文字大小调节器",
+  "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "文字大小调节器"
 }
