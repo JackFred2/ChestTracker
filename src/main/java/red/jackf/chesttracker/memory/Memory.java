@@ -19,7 +19,8 @@ public class Memory {
     private final BlockPos position;
     private final List<ItemStack> items;
     @Nullable
-    private final Text title;
+    private Text title;
+    private Boolean manualTitle = false;
     @Nullable
     private final Vec3d nameOffset;
 
@@ -32,7 +33,7 @@ public class Memory {
     }
 
     public static Memory of(@Nullable BlockPos pos, List<ItemStack> items, @Nullable Text title, @Nullable Vec3d nameOffset) {
-        return new Memory(pos.toImmutable(), items, title, nameOffset);
+        return new Memory(pos == null ? null : pos.toImmutable(), items, title, nameOffset);
     }
 
     @Nullable
@@ -49,6 +50,10 @@ public class Memory {
         return title;
     }
 
+    public void setTitle(@Nullable Text title) {
+        this.title = title;
+    }
+
     @Override
     public String toString() {
         return "Memory{" +
@@ -61,5 +66,13 @@ public class Memory {
     @Nullable
     public Vec3d getNameOffset() {
         return nameOffset;
+    }
+
+    public Boolean isManualTitle() {
+        return manualTitle;
+    }
+
+    public void setManualTitle(Boolean manualTitle) {
+        this.manualTitle = manualTitle;
     }
 }
