@@ -195,7 +195,7 @@ public abstract class RenderUtils {
         Matrix4f matrix4f = matrixStack.peek().getModel();
         float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
         int j = (int) (g * 255.0F) << 24;
-        TextRenderer textRenderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getTextRenderer();
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         float h = (float) (-textRenderer.getWidth(text) / 2);
         textRenderer.draw(text, h, 0, 0xffffffff, false, matrix4f, vertexConsumers, true, j, 0xf000f0);
         textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, false, 0, 0xf000f0);
