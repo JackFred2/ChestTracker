@@ -21,7 +21,7 @@ public class ButtonWidgets extends TexturedButtonWidget {
     private boolean wasHovered = false;
 
     public ButtonWidgets(HandledScreen<?> screen) {
-        super(0, 0, 9, 9, 0, 0, 22, TEXTURE, 9, 44, (button) -> {
+        super(0, 0, 9, 9, 0, 0, 0, TEXTURE, 9, 44, (button) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.currentScreen != null) client.currentScreen.onClose();
             client.openScreen(new ItemListScreen());
@@ -33,18 +33,6 @@ public class ButtonWidgets extends TexturedButtonWidget {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.reposition();
         this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-
-        if (this.isHovered()) {
-            this.height = 22;
-            MinecraftClient.getInstance().getTextureManager().bindTexture(BACKGROUND_TEXTURE);
-            drawTexture(matrices, this.x - 3, this.y - 3, 0, 0, this.width + 6, 28, this.width + 6, 28);
-            MinecraftClient.getInstance().getTextureManager().bindTexture(NAME_EDIT_TEXTURE);
-            drawTexture(matrices, this.x, this.y + 13, 0, 0, 9, 9, 9, 18);
-        } else {
-            this.height = 9;
-        }
-
-
 
         // render
         if (this.visible) {
@@ -69,13 +57,7 @@ public class ButtonWidgets extends TexturedButtonWidget {
         }
 
         if (this.isMouseOver(mouseX, mouseY)) {
-            int yPos = mouseY - this.y;
-
-            if (yPos < 9) {
-                this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
-            } else if (yPos >= 13) {
-                this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
-            }
+            this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
         }
     }
 

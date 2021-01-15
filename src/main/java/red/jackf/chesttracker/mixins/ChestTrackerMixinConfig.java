@@ -22,6 +22,7 @@ public class ChestTrackerMixinConfig implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (CANVAS_RENDERER_CLASS.equals(targetClassName)) {
+            // Currently renders incorrectly.gi
             return FabricLoader.getInstance().isModLoaded("canvas");
         } else {
             return true;
