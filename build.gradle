@@ -56,9 +56,8 @@ dependencies {
 
     // cardinal components: https://dl.bintray.com/ladysnake/libs/io/github/onyxstudios/Cardinal-Components-API/cardinal-components-base/2.5.0-nightly.1.16.2-rc2/
     modCompileOnly "io.github.cottonmc:UniversalComponents:${project.universal_components_version}"
-    modCompileOnly "curse.maven:canvas-renderer:${project.canvas_file_id}"
-    modCompileOnly "curse.maven:sodium-renderer:${project.sodium_file_id}"
-    modCompileOnly "curse.maven:expanded-storage:${project.expanded_storage_file_id}"
+    modCompileOnly "curse.maven:canvas-renderer-318440:${project.canvas_file_id}"
+    modCompileOnly "curse.maven:expanded-storage-317856:${project.expanded_storage_file_id}"
 }
 
 processResources {
