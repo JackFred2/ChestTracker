@@ -3,9 +3,15 @@
   "id": "chesttracker",
   "version": "${version}",
   "name": "Chest Tracker",
-  "description": "Keep a memory of what items you've seen, and find them any time. \nOriginal Forge version by HenneGamer on CurseForge.",
+  "description": "Addon for Where Is It to keep a client-sided memory of items. \nOriginal Forge concept by HenneGamer on CurseForge.",
   "authors": [
-    "JackFred"
+    {
+      "name": "JackFred",
+      "contact": {
+        "homepage": "https://github.com/JackFred2",
+        "email": "jack@jackf.red"
+      }
+    }
   ],
   "contributors": [
     "rickybrent - NBT filters",
@@ -13,7 +19,8 @@
     "a10935336 - Simplified Chinese Translation"
   ],
   "contact": {
-    "homepage": "https://github.com/JackFred2/ChestTracker",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/chest-tracker",
+    "sources": "https://github.com/JackFred2/ChestTracker",
     "issues": "https://github.com/JackFred2/ChestTracker/issues"
   },
   "license": "MIT",
@@ -36,8 +43,16 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": ">=1.16.2"
+    "minecraft": ">=1.16.2",
+    "whereisit": ">=1.11.3"
+  },
+  "suggests": {
+    "roughlyenoughitems": "*",
+    "modmenu": "*"
   },
   "custom": {
+    "modmenu": {
+      "parent": "whereisit"
+    }
   }
 }
