@@ -164,16 +164,18 @@ public class ItemListScreen extends CottonClientScreen {
             root.validate(this);
             setDimensionFilter(currentWorldId);
 
-            // Reset Button
-            WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 40);
-            root.add(resetButton, -7, -32, width, 20);
-            resetButton.setOnClick(() -> {
-                mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                if (database != null) {
-                    database.clearDimension(selectedDimensionFilter);
-                    setItems(Collections.emptyList());
-                }
-            });
+            if (!ChestTracker.CONFIG.visualOptions.hideDeleteButton) {
+                // Reset Button
+                WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 40);
+                root.add(resetButton, -7, -32, width, 20);
+                resetButton.setOnClick(() -> {
+                    mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    if (database != null) {
+                        database.clearDimension(selectedDimensionFilter);
+                        setItems(Collections.emptyList());
+                    }
+                });
+            }
         }
 
         private void setItems(List<ItemStack> items) {

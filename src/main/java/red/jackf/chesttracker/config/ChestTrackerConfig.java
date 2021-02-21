@@ -48,6 +48,7 @@ public class ChestTrackerConfig implements ConfigData {
         public int columnCount = 9;
         @ConfigEntry.BoundedDiscrete(min = 50, max = 400)
         public int textSizeModifier = 100;
+        public boolean hideDeleteButton = false;
         public boolean enableButton = true;
     }
 
