@@ -7,12 +7,16 @@ Original Forge idea by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods
 
 You can now contribute translations at https://poeditor.com/join/project?hash=FpMp8wEAKO
 
-![POEditor](https://raster.shields.io/poeditor/progress/377595/en?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/en?token=c952137f9b9b38bb222db987aedc45fe)
 ![POEditor](https://img.shields.io/poeditor/progress/377595/zh-Hans?token=c952137f9b9b38bb222db987aedc45fe)
-![POEditor](https://img.shields.io/poeditor/progress/377595/de?token=c952137f9b9b38bb222db987aedc45fe)
 ![POEditor](https://img.shields.io/poeditor/progress/377595/fr?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/de?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/pl?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/pt?token=c952137f9b9b38bb222db987aedc45fe)
 ![POEditor](https://img.shields.io/poeditor/progress/377595/ru?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/es?token=c952137f9b9b38bb222db987aedc45fe)
 ![POEditor](https://img.shields.io/poeditor/progress/377595/tr?token=c952137f9b9b38bb222db987aedc45fe)
+![POEditor](https://img.shields.io/poeditor/progress/377595/cy?token=c952137f9b9b38bb222db987aedc45fe)
 
 ## Button Positions
 
