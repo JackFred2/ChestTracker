@@ -8,17 +8,13 @@
   "client": [
     "AccessorHandledScreen",
     "AccessorMinecraftServer",
-    "AccessorRenderPhase",
     "MixinBlock",
-    "MixinCanvasWorldRenderer",
     "MixinClientConnection",
     "MixinMinecraftClient",
     "MixinRealmsMainScreen",
-    "MixinShulkerBoxBlock",
-    "MixinWorldRenderer"
+    "MixinShulkerBoxBlock"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "plugin": "red.jackf.chesttracker.mixins.ChestTrackerMixinConfig"
+  }
 }

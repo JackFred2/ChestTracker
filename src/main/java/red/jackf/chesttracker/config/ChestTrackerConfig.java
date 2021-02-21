@@ -1,8 +1,8 @@
 package red.jackf.chesttracker.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.math.MathHelper;
@@ -30,8 +30,6 @@ public class ChestTrackerConfig implements ConfigData {
     @Override
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
-        visualOptions.fadeOutTime = MathHelper.clamp(visualOptions.fadeOutTime, 60, 300);
-        visualOptions.borderWidth = MathHelper.clamp(visualOptions.borderWidth, 1, 10);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 18);
         visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 24);
@@ -40,10 +38,6 @@ public class ChestTrackerConfig implements ConfigData {
     }
 
     public static class VisualOptions {
-        @ConfigEntry.BoundedDiscrete(min = 60, max = 300)
-        public int fadeOutTime = 140;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-        public int borderWidth = 3;
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)

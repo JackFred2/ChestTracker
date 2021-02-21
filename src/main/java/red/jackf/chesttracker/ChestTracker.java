@@ -1,13 +1,14 @@
 package red.jackf.chesttracker;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -26,6 +27,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,14 +43,16 @@ import red.jackf.chesttracker.memory.MemoryUtils;
 import red.jackf.chesttracker.mixins.AccessorHandledScreen;
 import red.jackf.chesttracker.render.RenderUtils;
 import red.jackf.chesttracker.resource.ButtonPositionManager;
+import red.jackf.whereisit.WhereIsItClient;
+import red.jackf.whereisit.client.FoundItemPos;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("ChestTracker");
     public static final String MODID = "chesttracker";
-    public static final KeyBinding SEARCH_KEY = new KeyBinding("key." + MODID + ".searchforitem", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories." + MODID);
     public static final KeyBinding GUI_KEY = new KeyBinding("key." + MODID + ".opengui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories." + MODID);
     public static final ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
 
@@ -65,7 +69,12 @@ public class ChestTracker implements ClientModInitializer {
         if (database != null) {
             List<Memory> found = database.findItems(stack, world.getRegistryKey().getValue());
             if (found.size() >= 1) {
-                RenderUtils.addRenderPositions(found, world.getTime());
+                float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
+                float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
+                float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
+                WhereIsItClient.handleFoundItems(found.stream()
+                    .map(memory -> new FoundItemPos(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
+                    .collect(Collectors.toList()));
                 if (MinecraftClient.getInstance().player != null)
                     MinecraftClient.getInstance().player.closeHandledScreen();
             }
@@ -74,7 +83,6 @@ public class ChestTracker implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        KeyBindingHelper.registerKeyBinding(SEARCH_KEY);
         KeyBindingHelper.registerKeyBinding(GUI_KEY);
 
         // Save if someone just decides to X out of craft
@@ -83,6 +91,17 @@ public class ChestTracker implements ClientModInitializer {
             if (database != null) database.save();
         }, "ChestTrackerSavingThread"));
 
+        WorldRenderEvents.LAST.register(RenderUtils::draw);
+
+        WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
+            if (MinecraftClient.getInstance().world != null) {
+                ItemStack stack = new ItemStack(item);
+                if (matchNbt) stack.setTag(compoundTag);
+                searchForItem(stack, MinecraftClient.getInstance().world);
+            }
+        });
+
+        // Opening GUI
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             if (GUI_KEY.wasPressed() && client.world != null) {
                 if (client.currentScreen != null) client.currentScreen.onClose();
@@ -93,21 +112,12 @@ public class ChestTracker implements ClientModInitializer {
         // Checking for memories that are still alive
         ClientTickEvents.END_WORLD_TICK.register(MemoryUtils::checkValidCycle);
 
+        // JSON Button Positions
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ButtonPositionManager());
 
+        // Find hotkeys
         ClothClientHooks.SCREEN_KEY_RELEASED.register((mc, currentScreen, keyCode, scanCode, modifiers) -> {
-            World world = mc.world;
-            if (SEARCH_KEY.matchesKey(keyCode, scanCode)) {
-                if (world != null && currentScreen instanceof AccessorHandledScreen) {
-                    // Try the current screen inventory slots first
-                    Slot hovered = ((AccessorHandledScreen) currentScreen).getFocusedSlot();
-                    if (hovered != null && hovered.hasStack()) {
-                        ChestTracker.searchForItem(hovered.getStack(), world);
-                    } else {
-                        tryFindInREI(mc, world);
-                    }
-                } else tryFindInREI(mc, world);
-            } else if (GUI_KEY.matchesKey(keyCode, scanCode)) {
+            if (GUI_KEY.matchesKey(keyCode, scanCode)) {
                 if (currentScreen instanceof HandledScreen) {
                     currentScreen.onClose();
                     mc.openScreen(new ItemListScreen());
@@ -117,14 +127,11 @@ public class ChestTracker implements ClientModInitializer {
             return ActionResult.PASS;
         });
 
+        // ChestTracker GUI button
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
                 if (ChestTracker.CONFIG.visualOptions.enableButton) {
                     screenHooks.cloth$addButtonWidget(new ButtonWidgets((HandledScreen<?>) screen));
-                    if (MemoryUtils.getLatestPos() != null && !(screen instanceof AbstractInventoryScreen)) {
-                        //screenHooks.cloth$addButtonWidget(new NameEditButton((HandledScreen<?>) screen));
-                        //screenHooks.cloth$addButtonWidget(new FavouriteButton((HandledScreen<?>) screen));
-                    }
                 }
             }
         });
@@ -154,13 +161,5 @@ public class ChestTracker implements ClientModInitializer {
             }
             return TypedActionResult.pass(ItemStack.EMPTY);
         });
-    }
-
-    private static void tryFindInREI(MinecraftClient mc, World world) {
-        if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-            double scaleFactor = (double) mc.getWindow().getScaledWidth() / (double) mc.getWindow().getWidth();
-            ItemStack stack = REIPlugin.tryFindItem(mc.mouse.getX() * scaleFactor, mc.mouse.getY() * scaleFactor);
-            if (!stack.isEmpty()) ChestTracker.searchForItem(stack, world);
-        }
     }
 }

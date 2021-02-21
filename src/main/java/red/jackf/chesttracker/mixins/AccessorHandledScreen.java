@@ -15,7 +15,4 @@ public interface AccessorHandledScreen {
 
     @Accessor(value = "backgroundHeight")
     int getBackgroundHeight();
-
-    @Accessor(value = "focusedSlot")
-    Slot getFocusedSlot();
 }

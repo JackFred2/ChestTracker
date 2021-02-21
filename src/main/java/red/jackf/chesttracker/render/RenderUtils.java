@@ -1,9 +1,9 @@
 package red.jackf.chesttracker.render;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -11,46 +11,18 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
-import red.jackf.chesttracker.mixins.AccessorRenderPhase;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public abstract class RenderUtils {
-    private static final Map<VoxelShape, List<Box>> CACHED_SHAPES = new HashMap<>();
     private static final List<PositionData> RENDER_POSITIONS = Collections.synchronizedList(new ArrayList<>());
-
-    private static final RenderPhase.Transparency RENDER_TRANSPARENCY = new RenderPhase.Transparency("chesttracker_translucent_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-    }, RenderSystem::disableBlend);
-    public static final RenderLayer OUTLINE_LAYER = RenderLayer.of("chesttracker_blockoutline",
-        VertexFormats.POSITION_COLOR,
-        1, 256,
-        RenderLayer.MultiPhaseParameters.builder()
-            .lineWidth(getDynamicLineWidth())
-            .depthTest(new RenderPhase.DepthTest("pass", 519))
-            .transparency(RENDER_TRANSPARENCY)
-            .build(false)
-    );
-
-    public static void addRenderPositions(@NotNull Collection<Memory> memories, long startTime) {
-        synchronized (RENDER_POSITIONS) {
-            RENDER_POSITIONS.addAll(memories.stream()
-                .map(memory -> new PositionData(memory, startTime))
-                .collect(Collectors.toList()));
-        }
-    }
 
     public static List<PositionData> getRenderPositions() {
         synchronized (RENDER_POSITIONS) {
@@ -58,124 +30,11 @@ public abstract class RenderUtils {
         }
     }
 
-    public static void removeRenderPositions(@NotNull Collection<PositionData> positions) {
-        synchronized (RENDER_POSITIONS) {
-            RENDER_POSITIONS.removeAll(positions);
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static RenderPhase.@NotNull LineWidth getDynamicLineWidth() {
-        RenderPhase.LineWidth layer = new RenderPhase.LineWidth(OptionalDouble.empty());
-        ((AccessorRenderPhase) layer).setName("line_width_dynamic");
-        ((AccessorRenderPhase) layer).setBeginAction(() -> RenderSystem.lineWidth(ChestTracker.CONFIG.visualOptions.borderWidth));
-        ((AccessorRenderPhase) layer).setEndAction(() -> RenderSystem.lineWidth(1.0f));
-        return layer;
-    }
-
-    // Optimized version of a voxelshape renderer, most noticeable at large counts.
-
-    public static void optimizedDrawShapeOutline(@NotNull MatrixStack matrixStack, @NotNull VertexConsumer vertexConsumer, @NotNull VoxelShape voxelShape, double x, double y, double z, float r, float g, float b, float a) {
-        if (!CACHED_SHAPES.containsKey(voxelShape)) {
-            List<Box> boxes = new ArrayList<>();
-            voxelShape.forEachEdge(((minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new Box(minX, minY, minZ, maxX, maxY, maxZ))));
-            CACHED_SHAPES.put(voxelShape, boxes);
-        }
-
-        Matrix4f matrix = matrixStack.peek().getModel();
-        List<Box> shape = CACHED_SHAPES.get(voxelShape);
-        for (Box box : shape) {
-            vertexConsumer.vertex(matrix, (float) (box.minX + x), (float) (box.minY + y), (float) (box.minZ + z)).color(r, g, b, a).next();
-            vertexConsumer.vertex(matrix, (float) (box.maxX + x), (float) (box.maxY + y), (float) (box.maxZ + z)).color(r, g, b, a).next();
-        }
-
-    }
+    public static void draw(WorldRenderContext context) {
 
 
-    public static void drawOutlines(@NotNull MatrixStack matrices, VertexConsumerProvider.@NotNull Immediate provider, @NotNull Camera camera, long worldTime, float tickDelta) {
-        Vec3d cameraPos = camera.getPos();
-        RenderSystem.disableDepthTest();
-        matrices.push();
-        List<PositionData> toRemove = new ArrayList<>();
-        List<PositionData> renderPositions = getRenderPositions();
-
-        float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
-        float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
-        float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
-        for (PositionData data : renderPositions) {
-            //tickDelta = tickDelta - (tickDelta % (1f/6f));
-
-            float timeDiff = worldTime + tickDelta - data.getStartTime();
-            if (timeDiff >= ChestTracker.CONFIG.visualOptions.fadeOutTime) {
-                toRemove.add(data);
-            } else {
-                Memory memory = data.getMemory();
-                if (memory.getPosition() == null) continue;
-                Vec3d finalPos = cameraPos.subtract(memory.getPosition().getX(), memory.getPosition().getY(), memory.getPosition().getZ()).negate();
-                if (finalPos.lengthSquared() > 4096) {
-                    finalPos = finalPos.normalize().multiply(64);
-                }
-
-                Vec3d offset = memory.getNameOffset();
-                double xSize;
-                double ySize;
-                double zSize;
-                double xPos;
-                double yPos;
-                double zPos;
-
-                if (offset == null) {
-                    xPos = 0;
-                    yPos = 0;
-                    zPos = 0;
-                    xSize = 1;
-                    ySize = 1;
-                    zSize = 1;
-                } else {
-                    xPos = Math.min(0, offset.getX() * 2);
-                    yPos = Math.min(0, offset.getY() * 2);
-                    zPos = Math.min(0, offset.getZ() * 2);
-                    xSize = 1 + Math.abs(offset.getX() * 2);
-                    ySize = 1 + Math.abs(offset.getY() * 2);
-                    zSize = 1 + Math.abs(offset.getZ() * 2);
-                }
-
-                // https://www.desmos.com/calculator/bs2whnaxqp
-                // scaleFactor, transparencyFactor and offset in order
-
-                float scaleFactor = (2 * timeDiff - ChestTracker.CONFIG.visualOptions.fadeOutTime) / ChestTracker.CONFIG.visualOptions.fadeOutTime;
-                scaleFactor *= scaleFactor;
-                scaleFactor *= scaleFactor;
-                float transparencyFactor = 1 - scaleFactor;
-                scaleFactor *= scaleFactor;
-                scaleFactor *= scaleFactor;
-                float tweeningOffset = 0.5f * scaleFactor;
-                scaleFactor = 1 - scaleFactor;
-
-                matrices.push();
-                matrices.scale(scaleFactor, scaleFactor, scaleFactor);
-
-                optimizedDrawShapeOutline(matrices,
-                    provider.getBuffer(OUTLINE_LAYER),
-                    VoxelShapes.cuboid(0, 0, 0, xSize, ySize, zSize),
-                    ((xSize * tweeningOffset) + finalPos.x + xPos) * (1 / scaleFactor),
-                    ((ySize * tweeningOffset) + finalPos.y + yPos) * (1 / scaleFactor),
-                    ((zSize * tweeningOffset) + finalPos.z + zPos) * (1 / scaleFactor),
-                    r,
-                    g,
-                    b,
-                    transparencyFactor);
-
-                matrices.pop();
-            }
-        }
-
-        provider.draw(RenderUtils.OUTLINE_LAYER);
-        matrices.pop();
-        RenderSystem.enableDepthTest();
-
-        if (toRemove.size() > 0)
-            removeRenderPositions(toRemove);
+        // context.world().getProfiler().swap("chesttracker_render_chestlabels");
+        // RenderUtils.drawLabels(context.matrixStack(), this.bufferBuilders.getEntityVertexConsumers(), camera);
     }
 
     private static void drawTextAt(@NotNull MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, @NotNull Camera camera, double x, double y, double z, @NotNull Text text, boolean force, int textSizeModifier) {

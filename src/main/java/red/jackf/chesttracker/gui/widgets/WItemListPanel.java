@@ -24,6 +24,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.whereisit.WhereIsItClient;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -150,9 +151,8 @@ public class WItemListPanel extends WGridPanel {
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
             if (MinecraftClient.getInstance().player != null) {
-                ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
                 ItemStack stack = this.filteredItems.get(itemIndex);
-                ChestTracker.searchForItem(stack, playerEntity.world);
+                WhereIsItClient.searchForItem(stack.getItem(), Screen.hasShiftDown(), stack.getTag());
             }
         }
     }
