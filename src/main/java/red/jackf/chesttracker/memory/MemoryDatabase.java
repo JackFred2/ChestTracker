@@ -104,7 +104,7 @@ public class MemoryDatabase {
             writer.flush();
             writer.close();
             ChestTracker.LOGGER.info("Saved data for " + id);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ChestTracker.LOGGER.error("Error saving file for " + this.id);
             ChestTracker.LOGGER.error(ex);
         }
@@ -130,7 +130,7 @@ public class MemoryDatabase {
                 this.locations = new HashMap<>();
                 this.namedLocations = new HashMap<>();
             }
-        } catch (JsonParseException | IOException ex) {
+        } catch (Exception ex) {
             ChestTracker.LOGGER.error("Error reading file for " + this.id);
             ChestTracker.LOGGER.error(ex);
         }
