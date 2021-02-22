@@ -2,6 +2,7 @@ plugins {
     id 'fabric-loom' version '0.5-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -96,6 +97,40 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
     from "LICENSE"
+}
+
+curseforge {
+    apiKey = project.findProperty("cf.key")
+    project {
+        id = "397217"
+        changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
+        releaseType = "release"
+
+        addGameVersion "Fabric"
+        addGameVersion "Java 8"
+
+        addGameVersion "1.16.2"
+        addGameVersion "1.16.3"
+        addGameVersion "1.16.4"
+        addGameVersion "1.16.5"
+
+        mainArtifact(remapJar) {
+            relations {
+                requiredDependency("fabric-api")
+                optionalDependency("modmenu")
+                optionalDependency("roughly-enough-items")
+                embeddedLibrary("cloth-config")
+                embeddedLibrary("libgui")
+                embeddedLibrary("where-is-it")
+            }
+            displayName = "${project.prefix} ${archivesBaseName}-${version}.jar"
+        }
+
+    }
+
+    options {
+        forgeGradleIntegration = false
+    }
 }
 
 // configure the maven publication
