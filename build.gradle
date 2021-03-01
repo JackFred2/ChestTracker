@@ -120,6 +120,7 @@ curseforge {
                 optionalDependency("modmenu")
                 optionalDependency("roughly-enough-items")
                 embeddedLibrary("cloth-config")
+                embeddedLibrary("cloth-api")
                 embeddedLibrary("libgui")
                 embeddedLibrary("where-is-it")
             }
