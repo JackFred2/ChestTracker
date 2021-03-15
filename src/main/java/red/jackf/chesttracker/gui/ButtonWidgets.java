@@ -4,6 +4,8 @@ import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -62,6 +64,13 @@ public class ButtonWidgets extends TexturedButtonWidget {
     }
 
     private void reposition() {
-        this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
+        if (MinecraftClient.getInstance().player != null) {
+            // the creative inventory screen is translated when effects exist
+             if (screen instanceof CreativeInventoryScreen && !MinecraftClient.getInstance().player.getStatusEffects().isEmpty()) {
+                 this.setPos(ButtonPositions.getX(screen, 0) + 60, ButtonPositions.getY(screen, 0));
+             } else {
+                 this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
+             }
+        }
     }
 }
