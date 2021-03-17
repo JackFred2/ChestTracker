@@ -6,6 +6,7 @@ import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -86,10 +87,10 @@ public class ChestTracker implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(GUI_KEY);
 
         // Save if someone just decides to X out of craft
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             MemoryDatabase database = MemoryDatabase.getCurrent();
             if (database != null) database.save();
-        }, "ChestTrackerSavingThread"));
+        });
 
         WorldRenderEvents.LAST.register(RenderUtils::draw);
 
