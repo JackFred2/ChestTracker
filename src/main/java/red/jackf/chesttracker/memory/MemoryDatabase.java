@@ -117,13 +117,13 @@ public class MemoryDatabase {
                 ChestTracker.LOGGER.info("Found data for " + id);
                 FileReader reader = new FileReader(loadPath.toString());
 
-                if (locations == null) {
+                Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {}.getType());
+                if (raw == null) {
                     ChestTracker.LOGGER.info("Empty file found for " + id);
                     this.locations = new ConcurrentHashMap<>();
                     this.namedLocations = new ConcurrentHashMap<>();
                 } else {
                     // Converts GSON-generated LinkedHashMaps to ConcurrentHashMaps
-                    Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {}.getType());
                     this.locations = new ConcurrentHashMap<>();
                     for (Map.Entry<Identifier, Map<BlockPos, Memory>> entry : raw.entrySet()) {
                         this.locations.put(entry.getKey(), new ConcurrentHashMap<>(entry.getValue()));
