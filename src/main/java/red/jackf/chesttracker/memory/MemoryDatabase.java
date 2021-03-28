@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.memory;
 
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.api.EnvType;
@@ -21,14 +20,12 @@ import red.jackf.chesttracker.mixins.AccessorMinecraftServer;
 
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
@@ -41,8 +38,8 @@ public class MemoryDatabase {
     }
 
     private transient final String id;
-    private Map<Identifier, Map<BlockPos, Memory>> locations = new HashMap<>();
-    private transient Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
+    private ConcurrentMap<Identifier, ConcurrentMap<BlockPos, Memory>> locations = new ConcurrentHashMap<>();
+    private transient ConcurrentMap<Identifier, ConcurrentMap<BlockPos, Memory>> namedLocations = new ConcurrentHashMap<>();
 
     private MemoryDatabase(String id) {
         this.id = id;
@@ -71,14 +68,17 @@ public class MemoryDatabase {
     private static String getUsableId() {
         MinecraftClient mc = MinecraftClient.getInstance();
         String id = null;
-        if (mc.isInSingleplayer() && mc.getServer() != null) {
-            id = "singleplayer-" + MemoryUtils.getSingleplayerName(((AccessorMinecraftServer) mc.getServer()).getSession());
-        } else if (mc.isConnectedToRealms()) {
-            RealmsServer server = MemoryUtils.getLastRealmsServer();
-            if (server == null) return null;
-            id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
-        } else if (mc.getCurrentServerEntry() != null) {
-            id = "multiplayer-" + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
+        ClientPlayNetworkHandler cpnh = mc.getNetworkHandler();
+        if (cpnh != null && cpnh.getConnection() != null && cpnh.getConnection().isOpen()) {
+            if (mc.getServer() != null && !mc.getServer().isRemote()) {
+                id = "singleplayer-" + MemoryUtils.getSingleplayerName(((AccessorMinecraftServer) mc.getServer()).getSession());
+            } else if (mc.isConnectedToRealms()) {
+                RealmsServer server = MemoryUtils.getLastRealmsServer();
+                if (server == null) return null;
+                id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
+            } else if (mc.getServer() == null && mc.getCurrentServerEntry() != null && !mc.getCurrentServerEntry().isLocal()) {
+                id = "multiplayer-" + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
+            }
         }
 
         return id;
@@ -116,19 +116,24 @@ public class MemoryDatabase {
             if (Files.exists(loadPath)) {
                 ChestTracker.LOGGER.info("Found data for " + id);
                 FileReader reader = new FileReader(loadPath.toString());
-                this.locations = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
-                }.getType());
+
                 if (locations == null) {
                     ChestTracker.LOGGER.info("Empty file found for " + id);
-                    this.locations = new HashMap<>();
-                    this.namedLocations = new HashMap<>();
+                    this.locations = new ConcurrentHashMap<>();
+                    this.namedLocations = new ConcurrentHashMap<>();
                 } else {
+                    // Converts GSON-generated LinkedHashMaps to ConcurrentHashMaps
+                    Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {}.getType());
+                    this.locations = new ConcurrentHashMap<>();
+                    for (Map.Entry<Identifier, Map<BlockPos, Memory>> entry : raw.entrySet()) {
+                        this.locations.put(entry.getKey(), new ConcurrentHashMap<>(entry.getValue()));
+                    }
                     this.generateNamedLocations();
                 }
             } else {
                 ChestTracker.LOGGER.info("No data found for " + id);
-                this.locations = new HashMap<>();
-                this.namedLocations = new HashMap<>();
+                this.locations = new ConcurrentHashMap<>();
+                this.namedLocations = new ConcurrentHashMap<>();
             }
         } catch (Exception ex) {
             ChestTracker.LOGGER.error("Error reading file for " + this.id);
@@ -138,9 +143,9 @@ public class MemoryDatabase {
 
     // Creates namedLocations list from current locations list.
     private void generateNamedLocations() {
-        Map<Identifier, Map<BlockPos, Memory>> namedLocations = new HashMap<>();
+        ConcurrentMap<Identifier, ConcurrentMap<BlockPos, Memory>> namedLocations = new ConcurrentHashMap<>();
         for (Identifier worldId : this.locations.keySet()) {
-            Map<BlockPos, Memory> newMap = namedLocations.computeIfAbsent(worldId, id -> new HashMap<>());
+            ConcurrentMap<BlockPos, Memory> newMap = namedLocations.computeIfAbsent(worldId, id -> new ConcurrentHashMap<>());
             this.locations.get(worldId).forEach(((pos, memory) -> {
                 if (memory.getTitle() != null) newMap.put(pos, memory);
             }));
@@ -191,12 +196,12 @@ public class MemoryDatabase {
 
     public void mergeItems(Identifier worldId, Memory memory, Collection<BlockPos> toRemove) {
         if (locations.containsKey(worldId)) {
-            Map<BlockPos, Memory> map = locations.get(worldId);
+            ConcurrentMap<BlockPos, Memory> map = locations.get(worldId);
             map.remove(memory.getPosition());
             toRemove.forEach(map::remove);
         }
         if (namedLocations.containsKey(worldId)) {
-            Map<BlockPos, Memory> map = namedLocations.get(worldId);
+            ConcurrentMap<BlockPos, Memory> map = namedLocations.get(worldId);
             map.remove(memory.getPosition());
             toRemove.forEach(map::remove);
         }
@@ -212,8 +217,8 @@ public class MemoryDatabase {
         }
     }
 
-    private void addItem(Identifier worldId, Memory memory, Map<Identifier, Map<BlockPos, Memory>> map) {
-        Map<BlockPos, Memory> namedMap = map.computeIfAbsent(worldId, (identifier -> new ConcurrentHashMap<>()));
+    private void addItem(Identifier worldId, Memory memory, ConcurrentMap<Identifier, ConcurrentMap<BlockPos, Memory>> map) {
+        ConcurrentMap<BlockPos, Memory> namedMap = map.computeIfAbsent(worldId, (identifier -> new ConcurrentHashMap<>()));
         namedMap.put(memory.getPosition(), memory);
     }
 
@@ -236,8 +241,9 @@ public class MemoryDatabase {
                             found.add(entry.getValue());
                         } else {
                             // Remove if it's disappeared.
-                            if (MemoryDatabase.getCurrent() != null)
-                                MemoryDatabase.getCurrent().removePos(worldId, entry.getKey());
+                            MemoryDatabase database = MemoryDatabase.getCurrent();
+                            if (database != null)
+                                database.removePos(worldId, entry.getKey());
                         }
                     }
                 }

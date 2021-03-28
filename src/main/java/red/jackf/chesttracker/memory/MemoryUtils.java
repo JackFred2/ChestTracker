@@ -215,7 +215,15 @@ public abstract class MemoryUtils {
                     currentlyCheckedIndex = 0;
                 }
                 if (currentlyCheckedMemories.size() == 0) {
-                    currentlyCheckedMemories = new ArrayList<>(database.getAllMemories(world.getRegistryKey().getValue()));
+                    //currentlyCheckedMemories = new ArrayList<>(database.getAllMemories(world.getRegistryKey().getValue()));
+                    currentlyCheckedMemories = new ArrayList<>();
+                    for (Memory memory : database.getAllMemories(world.getRegistryKey().getValue())) {
+                        // Creating a new ArrayList from a ConcurrentHashMap.ValuesView can apparently cause a
+                        // NegativeArraySizeInspection, so in an attempt to fix this the ArrayList is getting populated
+                        // manually.
+                        //noinspection UseBulkOperation
+                        currentlyCheckedMemories.add(memory);
+                    }
                     currentlyCheckedIndex = currentlyCheckedMemories.size() - 1;
                 }
                 if (currentlyCheckedIndex >= 0) {
