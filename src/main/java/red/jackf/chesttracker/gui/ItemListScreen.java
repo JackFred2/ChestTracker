@@ -8,7 +8,6 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
-import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -21,10 +20,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionType;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.widgets.WBevelledButton;
-import red.jackf.chesttracker.gui.widgets.WHeldButton;
-import red.jackf.chesttracker.gui.widgets.WItemListPanel;
-import red.jackf.chesttracker.gui.widgets.WUpdatableTextField;
+import red.jackf.chesttracker.gui.widgets.*;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
 
@@ -54,6 +50,8 @@ public class ItemListScreen extends CottonClientScreen {
     public static class Gui extends LightweightGuiDescription {
         private static final Identifier LEFT_BUTTON = id("textures/left_button.png");
         private static final Identifier RIGHT_BUTTON = id("textures/right_button.png");
+        private static final Identifier LEFT_BUTTON_DISABLED = id("textures/left_button_disabled.png");
+        private static final Identifier RIGHT_BUTTON_DISABLED = id("textures/right_button_disabled.png");
 
         private static final Map<Identifier, ItemStack> knownIcons = new HashMap<>();
         private static final int SIDE_PADDING = 0;
@@ -111,8 +109,8 @@ public class ItemListScreen extends CottonClientScreen {
             root.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING - 24, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
             // Page Buttons
-            WBevelledButton previousButton = new WBevelledButton(new TextureIcon(LEFT_BUTTON), new TranslatableText("chesttracker.gui.previous_page"), false);
-            WBevelledButton nextButton = new WBevelledButton(new TextureIcon(RIGHT_BUTTON), new TranslatableText("chesttracker.gui.next_page"), false);
+            WPageButton previousButton = new WPageButton(true, new TranslatableText("chesttracker.gui.previous_page"), false);
+            WPageButton nextButton = new WPageButton(false, new TranslatableText("chesttracker.gui.next_page"), false);
             previousButton.setOnClick(itemPanel::previousPage);
             nextButton.setOnClick(itemPanel::nextPage);
             root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
