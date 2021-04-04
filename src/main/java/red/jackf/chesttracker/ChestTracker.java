@@ -18,10 +18,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.screen.slot.Slot;
@@ -119,7 +121,7 @@ public class ChestTracker implements ClientModInitializer {
         // Find hotkeys
         ClothClientHooks.SCREEN_KEY_RELEASED.register((mc, currentScreen, keyCode, scanCode, modifiers) -> {
             if (GUI_KEY.matchesKey(keyCode, scanCode)) {
-                if (currentScreen instanceof HandledScreen) {
+                if (currentScreen instanceof HandledScreen && !(currentScreen instanceof CreativeInventoryScreen && ((CreativeInventoryScreen) currentScreen).getSelectedTab() == ItemGroup.SEARCH.getIndex())) {
                     currentScreen.onClose();
                     mc.openScreen(new ItemListScreen());
                 }
