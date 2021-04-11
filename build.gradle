@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
+    id 'fabric-loom' version '0.6-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -59,7 +59,7 @@ dependencies {
     // Client GUIs
     modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 
-    compile 'org.jetbrains:annotations:16.0.2'
+    implementation 'org.jetbrains:annotations:16.0.2'
 
     // Compat
 
@@ -70,13 +70,8 @@ dependencies {
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
     }
 }
 
