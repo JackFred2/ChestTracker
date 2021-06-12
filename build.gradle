@@ -49,7 +49,7 @@ dependencies {
     modApi "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    // Hotkey detection
+    // Hotkey detection & Searching
     modImplementation include("red.jackf:whereisit:${project.whereisit_version}")
 
     // Config

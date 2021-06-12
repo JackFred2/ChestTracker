@@ -57,6 +57,7 @@ public class ItemListScreen extends CottonClientScreen {
         private static final int SIDE_PADDING = 0;
         private static final int TOP_PADDING = 36;
         private static final int LEFT_ADDITIONAL_PADDING = 24;
+        private static final int BEVEL_PADDING = 6;
 
         static {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
@@ -75,8 +76,8 @@ public class ItemListScreen extends CottonClientScreen {
 
         public Gui() {
             @SuppressWarnings({"ConstantExpression", "PointlessArithmeticExpression"})
-            int width = (18 * ChestTracker.CONFIG.visualOptions.columnCount) + (2 * SIDE_PADDING) + LEFT_ADDITIONAL_PADDING;
-            int height = (18 * ChestTracker.CONFIG.visualOptions.rowCount) + SIDE_PADDING + TOP_PADDING;
+            int width = (18 * ChestTracker.CONFIG.visualOptions.columnCount) + (2 * SIDE_PADDING) + LEFT_ADDITIONAL_PADDING + (2 * BEVEL_PADDING);
+            int height = (18 * ChestTracker.CONFIG.visualOptions.rowCount) + SIDE_PADDING + TOP_PADDING + (2 * BEVEL_PADDING);
 
             MinecraftClient mc = MinecraftClient.getInstance();
 
@@ -92,7 +93,7 @@ public class ItemListScreen extends CottonClientScreen {
 
             // Item List
             this.itemPanel = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
-            root.add(itemPanel, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
+            root.add(itemPanel, SIDE_PADDING + LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, TOP_PADDING + BEVEL_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
 
             /*List<ItemRepresentation> stacks = new ArrayList<>();
             for (int i = 0; i < Registry.ITEM.stream().count() - 1; i++) {
@@ -101,20 +102,20 @@ public class ItemListScreen extends CottonClientScreen {
             }*/
 
             // Title
-            root.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING, 0);
+            root.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, BEVEL_PADDING);
 
             // Search Field
             WUpdatableTextField searchField = new WUpdatableTextField(new TranslatableText("chesttracker.gui.search_field_start"));
             searchField.setOnTextChanged(itemPanel::setFilter);
-            root.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING, TOP_PADDING - 24, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
+            root.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, TOP_PADDING - 24 + BEVEL_PADDING, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
             // Page Buttons
             WPageButton previousButton = new WPageButton(true, new TranslatableText("chesttracker.gui.previous_page"), false);
             WPageButton nextButton = new WPageButton(false, new TranslatableText("chesttracker.gui.next_page"), false);
             previousButton.setOnClick(itemPanel::previousPage);
             nextButton.setOnClick(itemPanel::nextPage);
-            root.add(previousButton, width - SIDE_PADDING - 35, TOP_PADDING - 22, 16, 16);
-            root.add(nextButton, width - SIDE_PADDING - 17, TOP_PADDING - 22, 16, 16);
+            root.add(previousButton, width - SIDE_PADDING - 35 - BEVEL_PADDING, TOP_PADDING - 22 + BEVEL_PADDING, 16, 16);
+            root.add(nextButton, width - SIDE_PADDING - 17 - BEVEL_PADDING, TOP_PADDING - 22 + BEVEL_PADDING, 16, 16);
 
             // Page Count
             counter = new WLabel(new LiteralText("not loaded")) {
@@ -124,7 +125,7 @@ public class ItemListScreen extends CottonClientScreen {
                     tooltip.add(new TranslatableText("chesttracker.gui.scroll_tip"));
                 }
             };
-            root.add(counter, width - SIDE_PADDING - 80, 0, 80, 12);
+            root.add(counter, width - SIDE_PADDING - 80 - BEVEL_PADDING, BEVEL_PADDING, 80, 12);
             counter.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
             // Dimension Filters
@@ -147,7 +148,7 @@ public class ItemListScreen extends CottonClientScreen {
                     setDimensionFilter(entry.getKey());
                     mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 });
-                root.add(entry.getValue(), SIDE_PADDING, 20 * i, 18, 18);
+                root.add(entry.getValue(), SIDE_PADDING + BEVEL_PADDING, 20 * i + BEVEL_PADDING, 18, 18);
                 i++;
             }
 
@@ -165,7 +166,7 @@ public class ItemListScreen extends CottonClientScreen {
             if (!ChestTracker.CONFIG.visualOptions.hideDeleteButton) {
                 // Reset Button
                 WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 40);
-                root.add(resetButton, -7, -32, width, 20);
+                root.add(resetButton, 0, -26, width, 20);
                 resetButton.setOnClick(() -> {
                     mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     if (database != null) {

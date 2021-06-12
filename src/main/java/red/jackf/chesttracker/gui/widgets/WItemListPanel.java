@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -100,9 +101,11 @@ public class WItemListPanel extends WGridPanel {
             int renderX = x + 18 * ((i % cellsPerPage) % columns);
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
-            mc.getTextureManager().bindTexture(SLOT);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, SLOT);
             //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
-            DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0, 0, 18, 18, 18, 18);
+            DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
 
             renderer.zOffset = 100f;
             renderer.renderInGui(stack, renderX + 1, renderY + 1);
