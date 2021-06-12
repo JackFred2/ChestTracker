@@ -152,6 +152,10 @@ public class ItemListScreen extends CottonClientScreen {
                 i++;
             }
 
+            // Databasae name
+            WLabel databaseName = new WLabel(new LiteralText(database == null ? "no database loaded" : database.getId()));
+            root.add(databaseName, BEVEL_PADDING + LEFT_ADDITIONAL_PADDING, height - 4, 80, 12);
+
             // Wrap up
 
             itemPanel.setPageChangeHook((current, max) -> {
