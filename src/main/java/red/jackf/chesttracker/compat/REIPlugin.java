@@ -1,8 +1,12 @@
-package red.jackf.chesttracker.compat;
+/*package red.jackf.chesttracker.compat;
 
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.OverlayDecider;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.screen.OverlayDecider;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.RecipeScreen;
@@ -13,18 +17,20 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.ItemListScreen;
 
 import java.util.List;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
-public class REIPlugin implements REIPluginV0 {
+public class REIPlugin implements REIClientPlugin {
     public static @NotNull ItemStack tryFindItem(double mouseX, double mouseY) {
         // Big List
         ItemStack item = tryFindInList(ContainerScreenOverlay.getEntryListWidget().children(), mouseX, mouseY);
@@ -64,23 +70,19 @@ public class REIPlugin implements REIPluginV0 {
     }
 
     @Override
-    public Identifier getPluginIdentifier() {
-        return id("rei_default");
-    }
-
-    @Override
-    public void registerBounds(DisplayHelper displayHelper) {
-        displayHelper.registerHandler(new OverlayDecider() {
+    public void registerScreens(ScreenRegistry registry) {
+        registry.registerDecider(new OverlayDecider() {
 
             @Override
-            public boolean isHandingScreen(Class<?> screenClass) {
-                return false; // screenClass == ItemListScreen.class;
+            public <R extends Screen> boolean isHandingScreen(Class<R> screen) {
+                return screen == ItemListScreen.class;
             }
 
             @Override
-            public ActionResult shouldScreenBeOverlayed(Class<?> screen) {
-                return ActionResult.SUCCESS;
+            public ActionResult shouldScreenBeOverlaid(Class<?> screen) {
+                return ActionResult.PASS;
             }
         });
     }
 }
+*/

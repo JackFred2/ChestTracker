@@ -3,7 +3,7 @@ package red.jackf.chesttracker.memory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -12,9 +12,9 @@ import java.util.Objects;
 public class LightweightStack {
     private final Item item;
     @Nullable
-    private final CompoundTag tag;
+    private final NbtCompound tag;
 
-    public LightweightStack(Item item, @Nullable CompoundTag tag) {
+    public LightweightStack(Item item, @Nullable NbtCompound tag) {
         this.item = item;
         this.tag = tag;
     }
@@ -24,7 +24,7 @@ public class LightweightStack {
     }
 
     @Nullable
-    public CompoundTag getTag() {
+    public NbtCompound getTag() {
         return tag;
     }
 

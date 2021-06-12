@@ -9,7 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.realms.dto.RealmsServer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentMap;
 
 @Environment(EnvType.CLIENT)
 public class MemoryDatabase {
-    private static final CompoundTag FULL_DURABILITY_TAG = new CompoundTag();
+    private static final NbtCompound FULL_DURABILITY_TAG = new NbtCompound();
     @Nullable
     private static MemoryDatabase currentDatabase = null;
 

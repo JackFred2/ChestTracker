@@ -37,7 +37,6 @@
       "red.jackf.chesttracker.compat.ModMenuPlugin"
     ],
     "rei_plugins": [
-      "red.jackf.chesttracker.compat.REIPlugin"
     ]
   },
   "mixins": [

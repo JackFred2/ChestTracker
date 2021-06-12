@@ -1,32 +1,33 @@
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = "${project.archives_base_name}-${project.minecraft_version}"
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven { url "maven.fabric" } // Fabric
-    maven { url "https://maven.shedaniel.me/" } // REI, Cloth Config
+    maven { url = "https://maven.fabricmc.net" } // Fabric
+    maven { url = "https://maven.shedaniel.me/" } // REI & Cloth Config
+    maven { url = 'https://maven.terraformersmc.com/' } // ModMenu
+
     maven { url = "https://server.bbkr.space/artifactory/libs-release" } // UniversalComponents, LibGui
-    maven { url "https://maven.terraformersmc.com/releases" } // ModMenu
     maven { // Curse, Expanded Storage
         url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
     }
-    maven { // CardinalComponents (UniversalComponents lib)
+    /*maven { // CardinalComponents (UniversalComponents lib)
         name = "Ladysnake Libs"
         url = "https://dl.bintray.com/ladysnake/libs"
-    }
+    }*/
     maven { // WhereIsIt
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
@@ -45,7 +46,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modApi "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // Hotkey detection
@@ -63,7 +64,7 @@ dependencies {
 
     // Compat
 
-    modCompileOnly "io.github.cottonmc:UniversalComponents:${project.universal_components_version}"
+    //modCompileOnly "io.github.cottonmc:UniversalComponents:${project.universal_components_version}"
     modCompileOnly "curse.maven:expanded-storage-317856:${project.expanded_storage_file_id}"
 }
 
@@ -102,20 +103,16 @@ curseforge {
         releaseType = "release"
 
         addGameVersion "Fabric"
-        addGameVersion "Java 8"
+        addGameVersion "Java 16"
 
-        addGameVersion "1.16.2"
-        addGameVersion "1.16.3"
-        addGameVersion "1.16.4"
-        addGameVersion "1.16.5"
+        addGameVersion "1.17"
 
         mainArtifact(remapJar) {
             relations {
                 requiredDependency("fabric-api")
+                requiredDependency("cloth-config")
                 optionalDependency("modmenu")
                 optionalDependency("roughly-enough-items")
-                embeddedLibrary("cloth-config")
-                embeddedLibrary("cloth-api")
                 embeddedLibrary("libgui")
                 embeddedLibrary("where-is-it")
             }

@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.compat.ExpandedStorageHandler;
-import red.jackf.chesttracker.compat.UniversalComponentsHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,11 +197,11 @@ public abstract class MemoryUtils {
     }
 
     public static boolean isValidInventoryHolder(Block block, World world, BlockPos pos) {
-        if (FabricLoader.getInstance().isModLoaded("universalcomponents")) {
-            return UniversalComponentsHandler.isValidInventoryHolder(block, world, pos);
-        } else {
+        //if (FabricLoader.getInstance().isModLoaded("universalcomponents")) {
+            //return UniversalComponentsHandler.isValidInventoryHolder(block, world, pos);
+        //} else {
             return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
-        }
+        //}
     }
 
     public static void checkValidCycle(ClientWorld world) {

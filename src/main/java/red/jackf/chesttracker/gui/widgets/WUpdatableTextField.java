@@ -18,13 +18,13 @@ public class WUpdatableTextField extends WTextField {
     @Override
     public void onCharTyped(char ch) {
         super.onCharTyped(ch);
-        if (onTextChanged != null) onTextChanged.accept(this.text);
+        if (onTextChanged != null) onTextChanged.accept(getText());
     }
 
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
         super.onKeyPressed(ch, key, modifiers);
-        if (onTextChanged != null) onTextChanged.accept(this.text);
+        if (onTextChanged != null) onTextChanged.accept(getText());
     }
 
     public void setOnTextChanged(Consumer<String> onCharTyped) {

@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.minecraft.client.MinecraftClient;
@@ -48,9 +49,12 @@ public class WPageButton extends WButton {
     }
 
     @Override
-    public void onClick(int x, int y, int button) {
-        if (!pressed && isEnabled() && isWithinBounds(x, y))
-            if (getOnClick() != null) getOnClick().run();
+    public InputResult onClick(int x, int y, int button) {
+        if (!pressed && isEnabled() && isWithinBounds(x, y) && getOnClick() != null) {
+            getOnClick().run();
+            return InputResult.PROCESSED;
+        }
+        return InputResult.IGNORED;
     }
 
     @Override

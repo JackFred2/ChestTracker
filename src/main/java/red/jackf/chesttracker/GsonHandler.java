@@ -4,7 +4,7 @@ import com.google.gson.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -88,7 +88,7 @@ public class GsonHandler {
             JsonObject object = new JsonObject();
             object.add("id", context.serialize(Registry.ITEM.getId(src.getItem())));
             object.addProperty("count", src.getCount());
-            CompoundTag tag = src.getTag();
+            NbtCompound tag = src.getTag();
             if (tag != null) object.addProperty("tag", tag.toString());
             return object;
         }

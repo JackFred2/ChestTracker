@@ -38,24 +38,7 @@ public class ButtonWidgets extends TexturedButtonWidget {
 
         // render
         if (this.visible) {
-            if (this.wasHovered != this.isHovered()) {
-                if (this.isHovered()) {
-                    if (this.isFocused()) {
-                        this.queueNarration(200);
-                    } else {
-                        this.queueNarration(750);
-                    }
-                } else {
-                    this.nextNarration = Long.MAX_VALUE;
-                }
-            }
-
-            if (this.visible) {
-                this.renderButton(matrices, mouseX, mouseY, delta);
-            }
-
-            this.narrate();
-            this.wasHovered = this.isHovered();
+            this.renderButton(matrices, mouseX, mouseY, delta);
         }
 
         if (this.isMouseOver(mouseX, mouseY)) {

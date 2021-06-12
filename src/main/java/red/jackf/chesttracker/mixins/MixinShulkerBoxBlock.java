@@ -9,7 +9,7 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,10 +32,10 @@ public abstract class MixinShulkerBoxBlock {
         if (world.isClient) {
             BlockEntity be = world.getBlockEntity(pos);
             MemoryDatabase db = MemoryDatabase.getCurrent();
-            CompoundTag tag = stack.getSubTag("BlockEntityTag");
+            NbtCompound tag = stack.getSubTag("BlockEntityTag");
             if (db != null && be instanceof ShulkerBoxBlockEntity && tag != null && tag.contains("Items", 9)) {
                 DefaultedList<ItemStack> items = DefaultedList.ofSize(((ShulkerBoxBlockEntity) be).size(), ItemStack.EMPTY);
-                Inventories.fromTag(tag, items);
+                Inventories.readNbt(tag, items);
                 List<ItemStack> valid = MemoryUtils.condenseItems(items.stream().filter(stack2 -> !stack2.isEmpty()).collect(Collectors.toList()));
                 db.mergeItems(world.getRegistryKey().getValue(), Memory.of(pos, valid, stack.hasCustomName() ? stack.getName() : null, null));
             }

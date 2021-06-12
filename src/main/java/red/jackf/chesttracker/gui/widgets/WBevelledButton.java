@@ -2,6 +2,7 @@ package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import net.fabricmc.api.EnvType;
@@ -46,7 +47,7 @@ public class WBevelledButton extends WButton {
             bottomRight = 0xFF8F8F8F;
         }
 
-        ScreenDrawing.drawBeveledPanel(x, y, this.width, this.height, topLeft, panel, bottomRight);
+        ScreenDrawing.drawBeveledPanel(matrices, x, y, this.width, this.height, topLeft, panel, bottomRight);
 
         if (this.getIcon() != null) {
             if (this.getIcon() instanceof ItemIcon) {
@@ -62,9 +63,12 @@ public class WBevelledButton extends WButton {
     }
 
     @Override
-    public void onClick(int x, int y, int button) {
-        if (!pressed && isEnabled() && isWithinBounds(x, y))
-            if (getOnClick() != null) getOnClick().run();
+    public InputResult onClick(int x, int y, int button) {
+        if (!pressed && isEnabled() && isWithinBounds(x, y) && getOnClick() != null) {
+            getOnClick().run();
+            return InputResult.PROCESSED;
+        }
+        return InputResult.IGNORED;
     }
 
     @Override

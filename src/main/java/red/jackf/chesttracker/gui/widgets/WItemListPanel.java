@@ -3,13 +3,13 @@ package red.jackf.chesttracker.gui.widgets;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,12 +18,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.whereisit.WhereIsItClient;
 
 import java.util.Collections;
@@ -131,8 +129,9 @@ public class WItemListPanel extends WGridPanel {
     }
 
     @Override
-    public void onMouseScroll(int x, int y, double amount) {
+    public InputResult onMouseScroll(int x, int y, double amount) {
         setPage(this.currentPage - (int) amount);
+        return InputResult.PROCESSED;
     }
 
     private void setPage(int newPage) {
@@ -158,10 +157,12 @@ public class WItemListPanel extends WGridPanel {
     }
 
     @Override
-    public void onClick(int x, int y, int button) {
+    public InputResult onClick(int x, int y, int button) {
         if (usable && button == 0) {
             searchItem(x, y);
+            return InputResult.PROCESSED;
         }
+        return InputResult.IGNORED;
     }
 
     @Override

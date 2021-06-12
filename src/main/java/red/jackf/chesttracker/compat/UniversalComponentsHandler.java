@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.compat;
+/*package red.jackf.chesttracker.compat;
 
 import io.github.cottonmc.component.api.ComponentHelper;
 import net.fabricmc.api.EnvType;
@@ -13,4 +13,4 @@ public abstract class UniversalComponentsHandler {
     public static boolean isValidInventoryHolder(Block block, World world, BlockPos pos) {
         return block instanceof BlockEntityProvider || ComponentHelper.INVENTORY.hasComponent(world, pos, null, "minecraft");
     }
-}
+}*/

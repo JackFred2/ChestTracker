@@ -2,6 +2,7 @@ package red.jackf.chesttracker.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -37,17 +38,19 @@ public class WHeldButton extends WButton {
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
-        ScreenDrawing.drawBeveledPanel(x, y, this.width, this.height, 0xFFFFFFFF, hovered ? 0xFF8892C9 : 0xFFC6C6C6, hovered ? 0xFF00073E : 0xFF000000);
+        ScreenDrawing.drawBeveledPanel(matrices, x, y, this.width, this.height, 0xFFFFFFFF, hovered ? 0xFF8892C9 : 0xFFC6C6C6, hovered ? 0xFF00073E : 0xFF000000);
         int xProgress = MathHelper.floor((((float) this.timeHeldDown) / (this.timeNeededToActivate - 1)) * (this.width - 2));
-        if (xProgress > 0) ScreenDrawing.coloredRect(x + 1, y + 1, xProgress, this.height - 2, 0xFFFF4F4F);
+        if (xProgress > 0) ScreenDrawing.coloredRect(matrices, x + 1, y + 1, xProgress, this.height - 2, 0xFFFF4F4F);
         ScreenDrawing.drawString(matrices, timeHeldDown > 0 ? altText.asOrderedText() : text.asOrderedText(), x + 6, y + 6, color);
     }
 
     @Override
-    public void onClick(int x, int y, int button) {
+    public InputResult onClick(int x, int y, int button) {
         if (isEnabled() && isWithinBounds(x, y)) {
             MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return InputResult.PROCESSED;
         }
+        return InputResult.IGNORED;
     }
 
     @Override
