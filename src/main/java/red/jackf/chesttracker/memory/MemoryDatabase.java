@@ -70,14 +70,14 @@ public class MemoryDatabase {
         String id = null;
         ClientPlayNetworkHandler cpnh = mc.getNetworkHandler();
         if (cpnh != null && cpnh.getConnection() != null && cpnh.getConnection().isOpen()) {
-            if (mc.getServer() != null && !mc.getServer().isRemote()) {
+            if (mc.getServer() != null) {
                 id = "singleplayer-" + MemoryUtils.getSingleplayerName(((AccessorMinecraftServer) mc.getServer()).getSession());
             } else if (mc.isConnectedToRealms()) {
                 RealmsServer server = MemoryUtils.getLastRealmsServer();
                 if (server == null) return null;
                 id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
-            } else if (mc.getServer() == null && mc.getCurrentServerEntry() != null && !mc.getCurrentServerEntry().isLocal()) {
-                id = "multiplayer-" + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
+            } else if (mc.getServer() == null && mc.getCurrentServerEntry() != null) {
+                id = (mc.getCurrentServerEntry().isLocal() ? "lan-" : "multiplayer-" ) + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
             }
         }
 
