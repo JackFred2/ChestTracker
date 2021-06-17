@@ -14,10 +14,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
@@ -26,7 +24,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
@@ -42,11 +39,11 @@ import red.jackf.chesttracker.gui.ButtonWidgets;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
-import red.jackf.chesttracker.mixins.AccessorHandledScreen;
-import red.jackf.chesttracker.render.RenderUtils;
+import red.jackf.chesttracker.render.TextRenderUtils;
 import red.jackf.chesttracker.resource.ButtonPositionManager;
 import red.jackf.whereisit.WhereIsItClient;
-import red.jackf.whereisit.client.FoundItemPos;
+import red.jackf.whereisit.client.PositionData;
+import red.jackf.whereisit.client.RenderUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +54,7 @@ public class ChestTracker implements ClientModInitializer {
     public static final String MODID = "chesttracker";
     public static final KeyBinding GUI_KEY = new KeyBinding("key." + MODID + ".opengui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories." + MODID);
     public static final ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
+    public static final Identifier NAME_ID = id("title");
 
     public static Identifier id(String path) {
         return new Identifier(MODID, path);
@@ -75,8 +73,8 @@ public class ChestTracker implements ClientModInitializer {
                 float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
                 float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
                 WhereIsItClient.handleFoundItems(found.stream()
-                    .map(memory -> new FoundItemPos(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
-                    .collect(Collectors.toList()));
+                    .map(memory -> new PositionData(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
+                    .toList());
                 if (MinecraftClient.getInstance().player != null)
                     MinecraftClient.getInstance().player.closeHandledScreen();
             }
@@ -93,7 +91,7 @@ public class ChestTracker implements ClientModInitializer {
             if (database != null) database.save();
         });
 
-        WorldRenderEvents.LAST.register(RenderUtils::draw);
+        WorldRenderEvents.AFTER_ENTITIES.register(TextRenderUtils::drawLabels);
 
         WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
             if (MinecraftClient.getInstance().world != null) {
