@@ -8,6 +8,8 @@
   "chesttracker.gui.reset_button_alt": "This can not be undone.",
   "chesttracker.gui.scroll_tip": "You can use the scroll wheel to change pages!",
   "chesttracker.gui.search_field_start": "Search...",
+  "chesttracker.gui.settings": "Settings",
+  "chesttracker.gui.settings.remember_chests": "Remember new chests",
   "chesttracker.gui.title": "ChestTracker",
   "key.categories.chesttracker": "ChestTracker",
   "key.chesttracker.opengui": "Open ChestTracker GUI",

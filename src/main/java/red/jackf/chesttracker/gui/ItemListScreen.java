@@ -151,7 +151,14 @@ public class ItemListScreen extends CottonClientScreen {
 
                 WPlainPanel settingsPanel = new WPlainPanel();
                 settingsPanel.setSize(width, height);
-                tabPanel.add(new WTabPanel.Tab(null, new TextureIcon(id("textures/icon.png")), settingsPanel, builder -> builder.add(new TranslatableText("menu.options"))));
+                tabPanel.add(new WTabPanel.Tab(null, new TextureIcon(id("textures/icon.png")), settingsPanel, builder -> builder.add(new TranslatableText("chesttracker.gui.settings"))));
+
+                WLabel addNewChestsToggleLabel = new WLabel(new TranslatableText("chesttracker.gui.settings.remember_chests"));
+                settingsPanel.add(addNewChestsToggleLabel, BEVEL_PADDING, BEVEL_PADDING);
+                WToggleButton addNewChestsToggle = new WToggleButton();
+                settingsPanel.add(addNewChestsToggle, width - BEVEL_PADDING - 17, 1);
+                addNewChestsToggle.setToggle(ChestTracker.CONFIG.miscOptions.rememberNewChests);
+                addNewChestsToggle.setOnToggle(newValue -> ChestTracker.CONFIG.miscOptions.rememberNewChests = newValue);
 
                 //noinspection ConstantConditions
                 ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);

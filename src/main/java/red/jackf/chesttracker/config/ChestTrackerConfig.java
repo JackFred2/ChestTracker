@@ -63,5 +63,7 @@ public class ChestTrackerConfig implements ConfigData {
 
     public static class MiscOptions {
         public boolean printGuiClassNames = false;
+        @ConfigEntry.Gui.Excluded
+        public boolean rememberNewChests = true;
     }
 }

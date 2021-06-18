@@ -195,6 +195,17 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory, Collection<BlockPos> toRemove) {
+        if (!ChestTracker.CONFIG.miscOptions.rememberNewChests && locations.containsKey(worldId)) {
+            boolean exists = false;
+            for (Memory existingMemory : locations.get(worldId).values()) {
+                if (Objects.equals(existingMemory.getPosition(), memory.getPosition())) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) return;
+        }
+
         if (locations.containsKey(worldId)) {
             ConcurrentMap<BlockPos, Memory> map = locations.get(worldId);
             map.remove(memory.getPosition());
@@ -218,8 +229,8 @@ public class MemoryDatabase {
     }
 
     private void addItem(Identifier worldId, Memory memory, ConcurrentMap<Identifier, ConcurrentMap<BlockPos, Memory>> map) {
-        ConcurrentMap<BlockPos, Memory> namedMap = map.computeIfAbsent(worldId, (identifier -> new ConcurrentHashMap<>()));
-        namedMap.put(memory.getPosition(), memory);
+        ConcurrentMap<BlockPos, Memory> memoryMap = map.computeIfAbsent(worldId, (identifier -> new ConcurrentHashMap<>()));
+        memoryMap.put(memory.getPosition(), memory);
     }
 
     public void removePos(Identifier worldId, BlockPos pos) {
