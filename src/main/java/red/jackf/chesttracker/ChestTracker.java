@@ -34,8 +34,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.ItemListScreen;
 import red.jackf.chesttracker.gui.ButtonWidgets;
+import red.jackf.chesttracker.gui.ItemListScreen;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
@@ -43,10 +43,8 @@ import red.jackf.chesttracker.render.TextRenderUtils;
 import red.jackf.chesttracker.resource.ButtonPositionManager;
 import red.jackf.whereisit.WhereIsItClient;
 import red.jackf.whereisit.client.PositionData;
-import red.jackf.whereisit.client.RenderUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -54,7 +52,6 @@ public class ChestTracker implements ClientModInitializer {
     public static final String MODID = "chesttracker";
     public static final KeyBinding GUI_KEY = new KeyBinding("key." + MODID + ".opengui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories." + MODID);
     public static final ChestTrackerConfig CONFIG = AutoConfig.register(ChestTrackerConfig.class, JanksonConfigSerializer::new).getConfig();
-    public static final Identifier NAME_ID = id("title");
 
     public static Identifier id(String path) {
         return new Identifier(MODID, path);
