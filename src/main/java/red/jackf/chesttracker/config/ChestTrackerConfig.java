@@ -31,10 +31,11 @@ public class ChestTrackerConfig implements ConfigData {
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
-        visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 18);
-        visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 24);
+        visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 12);
+        visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 18);
         visualOptions.textSizeModifier = MathHelper.clamp(visualOptions.textSizeModifier, 50, 400);
         databaseOptions.destroyedMemoryCheckInterval = MathHelper.clamp(databaseOptions.destroyedMemoryCheckInterval, 0, 60);
+        miscOptions.searchRange = MathHelper.clamp(miscOptions.searchRange, 1, 98);
     }
 
     public static class VisualOptions {
@@ -42,9 +43,9 @@ public class ChestTrackerConfig implements ConfigData {
         public int borderColour = 0x00baff;
         @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
         public int nameRenderRange = 12;
-        @ConfigEntry.BoundedDiscrete(min = 6, max = 18)
+        @ConfigEntry.BoundedDiscrete(min = 6, max = 12)
         public int rowCount = 6;
-        @ConfigEntry.BoundedDiscrete(min = 9, max = 24)
+        @ConfigEntry.BoundedDiscrete(min = 9, max = 18)
         public int columnCount = 9;
         @ConfigEntry.BoundedDiscrete(min = 50, max = 400)
         public int textSizeModifier = 100;
@@ -66,6 +67,6 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.Gui.Excluded
         public boolean rememberNewChests = true;
         @ConfigEntry.Gui.Excluded
-        public int searchRange = 33;
+        public int searchRange = 81; // 512 blocks
     }
 }

@@ -57,7 +57,7 @@ public class ItemListScreen extends CottonClientScreen {
         private static final int TOP_PADDING = 36;
         private static final int LEFT_ADDITIONAL_PADDING = 0;
         private static final int BEVEL_PADDING = 6;
-        private static final int BOTTOM_PADDING = 23;
+        private static final int BOTTOM_PADDING = 17;
 
         static {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
@@ -143,7 +143,7 @@ public class ItemListScreen extends CottonClientScreen {
                     if (!ChestTracker.CONFIG.visualOptions.hideDeleteButton) {
                         // Reset Button
                         WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 40);
-                        dimensionPanel.add(resetButton, BEVEL_PADDING, height - 26, width - BEVEL_PADDING * 2, 20);
+                        dimensionPanel.add(resetButton, BEVEL_PADDING, height - 20, width - BEVEL_PADDING * 2, 20);
                         resetButton.setOnClick(() -> {
                             mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             database.clearDimension(id);
