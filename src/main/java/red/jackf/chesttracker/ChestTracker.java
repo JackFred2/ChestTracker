@@ -1,6 +1,7 @@
 package red.jackf.chesttracker;
 
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigManager;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
@@ -21,6 +22,7 @@ import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,6 +32,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +70,8 @@ public class ChestTracker implements ClientModInitializer {
 
     public static void searchForItem(@NotNull ItemStack stack, @NotNull World world) {
         MemoryDatabase database = MemoryDatabase.getCurrent();
-        if (database != null) {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (database != null && player != null) {
             List<Memory> found = database.findItems(stack, world.getRegistryKey().getValue());
             if (found.size() >= 1) {
                 float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
@@ -80,6 +84,29 @@ public class ChestTracker implements ClientModInitializer {
                     MinecraftClient.getInstance().player.closeHandledScreen();
             }
         }
+    }
+
+    public static int getSearchRange() {
+        int blockValue = sliderValueToRange(ChestTracker.CONFIG.miscOptions.searchRange);
+        if (blockValue == Integer.MAX_VALUE) return blockValue;
+        return blockValue * blockValue;
+    }
+
+    public static int sliderValueToRange(int sliderValue) {
+        if (sliderValue <= 16) {
+            return 15 + sliderValue;
+        } else if (sliderValue <= 32) {
+            return 30 + ((sliderValue - 16) * 2);
+        } else if (sliderValue <= 48) {
+            return 60 + ((sliderValue - 32) * 4);
+        } else if (sliderValue <= 64) {
+            return 120 + ((sliderValue - 48) * 8);
+        } else if (sliderValue <= 80) {
+            return 240 + ((sliderValue - 64) * 16);
+        } else if (sliderValue <= 97) {
+            return 480 + ((sliderValue - 80) * 32);
+        }
+        return Integer.MAX_VALUE;
     }
 
     @Override

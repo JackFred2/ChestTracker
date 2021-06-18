@@ -6,6 +6,7 @@ import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -14,10 +15,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionType;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.widgets.WHeldButton;
 import red.jackf.chesttracker.gui.widgets.WItemListPanel;
 import red.jackf.chesttracker.gui.widgets.WPageButton;
@@ -158,18 +161,37 @@ public class ItemListScreen extends CottonClientScreen {
                 WToggleButton addNewChestsToggle = new WToggleButton();
                 settingsPanel.add(addNewChestsToggle, width - BEVEL_PADDING - 17, 1);
                 addNewChestsToggle.setToggle(ChestTracker.CONFIG.miscOptions.rememberNewChests);
-                addNewChestsToggle.setOnToggle(newValue -> ChestTracker.CONFIG.miscOptions.rememberNewChests = newValue);
+                addNewChestsToggle.setOnToggle(newValue -> {
+                    ChestTracker.CONFIG.miscOptions.rememberNewChests = newValue;
+                    AutoConfig.getConfigHolder(ChestTrackerConfig.class).save();
+                });
 
+                WLabeledSlider rangeSlider = new WLabeledSlider(1, 98);
+                settingsPanel.add(rangeSlider, BEVEL_PADDING, BEVEL_PADDING + 16);
+                rangeSlider.setSize(width - BEVEL_PADDING * 2, 20);
+                rangeSlider.setLabelUpdater(Gui::getSliderText);
+                rangeSlider.setValue(ChestTracker.CONFIG.miscOptions.searchRange, true);
+                rangeSlider.setDraggingFinishedListener(value -> {
+                    ChestTracker.CONFIG.miscOptions.searchRange = value;
+                    AutoConfig.getConfigHolder(ChestTrackerConfig.class).save();
+                });
+                rangeSlider.setLabel(getSliderText(ChestTracker.CONFIG.miscOptions.searchRange));
                 //noinspection ConstantConditions
                 ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
+
+                // Database name
+                WLabel databaseName = new WLabel(new LiteralText(database.getId()));
+                settingsPanel.add(databaseName, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
             }
-
-
-            // Database name
-            /*WLabel databaseName = new WLabel(new LiteralText(database == null ? "no database loaded" : database.getId()));
-            itemListPanel.add(databaseName, BEVEL_PADDING + LEFT_ADDITIONAL_PADDING, height - 4, 80, 12);
-
-            itemListPanel.validate(this);*/
         }
+
+        private static Text getSliderText(int sliderValue) {
+            int finalValue = ChestTracker.sliderValueToRange(sliderValue);
+            return new TranslatableText("chesttracker.gui.range").append(finalValue == Integer.MAX_VALUE
+                ? new TranslatableText("options.framerateLimit.max")
+                : new TranslatableText("chesttracker.gui.block_range", finalValue)
+            );
+        }
+
     }
 }

@@ -7,11 +7,13 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.realms.dto.RealmsServer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -243,13 +245,18 @@ public class MemoryDatabase {
     public List<Memory> findItems(ItemStack toFind, Identifier worldId) {
         List<Memory> found = new ArrayList<>();
         Map<BlockPos, Memory> location = locations.get(worldId);
-        if (location != null) {
+        ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
+        if (location != null && playerEntity != null) {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
                     if (entry.getValue().getItems().stream()
                         .anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
                         if (MemoryUtils.checkExistsInWorld(entry.getValue())) {
-                            found.add(entry.getValue());
+                            if (entry.getValue().getPosition() == null // within search range
+                                || ChestTracker.getSearchRange() == Integer.MAX_VALUE
+                                || entry.getValue().getPosition().getSquaredDistance(playerEntity.getBlockPos()) <= ChestTracker.getSearchRange()) {
+                                found.add(entry.getValue());
+                            }
                         } else {
                             // Remove if it's disappeared.
                             MemoryDatabase database = MemoryDatabase.getCurrent();

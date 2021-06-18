@@ -65,5 +65,7 @@ public class ChestTrackerConfig implements ConfigData {
         public boolean printGuiClassNames = false;
         @ConfigEntry.Gui.Excluded
         public boolean rememberNewChests = true;
+        @ConfigEntry.Gui.Excluded
+        public int searchRange = 33;
     }
 }

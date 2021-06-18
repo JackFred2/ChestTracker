@@ -1,6 +1,8 @@
 {
   "chesttracker.forgot_location": "Forgot [%s, %s, %s]",
   "chesttracker.forgot_ender_chest": "Forgot ender chest",
+  "chesttracker.gui.block_range": "%s Blocks",
+  "chesttracker.gui.range": "Search Range: ",
   "chesttracker.gui.edit_name": "Edit saved name",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.next_page": "Next Page",
