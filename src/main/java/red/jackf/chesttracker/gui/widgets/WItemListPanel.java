@@ -174,7 +174,7 @@ public class WItemListPanel extends WGridPanel {
         int startIndex = cellsPerPage * (currentPage - 1);
 
         int relX = (tX - this.x) / 18;
-        int relY = (tY - this.y) / 18;
+        int relY = (tY - this.y - 30) / 18;
 
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
