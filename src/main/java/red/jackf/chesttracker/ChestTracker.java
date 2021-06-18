@@ -86,7 +86,7 @@ public class ChestTracker implements ClientModInitializer {
         }
     }
 
-    public static int getSearchRange() {
+    public static int getSquareSearchRange() {
         int blockValue = sliderValueToRange(ChestTracker.CONFIG.miscOptions.searchRange);
         if (blockValue == Integer.MAX_VALUE) return blockValue;
         return blockValue * blockValue;

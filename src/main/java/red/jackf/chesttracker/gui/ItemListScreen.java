@@ -59,6 +59,9 @@ public class ItemListScreen extends CottonClientScreen {
         private static final int BEVEL_PADDING = 6;
         private static final int BOTTOM_PADDING = 17;
 
+        private static final LiteralText BLANK_TEXT = new LiteralText("-");
+        private final Map<Identifier, WItemListPanel> ITEM_LISTS = new HashMap<>();
+
         static {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
             knownIcons.put(DimensionType.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
@@ -103,6 +106,7 @@ public class ItemListScreen extends CottonClientScreen {
                     // Item List
                     WItemListPanel itemList = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
                     dimensionPanel.add(itemList, SIDE_PADDING + LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, TOP_PADDING + BEVEL_PADDING, 18 * ChestTracker.CONFIG.visualOptions.columnCount, 18 * ChestTracker.CONFIG.visualOptions.rowCount);
+                    ITEM_LISTS.put(id, itemList);
 
                     // Title
                     dimensionPanel.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, BEVEL_PADDING);
@@ -167,7 +171,7 @@ public class ItemListScreen extends CottonClientScreen {
                 });
 
                 WLabeledSlider rangeSlider = new WLabeledSlider(1, 98);
-                settingsPanel.add(rangeSlider, BEVEL_PADDING, BEVEL_PADDING + 16);
+                settingsPanel.add(rangeSlider, BEVEL_PADDING, BEVEL_PADDING + 12);
                 rangeSlider.setSize(width - BEVEL_PADDING * 2, 20);
                 rangeSlider.setLabelUpdater(Gui::getSliderText);
                 rangeSlider.setValue(ChestTracker.CONFIG.miscOptions.searchRange, true);
@@ -176,12 +180,52 @@ public class ItemListScreen extends CottonClientScreen {
                     AutoConfig.getConfigHolder(ChestTrackerConfig.class).save();
                 });
                 rangeSlider.setLabel(getSliderText(ChestTracker.CONFIG.miscOptions.searchRange));
+
+                WHeldButton deleteOutside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                settingsPanel.add(deleteOutside, BEVEL_PADDING, BEVEL_PADDING + 36, width - (BEVEL_PADDING * 2), 20);
+
+                WHeldButton deleteInside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                settingsPanel.add(deleteInside, BEVEL_PADDING, BEVEL_PADDING + 60, width - (BEVEL_PADDING * 2), 20);
+
+                rangeSlider.setValueChangeListener(value -> updateDeleteButtonLabels(deleteInside, deleteOutside, value));
+                updateDeleteButtonLabels(deleteInside, deleteOutside, ChestTracker.CONFIG.miscOptions.searchRange);
+
+                deleteInside.setOnClick(() -> {
+                    if (mc.player == null) return;
+                    database.getAllMemories(currentWorld).stream()
+                        .filter(memory -> memory.getPosition() != null && memory.getPosition().getSquaredDistance(mc.player.getBlockPos()) <= ChestTracker.getSquareSearchRange())
+                        .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
+                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                });
+
+                deleteOutside.setOnClick(() -> {
+                    if (mc.player == null) return;
+                    database.getAllMemories(currentWorld).stream()
+                        .filter(memory -> memory.getPosition() != null && memory.getPosition().getSquaredDistance(mc.player.getBlockPos()) > ChestTracker.getSquareSearchRange())
+                        .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
+                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                });
+
                 //noinspection ConstantConditions
                 ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
 
                 // Database name
                 WLabel databaseName = new WLabel(new LiteralText(database.getId()));
                 settingsPanel.add(databaseName, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
+            }
+        }
+
+        private static void updateDeleteButtonLabels(WHeldButton deleteInside, WHeldButton deleteOutside, int rawValue) {
+            if (rawValue == 98) {
+                deleteInside.setEnabled(false);
+                deleteOutside.setEnabled(false);
+                deleteInside.setText(BLANK_TEXT);
+                deleteOutside.setText(BLANK_TEXT);
+            } else {
+                deleteInside.setEnabled(true);
+                deleteOutside.setEnabled(true);
+                deleteInside.setText(new TranslatableText("chesttracker.gui.delete_inside_range", ChestTracker.sliderValueToRange(rawValue)));
+                deleteOutside.setText(new TranslatableText("chesttracker.gui.delete_outside_range", ChestTracker.sliderValueToRange(rawValue)));
             }
         }
 

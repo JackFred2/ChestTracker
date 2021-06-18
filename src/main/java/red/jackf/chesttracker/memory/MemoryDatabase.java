@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -253,8 +252,8 @@ public class MemoryDatabase {
                         .anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
                         if (MemoryUtils.checkExistsInWorld(entry.getValue())) {
                             if (entry.getValue().getPosition() == null // within search range
-                                || ChestTracker.getSearchRange() == Integer.MAX_VALUE
-                                || entry.getValue().getPosition().getSquaredDistance(playerEntity.getBlockPos()) <= ChestTracker.getSearchRange()) {
+                                || ChestTracker.getSquareSearchRange() == Integer.MAX_VALUE
+                                || entry.getValue().getPosition().getSquaredDistance(playerEntity.getBlockPos()) <= ChestTracker.getSquareSearchRange()) {
                                 found.add(entry.getValue());
                             }
                         } else {

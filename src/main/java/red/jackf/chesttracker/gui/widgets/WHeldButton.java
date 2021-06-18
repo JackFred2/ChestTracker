@@ -38,10 +38,10 @@ public class WHeldButton extends WButton {
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
-        ScreenDrawing.drawBeveledPanel(matrices, x, y, this.width, this.height, 0xFFFFFFFF, hovered ? 0xFF8892C9 : 0xFFC6C6C6, hovered ? 0xFF00073E : 0xFF000000);
+        ScreenDrawing.drawBeveledPanel(matrices, x, y, this.width, this.height, isEnabled() ? 0xFFFFFFFF : 0xFFD8D8D8, (isEnabled() && hovered) ? 0xFF8892C9 : 0xFFC6C6C6, isEnabled() ? (hovered ? 0xFF00073E : 0xFF000000) : 0xFF8F8F8F);
         int xProgress = MathHelper.floor((((float) this.timeHeldDown) / (this.timeNeededToActivate - 1)) * (this.width - 2));
         if (xProgress > 0) ScreenDrawing.coloredRect(matrices, x + 1, y + 1, xProgress, this.height - 2, 0xFFFF4F4F);
-        ScreenDrawing.drawString(matrices, timeHeldDown > 0 ? altText.asOrderedText() : text.asOrderedText(), x + 6, y + 6, color);
+        ScreenDrawing.drawString(matrices, timeHeldDown > 0 ? altText.asOrderedText() : text.asOrderedText(), x + 6, y + 6, isEnabled() ? color : 0xFF8F8F8F);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class WHeldButton extends WButton {
     @Override
     public void tick() {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (lastMouseX >= 0 && lastMouseY >= 0 && lastMouseX < getWidth() && lastMouseY < getHeight() && GLFW.glfwGetMouseButton(client.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) == 1) {
+        if (isEnabled() && lastMouseX >= 0 && lastMouseY >= 0 && lastMouseX < getWidth() && lastMouseY < getHeight() && GLFW.glfwGetMouseButton(client.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) == 1) {
             timeHeldDown++;
             if (timeHeldDown == timeNeededToActivate) {
                 if (getOnClick() != null) getOnClick().run();
