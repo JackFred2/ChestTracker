@@ -15,9 +15,12 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.ButtonWidgets;
+import red.jackf.chesttracker.gui.ChestTrackerButtonWidget;
 import red.jackf.chesttracker.gui.ItemListScreen;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
@@ -57,8 +60,9 @@ public class ChestTracker implements ClientModInitializer {
         return new Identifier(MODID, path);
     }
 
-    public static void sendDebugMessage(PlayerEntity player, Text text) {
-        player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
+    public static void sendDebugMessage(Text text) {
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
     public static void searchForItem(@NotNull ItemStack stack, @NotNull World world) {
@@ -128,7 +132,7 @@ public class ChestTracker implements ClientModInitializer {
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
             if (screen instanceof HandledScreen) {
                 if (ChestTracker.CONFIG.visualOptions.enableButton) {
-                    screenHooks.cloth$addDrawableChild(new ButtonWidgets((HandledScreen<?>) screen));
+                    screenHooks.cloth$addDrawableChild(new ChestTrackerButtonWidget((HandledScreen<?>) screen, shouldDeleteBeEnabled()));
                 }
             }
         });
@@ -138,8 +142,10 @@ public class ChestTracker implements ClientModInitializer {
                 Block hit = world.getBlockState(blockHitResult.getBlockPos()).getBlock();
                 if (MemoryUtils.isValidInventoryHolder(hit, world, blockHitResult.getBlockPos())) {
                     MemoryUtils.setLatestPos(blockHitResult.getBlockPos());
+                    MemoryUtils.setWasEnderchest(hit == Blocks.ENDER_CHEST);
                 } else {
                     MemoryUtils.setLatestPos(null);
+                    MemoryUtils.setWasEnderchest(false);
                 }
             }
             return ActionResult.PASS;
@@ -158,5 +164,10 @@ public class ChestTracker implements ClientModInitializer {
             }
             return TypedActionResult.pass(ItemStack.EMPTY);
         });
+    }
+
+    private boolean shouldDeleteBeEnabled() {
+        return MemoryUtils.getLatestPos() != null
+            && !(MinecraftClient.getInstance().currentScreen instanceof AbstractInventoryScreen);
     }
 }

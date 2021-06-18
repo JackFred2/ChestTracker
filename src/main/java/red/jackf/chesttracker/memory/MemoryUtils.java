@@ -48,24 +48,35 @@ public abstract class MemoryUtils {
     private static int currentlyCheckedIndex = 0;
     private static Identifier currentlyCheckedWorldId = null;
 
+    private static boolean ignoreNextMerge = false;
+    private static boolean wasEnderchest;
+
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
-        if (validScreenToTrack(screen)) {
-            MinecraftClient mc = MinecraftClient.getInstance();
-            MemoryDatabase database = MemoryDatabase.getCurrent();
-            if (database != null && mc.world != null && latestPos != null) {
-                List<ItemStack> stacks = condenseItems(screen.getScreenHandler().slots.stream().filter(MemoryUtils::isValidSlot).map(Slot::getStack).collect(Collectors.toList()));
-                BlockState state = mc.world.getBlockState(latestPos);
-                if (state.getBlock() == Blocks.ENDER_CHEST) {
-                    database.mergeItems(MemoryUtils.ENDER_CHEST_ID, Memory.of(BlockPos.ORIGIN, stacks, null, null));
-                } else {
-                    Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
-                    Collection<BlockPos> connected = getConnected(mc.world, latestPos);
-                    database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
+        if (!ignoreNextMerge) {
+            if (validScreenToTrack(screen)) {
+                MinecraftClient mc = MinecraftClient.getInstance();
+                MemoryDatabase database = MemoryDatabase.getCurrent();
+                if (database != null && mc.world != null && latestPos != null) {
+                    List<ItemStack> stacks = condenseItems(screen.getScreenHandler().slots.stream().filter(MemoryUtils::isValidSlot).map(Slot::getStack).collect(Collectors.toList()));
+                    BlockState state = mc.world.getBlockState(latestPos);
+                    if (state.getBlock() == Blocks.ENDER_CHEST) {
+                        database.mergeItems(MemoryUtils.ENDER_CHEST_ID, Memory.of(BlockPos.ORIGIN, stacks, null, null), Collections.emptyList());
+                    } else {
+                        Text title = getTitleFromScreen(screen, mc.world.getBlockEntity(latestPos));
+                        Collection<BlockPos> connected = getConnected(mc.world, latestPos);
+                        database.mergeItems(mc.world.getRegistryKey().getValue(), Memory.of(latestPos, stacks, title, connected.size() > 0 ? getAveragePos(latestPos, connected) : null), connected);
+                    }
                 }
+                if (ChestTracker.CONFIG.miscOptions.printGuiClassNames)
+                    ChestTracker.sendDebugMessage(new LiteralText(screen.getClass().getSimpleName()));
             }
-            if (mc.player != null && ChestTracker.CONFIG.miscOptions.printGuiClassNames)
-                ChestTracker.sendDebugMessage(mc.player, new LiteralText(screen.getClass().getSimpleName()));
+        } else {
+            ignoreNextMerge = false;
         }
+    }
+
+    public static void ignoreNextMerge() {
+        ignoreNextMerge = true;
     }
 
     private static boolean isValidSlot(Slot slot) {
@@ -240,5 +251,13 @@ public abstract class MemoryUtils {
                 }
             }
         }
+    }
+
+    public static void setWasEnderchest(boolean wasEnderchest) {
+        MemoryUtils.wasEnderchest = wasEnderchest;
+    }
+
+    public static boolean wasLastEnderchest() {
+        return wasEnderchest;
     }
 }
