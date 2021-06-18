@@ -19,6 +19,8 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
 
+import java.util.Collection;
+
 import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
@@ -41,6 +43,8 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
                         database.removePos(MemoryUtils.ENDER_CHEST_ID, BlockPos.ORIGIN);
                         ChestTracker.sendDebugMessage(new TranslatableText("chesttracker.forgot_ender_chest"));
                     } else {
+                        Collection<BlockPos> connected = MemoryUtils.getConnected(client.world, pos);
+                        connected.forEach(connectedPos -> database.removePos(client.world.getRegistryKey().getValue(), connectedPos));
                         database.removePos(client.world.getRegistryKey().getValue(), pos);
                         ChestTracker.sendDebugMessage(new TranslatableText("chesttracker.forgot_location", pos.getX(), pos.getY(), pos.getZ()));
                     }

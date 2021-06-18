@@ -120,7 +120,7 @@ public abstract class MemoryUtils {
         return base.multiply(1f / (1 + connected.size())).subtract(Vec3d.of(basePos));
     }
 
-    private static Collection<BlockPos> getConnected(@NotNull World world, BlockPos pos) {
+    public static Collection<BlockPos> getConnected(@NotNull World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof ChestBlock) {
             if (state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
