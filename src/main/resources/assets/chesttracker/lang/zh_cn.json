@@ -7,7 +7,7 @@
     "chesttracker.gui.reset_button": "重置",
     "chesttracker.gui.reset_button_alt": "这不能被撤消。",
     "chesttracker.gui.scroll_tip": "你可以用滚轮来换页!",
-    "chesttracker.gui.search_field_start": "正在搜索...",
+    "chesttracker.gui.search_field_start": "搜索...",
     "chesttracker.gui.title": "箱子追踪器",
     "key.chesttracker.searchforitem": "搜索悬停的物品",
     "text.autoconfig.chesttracker.category.database_options": "数据库设置",
@@ -27,5 +27,14 @@
     "key.categories.chesttracker": "箱子追踪器",
     "key.chesttracker.opengui": "打开箱子追踪器GUI",
     "text.autoconfig.chesttracker.option.visualOptions.enableButton": "启用 GUI 按钮",
-    "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "隐藏重置按钮"
+    "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "隐藏重置按钮",
+    "chesttracker.forgot_ender_chest": "忘记末影箱",
+    "chesttracker.forgot_location": "忽略 [%s, %s, %s]",
+    "chesttracker.gui.block_range": "\n%s 方块",
+    "chesttracker.gui.delete_inside_range": "忘记全部 <= %s 方块内",
+    "chesttracker.gui.delete_location": "忘记该库存",
+    "chesttracker.gui.delete_outside_range": "忘记全部 > %s 方块外",
+    "chesttracker.gui.range": "搜索范围",
+    "chesttracker.gui.settings": "设置",
+    "chesttracker.gui.settings.remember_chests": "记录新箱子"
 }
