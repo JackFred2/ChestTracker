@@ -5,6 +5,7 @@
   "chesttracker.gui.delete_inside_range": "Forget all <= %s blocks",
   "chesttracker.gui.delete_location": "Forget this inventory",
   "chesttracker.gui.delete_outside_range": "Forget all > %s blocks",
+  "chesttracker.gui.delete_unnamed": "Forget all unnamed",
   "chesttracker.gui.edit_name": "Edit saved name",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.next_page": "Next Page",

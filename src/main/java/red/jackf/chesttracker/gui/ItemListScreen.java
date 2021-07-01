@@ -98,7 +98,10 @@ public class ItemListScreen extends CottonClientScreen {
                 for (Identifier id : database.getDimensions()) {
                     WPlainPanel dimensionPanel = new WPlainPanel();
                     dimensionPanel.setSize(width, height);
-                    tabPanel.add(new WTabPanel.Tab(null, new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))), dimensionPanel, (tooltip) -> tooltip.add(new LiteralText(id.toString()))));
+                    tabPanel.add(new WTabPanel.Tab.Builder(dimensionPanel)
+                        .icon(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))))
+                        .tooltip(new LiteralText(id.toString()))
+                        .build());
 
                     if (id.equals(currentWorld)) selectedTabIndex = currentIndex;
                     currentIndex++;
@@ -156,22 +159,40 @@ public class ItemListScreen extends CottonClientScreen {
                     }
                 }
 
+                //noinspection ConstantConditions
+                ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
+
+                // Settings Panel
                 WPlainPanel settingsPanel = new WPlainPanel();
                 settingsPanel.setSize(width, height);
                 tabPanel.add(new WTabPanel.Tab(null, new TextureIcon(id("textures/icon.png")), settingsPanel, builder -> builder.add(new TranslatableText("chesttracker.gui.settings"))));
 
+                // Toggle Remember Button
                 WLabel addNewChestsToggleLabel = new WLabel(new TranslatableText("chesttracker.gui.settings.remember_chests"));
                 settingsPanel.add(addNewChestsToggleLabel, BEVEL_PADDING, BEVEL_PADDING);
                 WToggleButton addNewChestsToggle = new WToggleButton();
-                settingsPanel.add(addNewChestsToggle, width - BEVEL_PADDING - 17, 1);
+                settingsPanel.add(addNewChestsToggle, width - BEVEL_PADDING - 17, BEVEL_PADDING - 5);
                 addNewChestsToggle.setToggle(ChestTracker.CONFIG.miscOptions.rememberNewChests);
                 addNewChestsToggle.setOnToggle(newValue -> {
                     ChestTracker.CONFIG.miscOptions.rememberNewChests = newValue;
                     AutoConfig.getConfigHolder(ChestTrackerConfig.class).save();
                 });
 
+                // Delete Unnamed button
+                WHeldButton deleteUnnamed = new WHeldButton(new TranslatableText("chesttracker.gui.delete_unnamed"), new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                settingsPanel.add(deleteUnnamed, BEVEL_PADDING, BEVEL_PADDING + 12, width - (BEVEL_PADDING * 2), 20);
+
+                deleteUnnamed.setOnClick(() -> {
+                    if (mc.player == null) return;
+                    database.getAllMemories(currentWorld).stream()
+                        .filter(memory -> memory.getTitle() == null && memory.getPosition() != null)
+                        .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
+                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                });
+
+                // Range Slider
                 WLabeledSlider rangeSlider = new WLabeledSlider(1, 98);
-                settingsPanel.add(rangeSlider, BEVEL_PADDING, BEVEL_PADDING + 12);
+                settingsPanel.add(rangeSlider, BEVEL_PADDING, BEVEL_PADDING + 36);
                 rangeSlider.setSize(width - BEVEL_PADDING * 2, 20);
                 rangeSlider.setLabelUpdater(Gui::getSliderText);
                 rangeSlider.setValue(ChestTracker.CONFIG.miscOptions.searchRange, true);
@@ -181,11 +202,12 @@ public class ItemListScreen extends CottonClientScreen {
                 });
                 rangeSlider.setLabel(getSliderText(ChestTracker.CONFIG.miscOptions.searchRange));
 
+                // Delete Outside & Inside Range buttons
                 WHeldButton deleteOutside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
-                settingsPanel.add(deleteOutside, BEVEL_PADDING, BEVEL_PADDING + 36, width - (BEVEL_PADDING * 2), 20);
+                settingsPanel.add(deleteOutside, BEVEL_PADDING, BEVEL_PADDING + 60, width - (BEVEL_PADDING * 2), 20);
 
                 WHeldButton deleteInside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
-                settingsPanel.add(deleteInside, BEVEL_PADDING, BEVEL_PADDING + 60, width - (BEVEL_PADDING * 2), 20);
+                settingsPanel.add(deleteInside, BEVEL_PADDING, BEVEL_PADDING + 84, width - (BEVEL_PADDING * 2), 20);
 
                 rangeSlider.setValueChangeListener(value -> updateDeleteButtonLabels(deleteInside, deleteOutside, value));
                 updateDeleteButtonLabels(deleteInside, deleteOutside, ChestTracker.CONFIG.miscOptions.searchRange);
@@ -206,8 +228,9 @@ public class ItemListScreen extends CottonClientScreen {
                     ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
                 });
 
-                //noinspection ConstantConditions
-                ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
+                // Dimension Label
+                WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
+                settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING - 12);
 
                 // Database name
                 WLabel databaseName = new WLabel(new LiteralText(database.getId()));

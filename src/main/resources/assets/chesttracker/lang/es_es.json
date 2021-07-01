@@ -27,5 +27,15 @@
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Nombre para Rango de Renderizado",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Cantidad por fila",
   "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Modificador para Tamaño de Texto",
-  "text.autoconfig.chesttracker.title": "Configuración de Chest Tracker"
+  "text.autoconfig.chesttracker.title": "Configuración de Chest Tracker",
+  "chesttracker.forgot_ender_chest": "Forgot ender chest",
+  "chesttracker.forgot_location": "Forgot [%s, %s, %s]",
+  "chesttracker.gui.block_range": "%s Blocks",
+  "chesttracker.gui.delete_inside_range": "Forget all <= %s blocks",
+  "chesttracker.gui.delete_location": "Forget this inventory",
+  "chesttracker.gui.delete_outside_range": "Forget all > %s blocks",
+  "chesttracker.gui.delete_unnamed": "Forget all unnamed",
+  "chesttracker.gui.range": "Search Range: ",
+  "chesttracker.gui.settings": "Settings",
+  "chesttracker.gui.settings.remember_chests": "Remember new chests"
 }

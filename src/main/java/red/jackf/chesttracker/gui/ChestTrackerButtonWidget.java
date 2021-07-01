@@ -98,7 +98,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         RenderSystem.enableDepthTest();
         drawTexture(matrices, this.x, this.y, 0, offset, this.width, this.height, 9, 18);
         if (this.isHovered()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
+            this.renderTooltip(matrices, mouseX, mouseY);
         }
 
     }
