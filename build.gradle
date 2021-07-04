@@ -1,8 +1,11 @@
+import com.modrinth.minotaur.TaskModrinthUpload
+
 plugins {
     id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "1.2.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -118,6 +121,21 @@ curseforge {
     options {
         forgeGradleIntegration = false
     }
+}
+
+task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after build!
+    onlyIf {
+        project.hasProperty("modrinth.key")
+    }
+
+    token = project.findProperty("modrinth.key")
+    projectId = 'ni4SrKmq'
+    versionNumber = project.mod_version
+    versionName = "ChestTracker $project.mod_version"
+    uploadFile = remapJar
+    changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
+    addGameVersion('1.17')
+    addLoader('fabric')
 }
 
 // configure the maven publication
