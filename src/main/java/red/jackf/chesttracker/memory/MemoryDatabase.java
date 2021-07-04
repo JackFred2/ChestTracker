@@ -159,6 +159,10 @@ public class MemoryDatabase {
         return FabricLoader.getInstance().getGameDir().resolve("chesttracker").resolve(id + ".json");
     }
 
+    public boolean positionExists(Identifier worldId, BlockPos pos) {
+        return locations.containsKey(worldId) && locations.get(worldId).containsKey(pos);
+    }
+
     public List<ItemStack> getItems(Identifier worldId) {
         if (locations.containsKey(worldId)) {
             Map<LightweightStack, Integer> count = new HashMap<>();
@@ -196,16 +200,22 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory, Collection<BlockPos> toRemove) {
-        if (!ChestTracker.CONFIG.miscOptions.rememberNewChests && locations.containsKey(worldId)) {
-            boolean exists = false;
-            for (Memory existingMemory : locations.get(worldId).values()) {
-                if (Objects.equals(existingMemory.getPosition(), memory.getPosition())) {
-                    exists = true;
-                    break;
+        if (!ChestTracker.CONFIG.miscOptions.rememberNewChests && !MemoryUtils.shouldForceNextMerge()) {
+            if (locations.containsKey(worldId)) { // check if it's already remembered
+                boolean exists = false;
+                for (Memory existingMemory : locations.get(worldId).values()) {
+                    if (Objects.equals(existingMemory.getPosition(), memory.getPosition())) {
+                        exists = true;
+                        break;
+                    }
                 }
+                if (!exists) return;
+            } else { // nothing remembered yet, don't start
+                return;
             }
-            if (!exists) return;
         }
+
+        MemoryUtils.setForceNextMerge(false);
 
         if (locations.containsKey(worldId)) {
             ConcurrentMap<BlockPos, Memory> map = locations.get(worldId);

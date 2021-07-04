@@ -1,6 +1,7 @@
 {
     "chesttracker.forgot_ender_chest": "忘记末影箱",
     "chesttracker.forgot_location": "忽略 [%s, %s, %s]",
+    "chesttracker.remembered_new_location": "Remembered new location",
     "chesttracker.gui.block_range": "\n%s 方块",
     "chesttracker.gui.delete_inside_range": "忘记全部 <= %s 方块内",
     "chesttracker.gui.delete_location": "忘记该库存",
@@ -12,6 +13,7 @@
     "chesttracker.gui.page_count": "第%s页/共%s页",
     "chesttracker.gui.previous_page": "上一页",
     "chesttracker.gui.range": "搜索范围",
+    "chesttracker.gui.remember_location": "Remember this inventory",
     "chesttracker.gui.reset_button": "重置",
     "chesttracker.gui.reset_button_alt": "这不能被撤消。",
     "chesttracker.gui.scroll_tip": "你可以用滚轮来换页!",

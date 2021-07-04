@@ -86,7 +86,7 @@ public class ItemListScreen extends CottonClientScreen {
             if (database != null) {
 
                 Identifier currentWorld;
-                int selectedTabIndex = 0;
+                int selectedTabIndex = -1;
                 int currentIndex = 0;
 
                 if (mc.world != null) {
@@ -158,9 +158,6 @@ public class ItemListScreen extends CottonClientScreen {
                         });
                     }
                 }
-
-                //noinspection ConstantConditions
-                ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
 
                 // Settings Panel
                 WPlainPanel settingsPanel = new WPlainPanel();
@@ -235,6 +232,17 @@ public class ItemListScreen extends CottonClientScreen {
                 // Database name
                 WLabel databaseName = new WLabel(new LiteralText(database.getId()));
                 settingsPanel.add(databaseName, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
+
+                // Set tab
+                if (selectedTabIndex == -1) {
+                    // go to settings panel if our current dimension has no entries
+                    //noinspection ConstantConditions
+                    ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(currentIndex);
+                } else {
+                    // go to current dimension's panel
+                    //noinspection ConstantConditions
+                    ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
+                }
             }
         }
 

@@ -49,6 +49,7 @@ public abstract class MemoryUtils {
     private static Identifier currentlyCheckedWorldId = null;
 
     private static boolean ignoreNextMerge = false;
+    private static boolean forceNextMerge = false;
     private static boolean wasEnderchest;
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
@@ -77,6 +78,14 @@ public abstract class MemoryUtils {
 
     public static void ignoreNextMerge() {
         ignoreNextMerge = true;
+    }
+
+    public static void setForceNextMerge(boolean forceNextMerge) {
+        MemoryUtils.forceNextMerge = forceNextMerge;
+    }
+
+    public static boolean shouldForceNextMerge() {
+        return forceNextMerge;
     }
 
     private static boolean isValidSlot(Slot slot) {
