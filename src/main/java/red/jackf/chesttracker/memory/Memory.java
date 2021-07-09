@@ -19,10 +19,10 @@ public class Memory {
     private final BlockPos position;
     private final List<ItemStack> items;
     @Nullable
+    private final Vec3d nameOffset;
+    @Nullable
     private Text title;
     private Boolean manualTitle = false;
-    @Nullable
-    private final Vec3d nameOffset;
 
 
     private Memory(@Nullable BlockPos position, List<ItemStack> items, @Nullable Text title, @Nullable Vec3d nameOffset) {

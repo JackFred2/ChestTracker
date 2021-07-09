@@ -66,7 +66,8 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         this.forgetOrRememberEnabled = forgetOrRememberEnabled;
         MemoryDatabase database = MemoryDatabase.getCurrent();
         MinecraftClient client = MinecraftClient.getInstance();
-        if (database != null && client.world != null && MemoryUtils.getLatestPos() != null) this.isRemembered = database.positionExists(client.world.getRegistryKey().getValue(), MemoryUtils.getLatestPos());
+        if (database != null && client.world != null && MemoryUtils.getLatestPos() != null)
+            this.isRemembered = database.positionExists(client.world.getRegistryKey().getValue(), MemoryUtils.getLatestPos());
     }
 
     @Override
@@ -82,7 +83,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         if (this.isMouseOver(mouseX, mouseY)) {
             if (shouldShowAltButton()) {
                 this.screen.renderTooltip(matrices, shouldShowRememberButton() ? new TranslatableText("chesttracker.gui.remember_location") : new TranslatableText("chesttracker.gui.delete_location"), mouseX, mouseY);
-            } else  {
+            } else {
                 this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
             }
         }
@@ -99,11 +100,11 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
     private void reposition() {
         if (MinecraftClient.getInstance().player != null) {
             // the creative inventory screen is translated when effects exist
-             if (screen instanceof CreativeInventoryScreen && !MinecraftClient.getInstance().player.getStatusEffects().isEmpty()) {
-                 this.setPos(ButtonPositions.getX(screen, 0) + 60, ButtonPositions.getY(screen, 0));
-             } else {
-                 this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
-             }
+            if (screen instanceof CreativeInventoryScreen && !MinecraftClient.getInstance().player.getStatusEffects().isEmpty()) {
+                this.setPos(ButtonPositions.getX(screen, 0) + 60, ButtonPositions.getY(screen, 0));
+            } else {
+                this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
+            }
         }
     }
 

@@ -22,9 +22,9 @@ public class WPageButton extends WButton {
     private static final Icon RIGHT_BUTTON_HIGHLIGHT = new TextureIcon(id("textures/right_button_highlight.png"));
 
     private final Text tooltip;
+    private final boolean isPrevious;
     private boolean pressed = false;
     private boolean highlighted;
-    private final boolean isPrevious;
 
     public WPageButton(boolean isLeft, Text tooltip, boolean highlighted) {
         super();

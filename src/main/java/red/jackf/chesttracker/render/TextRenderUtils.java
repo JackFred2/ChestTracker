@@ -47,7 +47,7 @@ public abstract class TextRenderUtils {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.world != null) {
             EntityRenderDispatcher dispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
-           // Named nearby
+            // Named nearby
             Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
             for (Memory memory : toRender) {
                 BlockPos blockPos = memory.getPosition();

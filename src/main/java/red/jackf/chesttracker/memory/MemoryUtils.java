@@ -218,9 +218,9 @@ public abstract class MemoryUtils {
 
     public static boolean isValidInventoryHolder(Block block, World world, BlockPos pos) {
         //if (FabricLoader.getInstance().isModLoaded("universalcomponents")) {
-            //return UniversalComponentsHandler.isValidInventoryHolder(block, world, pos);
+        //return UniversalComponentsHandler.isValidInventoryHolder(block, world, pos);
         //} else {
-            return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
+        return block instanceof BlockEntityProvider || block instanceof InventoryProvider;
         //}
     }
 

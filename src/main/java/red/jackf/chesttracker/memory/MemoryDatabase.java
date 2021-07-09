@@ -78,7 +78,7 @@ public class MemoryDatabase {
                 if (server == null) return null;
                 id = "realms-" + MemoryUtils.makeFileSafe(server.owner + "-" + server.getName());
             } else if (mc.getServer() == null && mc.getCurrentServerEntry() != null) {
-                id = (mc.getCurrentServerEntry().isLocal() ? "lan-" : "multiplayer-" ) + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
+                id = (mc.getCurrentServerEntry().isLocal() ? "lan-" : "multiplayer-") + MemoryUtils.makeFileSafe(mc.getCurrentServerEntry().address);
             }
         }
 
@@ -118,7 +118,8 @@ public class MemoryDatabase {
                 ChestTracker.LOGGER.info("Found data for " + id);
                 FileReader reader = new FileReader(loadPath.toString());
 
-                Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {}.getType());
+                Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
+                }.getType());
                 if (raw == null) {
                     ChestTracker.LOGGER.info("Empty file found for " + id);
                     this.locations = new ConcurrentHashMap<>();

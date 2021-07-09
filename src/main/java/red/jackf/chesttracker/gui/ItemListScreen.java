@@ -60,7 +60,6 @@ public class ItemListScreen extends CottonClientScreen {
         private static final int BOTTOM_PADDING = 17;
 
         private static final LiteralText BLANK_TEXT = new LiteralText("-");
-        private final Map<Identifier, WItemListPanel> ITEM_LISTS = new HashMap<>();
 
         static {
             knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
@@ -68,6 +67,8 @@ public class ItemListScreen extends CottonClientScreen {
             knownIcons.put(DimensionType.THE_END_ID, new ItemStack(Items.END_STONE));
             knownIcons.put(MemoryUtils.ENDER_CHEST_ID, new ItemStack(Items.ENDER_CHEST));
         }
+
+        private final Map<Identifier, WItemListPanel> ITEM_LISTS = new HashMap<>();
 
         public Gui() {
             @SuppressWarnings({"ConstantExpression", "PointlessArithmeticExpression"})

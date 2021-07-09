@@ -1,7 +1,6 @@
 package red.jackf.chesttracker;
 
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigManager;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.fabricmc.api.ClientModInitializer;
@@ -21,7 +20,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -32,7 +30,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -65,7 +62,8 @@ public class ChestTracker implements ClientModInitializer {
 
     public static void sendDebugMessage(Text text) {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null) player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
+        if (player != null)
+            player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
     public static void searchForItem(@NotNull ItemStack stack, @NotNull World world) {

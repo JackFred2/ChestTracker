@@ -13,7 +13,8 @@ import java.util.Collections;
 public abstract class ExpandedStorageHandler {
     public static Collection<BlockPos> check(BlockState state, World world, BlockPos pos) {
         if (state.getBlock() instanceof AbstractChestBlock) {
-            if (state.get(AbstractChestBlock.CURSED_CHEST_TYPE) == CursedChestType.SINGLE) return Collections.emptyList();
+            if (state.get(AbstractChestBlock.CURSED_CHEST_TYPE) == CursedChestType.SINGLE)
+                return Collections.emptyList();
             else return Collections.singleton(pos.offset(AbstractChestBlock.getDirectionToAttached(state)));
         } else {
             return Collections.emptyList();
