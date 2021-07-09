@@ -226,6 +226,11 @@ public class ItemListScreen extends CottonClientScreen {
                     ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
                 });
 
+                var showAll = new WButton(new TranslatableText("chesttracker.gui.show_all"));
+                settingsPanel.add(showAll, BEVEL_PADDING, BEVEL_PADDING + 108, width - (BEVEL_PADDING * 2), 20);
+
+                showAll.setOnClick(() -> ChestTracker.startRenderingForLocations(database.getAllMemories(currentWorld)));
+
                 // Dimension Label
                 WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
                 settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING - 12);

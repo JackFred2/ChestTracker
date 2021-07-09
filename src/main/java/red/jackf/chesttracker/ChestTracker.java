@@ -47,6 +47,7 @@ import red.jackf.chesttracker.resource.ButtonPositionManager;
 import red.jackf.whereisit.WhereIsItClient;
 import red.jackf.whereisit.client.PositionData;
 
+import java.util.Collection;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -66,21 +67,28 @@ public class ChestTracker implements ClientModInitializer {
             player.sendSystemMessage(new LiteralText("[ChestTracker] ").formatted(Formatting.YELLOW).append(text), Util.NIL_UUID);
     }
 
-    public static void searchForItem(@NotNull ItemStack stack, @NotNull World world) {
-        MemoryDatabase database = MemoryDatabase.getCurrent();
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (database != null && player != null) {
-            List<Memory> found = database.findItems(stack, world.getRegistryKey().getValue());
-            if (found.size() >= 1) {
-                float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
-                float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
-                float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
-                WhereIsItClient.handleFoundItems(found.stream()
-                    .map(memory -> new PositionData(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
-                    .toList());
-                if (MinecraftClient.getInstance().player != null)
-                    MinecraftClient.getInstance().player.closeHandledScreen();
-            }
+    public static void searchForItem(@NotNull ItemStack stack) {
+        var database = MemoryDatabase.getCurrent();
+        var client = MinecraftClient.getInstance();
+        var world = client.world;
+        if (database != null && world != null) {
+            startRenderingForLocations(database.findItems(stack, world.getRegistryKey().getValue()));
+        }
+    }
+
+    public static void startRenderingForLocations(Collection<Memory> memories) {
+        var client = MinecraftClient.getInstance();
+        var world = client.world;
+        var player = client.player;
+        if (world != null && memories.size() >= 1) {
+            float r = ((ChestTracker.CONFIG.visualOptions.borderColour >> 16) & 0xff) / 255f;
+            float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
+            float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
+            WhereIsItClient.handleFoundItems(memories.stream()
+                .map(memory -> new PositionData(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
+                .toList());
+            if (player != null)
+                player.closeHandledScreen();
         }
     }
 
@@ -120,11 +128,9 @@ public class ChestTracker implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(TextRenderUtils::drawLabels);
 
         WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
-            if (MinecraftClient.getInstance().world != null) {
-                ItemStack stack = new ItemStack(item);
-                if (matchNbt) stack.setTag(compoundTag);
-                searchForItem(stack, MinecraftClient.getInstance().world);
-            }
+            ItemStack stack = new ItemStack(item);
+            if (matchNbt) stack.setTag(compoundTag);
+            searchForItem(stack);
         });
 
         // Opening GUI
