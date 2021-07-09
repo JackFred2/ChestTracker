@@ -16,6 +16,17 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    maven { // WhereIsIt
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+        content {
+            includeGroup("red.jackf")
+        }
+    }
     maven { url = "https://maven.fabricmc.net" } // Fabric
     maven { url = "https://maven.shedaniel.me/" } // REI & Cloth Config
     maven { url = 'https://maven.terraformersmc.com/' } // ModMenu
@@ -31,14 +42,6 @@ repositories {
         name = "Ladysnake Libs"
         url = "https://dl.bintray.com/ladysnake/libs"
     }*/
-    maven { // WhereIsIt
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-        }
-    }
 }
 
 dependencies {
