@@ -232,7 +232,7 @@ public class MemoryDatabase {
     }
 
     public void mergeItems(Identifier worldId, Memory memory) {
-        if (memory.getItems().size() > 0 || memory.getTitle() != null) {
+        if (memory.getItems().size() > 0 || memory.getTitle() != null || !ChestTracker.CONFIG.miscOptions.rememberNewChests) {
             addItem(worldId, memory, locations);
             if (memory.getTitle() != null) {
                 addItem(worldId, memory, namedLocations);

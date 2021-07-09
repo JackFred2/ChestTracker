@@ -251,7 +251,7 @@ public abstract class MemoryUtils {
                         if (!checkExistsInWorld(memory, world)) {
                             database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
                         }
-                        if (memory.getTitle() == null && memory.getItems().size() == 0) {
+                        if (ChestTracker.CONFIG.miscOptions.rememberNewChests && memory.getTitle() == null && memory.getItems().size() == 0) {
                             database.removePos(world.getRegistryKey().getValue(), memory.getPosition());
                         }
                     }
