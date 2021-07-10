@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -178,13 +179,13 @@ public class WItemListPanel extends WGridPanel {
 
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
-            ItemStack stack = this.filteredItems.get(itemIndex);
-            List<Text> tooltips = stack.getTooltip(null, TooltipContext.Default.NORMAL);
+            var stack = this.filteredItems.get(itemIndex);
+            var tooltips = stack.getTooltip(null, TooltipContext.Default.NORMAL);
+            var tooltipData = stack.getTooltipData();
             tooltips.add(getCountText(stack));
-
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null)
-                screen.renderOrderedTooltip(matrices, Lists.transform(tooltips, Text::asOrderedText), tX + x, tY + y);
+                screen.renderTooltip(matrices, tooltips, tooltipData, tX + x, tY + y);
         } else {
             super.renderTooltip(matrices, x, y, tX, tY);
         }

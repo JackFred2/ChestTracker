@@ -105,6 +105,7 @@ curseforge {
         addGameVersion "Java 16"
 
         addGameVersion "1.17"
+        addGameVersion "1.17.1"
 
         mainArtifact(remapJar) {
             relations {
@@ -138,6 +139,7 @@ task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after buil
     uploadFile = remapJar
     changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
     addGameVersion('1.17')
+    addGameVersion('1.17.1')
     addLoader('fabric')
 }
 
