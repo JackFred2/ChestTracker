@@ -14,4 +14,4 @@ What you were doing in as much detail as possible.
 The full crash report, from your /crash-reports/ folder.
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. Post your crash log (in your `crash-reports` folder) if you can.

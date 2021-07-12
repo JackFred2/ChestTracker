@@ -17,4 +17,4 @@ What you were doing, in as much detail as possible.
 What should happen.
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. Post your full latest.log (in your `logs` folder) if you can.
