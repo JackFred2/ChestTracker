@@ -39,6 +39,5 @@
   "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "Hide Forget World Button",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Name Render Range",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Row Count",
-  "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Text Size Modifier",
   "text.autoconfig.chesttracker.title": "Chest Tracker Config"
 }

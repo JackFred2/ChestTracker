@@ -33,7 +33,6 @@ public class ChestTrackerConfig implements ConfigData {
         visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
         visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 12);
         visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 18);
-        visualOptions.textSizeModifier = MathHelper.clamp(visualOptions.textSizeModifier, 50, 400);
         databaseOptions.destroyedMemoryCheckInterval = MathHelper.clamp(databaseOptions.destroyedMemoryCheckInterval, 0, 60);
         miscOptions.searchRange = MathHelper.clamp(miscOptions.searchRange, 1, 98);
     }
@@ -47,8 +46,6 @@ public class ChestTrackerConfig implements ConfigData {
         public int rowCount = 6;
         @ConfigEntry.BoundedDiscrete(min = 9, max = 18)
         public int columnCount = 9;
-        @ConfigEntry.BoundedDiscrete(min = 50, max = 400)
-        public int textSizeModifier = 100;
         public boolean hideDeleteButton = false;
         public boolean enableButton = true;
     }

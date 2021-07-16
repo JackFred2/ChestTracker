@@ -35,7 +35,6 @@
     "text.autoconfig.chesttracker.option.visualOptions.columnCount": "列数",
     "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "名称渲染范围",
     "text.autoconfig.chesttracker.option.visualOptions.rowCount": "行数",
-    "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "文字大小调节器",
     "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[调试] 输出 GUI 类名",
     "text.autoconfig.chesttracker.title": "箱子追踪器配置",
     "text.autoconfig.chesttracker.option.visualOptions.enableButton": "启用 GUI 按钮",

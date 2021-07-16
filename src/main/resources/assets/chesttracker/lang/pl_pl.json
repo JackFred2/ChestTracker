@@ -35,7 +35,6 @@
   "text.autoconfig.chesttracker.option.visualOptions.columnCount": "Liczba Kolumn",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Zasięg Renderowania Nazw",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Liczba wierszy",
-  "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Modyfikator Rozmiaru Tekstu",
   "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[Debug] Drukuj Nazwy Klas GUI",
   "text.autoconfig.chesttracker.option.visualOptions.enableButton": "Włącz przycisk GUI",
   "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "Schowaj Przycisk Zapomnij Świat",

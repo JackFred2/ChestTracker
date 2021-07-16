@@ -38,6 +38,5 @@
   "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "Ocultar Botón para Olvidar Mundo",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Nombre para Rango de Renderizado",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Cantidad por fila",
-  "text.autoconfig.chesttracker.option.visualOptions.textSizeModifier": "Modificador para Tamaño de Texto",
   "text.autoconfig.chesttracker.title": "Configuración de Chest Tracker"
 }
