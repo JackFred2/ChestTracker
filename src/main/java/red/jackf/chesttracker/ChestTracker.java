@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -20,7 +21,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,8 +30,9 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -42,13 +43,12 @@ import red.jackf.chesttracker.gui.ItemListScreen;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
-import red.jackf.chesttracker.render.TextRenderUtils;
 import red.jackf.chesttracker.resource.ButtonPositionManager;
 import red.jackf.whereisit.WhereIsItClient;
 import red.jackf.whereisit.client.PositionData;
+import red.jackf.whereisit.client.RenderUtils;
 
 import java.util.Collection;
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ChestTracker implements ClientModInitializer {
@@ -85,7 +85,7 @@ public class ChestTracker implements ClientModInitializer {
             float g = ((ChestTracker.CONFIG.visualOptions.borderColour >> 8) & 0xff) / 255f;
             float b = ((ChestTracker.CONFIG.visualOptions.borderColour) & 0xff) / 255f;
             WhereIsItClient.handleFoundItems(memories.stream()
-                .map(memory -> new PositionData(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b))
+                .map(memory -> new PositionData(memory.getPosition(), world.getTime(), VoxelShapes.fullCube(), r, g, b, null))
                 .toList());
             if (player != null)
                 player.closeHandledScreen();
@@ -115,6 +115,24 @@ public class ChestTracker implements ClientModInitializer {
         return Integer.MAX_VALUE;
     }
 
+    public static void drawLabels(WorldRenderContext context) {
+        MemoryDatabase database = MemoryDatabase.getCurrent();
+        if (database == null) return;
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.world != null) {
+            // Named nearby
+            Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
+            for (Memory memory : toRender) {
+                BlockPos blockPos = memory.getPosition();
+                if (blockPos != null && memory.getTitle() != null && !RenderUtils.FOUND_ITEM_POSITIONS.containsKey(blockPos)) {
+                    Vec3d pos = Vec3d.of(blockPos);
+                    if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
+                    RenderUtils.drawTextWithBackground(context, pos, memory.getTitle(), CONFIG.visualOptions.nameRenderRange);
+                }
+            }
+        }
+    }
+
     @Override
     public void onInitializeClient() {
         KeyBindingHelper.registerKeyBinding(GUI_KEY);
@@ -125,7 +143,7 @@ public class ChestTracker implements ClientModInitializer {
             if (database != null) database.save();
         });
 
-        WorldRenderEvents.AFTER_ENTITIES.register(TextRenderUtils::drawLabels);
+        WorldRenderEvents.AFTER_ENTITIES.register(ChestTracker::drawLabels);
 
         WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
             ItemStack stack = new ItemStack(item);
