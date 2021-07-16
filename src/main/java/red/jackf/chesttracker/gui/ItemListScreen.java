@@ -163,7 +163,12 @@ public class ItemListScreen extends CottonClientScreen {
                 // Settings Panel
                 WPlainPanel settingsPanel = new WPlainPanel();
                 settingsPanel.setSize(width, height);
-                tabPanel.add(new WTabPanel.Tab(null, new TextureIcon(id("textures/icon.png")), settingsPanel, builder -> builder.add(new TranslatableText("chesttracker.gui.settings"))));
+                var tab = new WTabPanel.Tab.Builder(settingsPanel)
+                    .tooltip(new TranslatableText("chesttracker.gui.settings"))
+                    .icon(new TextureIcon(id("textures/icon.png")))
+                    .build();
+
+                tabPanel.add(tab);
 
                 // Toggle Remember Button
                 WLabel addNewChestsToggleLabel = new WLabel(new TranslatableText("chesttracker.gui.settings.remember_chests"));
