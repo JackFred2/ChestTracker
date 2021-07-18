@@ -97,15 +97,20 @@ public class ItemListScreen extends CottonClientScreen {
                 }
 
                 for (Identifier id : database.getDimensions()) {
-                    WPlainPanel dimensionPanel = new WPlainPanel();
+                    var dimensionPanel = new WPlainPanel() {
+                        private WUpdatableTextField searchBar = null;
+
+                        @Override
+                        public void onShown() {
+                            super.onShown();
+                            if (this.searchBar != null) this.searchBar.requestFocus();
+                        }
+                    };
                     dimensionPanel.setSize(width, height);
                     tabPanel.add(new WTabPanel.Tab.Builder(dimensionPanel)
                         .icon(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))))
                         .tooltip(new LiteralText(id.toString()))
                         .build());
-
-                    if (id.equals(currentWorld)) selectedTabIndex = currentIndex;
-                    currentIndex++;
 
                     // Item List
                     WItemListPanel itemList = new WItemListPanel(ChestTracker.CONFIG.visualOptions.columnCount, ChestTracker.CONFIG.visualOptions.rowCount);
@@ -118,6 +123,8 @@ public class ItemListScreen extends CottonClientScreen {
                     // Search Field
                     WUpdatableTextField searchField = new WUpdatableTextField(new TranslatableText("chesttracker.gui.search_field_start"));
                     searchField.setOnTextChanged(itemList::setFilter);
+                    dimensionPanel.searchBar = searchField;
+                    searchField.setHost(this);
                     dimensionPanel.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, TOP_PADDING - 24 + BEVEL_PADDING, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
                     // Page Buttons
@@ -158,6 +165,11 @@ public class ItemListScreen extends CottonClientScreen {
                             itemList.setItems(Collections.emptyList());
                         });
                     }
+
+                    if (id.equals(currentWorld)) {
+                        selectedTabIndex = currentIndex;
+                    }
+                    currentIndex++;
                 }
 
                 // Settings Panel
