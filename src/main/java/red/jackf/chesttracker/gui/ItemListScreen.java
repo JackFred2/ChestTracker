@@ -202,7 +202,7 @@ public class ItemListScreen extends CottonClientScreen {
                     database.getAllMemories(currentWorld).stream()
                         .filter(memory -> memory.getTitle() == null && memory.getPosition() != null)
                         .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
-                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                    updateItemList(database, currentWorld);
                 });
 
                 // Range Slider
@@ -232,7 +232,7 @@ public class ItemListScreen extends CottonClientScreen {
                     database.getAllMemories(currentWorld).stream()
                         .filter(memory -> memory.getPosition() != null && memory.getPosition().getSquaredDistance(mc.player.getBlockPos()) <= ChestTracker.getSquareSearchRange())
                         .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
-                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                    updateItemList(database, currentWorld);
                 });
 
                 deleteOutside.setOnClick(() -> {
@@ -240,7 +240,7 @@ public class ItemListScreen extends CottonClientScreen {
                     database.getAllMemories(currentWorld).stream()
                         .filter(memory -> memory.getPosition() != null && memory.getPosition().getSquaredDistance(mc.player.getBlockPos()) > ChestTracker.getSquareSearchRange())
                         .forEach(memory -> database.removePos(currentWorld, memory.getPosition()));
-                    ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
+                    updateItemList(database, currentWorld);
                 });
 
                 var showAll = new WButton(new TranslatableText("chesttracker.gui.show_all"));
@@ -267,6 +267,10 @@ public class ItemListScreen extends CottonClientScreen {
                     ((AccessorWTabPanel) tabPanel).getMainPanel().setSelectedIndex(selectedTabIndex);
                 }
             }
+        }
+
+        private void updateItemList(MemoryDatabase database, Identifier currentWorld) {
+            if (ITEM_LISTS.containsKey(currentWorld)) ITEM_LISTS.get(currentWorld).setItems(database.getItems(currentWorld));
         }
 
         private static void updateDeleteButtonLabels(WHeldButton deleteInside, WHeldButton deleteOutside, int rawValue) {
