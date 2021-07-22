@@ -8,6 +8,10 @@ on: [pull_request, push]
 
 permissions: read-all
 
+env:
+  GPR_USER: ${{ secrets.GITHUB_ACTOR }}
+  GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build:
     strategy:
