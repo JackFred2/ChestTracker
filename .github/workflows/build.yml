@@ -9,8 +9,6 @@ on: [pull_request, push]
 permissions:
   packages: read
   contents: read
-  metadata: read
-
 
 jobs:
   build:
