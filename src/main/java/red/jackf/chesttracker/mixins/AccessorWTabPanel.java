@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Environment(EnvType.CLIENT)
 @Mixin(WTabPanel.class)
 public interface AccessorWTabPanel {
-    @Accessor
+    @Accessor(remap = false)
     WCardPanel getMainPanel();
 }
