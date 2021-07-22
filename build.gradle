@@ -95,35 +95,37 @@ jar {
 }
 
 curseforge {
-    apiKey = project.findProperty("cf.key")
-    project {
-        id = "397217"
-        changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
-        releaseType = "release"
+    if (project.hasProperty("cf.key")) {
+        apiKey = project.findProperty("cf.key")
+        project {
+            id = "397217"
+            changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
+            releaseType = "release"
 
-        addGameVersion "Fabric"
-        addGameVersion "Java 16"
+            addGameVersion "Fabric"
+            addGameVersion "Java 16"
 
-        addGameVersion "1.17"
-        addGameVersion "1.17.1"
+            addGameVersion "1.17"
+            addGameVersion "1.17.1"
 
-        mainArtifact(remapJar) {
-            relations {
-                requiredDependency("fabric-api")
-                requiredDependency("cloth-config")
-                requiredDependency("cloth-api")
-                optionalDependency("modmenu")
-                optionalDependency("roughly-enough-items")
-                embeddedLibrary("libgui")
-                embeddedLibrary("where-is-it")
+            mainArtifact(remapJar) {
+                relations {
+                    requiredDependency("fabric-api")
+                    requiredDependency("cloth-config")
+                    requiredDependency("cloth-api")
+                    optionalDependency("modmenu")
+                    optionalDependency("roughly-enough-items")
+                    embeddedLibrary("libgui")
+                    embeddedLibrary("where-is-it")
+                }
+                displayName = "${project.prefix} ${archivesBaseName}-${version}.jar"
             }
-            displayName = "${project.prefix} ${archivesBaseName}-${version}.jar"
+
         }
 
-    }
-
-    options {
-        forgeGradleIntegration = false
+        options {
+            forgeGradleIntegration = false
+        }
     }
 }
 

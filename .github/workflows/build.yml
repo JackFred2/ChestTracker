@@ -6,9 +6,7 @@
 name: build
 on: [pull_request, push]
 
-permissions:
-  packages: read
-  contents: read
+permissions: read-all
 
 jobs:
   build:
