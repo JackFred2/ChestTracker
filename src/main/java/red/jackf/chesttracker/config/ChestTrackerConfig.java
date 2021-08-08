@@ -17,15 +17,15 @@ public class ChestTrackerConfig implements ConfigData {
 
     @ConfigEntry.Category("visual_options")
     @ConfigEntry.Gui.TransitiveObject
-    public final VisualOptions visualOptions = new VisualOptions();
+    public VisualOptions visualOptions = new VisualOptions();
 
     @ConfigEntry.Category("database_options")
     @ConfigEntry.Gui.TransitiveObject
-    public final DatabaseOptions databaseOptions = new DatabaseOptions();
+    public DatabaseOptions databaseOptions = new DatabaseOptions();
 
     @ConfigEntry.Category("misc_options")
     @ConfigEntry.Gui.TransitiveObject
-    public final MiscOptions miscOptions = new MiscOptions();
+    public MiscOptions miscOptions = new MiscOptions();
 
     @Override
     public void validatePostLoad() {
