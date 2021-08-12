@@ -169,13 +169,13 @@ public class MemoryDatabase {
             Map<LightweightStack, Integer> count = new HashMap<>();
             Map<BlockPos, Memory> location = locations.get(worldId);
             location.forEach((pos, memory) -> memory.getItems().forEach(stack -> {
-                LightweightStack lightweightStack = new LightweightStack(stack.getItem(), stack.getTag());
+                LightweightStack lightweightStack = new LightweightStack(stack.getItem(), stack.getNbt());
                 count.merge(lightweightStack, stack.getCount(), Integer::sum);
             }));
             List<ItemStack> results = new ArrayList<>();
             count.forEach(((lightweightStack, integer) -> {
                 ItemStack stack = new ItemStack(lightweightStack.getItem(), integer);
-                stack.setTag(lightweightStack.getTag());
+                stack.setNbt(lightweightStack.getTag());
                 results.add(stack);
             }));
             return results;
@@ -260,7 +260,7 @@ public class MemoryDatabase {
             for (Map.Entry<BlockPos, Memory> entry : location.entrySet()) {
                 if (entry.getKey() != null) {
                     if (entry.getValue().getItems().stream()
-                        .anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getTag() == null || toFind.getTag().equals(FULL_DURABILITY_TAG)))) {
+                        .anyMatch(candidate -> MemoryUtils.areStacksEquivalent(toFind, candidate, toFind.getNbt() == null || toFind.getNbt().equals(FULL_DURABILITY_TAG)))) {
                         if (MemoryUtils.checkExistsInWorld(entry.getValue())) {
                             if (entry.getValue().getPosition() == null // within search range
                                 || ChestTracker.getSquareSearchRange() == Integer.MAX_VALUE

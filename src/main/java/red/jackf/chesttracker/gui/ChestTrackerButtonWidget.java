@@ -59,7 +59,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
                 }
             } else {
                 screen.onClose();
-                client.openScreen(new ItemListScreen());
+                client.setScreen(new ItemListScreen());
             }
         });
         this.screen = screen;

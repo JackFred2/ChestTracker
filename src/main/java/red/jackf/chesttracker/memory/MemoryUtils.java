@@ -189,8 +189,8 @@ public abstract class MemoryUtils {
     public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
         return stack1.getItem() == stack2.getItem()
             && (ignoreNbt
-            || (!stack1.hasTag() && !stack2.hasTag())
-            || Objects.equals(stack1.getTag(), stack2.getTag())
+            || (!stack1.hasNbt() && !stack2.hasNbt())
+            || Objects.equals(stack1.getNbt(), stack2.getNbt())
         );
     }
 

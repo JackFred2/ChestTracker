@@ -76,7 +76,7 @@ public class GsonHandler {
                 int count = object.getAsJsonPrimitive("count").getAsInt();
                 ItemStack stack = new ItemStack(Registry.ITEM.get(id), count);
                 JsonPrimitive tagJson = object.getAsJsonPrimitive("tag");
-                if (tagJson != null) stack.setTag(StringNbtReader.parse(tagJson.getAsString()));
+                if (tagJson != null) stack.setNbt(StringNbtReader.parse(tagJson.getAsString()));
                 return stack;
             } catch (Exception ex) {
                 throw new JsonParseException("Could not read item", ex);
@@ -88,7 +88,7 @@ public class GsonHandler {
             JsonObject object = new JsonObject();
             object.add("id", context.serialize(Registry.ITEM.getId(src.getItem())));
             object.addProperty("count", src.getCount());
-            NbtCompound tag = src.getTag();
+            NbtCompound tag = src.getNbt();
             if (tag != null) object.addProperty("tag", tag.toString());
             return object;
         }

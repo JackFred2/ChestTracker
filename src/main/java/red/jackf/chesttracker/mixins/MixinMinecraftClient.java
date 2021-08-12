@@ -21,7 +21,7 @@ public abstract class MixinMinecraftClient {
     @Nullable
     public Screen currentScreen;
 
-    @Inject(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V"))
+    @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V"))
     public void chestTracker$countItemsBeforeClose(@Nullable Screen newScreen, CallbackInfo ci) {
         if (this.currentScreen instanceof HandledScreen) {
             MemoryUtils.handleItemsFromScreen((HandledScreen<? extends ScreenHandler>) this.currentScreen);

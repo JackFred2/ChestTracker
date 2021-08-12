@@ -147,7 +147,7 @@ public class ChestTracker implements ClientModInitializer {
 
         WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
             ItemStack stack = new ItemStack(item);
-            if (matchNbt) stack.setTag(compoundTag);
+            if (matchNbt) stack.setNbt(compoundTag);
             searchForItem(stack);
         });
 
@@ -155,7 +155,7 @@ public class ChestTracker implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             if (GUI_KEY.wasPressed() && client.world != null) {
                 if (client.currentScreen != null) client.currentScreen.onClose();
-                client.openScreen(new ItemListScreen());
+                client.setScreen(new ItemListScreen());
             }
         });
 
@@ -170,7 +170,7 @@ public class ChestTracker implements ClientModInitializer {
             if (GUI_KEY.matchesKey(keyCode, scanCode)) {
                 if (currentScreen instanceof HandledScreen && !(currentScreen instanceof CreativeInventoryScreen && ((CreativeInventoryScreen) currentScreen).getSelectedTab() == ItemGroup.SEARCH.getIndex())) {
                     currentScreen.onClose();
-                    mc.openScreen(new ItemListScreen());
+                    mc.setScreen(new ItemListScreen());
                 }
             }
 

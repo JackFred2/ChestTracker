@@ -32,7 +32,7 @@ public abstract class MixinShulkerBoxBlock {
         if (world.isClient) {
             BlockEntity be = world.getBlockEntity(pos);
             MemoryDatabase db = MemoryDatabase.getCurrent();
-            NbtCompound tag = stack.getSubTag("BlockEntityTag");
+            NbtCompound tag = stack.getSubNbt("BlockEntityTag");
             if (db != null && be instanceof ShulkerBoxBlockEntity && tag != null && tag.contains("Items", 9)) {
                 DefaultedList<ItemStack> items = DefaultedList.ofSize(((ShulkerBoxBlockEntity) be).size(), ItemStack.EMPTY);
                 Inventories.readNbt(tag, items);
