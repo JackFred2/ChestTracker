@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class WHeldButton extends WButton {
+
     private Text text;
     private Text altText;
     private int timeNeededToActivate;
@@ -27,6 +28,7 @@ public class WHeldButton extends WButton {
         this.text = text;
         this.altText = altText;
         this.timeNeededToActivate = timeNeededToActivate;
+        this.setLabel(text);
     }
 
     public WHeldButton(Text text, int timeNeededToActivate) {
@@ -37,11 +39,11 @@ public class WHeldButton extends WButton {
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
-        boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
-        ScreenDrawing.drawBeveledPanel(matrices, x, y, this.width, this.height, isEnabled() ? 0xFFFFFFFF : 0xFFD8D8D8, (isEnabled() && hovered) ? 0xFF8892C9 : 0xFFC6C6C6, isEnabled() ? (hovered ? 0xFF00073E : 0xFF000000) : 0xFF8F8F8F);
+        this.setLabel(timeHeldDown > 0 ? altText : text);
+        super.paint(matrices, x, y, mouseX, mouseY);
+
         int xProgress = MathHelper.floor((((float) this.timeHeldDown) / (this.timeNeededToActivate - 1)) * (this.width - 2));
-        if (xProgress > 0) ScreenDrawing.coloredRect(matrices, x + 1, y + 1, xProgress, this.height - 2, 0xFFFF4F4F);
-        ScreenDrawing.drawString(matrices, timeHeldDown > 0 ? altText.asOrderedText() : text.asOrderedText(), x + 6, y + 6, isEnabled() ? color : 0xFF8F8F8F);
+        if (xProgress > 0) ScreenDrawing.coloredRect(matrices, x + 1, y + 1, xProgress, this.height - 2, 0x60FF4F4F);
     }
 
     @Override
