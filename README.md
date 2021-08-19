@@ -5,18 +5,19 @@ Original Forge idea by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods
 
 ## Translations
 
-You can contribute at https://poeditor.com/join/project?hash=FpMp8wEAKO
+You can contribute at https://poeditor.com/join/project?hash=FpMp8wEAKO. You will be credited under the name in POEditor,
+unless you wish to have it under a different name - in this case please leave an issue or contact me.
 
 Current translation targets (as of 2021/08/19):
 - Chinese (90%)
-- English (100%)
+- English (100%) ✅
 - French (21%)
 - German (36%)
-- Italian (100%)
+- Italian (100%) ✅
 - Polish (92%)
 - Portuguese (0%)
-- Russian (100%)
-- Spanish (100%)
+- Russian (100%) ✅
+- Spanish (100%) ✅
 - Turkish (26%)
 - Welsh (0%)
 
