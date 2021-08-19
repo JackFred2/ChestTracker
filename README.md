@@ -5,9 +5,22 @@ Original Forge idea by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods
 
 ## Translations
 
-You can now contribute translations at https://poeditor.com/join/project?hash=FpMp8wEAKO
+You can contribute at https://poeditor.com/join/project?hash=FpMp8wEAKO
 
-If your language isn't listed, feel free to make an issue and I'll add it.
+Current translation targets (as of 2021/08/19):
+- Chinese (90%)
+- English (100%)
+- French (21%)
+- German (36%)
+- Italian (100%)
+- Polish (92%)
+- Portuguese (0%)
+- Russian (100%)
+- Spanish (100%)
+- Turkish (26%)
+- Welsh (0%)
+
+If your language isn't listed, feel free to make an issue requesting it.
 
 ## Button Positions
 
