@@ -11,7 +11,7 @@ unless you wish to have it under a different name - in this case please leave an
 Current translation targets (as of 2021/08/19):
 - Chinese (90%)
 - English (100%) ✅
-- French (21%)
+- French (65%)
 - German (36%)
 - Italian (100%) ✅
 - Polish (92%)
@@ -45,3 +45,7 @@ This can be done by creating a .json file under `<root>/assets/chesttracker/butt
 ```
 
 More examples can be found [here](src/main/resources/assets/chesttracker/button_positions); I recommend creating a dummy resource pack while editing these to take advantage of MC's Reload Resource Pack feature (F3-T).
+
+## Credits
+
+See the [fabric.mod.json](src/main/resources/fabric.mod.json)
