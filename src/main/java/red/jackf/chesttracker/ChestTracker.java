@@ -153,8 +153,7 @@ public class ChestTracker implements ClientModInitializer {
 
         // Opening GUI
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
-            if (GUI_KEY.wasPressed() && client.world != null) {
-                if (client.currentScreen != null) client.currentScreen.onClose();
+            if (GUI_KEY.wasPressed() && client.world != null && client.currentScreen == null) {
                 client.setScreen(new ItemListScreen());
             }
         });
@@ -164,18 +163,6 @@ public class ChestTracker implements ClientModInitializer {
 
         // JSON Button Positions
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ButtonPositionManager());
-
-        // Find hotkeys
-        ClothClientHooks.SCREEN_KEY_RELEASED.register((mc, currentScreen, keyCode, scanCode, modifiers) -> {
-            if (GUI_KEY.matchesKey(keyCode, scanCode)) {
-                if (currentScreen instanceof HandledScreen && !(currentScreen instanceof CreativeInventoryScreen && ((CreativeInventoryScreen) currentScreen).getSelectedTab() == ItemGroup.SEARCH.getIndex())) {
-                    currentScreen.onClose();
-                    mc.setScreen(new ItemListScreen());
-                }
-            }
-
-            return ActionResult.PASS;
-        });
 
         // ChestTracker GUI button
         ClothClientHooks.SCREEN_INIT_POST.register((minecraftClient, screen, screenHooks) -> {
