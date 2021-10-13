@@ -3,8 +3,8 @@ package red.jackf.chesttracker.compat;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import ninjaphenix.expandedstorage.base.internal_api.block.AbstractChestBlock;
-import ninjaphenix.expandedstorage.base.internal_api.block.misc.CursedChestType;
+import ninjaphenix.expandedstorage.block.AbstractChestBlock;
+import ninjaphenix.expandedstorage.block.misc.CursedChestType;
 
 import java.util.Collection;
 import java.util.Collections;

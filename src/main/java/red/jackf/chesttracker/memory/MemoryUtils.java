@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.compat.AppliedEnergisticsHandler;
 import red.jackf.chesttracker.compat.ExpandedStorageHandler;
 
 import java.util.*;
@@ -51,6 +52,8 @@ public abstract class MemoryUtils {
     private static boolean ignoreNextMerge = false;
     private static boolean forceNextMerge = false;
     private static boolean wasEnderchest;
+
+    private static boolean expandedStorageFailed = false;
 
     public static <T extends ScreenHandler> void handleItemsFromScreen(@NotNull HandledScreen<T> screen) {
         if (!ignoreNextMerge) {
@@ -91,18 +94,10 @@ public abstract class MemoryUtils {
     private static boolean isValidSlot(Slot slot) {
         try {
             return !(slot.inventory instanceof PlayerInventory)
-                && (!FabricLoader.getInstance().isModLoaded("appliedenergistics2") || isNotAE2Slot(slot))
+                && !AppliedEnergisticsHandler.isAE2Slot(slot)
                 && slot.hasStack();
         } catch (Throwable ex) {
             return false;
-        }
-    }
-
-    private static boolean isNotAE2Slot(Slot slot) {
-        try {
-            return !Class.forName("appeng.container.slot.AppEngSlot").isInstance(slot);
-        } catch (Exception ex) {
-            return true;
         }
     }
 
@@ -145,9 +140,14 @@ public abstract class MemoryUtils {
                         return Collections.singleton(pos.add(0, 0, left ? 1 : -1));
                 }
             }
-        } else if (FabricLoader.getInstance().isModLoaded("expandedstorage")) {
-            Collection<BlockPos> result = ExpandedStorageHandler.check(state, world, pos);
-            if (!result.isEmpty()) return result;
+        } else if (!expandedStorageFailed && FabricLoader.getInstance().isModLoaded("expandedstorage")) {
+            try {
+                Collection<BlockPos> result = ExpandedStorageHandler.check(state, world, pos);
+                if (!result.isEmpty()) return result;
+            } catch (Error ex) {
+                ChestTracker.LOGGER.error("Error loading expanded storage compat", ex);
+                expandedStorageFailed = true;
+            }
         }
         return Collections.emptyList();
     }

@@ -65,6 +65,7 @@ dependencies {
 
     //modCompileOnly "io.github.cottonmc:UniversalComponents:${project.universal_components_version}"
     modCompileOnly "curse.maven:expanded-storage-317856:${project.expanded_storage_file_id}"
+    modCompileOnly "curse.maven:ninjaphenix-container-lib-530668:${project.ninjaphenix_container_lib_file_id}"
 }
 
 processResources {
