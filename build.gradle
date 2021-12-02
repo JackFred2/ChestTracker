@@ -1,15 +1,15 @@
 import com.modrinth.minotaur.TaskModrinthUpload
 
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "1.2.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = "${project.archives_base_name}-${project.minecraft_version}"
 version = project.mod_version
@@ -104,10 +104,9 @@ curseforge {
             releaseType = "release"
 
             addGameVersion "Fabric"
-            addGameVersion "Java 16"
+            addGameVersion "Java 17"
 
-            addGameVersion "1.17"
-            addGameVersion "1.17.1"
+            project.game_versions.tokenize(",").each { addGameVersion it }
 
             mainArtifact(remapJar) {
                 relations {
@@ -141,8 +140,7 @@ task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after buil
     versionName = "ChestTracker $project.mod_version"
     uploadFile = remapJar
     changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
-    addGameVersion('1.17')
-    addGameVersion('1.17.1')
+    project.game_versions.tokenize(",").each { addGameVersion it }
     addLoader('fabric')
 }
 
