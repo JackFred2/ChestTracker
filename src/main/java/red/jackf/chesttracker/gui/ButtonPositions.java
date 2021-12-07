@@ -18,10 +18,10 @@ public abstract class ButtonPositions {
     public static int getX(HandledScreen<?> screen, int buttonIndex) {
         Map<String, ButtonPositionManager.ButtonPosition> overrides = ButtonPositionManager.getOverrides();
         String className = screen.getClass().getSimpleName();
-        if (overrides.containsKey(className)) {
-            ButtonPositionManager.ButtonPosition position = overrides.get(className);
+        var buttonPosition = overrides.get(className);
+        if (buttonPosition != null) {
             int x = MinecraftClient.getInstance().getWindow().getScaledWidth();
-            if (position.horizontalAlignment == ButtonPositionManager.HorizontalAlignment.LEFT) {
+            if (buttonPosition.horizontalAlignment == ButtonPositionManager.HorizontalAlignment.LEFT) {
                 x -= ((AccessorHandledScreen) screen).getBackgroundWidth();
             } else {
                 x += ((AccessorHandledScreen) screen).getBackgroundWidth();
@@ -29,7 +29,7 @@ public abstract class ButtonPositions {
             if (doRecipeAdjust(screen)) {
                 x += 77 * 2;
             }
-            return (x / 2) + position.horizontalOffset;
+            return (x / 2) + buttonPosition.horizontalOffset;
         }
         int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() + ((AccessorHandledScreen) screen).getBackgroundWidth()) / 2;
         if (doRecipeAdjust(screen))
@@ -40,15 +40,15 @@ public abstract class ButtonPositions {
     public static int getY(HandledScreen<?> screen, int buttonIndex) {
         Map<String, ButtonPositionManager.ButtonPosition> overrides = ButtonPositionManager.getOverrides();
         String className = screen.getClass().getSimpleName();
-        if (overrides.containsKey(className)) {
-            ButtonPositionManager.ButtonPosition position = overrides.get(className);
+        var buttonPosition = overrides.get(className);
+        if (buttonPosition != null) {
             int y = MinecraftClient.getInstance().getWindow().getScaledHeight();
-            if (position.verticalAlignment == ButtonPositionManager.VerticalAlignment.TOP) {
+            if (buttonPosition.verticalAlignment == ButtonPositionManager.VerticalAlignment.TOP) {
                 y -= ((AccessorHandledScreen) screen).getBackgroundHeight();
             } else {
                 y += ((AccessorHandledScreen) screen).getBackgroundHeight();
             }
-            return (y / 2) + position.verticalOffset;
+            return (y / 2) + buttonPosition.verticalOffset;
         }
         int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight()) / 2;
         if (!(screen instanceof CreativeInventoryScreen)) {
