@@ -48,6 +48,7 @@ public class ChestTrackerConfig implements ConfigData {
         public int columnCount = 9;
         public boolean hideDeleteButton = false;
         public boolean enableButton = true;
+        public boolean hideDatabaseInfo = false;
     }
 
     public static class DatabaseOptions {
