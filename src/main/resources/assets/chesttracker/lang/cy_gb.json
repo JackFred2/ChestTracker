@@ -39,5 +39,6 @@
     "chesttracker.gui.delete_unnamed": "Forget all unnamed",
     "chesttracker.remembered_new_location": "Remembered new location",
     "chesttracker.gui.remember_location": "Remember this inventory",
-    "chesttracker.gui.show_all": "Show all memories"
+    "chesttracker.gui.show_all": "Show all memories",
+    "text.autoconfig.chesttracker.option.visualOptions.hideDatabaseInfo": "Hide Database Name"
 }

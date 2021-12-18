@@ -39,5 +39,6 @@
     "chesttracker.gui.delete_unnamed": "Забыть все безымянные",
     "chesttracker.remembered_new_location": "Вспомнил новая локация",
     "chesttracker.gui.remember_location": "Запомнить этот инвентарь",
-    "chesttracker.gui.show_all": "Показать все воспоминания"
+    "chesttracker.gui.show_all": "Показать все воспоминания",
+    "text.autoconfig.chesttracker.option.visualOptions.hideDatabaseInfo": "Hide Database Name"
 }

@@ -39,5 +39,6 @@
     "chesttracker.gui.delete_unnamed": "Elimina dati di bauli senza nome",
     "chesttracker.remembered_new_location": "Nuovo luogo aggiunto",
     "chesttracker.gui.remember_location": "Salva dati di questo inventario",
-    "chesttracker.gui.show_all": "Mostra tutti i dati salvati"
+    "chesttracker.gui.show_all": "Mostra tutti i dati salvati",
+    "text.autoconfig.chesttracker.option.visualOptions.hideDatabaseInfo": "Hide Database Name"
 }

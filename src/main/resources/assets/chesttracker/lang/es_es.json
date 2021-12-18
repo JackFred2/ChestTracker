@@ -39,5 +39,6 @@
     "chesttracker.gui.delete_unnamed": "Olvídate de todo lo que no tiene nombre",
     "chesttracker.remembered_new_location": "Recordar la nueva ubicación",
     "chesttracker.gui.remember_location": "Recuerde este inventario",
-    "chesttracker.gui.show_all": "Mostrar todos los recuerdos"
+    "chesttracker.gui.show_all": "Mostrar todos los recuerdos",
+    "text.autoconfig.chesttracker.option.visualOptions.hideDatabaseInfo": "Hide Database Name"
 }
