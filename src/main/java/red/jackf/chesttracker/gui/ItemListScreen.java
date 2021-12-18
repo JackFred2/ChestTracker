@@ -251,11 +251,15 @@ public class ItemListScreen extends CottonClientScreen {
                 if (!ChestTracker.CONFIG.visualOptions.hideDatabaseInfo) {
                     // Dimension Label
                     WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
-                    settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING - 12);
+                    settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING - 12, 80, 12);
     
                     // Database name
                     WLabel databaseName = new WLabel(new LiteralText(database.getId()));
                     settingsPanel.add(databaseName, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
+                } else {
+                    // Dimension Label
+                    WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
+                    settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
                 }
 
                 // Set tab
