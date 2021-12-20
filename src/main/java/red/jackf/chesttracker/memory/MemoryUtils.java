@@ -183,7 +183,12 @@ public abstract class MemoryUtils {
     }
 
     public static String makeFileSafe(String name) {
-        return name.replaceAll("(?U)[^\\p{Alnum} _-{}#'@~()]", "_").substring(0, 180);
+        var filteredString = name.replaceAll("(?U)[^\\p{Alnum} _-{}#'@~()]", "_");
+        if (filteredString.length() > 180) {
+            return filteredString.substring(0, 180);
+        } else {
+            return filteredString;
+        }
     }
 
     public static boolean areStacksEquivalent(@NotNull ItemStack stack1, @NotNull ItemStack stack2, boolean ignoreNbt) {
