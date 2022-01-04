@@ -30,7 +30,7 @@ public class ChestTrackerConfig implements ConfigData {
     @Override
     public void validatePostLoad() {
         visualOptions.borderColour = MathHelper.clamp(visualOptions.borderColour, 0, 0xffffff);
-        visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 1, 16);
+        visualOptions.nameRenderRange = MathHelper.clamp(visualOptions.nameRenderRange, 0, 16);
         visualOptions.rowCount = MathHelper.clamp(visualOptions.rowCount, 6, 12);
         visualOptions.columnCount = MathHelper.clamp(visualOptions.columnCount, 9, 18);
         databaseOptions.destroyedMemoryCheckInterval = MathHelper.clamp(databaseOptions.destroyedMemoryCheckInterval, 0, 60);
@@ -40,7 +40,7 @@ public class ChestTrackerConfig implements ConfigData {
     public static class VisualOptions {
         @ConfigEntry.ColorPicker
         public int borderColour = 0x00baff;
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 16)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 16)
         public int nameRenderRange = 12;
         @ConfigEntry.BoundedDiscrete(min = 6, max = 12)
         public int rowCount = 6;

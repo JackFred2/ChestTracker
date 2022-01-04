@@ -44,9 +44,11 @@ import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryDatabase;
 import red.jackf.chesttracker.memory.MemoryUtils;
 import red.jackf.chesttracker.resource.ButtonPositionManager;
+import red.jackf.whereisit.WhereIsIt;
 import red.jackf.whereisit.WhereIsItClient;
 import red.jackf.whereisit.client.PositionData;
 import red.jackf.whereisit.client.RenderUtils;
+import red.jackf.whereisit.compat.OptifineHooks;
 
 import java.util.Collection;
 
@@ -116,6 +118,7 @@ public class ChestTracker implements ClientModInitializer {
     }
 
     public static void drawLabels(WorldRenderContext context) {
+        if (ChestTracker.CONFIG.visualOptions.nameRenderRange == 0) return;
         MemoryDatabase database = MemoryDatabase.getCurrent();
         if (database == null) return;
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -124,10 +127,12 @@ public class ChestTracker implements ClientModInitializer {
             Collection<Memory> toRender = database.getNamedMemories(mc.world.getRegistryKey().getValue());
             for (Memory memory : toRender) {
                 BlockPos blockPos = memory.getPosition();
-                if (blockPos != null && memory.getTitle() != null && !RenderUtils.FOUND_ITEM_POSITIONS.containsKey(blockPos)) {
+                boolean alreadyHandled = WhereIsIt.CONFIG.shouldShowResultLabels() && RenderUtils.FOUND_ITEM_POSITIONS.containsKey(blockPos);
+                if (blockPos != null && memory.getTitle() != null && !alreadyHandled) {
                     Vec3d pos = Vec3d.of(blockPos);
                     if (memory.getNameOffset() != null) pos = pos.add(memory.getNameOffset());
-                    RenderUtils.drawTextWithBackground(context, pos, memory.getTitle(), CONFIG.visualOptions.nameRenderRange);
+                    if (!context.world().getBlockState(blockPos.up()).isOpaque()) pos = pos.add(0, 1d, 0);
+                    RenderUtils.drawTextWithBackground(context, pos, memory.getTitle(), CONFIG.visualOptions.nameRenderRange, true);
                 }
             }
         }
@@ -143,7 +148,12 @@ public class ChestTracker implements ClientModInitializer {
             if (database != null) database.save();
         });
 
-        WorldRenderEvents.AFTER_ENTITIES.register(ChestTracker::drawLabels);
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+            OptifineHooks.doOptifineAwareRender(context, (context1, simple) -> {
+                ChestTracker.drawLabels(context1);
+            });
+            return true;
+        });
 
         WhereIsItClient.SEARCH_FOR_ITEM.register((item, matchNbt, compoundTag) -> {
             ItemStack stack = new ItemStack(item);
