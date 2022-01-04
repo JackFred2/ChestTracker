@@ -183,7 +183,12 @@ public abstract class MemoryUtils {
     }
 
     public static String makeFileSafe(String name) {
-        var filteredString = name.replaceAll("(?U)[^\\p{Alnum} _-{}#'@~()]", "_");
+        String filteredString;
+        if (ChestTracker.CONFIG.databaseOptions.safeFileNames) {
+            filteredString = name.replaceAll("[^A-Za-z0-9 _\\-{}#'@~()]", "_");
+        } else {
+            filteredString = name.replaceAll("(?U)[^\\p{Alnum} _\\-{}#'@~()]", "_");
+        }
         if (filteredString.length() > 180) {
             return filteredString.substring(0, 180);
         } else {

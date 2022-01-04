@@ -99,13 +99,6 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
 
     private void reposition() {
         if (MinecraftClient.getInstance().player != null) {
-            // the creative inventory screen is translated when effects exist
-            // seems to be fixed in 1.18
-            /*if (screen instanceof CreativeInventoryScreen && !MinecraftClient.getInstance().player.getStatusEffects().isEmpty()) {
-                this.setPos(ButtonPositions.getX(screen, 0) + 60, ButtonPositions.getY(screen, 0));
-            } else {
-                this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
-            }*/
             this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
         }
     }

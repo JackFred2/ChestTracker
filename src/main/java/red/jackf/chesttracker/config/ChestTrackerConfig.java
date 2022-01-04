@@ -58,6 +58,8 @@ public class ChestTrackerConfig implements ConfigData {
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.PrefixText
         public boolean readableFiles = false;
+        @ConfigEntry.Gui.PrefixText
+        public boolean safeFileNames = false;
     }
 
     public static class MiscOptions {
