@@ -1,8 +1,10 @@
 package red.jackf.chesttracker.gui;
 
+import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
@@ -11,6 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
@@ -248,18 +251,20 @@ public class ItemListScreen extends CottonClientScreen {
 
                 showAll.setOnClick(() -> ChestTracker.startRenderingForLocations(database.getAllMemories(currentWorld)));
 
+                // Dimension Label
+                WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
+                settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
+
                 if (!ChestTracker.CONFIG.visualOptions.hideDatabaseInfo) {
-                    // Dimension Label
-                    WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
-                    settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING - 12, 80, 12);
-    
-                    // Database name
-                    WLabel databaseName = new WLabel(new LiteralText(database.getId()));
-                    settingsPanel.add(databaseName, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
-                } else {
-                    // Dimension Label
-                    WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
-                    settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
+                    WLabel databaseName = new WLabel(new LiteralText(database.getId())) {
+                        @Override
+                        public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+                            this.setSize( mc.textRenderer.getWidth(this.text) + 12, 18);
+                            BackgroundPainter.VANILLA.paintBackground(matrices, x - 4, y + 19, this);
+                            super.paint(matrices, x + 2, y + 24, mouseX, mouseY);
+                        }
+                    };
+                    settingsPanel.add(databaseName, BEVEL_PADDING - 2, height - BEVEL_PADDING - 6);
                 }
 
                 // Set tab
