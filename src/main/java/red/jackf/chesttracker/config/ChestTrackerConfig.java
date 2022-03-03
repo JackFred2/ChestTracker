@@ -60,6 +60,7 @@ public class ChestTrackerConfig implements ConfigData {
         public boolean readableFiles = false;
         @ConfigEntry.Gui.PrefixText
         public boolean safeFileNames = false;
+        public boolean prefixFilesWithUsername = false;
     }
 
     public static class MiscOptions {

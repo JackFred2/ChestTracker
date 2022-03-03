@@ -82,6 +82,8 @@ public class MemoryDatabase {
             }
         }
 
+        if (ChestTracker.CONFIG.databaseOptions.prefixFilesWithUsername) id = mc.getSession().getUsername() + "-" + id;
+
         return id;
     }
 
