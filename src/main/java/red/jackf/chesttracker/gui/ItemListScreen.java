@@ -43,8 +43,8 @@ public class ItemListScreen extends CottonClientScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (MinecraftClient.getInstance().options.keyInventory.matchesKey(keyCode, scanCode) && !(this.description.getFocus() instanceof WTextField)) {
-            this.onClose();
+        if (MinecraftClient.getInstance().options.inventoryKey.matchesKey(keyCode, scanCode) && !(this.description.getFocus() instanceof WTextField)) {
+            this.close();
             return true;
         }
 

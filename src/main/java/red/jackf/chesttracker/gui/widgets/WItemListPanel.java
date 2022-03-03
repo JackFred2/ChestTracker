@@ -155,7 +155,7 @@ public class WItemListPanel extends WGridPanel {
         if (itemIndex < filteredItems.size()) {
             if (MinecraftClient.getInstance().player != null) {
                 ItemStack stack = this.filteredItems.get(itemIndex);
-                WhereIsItClient.searchForItem(stack.getItem(), Screen.hasShiftDown(), stack.getNbt());
+                WhereIsItClient.searchForItem(stack.getItem(), !Screen.hasShiftDown(), stack.getNbt());
             }
         }
     }
