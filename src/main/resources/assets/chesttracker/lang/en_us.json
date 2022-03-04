@@ -10,6 +10,7 @@
   "chesttracker.gui.edit_name": "Edit saved name",
   "chesttracker.gui.favourite": "Favourite",
   "chesttracker.gui.next_page": "Next Page",
+  "chesttracker.gui.open_config": "Open Config",
   "chesttracker.gui.page_count": "Page %s/%s",
   "chesttracker.gui.previous_page": "Previous Page",
   "chesttracker.gui.range": "Search Range: ",

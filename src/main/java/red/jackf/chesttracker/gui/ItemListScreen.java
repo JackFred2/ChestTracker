@@ -251,6 +251,13 @@ public class ItemListScreen extends CottonClientScreen {
 
                 showAll.setOnClick(() -> ChestTracker.startRenderingForLocations(database.getAllMemories(currentWorld)));
 
+                var openConfig = new WButton(new TranslatableText("chesttracker.gui.open_config"));
+                settingsPanel.add(openConfig, BEVEL_PADDING, BEVEL_PADDING + 132, width - (BEVEL_PADDING * 2), 20);
+
+                openConfig.setOnClick(() -> {
+                    mc.setScreen(AutoConfig.getConfigScreen(ChestTrackerConfig.class,  mc.currentScreen).get());
+                });
+
                 // Dimension Label
                 WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
                 settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
