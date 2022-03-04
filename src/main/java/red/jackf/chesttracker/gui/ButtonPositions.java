@@ -30,11 +30,12 @@ public abstract class ButtonPositions {
                 x += 77 * 2;
             }
             return (x / 2) + buttonPosition.horizontalOffset;
+        } else {
+            int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() + ((AccessorHandledScreen) screen).getBackgroundWidth()) / 2;
+            if (doRecipeAdjust(screen))
+                x += 77;
+            return x - 14 - (11 * buttonIndex);
         }
-        int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() + ((AccessorHandledScreen) screen).getBackgroundWidth()) / 2;
-        if (doRecipeAdjust(screen))
-            x += 77;
-        return x - 14 - (11 * buttonIndex);
     }
 
     public static int getY(HandledScreen<?> screen, int buttonIndex) {
@@ -49,12 +50,13 @@ public abstract class ButtonPositions {
                 y += ((AccessorHandledScreen) screen).getBackgroundHeight();
             }
             return (y / 2) + buttonPosition.verticalOffset;
+        } else {
+            int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight()) / 2;
+            if (!(screen instanceof CreativeInventoryScreen)) {
+                y -= 15;
+            }
+            return y + 5;
         }
-        int y = (MinecraftClient.getInstance().getWindow().getScaledHeight() - ((AccessorHandledScreen) screen).getBackgroundHeight()) / 2;
-        if (!(screen instanceof CreativeInventoryScreen)) {
-            y -= 15;
-        }
-        return y + 5;
     }
 
     protected static boolean doRecipeAdjust(Screen screen) {
