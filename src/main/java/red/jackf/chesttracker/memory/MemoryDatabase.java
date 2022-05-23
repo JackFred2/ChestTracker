@@ -21,6 +21,7 @@ import red.jackf.chesttracker.mixins.AccessorMinecraftServer;
 
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,7 +103,7 @@ public class MemoryDatabase {
                 Files.createDirectory(savePath.getParent());
             } catch (FileAlreadyExistsException ignored) {
             }
-            FileWriter writer = new FileWriter(savePath.toString());
+            FileWriter writer = new FileWriter(savePath.toString(), StandardCharsets.UTF_8);
             GsonHandler.get().toJson(locations, writer);
             writer.flush();
             writer.close();
@@ -118,7 +119,7 @@ public class MemoryDatabase {
         try {
             if (Files.exists(loadPath)) {
                 ChestTracker.LOGGER.info("Found data for " + id);
-                FileReader reader = new FileReader(loadPath.toString());
+                FileReader reader = new FileReader(loadPath.toString(), StandardCharsets.UTF_8);
 
                 Map<Identifier, Map<BlockPos, Memory>> raw = GsonHandler.get().fromJson(new JsonReader(reader), new TypeToken<Map<Identifier, Map<BlockPos, Memory>>>() {
                 }.getType());
