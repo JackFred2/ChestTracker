@@ -4,8 +4,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ninjaphenix.expandedstorage.api.ExpandedStorageAccessors;
-import ninjaphenix.expandedstorage.block.AbstractChestBlock;
-import ninjaphenix.expandedstorage.block.misc.CursedChestType;
 
 import java.util.Collection;
 import java.util.Collections;
