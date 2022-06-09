@@ -5,12 +5,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import red.jackf.chesttracker.ChestTracker;
@@ -41,17 +40,17 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
                 BlockPos pos = MemoryUtils.getLatestPos();
                 if (database != null && client.world != null && pos != null) {
                     if (button.shouldShowRememberButton()) {
-                        ChestTracker.sendDebugMessage(new TranslatableText("chesttracker.remembered_new_location"));
+                        ChestTracker.sendDebugMessage(Text.translatable("chesttracker.remembered_new_location"));
                         MemoryUtils.setForceNextMerge(true);
                     } else {
                         if (MemoryUtils.wasLastEnderchest()) {
                             database.removePos(MemoryUtils.ENDER_CHEST_ID, BlockPos.ORIGIN);
-                            ChestTracker.sendDebugMessage(new TranslatableText("chesttracker.forgot_ender_chest"));
+                            ChestTracker.sendDebugMessage(Text.translatable("chesttracker.forgot_ender_chest"));
                         } else {
                             Collection<BlockPos> connected = MemoryUtils.getConnected(client.world, pos);
                             connected.forEach(connectedPos -> database.removePos(client.world.getRegistryKey().getValue(), connectedPos));
                             database.removePos(client.world.getRegistryKey().getValue(), pos);
-                            ChestTracker.sendDebugMessage(new TranslatableText("chesttracker.forgot_location", pos.getX(), pos.getY(), pos.getZ()));
+                            ChestTracker.sendDebugMessage(Text.translatable("chesttracker.forgot_location", pos.getX(), pos.getY(), pos.getZ()));
                         }
                         MemoryUtils.ignoreNextMerge();
                     }
@@ -82,9 +81,9 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
 
         if (this.isMouseOver(mouseX, mouseY)) {
             if (shouldShowAltButton()) {
-                this.screen.renderTooltip(matrices, shouldShowRememberButton() ? new TranslatableText("chesttracker.gui.remember_location") : new TranslatableText("chesttracker.gui.delete_location"), mouseX, mouseY);
+                this.screen.renderTooltip(matrices, shouldShowRememberButton() ? Text.translatable("chesttracker.gui.remember_location") : Text.translatable("chesttracker.gui.delete_location"), mouseX, mouseY);
             } else {
-                this.screen.renderTooltip(matrices, new TranslatableText("chesttracker.gui.title"), mouseX, mouseY);
+                this.screen.renderTooltip(matrices, Text.translatable("chesttracker.gui.title"), mouseX, mouseY);
             }
         }
     }

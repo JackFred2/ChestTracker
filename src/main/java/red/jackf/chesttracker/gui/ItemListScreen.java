@@ -4,7 +4,6 @@ import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
@@ -17,11 +16,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.widgets.WHeldButton;
@@ -62,12 +60,12 @@ public class ItemListScreen extends CottonClientScreen {
         private static final int BEVEL_PADDING = 6;
         private static final int BOTTOM_PADDING = 17;
 
-        private static final LiteralText BLANK_TEXT = new LiteralText("-");
+        private static final Text BLANK_TEXT = Text.literal("-");
 
         static {
-            knownIcons.put(DimensionType.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
-            knownIcons.put(DimensionType.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
-            knownIcons.put(DimensionType.THE_END_ID, new ItemStack(Items.END_STONE));
+            knownIcons.put(DimensionTypes.OVERWORLD_ID, new ItemStack(Items.GRASS_BLOCK));
+            knownIcons.put(DimensionTypes.THE_NETHER_ID, new ItemStack(Items.NETHERRACK));
+            knownIcons.put(DimensionTypes.THE_END_ID, new ItemStack(Items.END_STONE));
             knownIcons.put(MemoryUtils.ENDER_CHEST_ID, new ItemStack(Items.ENDER_CHEST));
         }
 
@@ -96,7 +94,7 @@ public class ItemListScreen extends CottonClientScreen {
                 if (mc.world != null) {
                     currentWorld = mc.world.getRegistryKey().getValue();
                 } else {
-                    currentWorld = DimensionType.OVERWORLD_ID;
+                    currentWorld = DimensionTypes.OVERWORLD_ID;
                 }
 
                 for (Identifier id : database.getDimensions()) {
@@ -112,7 +110,7 @@ public class ItemListScreen extends CottonClientScreen {
                     dimensionPanel.setSize(width, height);
                     tabPanel.add(new WTabPanel.Tab.Builder(dimensionPanel)
                         .icon(new ItemIcon(knownIcons.getOrDefault(id, new ItemStack(Items.CRAFTING_TABLE))))
-                        .tooltip(new LiteralText(id.toString()))
+                        .tooltip(Text.literal(id.toString()))
                         .build());
 
                     // Item List
@@ -121,29 +119,29 @@ public class ItemListScreen extends CottonClientScreen {
                     ITEM_LISTS.put(id, itemList);
 
                     // Title
-                    dimensionPanel.add(new WLabel(new TranslatableText("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, BEVEL_PADDING);
+                    dimensionPanel.add(new WLabel(Text.translatable("chesttracker.gui.title")), LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, BEVEL_PADDING);
 
                     // Search Field
-                    WUpdatableTextField searchField = new WUpdatableTextField(new TranslatableText("chesttracker.gui.search_field_start"));
+                    WUpdatableTextField searchField = new WUpdatableTextField(Text.translatable("chesttracker.gui.search_field_start"));
                     searchField.setOnTextChanged(itemList::setFilter);
                     dimensionPanel.searchBar = searchField;
                     searchField.setHost(this);
                     dimensionPanel.add(searchField, SIDE_PADDING + LEFT_ADDITIONAL_PADDING + BEVEL_PADDING, TOP_PADDING - 24 + BEVEL_PADDING, 18 * (ChestTracker.CONFIG.visualOptions.columnCount - 2) - 1, 20);
 
                     // Page Buttons
-                    WPageButton previousButton = new WPageButton(true, new TranslatableText("chesttracker.gui.previous_page"), false);
-                    WPageButton nextButton = new WPageButton(false, new TranslatableText("chesttracker.gui.next_page"), false);
+                    WPageButton previousButton = new WPageButton(true, Text.translatable("chesttracker.gui.previous_page"), false);
+                    WPageButton nextButton = new WPageButton(false, Text.translatable("chesttracker.gui.next_page"), false);
                     previousButton.setOnClick(itemList::previousPage);
                     nextButton.setOnClick(itemList::nextPage);
                     dimensionPanel.add(previousButton, width - SIDE_PADDING - 35 - BEVEL_PADDING, TOP_PADDING - 22 + BEVEL_PADDING, 16, 16);
                     dimensionPanel.add(nextButton, width - SIDE_PADDING - 17 - BEVEL_PADDING, TOP_PADDING - 22 + BEVEL_PADDING, 16, 16);
 
                     // Page Count
-                    WLabel counter = new WLabel(new LiteralText("not loaded")) {
+                    WLabel counter = new WLabel(Text.literal("not loaded")) {
                         @Override
                         public void addTooltip(TooltipBuilder tooltip) {
                             super.addTooltip(tooltip);
-                            tooltip.add(new TranslatableText("chesttracker.gui.scroll_tip"));
+                            tooltip.add(Text.translatable("chesttracker.gui.scroll_tip"));
                         }
                     };
                     dimensionPanel.add(counter, width - SIDE_PADDING - 80 - BEVEL_PADDING, BEVEL_PADDING, 80, 12);
@@ -151,7 +149,7 @@ public class ItemListScreen extends CottonClientScreen {
 
                     // Wrap up
                     itemList.setPageChangeHook((current, max) -> {
-                        counter.setText(new TranslatableText("chesttracker.gui.page_count", current, max));
+                        counter.setText(Text.translatable("chesttracker.gui.page_count", current, max));
                         previousButton.setEnabled(current != 1);
                         nextButton.setEnabled(!current.equals(max));
                     });
@@ -160,7 +158,7 @@ public class ItemListScreen extends CottonClientScreen {
 
                     if (!ChestTracker.CONFIG.visualOptions.hideDeleteButton) {
                         // Reset Button
-                        WHeldButton resetButton = new WHeldButton(new TranslatableText("chesttracker.gui.reset_button"), new TranslatableText("chesttracker.gui.reset_button_alt"), 40);
+                        WHeldButton resetButton = new WHeldButton(Text.translatable("chesttracker.gui.reset_button"), Text.translatable("chesttracker.gui.reset_button_alt"), 40);
                         dimensionPanel.add(resetButton, BEVEL_PADDING, height - 20, width - BEVEL_PADDING * 2, 20);
                         resetButton.setOnClick(() -> {
                             mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -179,14 +177,14 @@ public class ItemListScreen extends CottonClientScreen {
                 WPlainPanel settingsPanel = new WPlainPanel();
                 settingsPanel.setSize(width, height);
                 var tab = new WTabPanel.Tab.Builder(settingsPanel)
-                    .tooltip(new TranslatableText("chesttracker.gui.settings"))
+                    .tooltip(Text.translatable("chesttracker.gui.settings"))
                     .icon(new TextureIcon(id("textures/icon.png")))
                     .build();
 
                 tabPanel.add(tab);
 
                 // Toggle Remember Button
-                WLabel addNewChestsToggleLabel = new WLabel(new TranslatableText("chesttracker.gui.settings.remember_chests"));
+                WLabel addNewChestsToggleLabel = new WLabel(Text.translatable("chesttracker.gui.settings.remember_chests"));
                 settingsPanel.add(addNewChestsToggleLabel, BEVEL_PADDING, BEVEL_PADDING);
                 WToggleButton addNewChestsToggle = new WToggleButton();
                 settingsPanel.add(addNewChestsToggle, width - BEVEL_PADDING - 17, BEVEL_PADDING - 5);
@@ -197,7 +195,7 @@ public class ItemListScreen extends CottonClientScreen {
                 });
 
                 // Delete Unnamed button
-                WHeldButton deleteUnnamed = new WHeldButton(new TranslatableText("chesttracker.gui.delete_unnamed"), new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                WHeldButton deleteUnnamed = new WHeldButton(Text.translatable("chesttracker.gui.delete_unnamed"), Text.translatable("chesttracker.gui.reset_button_alt"), 30);
                 settingsPanel.add(deleteUnnamed, BEVEL_PADDING, BEVEL_PADDING + 12, width - (BEVEL_PADDING * 2), 20);
 
                 deleteUnnamed.setOnClick(() -> {
@@ -221,10 +219,10 @@ public class ItemListScreen extends CottonClientScreen {
                 rangeSlider.setLabel(getSliderText(ChestTracker.CONFIG.miscOptions.searchRange));
 
                 // Delete Outside & Inside Range buttons
-                WHeldButton deleteOutside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                WHeldButton deleteOutside = new WHeldButton(BLANK_TEXT, Text.translatable("chesttracker.gui.reset_button_alt"), 30);
                 settingsPanel.add(deleteOutside, BEVEL_PADDING, BEVEL_PADDING + 60, width - (BEVEL_PADDING * 2), 20);
 
-                WHeldButton deleteInside = new WHeldButton(BLANK_TEXT, new TranslatableText("chesttracker.gui.reset_button_alt"), 30);
+                WHeldButton deleteInside = new WHeldButton(BLANK_TEXT, Text.translatable("chesttracker.gui.reset_button_alt"), 30);
                 settingsPanel.add(deleteInside, BEVEL_PADDING, BEVEL_PADDING + 84, width - (BEVEL_PADDING * 2), 20);
 
                 rangeSlider.setValueChangeListener(value -> updateDeleteButtonLabels(deleteInside, deleteOutside, value));
@@ -246,12 +244,12 @@ public class ItemListScreen extends CottonClientScreen {
                     updateItemList(database, currentWorld);
                 });
 
-                var showAll = new WButton(new TranslatableText("chesttracker.gui.show_all"));
+                var showAll = new WButton(Text.translatable("chesttracker.gui.show_all"));
                 settingsPanel.add(showAll, BEVEL_PADDING, BEVEL_PADDING + 108, width - (BEVEL_PADDING * 2), 20);
 
                 showAll.setOnClick(() -> ChestTracker.startRenderingForLocations(database.getAllMemories(currentWorld)));
 
-                var openConfig = new WButton(new TranslatableText("chesttracker.gui.open_config"));
+                var openConfig = new WButton(Text.translatable("chesttracker.gui.open_config"));
                 settingsPanel.add(openConfig, BEVEL_PADDING, BEVEL_PADDING + 132, width - (BEVEL_PADDING * 2), 20);
 
                 openConfig.setOnClick(() -> {
@@ -259,11 +257,11 @@ public class ItemListScreen extends CottonClientScreen {
                 });
 
                 // Dimension Label
-                WLabel dimensionLabel = new WLabel(new LiteralText(currentWorld.toString()));
+                WLabel dimensionLabel = new WLabel(Text.literal(currentWorld.toString()));
                 settingsPanel.add(dimensionLabel, BEVEL_PADDING, height - BEVEL_PADDING, 80, 12);
 
                 if (!ChestTracker.CONFIG.visualOptions.hideDatabaseInfo) {
-                    WLabel databaseName = new WLabel(new LiteralText(database.getId())) {
+                    WLabel databaseName = new WLabel(Text.literal(database.getId())) {
                         @Override
                         public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
                             this.setSize( mc.textRenderer.getWidth(this.text) + 12, 18);
@@ -300,16 +298,16 @@ public class ItemListScreen extends CottonClientScreen {
             } else {
                 deleteInside.setEnabled(true);
                 deleteOutside.setEnabled(true);
-                deleteInside.setText(new TranslatableText("chesttracker.gui.delete_inside_range", ChestTracker.sliderValueToRange(rawValue)));
-                deleteOutside.setText(new TranslatableText("chesttracker.gui.delete_outside_range", ChestTracker.sliderValueToRange(rawValue)));
+                deleteInside.setText(Text.translatable("chesttracker.gui.delete_inside_range", ChestTracker.sliderValueToRange(rawValue)));
+                deleteOutside.setText(Text.translatable("chesttracker.gui.delete_outside_range", ChestTracker.sliderValueToRange(rawValue)));
             }
         }
 
         private static Text getSliderText(int sliderValue) {
             int finalValue = ChestTracker.sliderValueToRange(sliderValue);
-            return new TranslatableText("chesttracker.gui.range").append(finalValue == Integer.MAX_VALUE
-                ? new TranslatableText("options.framerateLimit.max")
-                : new TranslatableText("chesttracker.gui.block_range", finalValue)
+            return Text.translatable("chesttracker.gui.range").append(finalValue == Integer.MAX_VALUE
+                ? Text.translatable("options.framerateLimit.max")
+                : Text.translatable("chesttracker.gui.block_range", finalValue)
             );
         }
 

@@ -1,9 +1,9 @@
 package red.jackf.chesttracker.compat;
 
+import ellemes.expandedstorage.api.ExpandedStorageAccessors;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import ninjaphenix.expandedstorage.api.ExpandedStorageAccessors;
 
 import java.util.Collection;
 import java.util.Collections;

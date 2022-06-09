@@ -16,9 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -72,7 +71,7 @@ public abstract class MemoryUtils {
                     }
                 }
                 if (ChestTracker.CONFIG.miscOptions.printGuiClassNames)
-                    ChestTracker.sendDebugMessage(new LiteralText(screen.getClass().getSimpleName()));
+                    ChestTracker.sendDebugMessage(Text.literal(screen.getClass().getSimpleName()));
             }
         } else {
             ignoreNextMerge = false;
@@ -155,7 +154,7 @@ public abstract class MemoryUtils {
     @Nullable
     private static Text getTitleFromScreen(HandledScreen<?> screen, @Nullable BlockEntity blockEntity) {
         Text title = screen.getTitle();
-        if (title instanceof TranslatableText) { // Likely the default.
+        if (title.getContent() instanceof TranslatableTextContent) { // Likely the default.
             return null;
         } else if (blockEntity instanceof NamedScreenHandlerFactory) {
             return title;

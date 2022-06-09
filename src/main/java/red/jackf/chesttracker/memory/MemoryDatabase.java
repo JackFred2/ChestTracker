@@ -177,8 +177,8 @@ public class MemoryDatabase {
             }));
             List<ItemStack> results = new ArrayList<>();
             count.forEach(((lightweightStack, integer) -> {
-                ItemStack stack = new ItemStack(lightweightStack.getItem(), integer);
-                stack.setNbt(lightweightStack.getTag());
+                ItemStack stack = new ItemStack(lightweightStack.item(), integer);
+                stack.setNbt(lightweightStack.tag());
                 results.add(stack);
             }));
             return results;

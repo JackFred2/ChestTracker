@@ -1,11 +1,11 @@
 import com.modrinth.minotaur.TaskModrinthUpload
 
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
-    id 'idea'
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -54,7 +54,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modImplementation "me.shedaniel.cloth.api:cloth-client-events-v0:${project.cloth_client_version}"
+//    modImplementation "me.shedaniel.cloth.api:cloth-client-events-v0:${project.cloth_client_version}"
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
     modImplementation include("red.jackf:whereisit:${project.whereisit_version}")
@@ -112,7 +112,6 @@ curseforge {
                 relations {
                     requiredDependency("fabric-api")
                     requiredDependency("cloth-config")
-                    requiredDependency("cloth-api")
                     optionalDependency("modmenu")
                     optionalDependency("roughly-enough-items")
                     embeddedLibrary("libgui")
@@ -129,19 +128,15 @@ curseforge {
     }
 }
 
-task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after build!
-    onlyIf {
-        project.hasProperty("modrinth.key")
-    }
-
-    token = project.findProperty("modrinth.key")
+modrinth {token = project.findProperty("modrinth.key")
     projectId = 'ni4SrKmq'
     versionNumber = project.mod_version
     versionName = "ChestTracker $project.mod_version"
+    versionType = "release"
     uploadFile = remapJar
     changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker"
-    project.game_versions.tokenize(",").each { addGameVersion it }
-    addLoader('fabric')
+    gameVersions = project.game_versions.tokenize(",")
+    loaders = ["fabric", "quilt"]
 }
 
 // configure the maven publication

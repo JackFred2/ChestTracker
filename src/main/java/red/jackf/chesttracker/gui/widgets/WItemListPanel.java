@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.gui.widgets;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
@@ -9,7 +8,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -17,7 +15,6 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -56,7 +53,7 @@ public class WItemListPanel extends WGridPanel {
     }
 
     private static Text getCountText(ItemStack stack) {
-        return new LiteralText("" + stack.getCount()).setStyle(TOOLTIP_STYLE);
+        return Text.literal("" + stack.getCount()).setStyle(TOOLTIP_STYLE);
     }
 
     private static String getLabel(int count) {
