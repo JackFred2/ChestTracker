@@ -15,13 +15,13 @@
     "text.autoconfig.chesttracker.category.misc_options": "Другие настройки",
     "text.autoconfig.chesttracker.option.databaseOptions.destroyedMemoryCheckInterval": "Интервал проверки уничтоженной памяти",
     "text.autoconfig.chesttracker.option.databaseOptions.destroyedMemoryCheckInterval.@PrefixText": "Как часто проверять наличие разрушенных блоков, которые были запомнены. Меньшее число будет проверяться чаще, но займет больше времени на обработку.",
-    "text.autoconfig.chesttracker.option.databaseOptions.readableFiles": "Читаемые файлы хранилища",
+    "text.autoconfig.chesttracker.option.databaseOptions.readableFiles": "Читаемые файлы хранил",
     "text.autoconfig.chesttracker.option.databaseOptions.readableFiles.@PrefixText": "Следует ли сделать файлы хранилища удобочитаемыми для человека. Увеличивает размер файла.",
     "text.autoconfig.chesttracker.option.visualOptions.borderColour": "Цвет контура инвентаря",
     "text.autoconfig.chesttracker.option.visualOptions.columnCount": "Кол-во столбцов",
     "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "Дальность отображения имени",
     "text.autoconfig.chesttracker.option.visualOptions.rowCount": "Кол-во строков",
-    "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[Отладка] Распечатать GUI имена классов",
+    "text.autoconfig.chesttracker.option.miscOptions.printGuiClassNames": "[Отладка] Распечатать GUI Имени Классов",
     "text.autoconfig.chesttracker.title": "ChestTracker конфиг",
     "key.categories.chesttracker": "ChestTracker",
     "key.chesttracker.opengui": "Открыть ChestTracker GUI",
@@ -37,8 +37,7 @@
     "chesttracker.gui.settings": "Настройки",
     "chesttracker.gui.settings.remember_chests": "Запомнить новых сундуков",
     "chesttracker.gui.delete_unnamed": "Забыть все безымянные",
-    "chesttracker.remembered_new_location": "Вспомнил новая локация",
+    "chesttracker.remembered_new_location": "Запомнил новую локацию",
     "chesttracker.gui.remember_location": "Запомнить этот инвентарь",
-    "chesttracker.gui.show_all": "Показать все воспоминания",
-    "text.autoconfig.chesttracker.option.visualOptions.hideDatabaseInfo": "Hide Database Name"
+    "chesttracker.gui.show_all": "Показать все воспоминания"
 }
