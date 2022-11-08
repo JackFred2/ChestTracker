@@ -26,6 +26,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -181,6 +182,9 @@ public class ChestTracker implements ClientModInitializer {
                 if (ChestTracker.CONFIG.visualOptions.enableButton) {
                     Screens.getButtons(screen).add(new ChestTrackerButtonWidget((HandledScreen<?>) screen, shouldDeleteBeEnabled()));
                 }
+                ScreenEvents.remove(screen).register(screen1 -> {
+                    MemoryUtils.handleItemsFromScreen((HandledScreen<? extends ScreenHandler>) screen1);
+                });
             }
         });
 
