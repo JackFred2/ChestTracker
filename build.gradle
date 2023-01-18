@@ -50,10 +50,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-        exclude group: "dev.architectury", module: "architectury-fabric"
-    }
-    modImplementation("dev.architectury:architectury-fabric:${project.architectury_version}")
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+    //modImplementation("dev.architectury:architectury-fabric:${project.architectury_version}")
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 //    modImplementation "me.shedaniel.cloth.api:cloth-client-events-v0:${project.cloth_client_version}"
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
@@ -65,8 +63,8 @@ dependencies {
     // Compat
 
     //modCompileOnly "io.github.cottonmc:UniversalComponents:${project.universal_components_version}"
-    modCompileOnly "curse.maven:expanded-storage-317856:${project.expanded_storage_file_id}"
-    modCompileOnly "curse.maven:ellemes-container-library-530668:${project.ellemes_container_library_file_id}"
+    //modCompileOnly "curse.maven:expanded-storage-317856:${project.expanded_storage_file_id}"
+    //modCompileOnly "curse.maven:ellemes-container-library-530668:${project.ellemes_container_library_file_id}"
 }
 
 processResources {

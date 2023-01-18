@@ -72,7 +72,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.reposition();
-        this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+        this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 
         // render
         if (this.visible) {
@@ -104,7 +104,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
 
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         if (shouldShowAltButton()) {
             RenderSystem.setShaderTexture(0, shouldShowRememberButton() ? TEXTURE_REMEMBER : TEXTURE_FORGET);
         } else {
@@ -116,10 +116,10 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         }
 
         RenderSystem.enableDepthTest();
-        drawTexture(matrices, this.x, this.y, 0, offset, this.width, this.height, 9, 18);
-        if (this.isHovered()) {
-            this.renderTooltip(matrices, mouseX, mouseY);
-        }
+        drawTexture(matrices, this.getX(), this.getY(), 0, offset, this.width, this.height, 9, 18);
+       // if (this.isHovered()) {
+         //   this.renderTooltip(matrices, mouseX, mouseY);
+        //}
 
     }
 }

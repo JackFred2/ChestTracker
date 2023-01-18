@@ -100,7 +100,7 @@ public class WItemListPanel extends WGridPanel {
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             RenderSystem.setShaderTexture(0, SLOT);
             //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
@@ -177,7 +177,7 @@ public class WItemListPanel extends WGridPanel {
         int itemIndex = startIndex + relX + (relY * columns);
         if (itemIndex < filteredItems.size()) {
             var stack = this.filteredItems.get(itemIndex);
-            var tooltips = stack.getTooltip(null, TooltipContext.Default.NORMAL);
+            var tooltips = stack.getTooltip(null, MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipContext.ADVANCED : TooltipContext.BASIC);
             var tooltipData = stack.getTooltipData();
             tooltips.add(getCountText(stack));
             Screen screen = MinecraftClient.getInstance().currentScreen;

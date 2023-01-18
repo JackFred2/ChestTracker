@@ -10,7 +10,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import java.lang.reflect.Type;
 
@@ -74,7 +74,7 @@ public class GsonHandler {
                 JsonObject object = json.getAsJsonObject();
                 Identifier id = context.deserialize(object.get("id"), Identifier.class);
                 int count = object.getAsJsonPrimitive("count").getAsInt();
-                ItemStack stack = new ItemStack(Registry.ITEM.get(id), count);
+                ItemStack stack = new ItemStack(Registries.ITEM.get(id), count);
                 JsonPrimitive tagJson = object.getAsJsonPrimitive("tag");
                 if (tagJson != null) stack.setNbt(StringNbtReader.parse(tagJson.getAsString()));
                 return stack;
@@ -86,7 +86,7 @@ public class GsonHandler {
         @Override
         public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.add("id", context.serialize(Registry.ITEM.getId(src.getItem())));
+            object.add("id", context.serialize(Registries.ITEM.getId(src.getItem())));
             object.addProperty("count", src.getCount());
             NbtCompound tag = src.getNbt();
             if (tag != null) object.addProperty("tag", tag.toString());
