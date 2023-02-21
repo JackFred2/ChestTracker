@@ -84,7 +84,8 @@
     "fabric": "*",
     "minecraft": ">=1.19.3",
     "whereisit": ">=1.14.11",
-    "cloth-config2": ">=9.0.0"
+    "cloth-config2": ">=9.0.0",
+    "libgui": "*"
   },
   "suggests": {
     "roughlyenoughitems": "*",

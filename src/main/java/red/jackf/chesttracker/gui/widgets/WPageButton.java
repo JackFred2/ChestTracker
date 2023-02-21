@@ -3,23 +3,23 @@ package red.jackf.chesttracker.gui.widgets;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
-import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import red.jackf.chesttracker.util.DarkModeIcon;
 
 import java.util.Collections;
 
 import static red.jackf.chesttracker.ChestTracker.id;
 
 public class WPageButton extends WButton {
-    private static final Icon LEFT_BUTTON = new TextureIcon(id("textures/left_button.png"));
-    private static final Icon RIGHT_BUTTON = new TextureIcon(id("textures/right_button.png"));
-    private static final Icon LEFT_BUTTON_DISABLED = new TextureIcon(id("textures/left_button_disabled.png"));
-    private static final Icon RIGHT_BUTTON_DISABLED = new TextureIcon(id("textures/right_button_disabled.png"));
-    private static final Icon LEFT_BUTTON_HIGHLIGHT = new TextureIcon(id("textures/left_button_highlight.png"));
-    private static final Icon RIGHT_BUTTON_HIGHLIGHT = new TextureIcon(id("textures/right_button_highlight.png"));
+    private static final DarkModeIcon LEFT_BUTTON = DarkModeIcon.fromFolder("left_button.png");
+    private static final DarkModeIcon RIGHT_BUTTON = DarkModeIcon.fromFolder("right_button.png");
+    private static final DarkModeIcon LEFT_BUTTON_DISABLED = DarkModeIcon.fromFolder("left_button_disabled.png");
+    private static final DarkModeIcon RIGHT_BUTTON_DISABLED = DarkModeIcon.fromFolder("right_button_disabled.png");
+    private static final DarkModeIcon LEFT_BUTTON_HIGHLIGHT = DarkModeIcon.fromFolder("left_button_highlight.png");
+    private static final DarkModeIcon RIGHT_BUTTON_HIGHLIGHT = DarkModeIcon.fromFolder("right_button_highlight.png");
 
     private final Text tooltip;
     private final boolean isPrevious;
@@ -37,9 +37,9 @@ public class WPageButton extends WButton {
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
         Icon icon;
-        if (!this.isEnabled()) icon = (isPrevious ? LEFT_BUTTON_DISABLED : RIGHT_BUTTON_DISABLED);
-        else if (hovered) icon = (isPrevious ? LEFT_BUTTON_HIGHLIGHT : RIGHT_BUTTON_HIGHLIGHT);
-        else icon = (isPrevious ? LEFT_BUTTON : RIGHT_BUTTON);
+        if (!this.isEnabled()) icon = (isPrevious ? LEFT_BUTTON_DISABLED.get() : RIGHT_BUTTON_DISABLED.get());
+        else if (hovered) icon = (isPrevious ? LEFT_BUTTON_HIGHLIGHT.get() : RIGHT_BUTTON_HIGHLIGHT.get());
+        else icon = (isPrevious ? LEFT_BUTTON.get() : RIGHT_BUTTON.get());
 
         icon.paint(matrices, x, y, 16);
     }

@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.cottonmc.cotton.gui.client.LibGui;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
@@ -21,6 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.util.DarkModeTexture;
 import red.jackf.whereisit.WhereIsItClient;
 
 import java.util.Collections;
@@ -33,8 +35,7 @@ import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
 public class WItemListPanel extends WGridPanel {
-    private static final Identifier SLOT = id("textures/slot.png");
-    private static final Identifier SLOT_RED = id("textures/slot_red.png");
+    private static final DarkModeTexture SLOT_TEXTURE = DarkModeTexture.fromFolder("slot.png");
     private static final Style TOOLTIP_STYLE = Style.EMPTY.withItalic(false).withColor(Formatting.GREEN);
     private final int columns;
     private final int rows;
@@ -101,7 +102,7 @@ public class WItemListPanel extends WGridPanel {
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-            RenderSystem.setShaderTexture(0, SLOT);
+            RenderSystem.setShaderTexture(0, SLOT_TEXTURE.get());
             //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
 
