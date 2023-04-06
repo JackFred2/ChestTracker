@@ -106,10 +106,10 @@ public class WItemListPanel extends WGridPanel {
             //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
             DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
 
-            renderer.zOffset = 100f;
-            renderer.renderInGui(stack, renderX + 1, renderY + 1);
-            renderer.renderGuiItemOverlay(mc.textRenderer, stack, renderX + 1, renderY + 1, getLabel(stack.getCount()));
-            renderer.zOffset = 0f;
+            // renderer.zOffset = 100f;
+            renderer.renderInGui(matrices, stack, renderX + 1, renderY + 1);
+            renderer.renderGuiItemOverlay(matrices, mc.textRenderer, stack, renderX + 1, renderY + 1, getLabel(stack.getCount()));
+            // renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());
             int mouseYAbs = (int) (mc.mouse.getY() / mc.getWindow().getScaleFactor());

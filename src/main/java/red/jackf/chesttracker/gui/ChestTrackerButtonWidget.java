@@ -98,7 +98,7 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
 
     private void reposition() {
         if (MinecraftClient.getInstance().player != null) {
-            this.setPos(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
+            this.setPosition(ButtonPositions.getX(screen, 0), ButtonPositions.getY(screen, 0));
         }
     }
 
