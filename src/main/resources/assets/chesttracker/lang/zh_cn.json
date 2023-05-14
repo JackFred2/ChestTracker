@@ -1,8 +1,8 @@
 {
   "chesttracker.forgot_ender_chest": "忽略末影箱",
-  "chesttracker.forgot_location": "忽略 [%s, %s, %s]",
+  "chesttracker.forgot_location": "忽略[%s，%s，%s]",
   "chesttracker.remembered_new_location": "记住新位置",
-  "chesttracker.gui.block_range": "%s 方块",
+  "chesttracker.gui.block_range": "%s个方块",
   "chesttracker.gui.delete_inside_range": "忘记全部≤%s方块内",
   "chesttracker.gui.delete_location": "忘记该库存",
   "chesttracker.gui.delete_outside_range": "忘记全部>%s方块外",
@@ -13,7 +13,7 @@
   "chesttracker.gui.open_config": "打开配置",
   "chesttracker.gui.page_count": "第%s页/共%s页",
   "chesttracker.gui.previous_page": "上一页",
-  "chesttracker.gui.range": "搜索范围：?",
+  "chesttracker.gui.range": "搜索范围：",
   "chesttracker.gui.remember_location": "记录这个物品栏",
   "chesttracker.gui.reset_button": "重置",
   "chesttracker.gui.reset_button_alt": "这不能撤消。",
@@ -44,5 +44,5 @@
   "text.autoconfig.chesttracker.option.visualOptions.hideDeleteButton": "隐藏重置按钮",
   "text.autoconfig.chesttracker.option.visualOptions.nameRenderRange": "名称渲染范围",
   "text.autoconfig.chesttracker.option.visualOptions.rowCount": "行数",
-  "text.autoconfig.chesttracker.title": "箱子追踪配置"
+  "text.autoconfig.chesttracker.title": "箱子追踪(ChestTracker)配置"
 }
