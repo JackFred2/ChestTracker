@@ -14,17 +14,17 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven { // WhereIsIt
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
-            password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-        }
-        content {
-            includeGroup("red.jackf")
-        }
-    }
+//    maven { // WhereIsIt
+//        name = "GitHubPackages"
+//        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
+//        credentials {
+//            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+//            password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
+//        }
+//        content {
+//            includeGroup("red.jackf")
+//        }
+//    }
     maven { url = "https://maven.fabricmc.net" } // Fabric
     maven { url = "https://maven.shedaniel.me/" } // REI & Cloth Config
     maven { url = 'https://maven.terraformersmc.com/' } // ModMenu
@@ -35,6 +35,9 @@ repositories {
         content {
             includeGroup "curse.maven"
         }
+    }
+    maven {
+        url = 'https://maven.nova-committee.cn/releases/'
     }
     /*maven { // CardinalComponents (UniversalComponents lib)
         name = "Ladysnake Libs"
@@ -56,7 +59,7 @@ dependencies {
 //    modImplementation "me.shedaniel.cloth.api:cloth-client-events-v0:${project.cloth_client_version}"
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
-    modImplementation include("red.jackf:whereisit:${project.whereisit_version}")
+    modImplementation include("red.jackf:WhereIsIt:${project.whereisit_version}")
     modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
     implementation 'org.jetbrains:annotations:16.0.2'
 

@@ -6,6 +6,7 @@ import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
@@ -36,7 +37,7 @@ public class WHeldButton extends WButton {
     }
 
     @Override
-    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+    public void paint(DrawContext matrices, int x, int y, int mouseX, int mouseY) {
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
         this.setLabel(timeHeldDown > 0 ? altText : text);

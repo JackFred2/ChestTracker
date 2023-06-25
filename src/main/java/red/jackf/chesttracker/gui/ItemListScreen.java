@@ -11,6 +11,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -263,7 +264,7 @@ public class ItemListScreen extends CottonClientScreen {
                 if (!ChestTracker.CONFIG.visualOptions.hideDatabaseInfo) {
                     WLabel databaseName = new WLabel(Text.literal(database.getId())) {
                         @Override
-                        public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+                        public void paint(DrawContext matrices, int x, int y, int mouseX, int mouseY) {
                             this.setSize( mc.textRenderer.getWidth(this.text) + 12, 18);
                             BackgroundPainter.VANILLA.paintBackground(matrices, x - 4, y + 19, this);
                             super.paint(matrices, x + 2, y + 24, mouseX, mouseY);
