@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "chesttracker",
 	"version": "${version}",
-	"name": "ChestTracker",
+	"name": "Chest Tracker",
 	"description": "Remember items on the client; addon for Where Is It.",
 	"authors": [
 		"JackFred"

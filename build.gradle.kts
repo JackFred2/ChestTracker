@@ -8,7 +8,7 @@ import java.net.URI
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.2-SNAPSHOT"
+	id("fabric-loom") version "1.3-SNAPSHOT"
 	id("com.modrinth.minotaur") version "2.+"
 	id("com.matthewprenger.cursegradle") version "1.4.0"
 }
@@ -25,6 +25,11 @@ base {
 }
 
 repositories {
+	mavenLocal {
+		content {
+			includeGroup("red.jackf")
+		}
+	}
 	maven {
 		name = "ParchmentMC"
 		url = URI("https://maven.parchmentmc.org")

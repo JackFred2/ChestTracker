@@ -1,2 +1,6 @@
 {
+  "key.chesttracker.open_gui": "Open Chest Tracker GUI",
+
+  "chesttracker.title": "Chest Tracker",
+  "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }
