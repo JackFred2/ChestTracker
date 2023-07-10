@@ -14,17 +14,18 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-//    maven { // WhereIsIt
-//        name = "GitHubPackages"
-//        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
-//        credentials {
-//            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
-//            password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-//        }
-//        content {
-//            includeGroup("red.jackf")
-//        }
-//    }
+    mavenLocal()
+    maven { // WhereIsIt
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/jackfred2/WhereIsIt")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
+        }
+        content {
+            includeGroup("red.jackf")
+        }
+    }
     maven { url = "https://maven.fabricmc.net" } // Fabric
     maven { url = "https://maven.shedaniel.me/" } // REI & Cloth Config
     maven { url = 'https://maven.terraformersmc.com/' } // ModMenu
@@ -35,9 +36,6 @@ repositories {
         content {
             includeGroup "curse.maven"
         }
-    }
-    maven {
-        url = 'https://maven.nova-committee.cn/releases/'
     }
     /*maven { // CardinalComponents (UniversalComponents lib)
         name = "Ladysnake Libs"
