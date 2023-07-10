@@ -8,7 +8,9 @@ import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -27,7 +29,7 @@ public class WBevelledButton extends WButton {
     }
 
     @Override
-    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+    public void paint(DrawContext matrices, int x, int y, int mouseX, int mouseY) {
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
         int topLeft;
         int panel;
@@ -72,10 +74,11 @@ public class WBevelledButton extends WButton {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrices, int x, int y, int tX, int tY) {
+    public void renderTooltip(DrawContext matrices, int x, int y, int tX, int tY) {
         Screen screen = MinecraftClient.getInstance().currentScreen;
+        var client = MinecraftClient.getInstance();
         if (screen != null)
-            screen.renderOrderedTooltip(matrices, Collections.singletonList(tooltip.asOrderedText()), tX + x, tY + y);
+            matrices.drawTooltip(client.textRenderer, Collections.singletonList(tooltip.asOrderedText()), HoveredTooltipPositioner.INSTANCE, tX + x, tY + y);
     }
 
     @Override

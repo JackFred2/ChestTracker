@@ -1,25 +1,21 @@
 package red.jackf.chesttracker.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.cottonmc.cotton.gui.client.LibGui;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.DarkModeTexture;
@@ -30,8 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import static red.jackf.chesttracker.ChestTracker.id;
 
 @Environment(EnvType.CLIENT)
 public class WItemListPanel extends WGridPanel {
@@ -85,7 +79,7 @@ public class WItemListPanel extends WGridPanel {
     }
 
     @Override
-    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+    public void paint(DrawContext matrices, int x, int y, int mouseX, int mouseY) {
         super.paint(matrices, x, y, mouseX, mouseY);
 
         RenderSystem.enableDepthTest();
@@ -101,23 +95,21 @@ public class WItemListPanel extends WGridPanel {
             int renderY = y + (18 * ((i % cellsPerPage) / columns));
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-            RenderSystem.setShaderTexture(0, SLOT_TEXTURE.get());
             //mc.getTextureManager().bindTexture(usable ? SLOT : SLOT_RED);
-            DrawableHelper.drawTexture(matrices, renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
+            matrices.drawTexture(SLOT_TEXTURE.get(), renderX, renderY, 10, 0f, 0f, 18, 18, 18, 18);
 
             // renderer.zOffset = 100f;
-            renderer.renderInGui(matrices, stack, renderX + 1, renderY + 1);
-            renderer.renderGuiItemOverlay(matrices, mc.textRenderer, stack, renderX + 1, renderY + 1, getLabel(stack.getCount()));
+            matrices.drawItem(stack, renderX + 1, renderY + 1);
+            matrices.drawItemInSlot(mc.textRenderer, stack, renderX + 1, renderY + 1, getLabel(stack.getCount()));
             // renderer.zOffset = 0f;
 
             int mouseXAbs = (int) (mc.mouse.getX() / mc.getWindow().getScaleFactor());
             int mouseYAbs = (int) (mc.mouse.getY() / mc.getWindow().getScaleFactor());
 
             if ((renderX <= mouseXAbs && mouseXAbs < renderX + 18) && (renderY <= mouseYAbs && mouseYAbs < renderY + 18)) {
-                matrices.translate(0, 0, 400);
-                DrawableHelper.fill(matrices, renderX + 1, renderY + 1, renderX + 17, renderY + 17, 0x5affffff);
-                matrices.translate(0, 0, -400);
+                matrices.getMatrices().translate(0, 0, 400);
+                matrices.fill( renderX + 1, renderY + 1, renderX + 17, renderY + 17, 0x5affffff);
+                matrices.getMatrices().translate(0, 0, -400);
             }
         }
     }
@@ -168,7 +160,7 @@ public class WItemListPanel extends WGridPanel {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrices, int x, int y, int tX, int tY) {
+    public void renderTooltip(DrawContext matrices, int x, int y, int tX, int tY) {
         int cellsPerPage = columns * rows;
         int startIndex = cellsPerPage * (currentPage - 1);
 
@@ -182,8 +174,9 @@ public class WItemListPanel extends WGridPanel {
             var tooltipData = stack.getTooltipData();
             tooltips.add(getCountText(stack));
             Screen screen = MinecraftClient.getInstance().currentScreen;
+            var client = MinecraftClient.getInstance();
             if (screen != null)
-                screen.renderTooltip(matrices, tooltips, tooltipData, tX + x, tY + y);
+                matrices.drawTooltip(client.textRenderer, tooltips, tooltipData, tX + x, tY + y);
         } else {
             super.renderTooltip(matrices, x, y, tX, tY);
         }

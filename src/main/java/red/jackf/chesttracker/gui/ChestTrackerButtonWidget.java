@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
@@ -69,8 +70,9 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
             this.isRemembered = database.positionExists(client.world.getRegistryKey().getValue(), MemoryUtils.getLatestPos());
     }
 
+
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
         this.reposition();
         this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 
@@ -80,10 +82,12 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         }
 
         if (this.isMouseOver(mouseX, mouseY)) {
+            var client = MinecraftClient.getInstance();
             if (shouldShowAltButton()) {
-                this.screen.renderTooltip(matrices, shouldShowRememberButton() ? Text.translatable("chesttracker.gui.remember_location") : Text.translatable("chesttracker.gui.delete_location"), mouseX, mouseY);
+
+                matrices.drawTooltip(client.textRenderer, shouldShowRememberButton() ? Text.translatable("chesttracker.gui.remember_location") : Text.translatable("chesttracker.gui.delete_location"), mouseX, mouseY);
             } else {
-                this.screen.renderTooltip(matrices, Text.translatable("chesttracker.gui.title"), mouseX, mouseY);
+                matrices.drawTooltip(client.textRenderer, Text.translatable("chesttracker.gui.title"), mouseX, mouseY);
             }
         }
     }
@@ -102,21 +106,19 @@ public class ChestTrackerButtonWidget extends TexturedButtonWidget {
         }
     }
 
+
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(DrawContext matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        if (shouldShowAltButton()) {
-            RenderSystem.setShaderTexture(0, shouldShowRememberButton() ? TEXTURE_REMEMBER : TEXTURE_FORGET);
-        } else {
-            RenderSystem.setShaderTexture(0, TEXTURE_MAIN);
-        }
         int offset = 0;
         if (this.isHovered()) {
             offset = 9;
         }
 
         RenderSystem.enableDepthTest();
-        drawTexture(matrices, this.getX(), this.getY(), 0, offset, this.width, this.height, 9, 18);
+        matrices.drawTexture(shouldShowAltButton() ? shouldShowRememberButton() ? TEXTURE_REMEMBER : TEXTURE_FORGET
+                : TEXTURE_MAIN
+                ,this.getX(), this.getY(), 0, offset, this.width, this.height, 9, 18);
        // if (this.isHovered()) {
          //   this.renderTooltip(matrices, mouseX, mouseY);
         //}
