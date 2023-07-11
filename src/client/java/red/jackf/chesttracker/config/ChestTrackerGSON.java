@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Style;
 
 import java.awt.*;
 
-@Environment(EnvType.CLIENT)
 public class ChestTrackerGSON {
     static Gson get() {
         return new GsonBuilder()

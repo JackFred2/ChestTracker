@@ -2,5 +2,7 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
 
   "chesttracker.title": "Chest Tracker",
+  "chesttracker.config.search": "Search Options",
+  "chesttracker.config.search.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

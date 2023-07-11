@@ -10,16 +10,28 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
+import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
-@Environment(EnvType.CLIENT)
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ChestTracker implements ClientModInitializer {
-    private static final String ID = "chesttracker";
-    public static final Logger LOGGER = LogManager.getLogger(ID);
+    public static final String ID = "chesttracker";
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(ID, path);
+    }
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public static final KeyMapping OPEN_GUI = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.chesttracker.open_gui", InputConstants.Type.KEYSYM, InputConstants.KEY_GRAVE, "chesttracker.title")
@@ -37,6 +49,24 @@ public class ChestTracker implements ClientModInitializer {
         LOGGER.debug("Loading ChestTracker");
 
         setupKeybinds();
+
+        LocationTracking.setup();
+
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof AbstractContainerScreen<?>)
+                ScreenEvents.remove(screen).register(screen1 -> {
+                    var loc = LocationTracking.popLocation();
+                    if (loc == null) return;
+                    ItemMemory.INSTANCE.addMemory(loc.level(), loc.pos(), getItems((AbstractContainerScreen<?>) screen1));
+                });
+        });
+    }
+
+    private List<ItemStack> getItems(AbstractContainerScreen<?> screen) {
+        return screen.getMenu().slots.stream()
+                .filter(slot -> !(slot.container instanceof Inventory) && slot.hasItem())
+                .map(Slot::getItem)
+                .collect(Collectors.toList());
     }
 
     private void setupKeybinds() {

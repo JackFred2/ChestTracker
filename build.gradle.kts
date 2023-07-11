@@ -8,7 +8,7 @@ import java.net.URI
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.3-SNAPSHOT"
+	id("fabric-loom") version "1.2-SNAPSHOT"
 	id("com.modrinth.minotaur") version "2.+"
 	id("com.matthewprenger.cursegradle") version "1.4.0"
 }
@@ -53,10 +53,17 @@ repositories {
 		}
 	}
 	maven {
-		name = "CottonMC"
-		url = URI("https://server.bbkr.space/artifactory/libs-release")
+		name = "BlameJared"
+		url = URI("https://maven.blamejared.com")
 		content {
-			includeGroup("io.github.cottonmc")
+			includeGroupByRegex("com.blamejared.searchables.*")
+		}
+	}
+	maven {
+		name = "Modrinth Maven"
+		url = URI("https://api.modrinth.com/maven")
+		content {
+			includeGroup("maven.modrinth")
 		}
 	}
 	maven {
@@ -78,6 +85,13 @@ loom {
 	mods {
 		create("chesttracker") {
 			sourceSet(sourceSets["client"])
+		}
+	}
+
+	runConfigs {
+		configureEach {
+			val path = buildscript.sourceFile?.parentFile?.resolve("log4j2.xml")
+			path?.let { property("log4j2.configurationFile", path.path) }
 		}
 	}
 
@@ -103,15 +117,14 @@ dependencies {
 	implementation("blue.endless:jankson:${findProperty("jankson_version")}")
 
 	// Gui
-	modImplementation("io.github.cottonmc:LibGui:${findProperty("libgui_version")}")
-	include("io.github.cottonmc:LibGui:${findProperty("libgui_version")}")
+	modImplementation("com.blamejared.searchables:Searchables-fabric-1.20.1:${findProperty("searchables_version")}")
+	include("com.blamejared.searchables:Searchables-fabric-1.20.1:${findProperty("searchables_version")}")
 
 	// dev util
 	modCompileOnly("dev.emi:emi-fabric:${findProperty("emi_version")}:api")
 	modLocalRuntime("dev.emi:emi-fabric:${findProperty("emi_version")}")
+	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 }
-
-tasks.withType()
 
 tasks.withType<ProcessResources>().configureEach {
 	filesMatching("fabric.mod.json") {
