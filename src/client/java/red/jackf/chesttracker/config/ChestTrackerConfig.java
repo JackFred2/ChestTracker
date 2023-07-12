@@ -4,6 +4,7 @@ import dev.isxander.yacl3.config.ConfigEntry;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
+import red.jackf.chesttracker.util.Constants;
 
 public class ChestTrackerConfig {
     public static final GsonConfigInstance<ChestTrackerConfig> INSTANCE
@@ -20,14 +21,17 @@ public class ChestTrackerConfig {
         public boolean autocompleteShowsRegularNames = true;
 
         @ConfigEntry
-        public int gridWidth = 9;
+        public boolean showResizeWidget = true;
 
         @ConfigEntry
-        public int gridHeight = 6;
+        public int gridWidth = Constants.MIN_GRID_WIDTH;
+
+        @ConfigEntry
+        public int gridHeight = Constants.MIN_GRID_HEIGHT;
     }
 
     public void validate() {
-        this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, 9, 18);
-        this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, 6, 12);
+        this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, Constants.MIN_GRID_WIDTH, Constants.MAX_GRID_WIDTH);
+        this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_HEIGHT);
     }
 }

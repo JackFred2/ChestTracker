@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.gui.widget.ItemListWidget;
 import red.jackf.chesttracker.gui.widget.ResizeWidget;
 import red.jackf.chesttracker.memory.ItemMemory;
@@ -32,7 +33,7 @@ public class ChestTrackerScreen extends Screen {
     private static final int GRID_LEFT = 8;
     private static final int GRID_TOP = 39;
 
-    private static final NinePatcher BACKGROUND = new NinePatcher(ChestTracker.id("textures/gui/main_gui.png"), 0, 0, 8, 1);
+    private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
 
     private int left = 0;
     private int top = 0;
@@ -43,7 +44,8 @@ public class ChestTrackerScreen extends Screen {
     private AutoCompletingEditBox<ItemStack> search;
     private ItemListWidget itemList;
     private List<ItemStack> items = Collections.emptyList();
-    private ResizeWidget resize;
+    @Nullable
+    private ResizeWidget resize = null;
     private int menuWidth;
     private int menuHeight;
 
@@ -60,10 +62,10 @@ public class ChestTrackerScreen extends Screen {
         var liveGridHeight = config.gui.gridHeight + 1;
         do
             this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * 18;
-        while (this.menuWidth > width && liveGridWidth > 9);
+        while (this.menuWidth > width && liveGridWidth > Constants.MIN_GRID_WIDTH);
         do
             this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * 18;
-        while (this.menuHeight > height && liveGridHeight > 6);
+        while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
 
 
         this.left = (this.width - menuWidth) / 2;
@@ -89,13 +91,16 @@ public class ChestTrackerScreen extends Screen {
         this.search.setValue("");
         this.setInitialFocus(search);
 
-        this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top, 18, config.gui.gridWidth, config.gui.gridHeight, 9, 6, 18, 12, (w, h) -> {
-            ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
-            ChestTrackerConfig.INSTANCE.getConfig().gui.gridWidth = w;
-            ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight = h;
-            ChestTrackerConfig.INSTANCE.save();
-            rebuildWidgets();
-        }));
+        if (config.gui.showResizeWidget)
+            this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
+                    18, config.gui.gridWidth, config.gui.gridHeight,
+                    Constants.MIN_GRID_WIDTH, Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_WIDTH, Constants.MAX_GRID_HEIGHT, (w, h) -> {
+                ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
+                ChestTrackerConfig.INSTANCE.getConfig().gui.gridWidth = w;
+                ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight = h;
+                ChestTrackerConfig.INSTANCE.save();
+                rebuildWidgets();
+            }));
     }
 
     @Override
@@ -115,6 +120,13 @@ public class ChestTrackerScreen extends Screen {
                     stack.setCount(e.getValue());
                     return stack;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.search.isFocused() && this.search.autoComplete().mouseClicked(mouseX, mouseY, button)) return true;
+        ChestTracker.LOGGER.debug("{}, {}", mouseX, mouseY);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private void filter(String filter) {
@@ -159,7 +171,7 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (resize.mouseReleased(mouseX, mouseY, button)) {
+        if (resize != null && resize.mouseReleased(mouseX, mouseY, button)) {
             return true;
         }
         return super.mouseReleased(mouseX, mouseY, button);

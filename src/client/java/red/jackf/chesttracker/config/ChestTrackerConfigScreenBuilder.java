@@ -5,6 +5,7 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.client.gui.screens.Screen;
+import red.jackf.chesttracker.util.Constants;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -45,10 +46,22 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.getConfig().gui.autocompleteShowsRegularNames,
                                 b -> instance.getConfig().gui.autocompleteShowsRegularNames = b)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.gui.showResizeWidget"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().gui.showResizeWidget,
+                                () -> instance.getConfig().gui.showResizeWidget,
+                                b -> instance.getConfig().gui.showResizeWidget = b)
+                        .build())
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.gui.gridWidth"))
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                .range(9, 18)
+                                .range(Constants.MIN_GRID_WIDTH, Constants.MAX_GRID_HEIGHT)
                                 .step(1)
                                 .valueFormatter(i -> translatable("chesttracker.config.gui.gridSizeSlider", i)))
                         .binding(
@@ -59,7 +72,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.gui.gridHeight"))
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                .range(6, 12)
+                                .range(Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_HEIGHT)
                                 .step(1)
                                 .valueFormatter(i -> translatable("chesttracker.config.gui.gridSizeSlider", i)))
                         .binding(
