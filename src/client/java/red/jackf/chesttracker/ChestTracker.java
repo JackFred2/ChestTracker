@@ -2,23 +2,23 @@ package red.jackf.chesttracker;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
+import red.jackf.chesttracker.gui.RenderUtil;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
@@ -60,6 +60,8 @@ public class ChestTracker implements ClientModInitializer {
                     ItemMemory.INSTANCE.addMemory(loc.level(), loc.pos(), getItems((AbstractContainerScreen<?>) screen1));
                 });
         });
+
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
     }
 
     private List<ItemStack> getItems(AbstractContainerScreen<?> screen) {

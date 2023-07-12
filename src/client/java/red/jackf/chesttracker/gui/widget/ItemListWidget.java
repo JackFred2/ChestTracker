@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ItemListWidget extends AbstractWidget {
     private static final int UV_X = 0;
-    private static final int UV_Y = 28;
+    private static final int UV_Y = 44;
 
     private final int gridWidth;
     private final int gridHeight;

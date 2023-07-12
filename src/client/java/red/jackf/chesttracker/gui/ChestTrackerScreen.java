@@ -34,6 +34,7 @@ public class ChestTrackerScreen extends Screen {
     private static final int GRID_TOP = 38;
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
+    private static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
 
     private int left = 0;
     private int top = 0;
@@ -60,6 +61,8 @@ public class ChestTrackerScreen extends Screen {
         var config = ChestTrackerConfig.INSTANCE.getConfig();
         var liveGridWidth = config.gui.gridWidth + 1;
         var liveGridHeight = config.gui.gridHeight + 1;
+
+        // shrink until fits on screen
         do
             this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * Constants.SLOT_SIZE;
         while (this.menuWidth > width && liveGridWidth > Constants.MIN_GRID_WIDTH);
@@ -75,21 +78,25 @@ public class ChestTrackerScreen extends Screen {
 
         this.itemList = this.addRenderableWidget(new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight));
         this.items = getItems();
+        var shouldFocusSearch = this.search == null || this.search.isFocused();
         this.search = addRenderableWidget(new AutoCompletingEditBox<>(
                 font,
                 left + 8,
                 top + 20,
                 menuWidth - 16,
                 12,
-                search,
+                this.search,
                 SearchablesConstants.COMPONENT_SEARCH,
                 SearchablesUtil.ITEM_STACK,
                 () -> items
         ));
         this.addRenderableOnly(this.search.autoComplete());
         this.search.addResponder(this::filter);
-        this.search.setValue("");
-        this.setInitialFocus(search);
+        this.search.setBordered(false);
+        this.search.setValue(this.search.getValue());
+
+        if (shouldFocusSearch)
+            this.setInitialFocus(search);
 
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
@@ -180,8 +187,9 @@ public class ChestTrackerScreen extends Screen {
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
         this.renderBackground(graphics); // background darken
         BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
+        SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
-        graphics.drawString(this.font, this.title, left + TITLE_X, top + TITLE_Y, 0x404040, false); // title
+        graphics.drawString(this.font, this.title, left + TITLE_X, top + TITLE_Y, RenderUtil.titleColour, false); // title
     }
 
     @Override

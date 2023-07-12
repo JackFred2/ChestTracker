@@ -15,8 +15,8 @@ import java.util.function.BiConsumer;
 
 public class ResizeWidget extends AbstractWidget {
     private static final int TEXTURE_SIZE = 10; // px
-    private static final int TEXTURE_UV_X = 28; // px
-    private static final int TEXTURE_UV_Y = 18; // px
+    private static final int TEXTURE_UV_X = 0; // px
+    private static final int TEXTURE_UV_Y = 64; // px
     private final int stepSize;
     private final int currentWidth;
     private final int currentHeight;
