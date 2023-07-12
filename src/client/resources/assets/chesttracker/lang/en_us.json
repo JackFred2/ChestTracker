@@ -2,7 +2,12 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
 
   "chesttracker.title": "Chest Tracker",
-  "chesttracker.config.search": "Search Options",
-  "chesttracker.config.search.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
+  "chesttracker.gui.resize": "Resize GUI",
+  "chesttracker.gui.narration.drag": "Click and drag",
+  "chesttracker.config.gui": "GUI Options",
+  "chesttracker.config.gui.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
+  "chesttracker.config.gui.gridWidth": "Grid Width",
+  "chesttracker.config.gui.gridHeight": "Grid Height",
+  "chesttracker.config.gui.gridSizeSlider": "%d slots",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }
