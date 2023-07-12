@@ -32,6 +32,33 @@ public class ItemListWidget extends AbstractWidget {
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.renderItems(graphics);
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 250.0f);
+        this.renderItemDecorations(graphics);
+        this.renderAdditional(graphics, mouseX, mouseY);
+        graphics.pose().popPose();
+    }
+
+    private void renderItemDecorations(GuiGraphics graphics) {
+        for (int i = 0; i < this.items.size() && i < (gridWidth * gridHeight); i++) {
+            var item = this.items.get(i);
+            var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
+            var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
+            graphics.renderItemDecorations(Minecraft.getInstance().font, item, x + 1, y + 1); // Counts
+        }
+    }
+
+    private void renderAdditional(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (!this.isHovered()) return;
+        var x = (mouseX - getX()) / Constants.SLOT_SIZE;
+        var y = (mouseY - getY()) / Constants.SLOT_SIZE;
+        if (x < 0 || x > gridWidth || y < 0 || y > gridHeight) return;
+        var index = (y * gridWidth) + x;
+        if (index >= this.items.size()) return;
+        var slotX = getX() + x * Constants.SLOT_SIZE;
+        var slotY = getY() + y * Constants.SLOT_SIZE;
+        graphics.fill(slotX + 1, slotY + 1, slotX + Constants.SLOT_SIZE - 1, slotY + Constants.SLOT_SIZE - 1, 0x80_FFFFFF);
+        graphics.renderTooltip(Minecraft.getInstance().font, this.items.get(index), mouseX, mouseY);
     }
 
     private void renderItems(GuiGraphics graphics) {
@@ -39,9 +66,8 @@ public class ItemListWidget extends AbstractWidget {
             var item = this.items.get(i);
             var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
-            graphics.blit(Constants.TEXTURE, x - 1, y - 1, UV_X, UV_Y, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
-            graphics.renderItem(item, x, y); // Item
-            graphics.renderItemDecorations(Minecraft.getInstance().font, item, x, y); // Text
+            graphics.blit(Constants.TEXTURE, x, y, UV_X, UV_Y, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
+            graphics.renderItem(item, x + 1, y + 1); // Item
         }
     }
 

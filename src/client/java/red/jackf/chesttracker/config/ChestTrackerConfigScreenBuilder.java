@@ -5,6 +5,7 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.client.gui.screens.Screen;
+import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
@@ -37,6 +38,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.autocompleteShowsRegularNames"))
                         .description(b -> OptionDescription.createBuilder()
+                                .image(ChestTracker.id("textures/gui/config/show_unnamed_in_autocomplete_%s.png".formatted(b ? "enabled" : "disabled")), 118, 85)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
@@ -49,6 +51,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.showResizeWidget"))
                         .description(b -> OptionDescription.createBuilder()
+                                .image(ChestTracker.id("textures/gui/config/show_resize_%s.png".formatted(b ? "enabled" : "disabled")), 52, 52)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()

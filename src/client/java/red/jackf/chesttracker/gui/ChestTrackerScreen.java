@@ -30,8 +30,8 @@ public class ChestTrackerScreen extends Screen {
     private static final int SMALL_MENU_HEIGHT = 153;
     private static final int TITLE_X = 8;
     private static final int TITLE_Y = 8;
-    private static final int GRID_LEFT = 8;
-    private static final int GRID_TOP = 39;
+    private static final int GRID_LEFT = 7;
+    private static final int GRID_TOP = 38;
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
 
