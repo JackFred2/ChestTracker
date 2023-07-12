@@ -4,6 +4,8 @@ import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.ChestTracker;
 
 public class Constants {
+    public static final int SLOT_SIZE = 18;
+
     public static final int MIN_GRID_WIDTH = 9;
     public static final int MAX_GRID_WIDTH = 18;
     public static final int MIN_GRID_HEIGHT = 6;

@@ -61,10 +61,10 @@ public class ChestTrackerScreen extends Screen {
         var liveGridWidth = config.gui.gridWidth + 1;
         var liveGridHeight = config.gui.gridHeight + 1;
         do
-            this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * 18;
+            this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * Constants.SLOT_SIZE;
         while (this.menuWidth > width && liveGridWidth > Constants.MIN_GRID_WIDTH);
         do
-            this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * 18;
+            this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * Constants.SLOT_SIZE;
         while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
 
 
@@ -93,7 +93,7 @@ public class ChestTrackerScreen extends Screen {
 
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
-                    18, config.gui.gridWidth, config.gui.gridHeight,
+                    Constants.SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
                     Constants.MIN_GRID_WIDTH, Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_WIDTH, Constants.MAX_GRID_HEIGHT, (w, h) -> {
                 ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
                 ChestTrackerConfig.INSTANCE.getConfig().gui.gridWidth = w;
@@ -125,7 +125,6 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.search.isFocused() && this.search.autoComplete().mouseClicked(mouseX, mouseY, button)) return true;
-        ChestTracker.LOGGER.debug("{}, {}", mouseX, mouseY);
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
