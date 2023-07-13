@@ -1,14 +1,11 @@
 package red.jackf.chesttracker.world;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
-import red.jackf.chesttracker.ChestTracker;
 
 /**
  * Since we technically don't immediately know what container is open, we try to smartly track it here.
@@ -24,10 +21,6 @@ public class LocationTracking {
             if (!level.isClientSide || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
             lastHit = hitResult;
             lastLevel = level;
-
-            ChestTracker.LOGGER.debug(hand);
-            ChestTracker.LOGGER.debug(lastLevel.dimension());
-            ChestTracker.LOGGER.debug(lastLevel.dimensionTypeId());
             return InteractionResult.PASS;
         });
     }

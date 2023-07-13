@@ -4,7 +4,13 @@ import dev.isxander.yacl3.config.ConfigEntry;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChestTrackerConfig {
     public static final GsonConfigInstance<ChestTrackerConfig> INSTANCE
@@ -17,6 +23,7 @@ public class ChestTrackerConfig {
     public Gui gui = new Gui();
 
     public static class Gui {
+
         @ConfigEntry
         public boolean autocompleteShowsRegularNames = true;
 
@@ -28,6 +35,15 @@ public class ChestTrackerConfig {
 
         @ConfigEntry
         public int gridHeight = Constants.MIN_GRID_HEIGHT;
+
+        @ConfigEntry
+        public List<LevelIcon> levelIcons = new ArrayList<>(ICON_DEFAULTS);
+
+        private static final List<LevelIcon> ICON_DEFAULTS = List.of(
+                new LevelIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
+                new LevelIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
+                new LevelIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
+        );
     }
 
     public void validate() {

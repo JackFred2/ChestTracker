@@ -6,10 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import red.jackf.whereisit.api.SearchRequest;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemMemory {
@@ -24,6 +21,10 @@ public class ItemMemory {
         if (memories.containsKey(level)) {
             memories.get(level).remove(pos);
         }
+    }
+
+    public Set<ResourceKey<Level>> getLevels() {
+        return memories.keySet();
     }
 
     public Map<LightweightStack, Integer> getCounts(ResourceKey<Level> level) {

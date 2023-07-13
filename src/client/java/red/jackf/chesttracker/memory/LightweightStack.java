@@ -8,4 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * Fake itemstack that has no count and easier equality check
  */
 public record LightweightStack(Item item, @Nullable CompoundTag tag) {
+    public LightweightStack(Item item) {
+        this(item, null);
+    }
 }
