@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.LightweightStack;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ public class ChestTrackerGSON {
                 .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
                 .registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
                 .registerTypeHierarchyAdapter(LightweightStack.class, new LightweightStackAdapter())
-                .registerTypeHierarchyAdapter(LevelIcon.class, new LevelIconAdapter())
+                .registerTypeHierarchyAdapter(MemoryIcon.class, new MemoryIconAdapter())
                 .registerTypeHierarchyAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
                 .registerTypeHierarchyAdapter(CompoundTag.class, new CompoundTagAdapter())
                 .create();
@@ -42,20 +43,20 @@ public class ChestTrackerGSON {
         }
     }
 
-    public static class LevelIconAdapter implements JsonSerializer<LevelIcon>, JsonDeserializer<LevelIcon> {
-        private static final String ID = "level_id";
+    public static class MemoryIconAdapter implements JsonSerializer<MemoryIcon>, JsonDeserializer<MemoryIcon> {
+        private static final String ID = "id";
         private static final String ICON = "icon";
 
         @Override
-        public LevelIcon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public MemoryIcon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             var object = json.getAsJsonObject();
             ResourceLocation levelId = context.deserialize(object.get(ID), ResourceLocation.class);
             LightweightStack icon = context.deserialize(object.get(ICON), LightweightStack.class);
-            return new LevelIcon(levelId, icon);
+            return new MemoryIcon(levelId, icon);
         }
 
         @Override
-        public JsonElement serialize(LevelIcon src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(MemoryIcon src, Type typeOfSrc, JsonSerializationContext context) {
             var object = new JsonObject();
             object.add(ID, context.serialize(src.id()));
             object.add(ICON, context.serialize(src.icon()));
@@ -69,23 +70,30 @@ public class ChestTrackerGSON {
 
         @Override
         public LightweightStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            var object = json.getAsJsonObject();
-            var id = context.<ResourceLocation>deserialize(object.get(ID), ResourceLocation.class);
-            CompoundTag tag = null;
-            if (object.has(TAG)) {
+            ResourceLocation id;
+            @Nullable CompoundTag tag;
+            if (json.isJsonObject()) {
+                var object = json.getAsJsonObject();
+                id = context.deserialize(object.get(ID), ResourceLocation.class);
                 tag = context.deserialize(object.get(TAG), CompoundTag.class);
+            } else {
+                id = context.deserialize(json, ResourceLocation.class);
+                tag = null;
             }
             return new LightweightStack(BuiltInRegistries.ITEM.get(id), tag);
         }
 
         @Override
         public JsonElement serialize(LightweightStack src, Type typeOfSrc, JsonSerializationContext context) {
-            var object = new JsonObject();
-            object.add(ID, context.serialize(BuiltInRegistries.ITEM.getKey(src.item())));
+            var idTag = context.serialize(BuiltInRegistries.ITEM.getKey(src.item()));
             if (src.tag() != null) {
+                var object = new JsonObject();
+                object.add(ID, idTag);
                 object.add(TAG, context.serialize(src.tag()));
+                return object;
+            } else {
+                return idTag;
             }
-            return object;
         }
     }
 

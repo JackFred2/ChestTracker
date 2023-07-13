@@ -6,6 +6,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 
@@ -37,12 +38,14 @@ public class ChestTrackerConfig {
         public int gridHeight = Constants.MIN_GRID_HEIGHT;
 
         @ConfigEntry
-        public List<LevelIcon> levelIcons = new ArrayList<>(ICON_DEFAULTS);
+        public List<MemoryIcon> memoryIcons = new ArrayList<>(ICON_DEFAULTS);
 
-        private static final List<LevelIcon> ICON_DEFAULTS = List.of(
-                new LevelIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
-                new LevelIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
-                new LevelIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
+        private static final List<MemoryIcon> ICON_DEFAULTS = List.of(
+                new MemoryIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
+                new MemoryIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
+                new MemoryIcon(Level.END.location(), new LightweightStack(Items.END_STONE)),
+
+                new MemoryIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST))
         );
     }
 
