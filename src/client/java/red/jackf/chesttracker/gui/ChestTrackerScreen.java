@@ -12,11 +12,13 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
+import red.jackf.chesttracker.gui.widget.ImageButtonWithTooltip;
 import red.jackf.chesttracker.gui.widget.ItemListWidget;
 import red.jackf.chesttracker.gui.widget.ResizeWidget;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.util.Constants;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,10 +30,17 @@ public class ChestTrackerScreen extends Screen {
     private static final Component TITLE = Component.translatable("chesttracker.title");
     private static final int SMALL_MENU_WIDTH = 176;
     private static final int SMALL_MENU_HEIGHT = 153;
-    private static final int TITLE_X = 8;
-    private static final int TITLE_Y = 8;
+    private static final int TITLE_LEFT = 8;
+    private static final int TITLE_TOP = 8;
+    private static final int SEARCH_LEFT = 8;
+    private static final int SEARCH_TOP = 21;
     private static final int GRID_LEFT = 7;
     private static final int GRID_TOP = 38;
+    private static final int SETTINGS_RIGHT = 6;
+    private static final int SETTINGS_TOP = 4;
+    private static final int SETTINGS_SIZE = 14;
+    private static final int SETTINGS_UV_X = 0;
+    private static final int SETTINGS_UV_Y = 86;
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
     private static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
@@ -81,8 +90,8 @@ public class ChestTrackerScreen extends Screen {
         var shouldFocusSearch = this.search == null || this.search.isFocused();
         this.search = addRenderableWidget(new AutoCompletingEditBox<>(
                 font,
-                left + 8,
-                top + 20,
+                left + SEARCH_LEFT,
+                top + SEARCH_TOP,
                 menuWidth - 16,
                 12,
                 this.search,
@@ -108,6 +117,13 @@ public class ChestTrackerScreen extends Screen {
                 ChestTrackerConfig.INSTANCE.save();
                 rebuildWidgets();
             }));
+
+        this.addRenderableWidget(new ImageButtonWithTooltip(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
+                SETTINGS_SIZE, SETTINGS_SIZE,
+                SETTINGS_UV_X, SETTINGS_UV_Y,
+                0, Constants.TEXTURE, 256, 256,
+                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this)),
+                Component.translatable("mco.configure.world.buttons.settings")));
     }
 
     @Override
@@ -118,7 +134,7 @@ public class ChestTrackerScreen extends Screen {
     private List<ItemStack> getItems() {
         var level = Minecraft.getInstance().level;
         if (level == null) return Collections.emptyList();
-        var counts = ItemMemory.INSTANCE.getCounts(level.dimension());
+        var counts = ItemMemory.INSTANCE.getCounts(level.dimension().location());
         return counts.entrySet().stream()
                 .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest
                 .map(e -> { // lightweight stack -> full stacks
@@ -189,7 +205,7 @@ public class ChestTrackerScreen extends Screen {
         BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
         SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
-        graphics.drawString(this.font, this.title, left + TITLE_X, top + TITLE_Y, RenderUtil.titleColour, false); // title
+        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, RenderUtil.titleColour, false); // title
     }
 
     @Override

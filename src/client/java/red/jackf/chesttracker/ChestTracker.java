@@ -11,20 +11,14 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.RenderUtil;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
@@ -48,38 +42,18 @@ public class ChestTracker implements ClientModInitializer {
         ChestTrackerConfig.INSTANCE.save();
         LOGGER.debug("Loading ChestTracker");
 
-        setupKeybinds();
-
         LocationTracking.setup();
 
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof AbstractContainerScreen<?>)
-                ScreenEvents.remove(screen).register(screen1 -> {
-                    var loc = LocationTracking.popLocation();
-                    if (loc == null) return;
-                    ItemMemory.INSTANCE.addMemory(loc.level(), loc.pos(), getItems((AbstractContainerScreen<?>) screen1));
-                });
-        });
-
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
-    }
-
-    private List<ItemStack> getItems(AbstractContainerScreen<?> screen) {
-        return screen.getMenu().slots.stream()
-                .filter(slot -> !(slot.container instanceof Inventory) && slot.hasItem())
-                .map(Slot::getItem)
-                .collect(Collectors.toList());
-    }
-
-    private void setupKeybinds() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            // opening Chest Tracker GUI with no screen open
             if (client.screen == null && client.getOverlay() == null)
                 while (OPEN_GUI.consumeClick())
                     client.setScreen(new ChestTrackerScreen(null));
         });
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof AbstractContainerScreen<?>)
+            if (screen instanceof AbstractContainerScreen<?>) {
+                // opening Chest Tracker GUI with a screen open
                 ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
                     if (ShouldIgnoreKey.EVENT.invoker().shouldIgnoreKey()) {
                         return;
@@ -88,6 +62,16 @@ public class ChestTracker implements ClientModInitializer {
                     if (OPEN_GUI.matches(key, scancode))
                         client.setScreen(new ChestTrackerScreen(screen1));
                 });
+
+                // counting items after screen close
+                ScreenEvents.remove(screen).register(screen1 -> {
+                    var loc = LocationTracking.popLocation();
+                    if (loc == null) return;
+                    ScreenHandler.handle(loc, (AbstractContainerScreen<?>) screen1);
+                });
+            }
         });
+
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
     }
 }

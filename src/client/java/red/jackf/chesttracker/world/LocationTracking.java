@@ -3,8 +3,6 @@ package red.jackf.chesttracker.world;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,15 +10,16 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LocationTracking {
     @Nullable
-    private static BlockHitResult lastHit = null;
-    @Nullable
-    private static Level lastLevel = null;
+    private static Location last = null;
 
     public static void setup() {
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
             if (!level.isClientSide || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
-            lastHit = hitResult;
-            lastLevel = level;
+            last = new Location(
+                    level.dimension(),
+                    hitResult.getBlockPos(),
+                    level.getBlockState(hitResult.getBlockPos())
+            );
             return InteractionResult.PASS;
         });
     }
@@ -30,10 +29,8 @@ public class LocationTracking {
      */
     @Nullable
     public static Location popLocation() {
-        if (lastLevel == null || lastHit == null) return null;
-        var loc = new Location(lastLevel.dimension(), lastHit.getBlockPos());
-        lastHit = null;
-        lastLevel = null;
+        var loc = last;
+        last = null;
         return loc;
     }
 }
