@@ -107,6 +107,7 @@ public class ChestTrackerScreen extends Screen {
         if (shouldFocusSearch)
             this.setInitialFocus(search);
 
+        // resize
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
                     Constants.SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
@@ -118,6 +119,7 @@ public class ChestTrackerScreen extends Screen {
                 rebuildWidgets();
             }));
 
+        // settings
         this.addRenderableWidget(new ImageButtonWithTooltip(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
                 SETTINGS_SIZE, SETTINGS_SIZE,
                 SETTINGS_UV_X, SETTINGS_UV_Y,

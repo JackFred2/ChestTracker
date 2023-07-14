@@ -10,5 +10,9 @@
   "chesttracker.config.gui.gridWidth": "Grid Width",
   "chesttracker.config.gui.gridHeight": "Grid Height",
   "chesttracker.config.gui.gridSizeSlider": "%d slots",
+  "chesttracker.config.gui.memoryIcons": "Memory Icons",
+  "chesttracker.config.gui.memoryIcons.dimension": "Dimension ID",
+  "chesttracker.config.gui.memoryIcons.icon": "Set Icon...",
+  "chesttracker.config.gui.memoryIcons.iconScreen": "Choose an item",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

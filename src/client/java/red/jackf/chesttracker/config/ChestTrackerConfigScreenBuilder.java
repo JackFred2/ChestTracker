@@ -5,7 +5,11 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.custom.MemoryIconController;
+import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
@@ -29,6 +33,7 @@ public class ChestTrackerConfigScreenBuilder {
         return ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.title"))
                 .group(makeGuiGroup(instance))
+                .group(makeMemoryIconGroup(instance))
                 .build();
     }
 
@@ -83,6 +88,20 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.getConfig().gui.gridHeight,
                                 i -> instance.getConfig().gui.gridHeight = i).
                         build())
+                .build();
+    }
+
+    private static OptionGroup makeMemoryIconGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+        return ListOption.<MemoryIcon>createBuilder()
+                .name(translatable("chesttracker.config.gui.memoryIcons"))
+                .controller(MemoryIconController.Builder::new)
+                .binding(
+                        instance.getDefaults().gui.memoryIcons,
+                        () -> instance.getConfig().gui.memoryIcons,
+                        l -> instance.getConfig().gui.memoryIcons = l
+                )
+                .initial(new MemoryIcon(new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
+                .collapsed(true)
                 .build();
     }
 
