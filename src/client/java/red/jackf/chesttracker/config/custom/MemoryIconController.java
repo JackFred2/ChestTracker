@@ -90,17 +90,18 @@ public class MemoryIconController implements Controller<MemoryIcon> {
             });
             this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.gui.memoryIcons.dimension")));
 
-            this.setItemButton = new ItemButton(option.pendingValue().icon().toStack(), dim.xLimit() - 20 + 2, dim.y() + 2, translatable("chesttracker.config.gui.memoryIcons.icon"),
+            this.setItemButton = new ItemButton(option.pendingValue().icon().toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.gui.memoryIcons.icon"),
                 b -> Minecraft.getInstance().setScreen(new ItemSelectorScreen(screen, item -> {
                     if (item != null)
                         option.requestSet(new MemoryIcon(option.binding().getValue().id(), new LightweightStack(item)));
                 })));
+            this.setItemButton.showBackground(true);
         }
 
         @Override
         public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             this.editBox.setY(getDimension().y() + PADDING);
-            this.setItemButton.setY(getDimension().y() + 2);
+            this.setItemButton.setY(getDimension().y());
 
             this.editBox.render(graphics, mouseX, mouseY, partialTick);
             this.setItemButton.render(graphics, mouseX, mouseY, partialTick);
@@ -121,8 +122,8 @@ public class MemoryIconController implements Controller<MemoryIcon> {
             this.editBox.setX(dim.x() + PADDING);
             this.editBox.setY(dim.y() + 2 * PADDING);
             this.editBox.setWidth(dim.width() - 20 - 2 * PADDING);
-            this.setItemButton.setX(dim.xLimit() - 20 + 2);
-            this.setItemButton.setY(dim.y() + 2);
+            this.setItemButton.setX(dim.xLimit() - 20);
+            this.setItemButton.setY(dim.y());
         }
 
         @Override

@@ -2,7 +2,9 @@ package red.jackf.chesttracker.config.custom;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
@@ -67,6 +69,12 @@ public class ItemSelectorScreen extends Screen {
         this.search.setCanLoseFocus(false);
 
         this.setInitialFocus(this.search);
+
+        this.addRenderableWidget(Button.builder(Component.literal("❌"), b -> this.onClose())
+                .tooltip(Tooltip.create(CommonComponents.GUI_CANCEL))
+                .size(20, 20)
+                .pos(this.left + this.menuWidth - 20, 8)
+                .build());
 
         setupItems();
     }

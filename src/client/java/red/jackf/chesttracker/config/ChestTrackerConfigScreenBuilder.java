@@ -4,6 +4,7 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -40,6 +41,16 @@ public class ChestTrackerConfigScreenBuilder {
     private static OptionGroup makeGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.gui"))
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.gui.autofocusSearchBar"))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().gui.autofocusSearchBar,
+                                () -> instance.getConfig().gui.autofocusSearchBar,
+                                b -> instance.getConfig().gui.autofocusSearchBar = b)
+                        .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.autocompleteShowsRegularNames"))
                         .description(b -> OptionDescription.createBuilder()
@@ -92,17 +103,21 @@ public class ChestTrackerConfigScreenBuilder {
     }
 
     private static OptionGroup makeMemoryIconGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+        //don't close the level
+        //noinspection resource
         return ListOption.<MemoryIcon>createBuilder()
-                .name(translatable("chesttracker.config.gui.memoryIcons"))
-                .controller(MemoryIconController.Builder::new)
-                .binding(
-                        instance.getDefaults().gui.memoryIcons,
-                        () -> instance.getConfig().gui.memoryIcons,
-                        l -> instance.getConfig().gui.memoryIcons = l
-                )
-                .initial(new MemoryIcon(new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
-                .collapsed(true)
-                .build();
+            .name(translatable("chesttracker.config.gui.memoryIcons"))
+            .controller(MemoryIconController.Builder::new)
+            .binding(
+                    instance.getDefaults().gui.memoryIcons,
+                    () -> instance.getConfig().gui.memoryIcons,
+                    l -> instance.getConfig().gui.memoryIcons = l
+            )
+            .initial(new MemoryIcon(Minecraft.getInstance().player != null ?
+                    Minecraft.getInstance().player.level().dimension().location() :
+                    new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
+            //.collapsed(true)
+            .build();
     }
 
     private static ConfigCategory makeWhereIsItLink() {

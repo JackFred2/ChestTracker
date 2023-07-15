@@ -26,6 +26,9 @@ public class ChestTrackerConfig {
     public static class Gui {
 
         @ConfigEntry
+        public boolean autofocusSearchBar = true;
+
+        @ConfigEntry
         public boolean autocompleteShowsRegularNames = true;
 
         @ConfigEntry

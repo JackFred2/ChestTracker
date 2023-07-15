@@ -4,8 +4,11 @@ import com.blamejared.searchables.api.SearchablesConstants;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +16,6 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
-import red.jackf.chesttracker.gui.widget.ImageButtonWithTooltip;
 import red.jackf.chesttracker.gui.widget.ItemListWidget;
 import red.jackf.chesttracker.gui.widget.ResizeWidget;
 import red.jackf.chesttracker.memory.ItemMemory;
@@ -53,16 +55,19 @@ public class ChestTrackerScreen extends Screen {
     private final Screen parent;
     private AutoCompletingEditBox<ItemStack> search;
     private ItemListWidget itemList;
-    private List<ItemStack> items = Collections.emptyList();
     @Nullable
     private ResizeWidget resize = null;
+    private ResourceLocation memoryId;
+    private List<ItemStack> items = Collections.emptyList();
     private int menuWidth;
     private int menuHeight;
 
     public ChestTrackerScreen(@Nullable Screen parent) {
         super(TITLE);
-        this.parent = parent;
         ChestTracker.LOGGER.debug("Open Screen");
+        this.parent = parent;
+        var level = Minecraft.getInstance().level;
+        this.memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
     }
 
     @Override
@@ -85,9 +90,12 @@ public class ChestTrackerScreen extends Screen {
 
         super.init();
 
+        // items
         this.itemList = this.addRenderableWidget(new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight));
-        this.items = getItems();
+
+        // search
         var shouldFocusSearch = this.search == null || this.search.isFocused();
+        shouldFocusSearch &= config.gui.autofocusSearchBar;
         this.search = addRenderableWidget(new AutoCompletingEditBox<>(
                 font,
                 left + SEARCH_LEFT,
@@ -99,10 +107,10 @@ public class ChestTrackerScreen extends Screen {
                 SearchablesUtil.ITEM_STACK,
                 () -> items
         ));
-        this.addRenderableOnly(this.search.autoComplete());
         this.search.addResponder(this::filter);
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
+        this.addRenderableOnly(this.search.autoComplete());
 
         if (shouldFocusSearch)
             this.setInitialFocus(search);
@@ -120,12 +128,15 @@ public class ChestTrackerScreen extends Screen {
             }));
 
         // settings
-        this.addRenderableWidget(new ImageButtonWithTooltip(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
+        var settingsButton = this.addRenderableWidget(new ImageButton(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
                 SETTINGS_SIZE, SETTINGS_SIZE,
                 SETTINGS_UV_X, SETTINGS_UV_Y,
                 0, Constants.TEXTURE, 256, 256,
                 button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this)),
                 Component.translatable("mco.configure.world.buttons.settings")));
+        settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
+
+        updateItems();
     }
 
     @Override
@@ -133,11 +144,12 @@ public class ChestTrackerScreen extends Screen {
         super.repositionElements();
     }
 
-    private List<ItemStack> getItems() {
-        var level = Minecraft.getInstance().level;
-        if (level == null) return Collections.emptyList();
-        var counts = ItemMemory.INSTANCE.getCounts(level.dimension().location());
-        return counts.entrySet().stream()
+    /**
+     * Updates the main item list and filtered list
+     */
+    private void updateItems() {
+        var counts = ItemMemory.INSTANCE.getCounts(memoryId);
+        this.items = counts.entrySet().stream()
                 .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest
                 .map(e -> { // lightweight stack -> full stacks
                     var stack = new ItemStack(e.getKey().item());
@@ -145,16 +157,29 @@ public class ChestTrackerScreen extends Screen {
                     stack.setCount(e.getValue());
                     return stack;
                 }).collect(Collectors.toList());
+        filter(this.search.getValue());
+    }
+
+    /**
+     * Updates the items displayed by filtering with the current value
+     */
+    private void filter(String filter) {
+        this.itemList.setItems(SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter));
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
+        this.renderBackground(graphics); // background darken
+        BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
+        SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
+        super.render(graphics, mouseX, mouseY, tickDelta); // widgets
+        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, RenderUtil.titleColour, false); // title
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.search.isFocused() && this.search.autoComplete().mouseClicked(mouseX, mouseY, button)) return true;
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    private void filter(String filter) {
-        this.itemList.setItems(SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter));
     }
 
     @Override
@@ -199,15 +224,6 @@ public class ChestTrackerScreen extends Screen {
             return true;
         }
         return super.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
-        this.renderBackground(graphics); // background darken
-        BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
-        SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
-        super.render(graphics, mouseX, mouseY, tickDelta); // widgets
-        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, RenderUtil.titleColour, false); // title
     }
 
     @Override

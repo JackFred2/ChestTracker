@@ -5,6 +5,7 @@
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.config.gui": "GUI Options",
+  "chesttracker.config.gui.autofocusSearchBar": "Auto-focus Search Bar",
   "chesttracker.config.gui.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
   "chesttracker.config.gui.showResizeWidget": "Show Resize Widget",
   "chesttracker.config.gui.gridWidth": "Grid Width",
