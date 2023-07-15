@@ -10,6 +10,8 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +21,27 @@ public class ChestTrackerConfig {
             .setPath(FabricLoader.getInstance().getConfigDir().resolve("chesttracker.json"))
             .overrideGsonBuilder(ChestTrackerGSON.get())
             .build();
+    public static void init() {
+        try {
+            INSTANCE.load();
+            INSTANCE.getConfig().validate();
+        } catch (Exception ex) {
+            ChestTracker.LOGGER.error("Error loading Chest Tracker config, backing it up and restoring default", ex);
+            var path = INSTANCE.getPath();
+            try {
+                Files.move(path, path.resolveSibling(path.getFileName().toString() + ".errored"));
+            } catch (IOException e) {
+                ChestTracker.LOGGER.fatal("Error backing up errored config", e);
+            }
+        }
+        INSTANCE.save();
+    }
 
     @ConfigEntry
     public Gui gui = new Gui();
+
+    @ConfigEntry
+    public Memory memory = new Memory();
 
     public static class Gui {
 
@@ -50,6 +70,10 @@ public class ChestTrackerConfig {
 
                 new MemoryIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST))
         );
+    }
+
+    public static class Memory {
+
     }
 
     public void validate() {

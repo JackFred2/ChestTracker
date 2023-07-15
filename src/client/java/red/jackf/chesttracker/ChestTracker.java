@@ -36,13 +36,7 @@ public class ChestTracker implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        try {
-            ChestTrackerConfig.INSTANCE.load();
-            ChestTrackerConfig.INSTANCE.getConfig().validate();
-        } catch (Exception ex) {
-            LOGGER.error("Error loading Chest Tracker config, restoring default", ex);
-        }
-        ChestTrackerConfig.INSTANCE.save();
+        ChestTrackerConfig.init();
         LOGGER.debug("Loading ChestTracker");
 
         LocationTracking.setup();
