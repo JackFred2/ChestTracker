@@ -41,6 +41,7 @@ public class ChestTrackerGSON {
 
     private interface JsonSerializerDeserializer<T> extends JsonSerializer<T>, JsonDeserializer<T> {}
 
+    @SuppressWarnings("SameParameterValue")
     private static <T> JsonSerializerDeserializer<T> adapterFor(Codec<T> codec) {
         return new JsonSerializerDeserializer<>() {
             @Override

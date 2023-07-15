@@ -24,7 +24,6 @@ import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
-    public static boolean inGame;
 
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);

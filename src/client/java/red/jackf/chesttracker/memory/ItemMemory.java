@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.whereisit.api.SearchRequest;
 
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
