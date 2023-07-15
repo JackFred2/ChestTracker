@@ -148,6 +148,7 @@ public class ChestTrackerScreen extends Screen {
      * Updates the main item list and filtered list
      */
     private void updateItems() {
+        if (ItemMemory.INSTANCE == null) return;
         var counts = ItemMemory.INSTANCE.getCounts(memoryId);
         this.items = counts.entrySet().stream()
                 .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest

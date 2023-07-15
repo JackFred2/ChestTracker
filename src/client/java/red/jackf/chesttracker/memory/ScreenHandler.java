@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class ScreenHandler {
     public static void handle(Location loc, AbstractContainerScreen<?> screen) {
         if (!isValidScreen(screen)) return;
+        if (ItemMemory.INSTANCE == null) return;
         ItemMemory.INSTANCE.addMemory(loc.level().location(), loc.pos(), getItems(screen));
     }
 

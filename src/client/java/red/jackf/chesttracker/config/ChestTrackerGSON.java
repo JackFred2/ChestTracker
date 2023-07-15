@@ -1,20 +1,18 @@
 package red.jackf.chesttracker.config;
 
 import com.google.gson.*;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import dev.isxander.yacl3.config.ConfigEntry;
 import dev.isxander.yacl3.config.GsonConfigInstance;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.memory.LightweightStack;
 
 import java.awt.*;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 
 public class ChestTrackerGSON {
     static Gson get() {
@@ -24,10 +22,8 @@ public class ChestTrackerGSON {
                 .registerTypeHierarchyAdapter(Component.class, new Component.Serializer())
                 .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
                 .registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
-                .registerTypeHierarchyAdapter(LightweightStack.class, new LightweightStackAdapter())
-                .registerTypeHierarchyAdapter(MemoryIcon.class, new MemoryIconAdapter())
+                .registerTypeHierarchyAdapter(MemoryIcon.class, adapterFor(MemoryIcon.CODEC))
                 .registerTypeHierarchyAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-                .registerTypeHierarchyAdapter(CompoundTag.class, new CompoundTagAdapter())
                 .create();
     }
 
@@ -43,75 +39,27 @@ public class ChestTrackerGSON {
         }
     }
 
-    public static class MemoryIconAdapter implements JsonSerializer<MemoryIcon>, JsonDeserializer<MemoryIcon> {
-        private static final String ID = "id";
-        private static final String ICON = "icon";
+    private interface JsonSerializerDeserializer<T> extends JsonSerializer<T>, JsonDeserializer<T> {}
 
-        @Override
-        public MemoryIcon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            var object = json.getAsJsonObject();
-            ResourceLocation levelId = context.deserialize(object.get(ID), ResourceLocation.class);
-            LightweightStack icon = context.deserialize(object.get(ICON), LightweightStack.class);
-            return new MemoryIcon(levelId, icon);
-        }
-
-        @Override
-        public JsonElement serialize(MemoryIcon src, Type typeOfSrc, JsonSerializationContext context) {
-            var object = new JsonObject();
-            object.add(ID, context.serialize(src.id()));
-            object.add(ICON, context.serialize(src.icon()));
-            return object;
-        }
-    }
-
-    public static class LightweightStackAdapter implements JsonSerializer<LightweightStack>, JsonDeserializer<LightweightStack> {
-        private static final String ID = "id";
-        private static final String TAG = "tag";
-
-        @Override
-        public LightweightStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            ResourceLocation id;
-            @Nullable CompoundTag tag;
-            if (json.isJsonObject()) {
-                var object = json.getAsJsonObject();
-                id = context.deserialize(object.get(ID), ResourceLocation.class);
-                tag = context.deserialize(object.get(TAG), CompoundTag.class);
-            } else {
-                id = context.deserialize(json, ResourceLocation.class);
-                tag = null;
+    private static <T> JsonSerializerDeserializer<T> adapterFor(Codec<T> codec) {
+        return new JsonSerializerDeserializer<>() {
+            @Override
+            public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return codec.decode(JsonOps.INSTANCE, json)
+                        .get()
+                        .map(Pair::getFirst, part -> {
+                                throw new JsonParseException("Couldn't deserialize %s: %s".formatted(typeOfT.getTypeName(), part));
+                            });
             }
-            return new LightweightStack(BuiltInRegistries.ITEM.get(id), tag);
-        }
 
-        @Override
-        public JsonElement serialize(LightweightStack src, Type typeOfSrc, JsonSerializationContext context) {
-            var idTag = context.serialize(BuiltInRegistries.ITEM.getKey(src.item()));
-            if (src.tag() != null) {
-                var object = new JsonObject();
-                object.add(ID, idTag);
-                object.add(TAG, context.serialize(src.tag()));
-                return object;
-            } else {
-                return idTag;
+            @Override
+            public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
+                return codec.encode(src, JsonOps.INSTANCE, JsonOps.INSTANCE.empty())
+                        .get()
+                        .map(Function.identity(), part -> {
+                            throw new JsonParseException("Couldn't serialize %s: %s".formatted(typeOfSrc.getTypeName(), part));
+                        });
             }
-        }
-    }
-
-    public static class CompoundTagAdapter implements JsonSerializer<CompoundTag>, JsonDeserializer<CompoundTag> {
-
-        @Override
-        public CompoundTag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            var tag = JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
-            try {
-                return (CompoundTag) tag;
-            } catch (ClassCastException ex) {
-                throw new JsonParseException(ex);
-            }
-        }
-
-        @Override
-        public JsonElement serialize(CompoundTag src, Type typeOfSrc, JsonSerializationContext context) {
-            return NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, src);
-        }
+        };
     }
 }

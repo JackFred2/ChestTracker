@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -16,12 +17,15 @@ import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.RenderUtil;
+import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
+    public static boolean inGame;
+
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);
     }
@@ -43,6 +47,9 @@ public class ChestTracker implements ClientModInitializer {
         LOGGER.debug("Loading ChestTracker");
 
         LocationTracking.setup();
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> ItemMemory.load("test"));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ItemMemory.unload());
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // opening Chest Tracker GUI with no screen open
