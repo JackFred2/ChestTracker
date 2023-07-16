@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.config;
+package red.jackf.chesttracker.gui;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

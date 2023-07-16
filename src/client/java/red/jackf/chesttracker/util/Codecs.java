@@ -7,7 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.LocationData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +34,38 @@ public class Codecs {
                 }
             }, pos -> "%d,%d,%d".formatted(pos.getX(), pos.getY(), pos.getZ())
     );
+
+    public static final Codec<LocationData> LOCATION_DATA = RecordCodecBuilder.create(instance ->
+            instance.group(makeMutableList(ItemStack.CODEC.listOf()).fieldOf("items").forGetter(LocationData::items)).apply(instance, LocationData::new));
+
     public static final Codec<ItemMemory> ITEM_MEMORY = RecordCodecBuilder.create(instance ->
-            instance.group(Codec.unboundedMap(
+            instance.group(makeMutableMap(Codec.unboundedMap(
                     ResourceLocation.CODEC,
-                    Codec.unboundedMap(
+                    makeMutableMap(Codec.unboundedMap(
                             BLOCK_POS_STRING,
-                            ItemStack.CODEC.listOf()
-                    ).xmap(map -> (Map<BlockPos, List<ItemStack>>) new HashMap<>(map), Function.identity())
-            ).xmap(map -> (Map<ResourceLocation, Map<BlockPos, List<ItemStack>>>) new HashMap<>(map), Function.identity())
-                    .fieldOf("memories").forGetter(ItemMemory::getMemories)).apply(instance, ItemMemory::new
-            ));
+                            LOCATION_DATA
+                    ))
+            )).fieldOf("memories").forGetter(ItemMemory::getMemories)).apply(instance, ItemMemory::new));
+
+
+    /**
+     * Makes a list codec return a mutable list instance of the default immutable one.
+     * @param codec Codec that returns an immutable list
+     * @return Codec that provides a mutable list on deserialization ({@link ArrayList})
+     * @param <T> Type contained in lists in said codecs
+     */
+    public static <T> Codec<List<T>> makeMutableList(Codec<List<T>> codec) {
+        return codec.xmap(ArrayList::new, Function.identity());
+    }
+
+    /**
+     * Makes a map codec return a mutable map instead of the default immutable one.
+     * @param codec Codec that returns an immutable map
+     * @return Codec that provides a mutable map on deserialization ({@link HashMap})
+     * @param <K> Type of key in said maps
+     * @param <V> Type of value in said maps
+     */
+    public static <K, V> Codec<Map<K, V>> makeMutableMap(Codec<Map<K, V>> codec) {
+        return codec.xmap(HashMap::new, Function.identity());
+    }
 }

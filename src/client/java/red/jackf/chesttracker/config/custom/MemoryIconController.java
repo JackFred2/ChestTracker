@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.config.MemoryIcon;
+import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.LightweightStack;
 

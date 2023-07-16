@@ -15,7 +15,7 @@ public class ScreenHandler {
     public static void handle(Location loc, AbstractContainerScreen<?> screen) {
         if (!isValidScreen(screen)) return;
         if (ItemMemory.INSTANCE == null) return;
-        ItemMemory.INSTANCE.addMemory(loc.level().location(), loc.pos(), getItems(screen));
+        ItemMemory.INSTANCE.addMemory(loc.level().location(), loc.pos(), new LocationData(getItems(screen)));
     }
 
     private static List<ItemStack> getItems(AbstractContainerScreen<?> screen) {

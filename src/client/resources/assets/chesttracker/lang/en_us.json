@@ -15,5 +15,9 @@
   "chesttracker.config.gui.memoryIcons.dimension": "Dimension ID",
   "chesttracker.config.gui.memoryIcons.icon": "Set Icon...",
   "chesttracker.config.gui.memoryIcons.iconScreen": "Choose an item",
+  "chesttracker.config.memory": "Storage & Memories",
+  "chesttracker.config.memory.openFolder": "Open Memory Folder",
+  "chesttracker.config.memory.readableMemories": "Readable Memory Files",
+  "chesttracker.config.memory.readableMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

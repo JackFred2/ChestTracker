@@ -11,36 +11,39 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemMemory {
-    private final Map<ResourceLocation, Map<BlockPos, List<ItemStack>>> memories;
+    private final Map<ResourceLocation, Map<BlockPos, LocationData>> memories;
 
     @Nullable
     public static ItemMemory INSTANCE = null;
     private String id;
 
     public static void load(String id) {
+        if (INSTANCE != null) unload();
         INSTANCE = Storage.INSTANCE.load(id);
         INSTANCE.id = id;
     }
 
     public static void save() {
+        if (INSTANCE == null) return;
         Storage.INSTANCE.save(INSTANCE);
     }
 
     public static void unload() {
+        if (INSTANCE == null) return;
         save();
         INSTANCE = null;
     }
 
-    public ItemMemory(Map<ResourceLocation, Map<BlockPos, List<ItemStack>>> map) {
+    public ItemMemory(Map<ResourceLocation, Map<BlockPos, LocationData>> map) {
         this.memories = map;
     }
 
-    public Map<ResourceLocation, Map<BlockPos, List<ItemStack>>> getMemories() {
+    public Map<ResourceLocation, Map<BlockPos, LocationData>> getMemories() {
         return memories;
     }
 
-    public void addMemory(ResourceLocation key, BlockPos pos, List<ItemStack> items) {
-        memories.computeIfAbsent(key, u -> new HashMap<>()).put(pos, items);
+    public void addMemory(ResourceLocation key, BlockPos pos, LocationData data) {
+        memories.computeIfAbsent(key, u -> new HashMap<>()).put(pos, data);
     }
 
     public void removeMemory(ResourceLocation key, BlockPos pos) {
@@ -56,7 +59,7 @@ public class ItemMemory {
     public Map<LightweightStack, Integer> getCounts(ResourceLocation key) {
         if (memories.containsKey(key))
             return memories.get(key).values().stream()
-                    .flatMap(List::stream)
+                    .flatMap(data -> data.items().stream())
                     .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
                             stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
         else
@@ -66,7 +69,7 @@ public class ItemMemory {
     public List<BlockPos> getPositions(ResourceLocation key, SearchRequest request) {
         if (memories.containsKey(key))
             return memories.get(key).entrySet().stream()
-                    .filter(e -> e.getValue().stream().anyMatch(request::test))
+                    .filter(e -> e.getValue().items().stream().anyMatch(request::test))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         else

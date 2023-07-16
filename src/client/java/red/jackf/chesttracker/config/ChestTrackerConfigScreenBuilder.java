@@ -4,16 +4,25 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.custom.MemoryIconController;
+import red.jackf.chesttracker.gui.MemoryIcon;
+import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.util.Magnitudes;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
+import java.nio.file.Files;
+
+import static net.minecraft.network.chat.Component.literal;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class ChestTrackerConfigScreenBuilder {
@@ -24,10 +33,15 @@ public class ChestTrackerConfigScreenBuilder {
         return YetAnotherConfigLib.createBuilder()
                 .title(translatable("chesttracker.title"))
                 .category(makeMainCategory(instance))
+                .category(makeMemoryCategory(instance))
                 .category(makeWhereIsItLink())
                 .save(instance::save)
                 .build()
                 .generateScreen(parent);
+    }
+
+    private static ResourceLocation getDescriptionImage(String basePath, boolean value) {
+        return ChestTracker.id("textures/gui/config/%s_%s.png".formatted(basePath, value ? "enabled" : "disabled"));
     }
 
     private static ConfigCategory makeMainCategory(GsonConfigInstance<ChestTrackerConfig> instance) {
@@ -36,6 +50,41 @@ public class ChestTrackerConfigScreenBuilder {
                 .group(makeGuiGroup(instance))
                 .group(makeMemoryIconGroup(instance))
                 .build();
+    }
+
+    private static ConfigCategory makeMemoryCategory(GsonConfigInstance<ChestTrackerConfig> instance) {
+        return ConfigCategory.createBuilder()
+                .name(translatable("chesttracker.config.memory"))
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("chesttracker.config.memory.openFolder"))
+                        .action((screen, button) -> Util.getPlatform().openUri(Constants.STORAGE_DIR.toUri()))
+                        .text(literal(getDirectorySizeString()))
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.memory.readableMemories"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .text(translatable("chesttracker.config.memory.readableMemories.description"))
+                                .image(getDescriptionImage("readable_memories", b), 468, 244)
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().memory.readableMemories,
+                                () -> instance.getConfig().memory.readableMemories,
+                                b -> {
+                                    instance.getConfig().memory.readableMemories = b;
+                                    ItemMemory.save();
+                                })
+                        .build())
+                .build();
+    }
+
+    private static String getDirectorySizeString() {
+        long size = 0;
+        if (Files.isDirectory(Constants.STORAGE_DIR))
+            size = FileUtils.sizeOfDirectory(Constants.STORAGE_DIR.toFile());
+        return Magnitudes.format(size, 2, "B");
     }
 
     private static OptionGroup makeGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
@@ -54,7 +103,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.autocompleteShowsRegularNames"))
                         .description(b -> OptionDescription.createBuilder()
-                                .image(ChestTracker.id("textures/gui/config/show_unnamed_in_autocomplete_%s.png".formatted(b ? "enabled" : "disabled")), 118, 85)
+                                .image(getDescriptionImage("show_unnamed_in_autocomplete", b), 118, 85)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
@@ -67,7 +116,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.showResizeWidget"))
                         .description(b -> OptionDescription.createBuilder()
-                                .image(ChestTracker.id("textures/gui/config/show_resize_%s.png".formatted(b ? "enabled" : "disabled")), 52, 52)
+                                .image(getDescriptionImage("show_resize", b), 52, 52)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()

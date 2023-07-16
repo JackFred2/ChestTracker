@@ -7,6 +7,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 
@@ -73,7 +74,8 @@ public class ChestTrackerConfig {
     }
 
     public static class Memory {
-
+        @ConfigEntry
+        public boolean readableMemories = false;
     }
 
     public void validate() {
