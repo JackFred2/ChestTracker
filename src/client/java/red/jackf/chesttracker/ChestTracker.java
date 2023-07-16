@@ -24,7 +24,6 @@ import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.api.SearchResult;
 import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
-import red.jackf.whereisit.search.SearchHandler;
 
 import java.util.HashSet;
 import java.util.Set;
