@@ -8,6 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.util.Constants;
+import red.jackf.whereisit.api.SearchRequest;
+import red.jackf.whereisit.client.api.SearchInvoker;
+import red.jackf.whereisit.client.api.SearchRequestPopulator;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +30,17 @@ public class ItemListWidget extends AbstractWidget {
 
     public void setItems(List<ItemStack> items) {
         this.items = items;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        int x = (int) ((mouseX - getX()) / Constants.SLOT_SIZE);
+        int y = (int) ((mouseY - getY()) / Constants.SLOT_SIZE);
+        var index = (y * gridWidth) + x;
+        if (index >= this.items.size()) return;
+        var request = new SearchRequest();
+        SearchRequestPopulator.addItemStack(request, this.items.get(index), SearchRequestPopulator.Context.inventory());
+        SearchInvoker.doSearch(request);
     }
 
     @Override
@@ -62,12 +76,14 @@ public class ItemListWidget extends AbstractWidget {
     }
 
     private void renderItems(GuiGraphics graphics) {
-        for (int i = 0; i < this.items.size() && i < (gridWidth * gridHeight); i++) {
-            var item = this.items.get(i);
+        for (int i = 0; i < (gridWidth * gridHeight); i++) {
             var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
             graphics.blit(Constants.TEXTURE, x, y, UV_X, UV_Y, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
-            graphics.renderItem(item, x + 1, y + 1); // Item
+            if (i < this.items.size()) {
+                var item = this.items.get(i);
+                graphics.renderItem(item, x + 1, y + 1); // Item
+            }
         }
     }
 

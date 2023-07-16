@@ -41,6 +41,7 @@ public class ChestTracker implements ClientModInitializer {
 
         LocationTracking.setup();
 
+        // load and unload memory storage
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> ItemMemory.load("test"));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ItemMemory.unload());
 
@@ -55,6 +56,7 @@ public class ChestTracker implements ClientModInitializer {
             if (screen instanceof AbstractContainerScreen<?>) {
                 // opening Chest Tracker GUI with a screen open
                 ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+                    // don't search in search bars, etc
                     if (ShouldIgnoreKey.EVENT.invoker().shouldIgnoreKey()) {
                         return;
                     }
@@ -72,6 +74,7 @@ public class ChestTracker implements ClientModInitializer {
             }
         });
 
+        // Title Colour grabber for the main GUI
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
     }
 }

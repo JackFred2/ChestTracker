@@ -31,7 +31,7 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"yet_another_config_lib_v3": "*",
-		"whereisit": ">=2.0.4"
+		"whereisit": ">=2.0.8"
 	},
 	"suggests": {
 	}
