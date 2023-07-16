@@ -26,6 +26,8 @@ public class ItemListWidget extends AbstractWidget {
     private final int gridHeight;
     private List<ItemStack> items = Collections.emptyList();
     private int offset = 0;
+    private boolean shouldShowTooltip;
+
     public ItemListWidget(int x, int y, int gridWidth, int gridHeight) {
         super(x, y, gridWidth * Constants.SLOT_SIZE, gridHeight * Constants.SLOT_SIZE, Component.empty());
         this.gridWidth = gridWidth;
@@ -107,7 +109,8 @@ public class ItemListWidget extends AbstractWidget {
         var slotX = getX() + x * Constants.SLOT_SIZE;
         var slotY = getY() + y * Constants.SLOT_SIZE;
         graphics.fill(slotX + 1, slotY + 1, slotX + Constants.SLOT_SIZE - 1, slotY + Constants.SLOT_SIZE - 1, 0x80_FFFFFF);
-        graphics.renderTooltip(Minecraft.getInstance().font, items.get(index), mouseX, mouseY);
+        if (this.shouldShowTooltip)
+            graphics.renderTooltip(Minecraft.getInstance().font, items.get(index), mouseX, mouseY);
     }
 
     private void renderItems(GuiGraphics graphics) {
@@ -126,5 +129,9 @@ public class ItemListWidget extends AbstractWidget {
     @Override
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
 
+    }
+
+    public void setShouldShowTooltip(boolean shouldShowTooltip) {
+        this.shouldShowTooltip = shouldShowTooltip;
     }
 }

@@ -183,6 +183,7 @@ public class ChestTrackerScreen extends Screen {
         this.renderBackground(graphics); // background darken
         BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
         SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
+        this.itemList.setShouldShowTooltip(!this.search.isFocused() || !this.search.autoComplete().isMouseOver(mouseX, mouseY));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, RenderUtil.titleColour, false); // title
     }
