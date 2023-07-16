@@ -10,7 +10,9 @@ public class Magnitudes {
             total /= 1000;
             index++;
         }
-        if (index == -1) return in + " " + suffix;
+        if (index == -1)
+            if ("".equals(suffix)) return String.valueOf(in);
+            else return in + " " + suffix;
         index = Math.min(index, siSuffixes.length - 1);
         var formatStr = "%." + decimalPlaces + "f %s%s";
         return formatStr.formatted(total, siSuffixes[index], suffix);

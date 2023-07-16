@@ -18,6 +18,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.widget.ItemListWidget;
 import red.jackf.chesttracker.gui.widget.ResizeWidget;
+import red.jackf.chesttracker.gui.widget.VerticalScrollWidget;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
@@ -30,19 +31,20 @@ import java.util.stream.Collectors;
 
 public class ChestTrackerScreen extends Screen {
     private static final Component TITLE = Component.translatable("chesttracker.title");
-    private static final int SMALL_MENU_WIDTH = 176;
-    private static final int SMALL_MENU_HEIGHT = 153;
     private static final int TITLE_LEFT = 8;
     private static final int TITLE_TOP = 8;
     private static final int SEARCH_LEFT = 8;
-    private static final int SEARCH_TOP = 21;
+    private static final int SEARCH_TOP = 24;
     private static final int GRID_LEFT = 7;
     private static final int GRID_TOP = 38;
     private static final int SETTINGS_RIGHT = 6;
-    private static final int SETTINGS_TOP = 4;
+    private static final int SETTINGS_TOP = 5;
     private static final int SETTINGS_SIZE = 14;
     private static final int SETTINGS_UV_X = 0;
     private static final int SETTINGS_UV_Y = 86;
+    private static final int SCROLL_WIDTH = 12;
+    private static final int SMALL_MENU_WIDTH = 176 + SCROLL_WIDTH + 2;
+    private static final int SMALL_MENU_HEIGHT = 153;
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
     private static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
@@ -57,6 +59,7 @@ public class ChestTrackerScreen extends Screen {
     private ItemListWidget itemList;
     @Nullable
     private ResizeWidget resize = null;
+    private VerticalScrollWidget scroll;
     private ResourceLocation memoryId;
     private List<ItemStack> items = Collections.emptyList();
     private int menuWidth;
@@ -93,6 +96,10 @@ public class ChestTrackerScreen extends Screen {
         // items
         this.itemList = this.addRenderableWidget(new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight));
 
+        // scroll
+        this.scroll = this.addRenderableWidget(new VerticalScrollWidget(left + menuWidth - 7 - SCROLL_WIDTH, top + GRID_TOP, SCROLL_WIDTH, this.itemList.getHeight(), Component.empty()));
+        this.scroll.setResponder(this.itemList::onScroll);
+
         // search
         var shouldFocusSearch = this.search == null || this.search.isFocused();
         shouldFocusSearch &= config.gui.autofocusSearchBar;
@@ -115,6 +122,15 @@ public class ChestTrackerScreen extends Screen {
         if (shouldFocusSearch)
             this.setInitialFocus(search);
 
+        // settings
+        var settingsButton = this.addRenderableWidget(new ImageButton(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
+                SETTINGS_SIZE, SETTINGS_SIZE,
+                SETTINGS_UV_X, SETTINGS_UV_Y,
+                0, Constants.TEXTURE, 256, 256,
+                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this)),
+                Component.translatable("mco.configure.world.buttons.settings")));
+        settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
+
         // resize
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
@@ -127,15 +143,6 @@ public class ChestTrackerScreen extends Screen {
                 rebuildWidgets();
             }));
 
-        // settings
-        var settingsButton = this.addRenderableWidget(new ImageButton(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
-                SETTINGS_SIZE, SETTINGS_SIZE,
-                SETTINGS_UV_X, SETTINGS_UV_Y,
-                0, Constants.TEXTURE, 256, 256,
-                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this)),
-                Component.translatable("mco.configure.world.buttons.settings")));
-        settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
-
         updateItems();
     }
 
@@ -145,7 +152,7 @@ public class ChestTrackerScreen extends Screen {
     }
 
     /**
-     * Updates the main item list and filtered list
+     * Loads the items from the given save and dimension ID
      */
     private void updateItems() {
         if (ItemMemory.INSTANCE == null) return;
@@ -162,10 +169,13 @@ public class ChestTrackerScreen extends Screen {
     }
 
     /**
-     * Updates the items displayed by filtering with the current value
+     * Updates the items list with the current items, filtered by the search bar
      */
     private void filter(String filter) {
-        this.itemList.setItems(SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter));
+        var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter);
+        this.itemList.setItems(filtered);
+        var guiConfig = ChestTrackerConfig.INSTANCE.getConfig().gui;
+        this.scroll.setDisabled(filtered.size() <= (guiConfig.gridWidth * guiConfig.gridHeight));
     }
 
     @Override
@@ -213,8 +223,11 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         // Searchables Edit Box Support
-        if (search.autoComplete().mouseScrolled(mouseX, mouseY, delta)) {
+        if (search.isFocused() && search.autoComplete().mouseScrolled(mouseX, mouseY, delta)) {
             return true;
+        } else if (itemList.isMouseOver(mouseX, mouseY) || scroll.isMouseOver(mouseX, mouseY)) {
+            delta /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight);
+            return scroll.mouseScrolled(mouseX, mouseY, delta);
         }
         return super.mouseScrolled(mouseX, mouseY, delta);
     }

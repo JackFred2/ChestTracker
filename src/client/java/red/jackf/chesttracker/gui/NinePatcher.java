@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public record NinePatcher(ResourceLocation texture, int uvStartX, int uvStartY, int patchSize, int patchGap) {
 
-    void draw(GuiGraphics graphics, int x, int y, int width, int height) {
+    public void draw(GuiGraphics graphics, int x, int y, int width, int height) {
         if (height < 2 * patchSize) throw new IllegalArgumentException("Height %d too small; must be at least %d".formatted(height, patchSize * 2));
         if (width < 2 * patchSize) throw new IllegalArgumentException("Width %d too small; must be at least %d".formatted(width, patchSize * 2));
 
