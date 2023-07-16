@@ -6,43 +6,46 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class ItemSelectorScreen extends Screen {
+/**
+ * Allows the user to select from a list of options, using ItemStacks as displays.
+ * Recommended to pass in a linked map structure such as {@link java.util.LinkedHashMap} for display ordering.
+ * @param <T> Type to be selected from
+ */
+public class SelectorScreen<T> extends Screen {
     private static final int TOP_BUFFER = 40;
     private static final int HORIZONTAL_PADDING = 20;
     private static final int TOP_PADDING = 10;
     private static final int BOTTOM_PADDING = 20;
     private final Screen parent;
-    private final Consumer<@Nullable Item> consumer;
-    private final List<Item> items;
-    private List<Item> filteredItems;
+    private final Consumer<@Nullable T> consumer;
+    private final Map<T, ItemStack> options;
+    private Map<T, ItemStack> filteredOptions;
     private int menuWidth;
     private int menuHeight;
     private EditBox search;
     private int left = 0;
     private int top = 0;
 
-    protected ItemSelectorScreen(Screen parent, Consumer<@Nullable Item> consumer) {
-        super(Component.translatable("chesttracker.config.gui.memoryIcons.iconScreen"));
+    protected SelectorScreen(Screen parent, Map<T, ItemStack> options, Consumer<@Nullable T> consumer) {
+        super(Component.translatable("chesttracker.config.selectorScreen"));
         this.parent = parent;
         this.consumer = consumer;
 
-        this.items = BuiltInRegistries.ITEM.stream().filter(item -> item != Items.AIR).toList();
-        this.filteredItems = new ArrayList<>(this.items);
+        this.options = options;
+
+        this.filteredOptions = new LinkedHashMap<>(this.options);
     }
 
     @Override
@@ -61,9 +64,9 @@ public class ItemSelectorScreen extends Screen {
                 this.search,
                 CommonComponents.EMPTY));
         this.search.setResponder(s -> {
-            this.filteredItems = this.items.stream()
-                    .filter(item -> item.getDescription().getString().toLowerCase().contains(s))
-                    .collect(Collectors.toList());
+            this.filteredOptions = this.options.entrySet().stream()
+                    .filter(entry -> entry.getValue().getHoverName().getString().toLowerCase().contains(s))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
             rebuildWidgets();
         });
         this.search.setCanLoseFocus(false);
@@ -82,17 +85,17 @@ public class ItemSelectorScreen extends Screen {
     private void setupItems() {
         final int spacing = 24;
 
-        int index = 0;
+        var iterator = this.filteredOptions.entrySet().iterator();
 
         for (int y = 0; y < menuHeight - TOP_BUFFER; y += spacing) {
             for (int x = 0; x < menuWidth; x += spacing) {
-                if (this.filteredItems.size() == index) return;
-                var item = this.filteredItems.get(index++);
-                this.addRenderableWidget(new ItemButton(new ItemStack(item),
+                if (!iterator.hasNext()) return;
+                var option = iterator.next();
+                this.addRenderableWidget(new ItemButton(option.getValue(),
                         this.left + x,
                         this.top + TOP_BUFFER + y,
-                        item.getDescription(), b -> {
-                    ItemSelectorScreen.this.consumer.accept(item);
+                        option.getValue().getHoverName(), b -> {
+                    SelectorScreen.this.consumer.accept(option.getKey());
                     this.onClose();
                 }));
             }
@@ -108,6 +111,7 @@ public class ItemSelectorScreen extends Screen {
 
     @Override
     public void onClose() {
+        consumer.accept(null);
         Minecraft.getInstance().setScreen(parent);
     }
 }

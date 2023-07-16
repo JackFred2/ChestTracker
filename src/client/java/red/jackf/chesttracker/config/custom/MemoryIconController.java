@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.config.custom;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import dev.isxander.yacl3.api.Controller;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.controller.ControllerBuilder;
@@ -13,16 +14,23 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.LightweightStack;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -63,6 +71,10 @@ public class MemoryIconController implements Controller<MemoryIcon> {
     }
 
     public static class Widget extends AbstractWidget implements ContainerEventHandler {
+        private static final Map<Item, ItemStack> ITEMS = BuiltInRegistries.ITEM.stream()
+                .filter(item -> item != Items.AIR)
+                .map(item -> Pair.of(item, new ItemStack(item)))
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
         private static final int PADDING = 2; // px
         private final EditBox editBox;
         private final ItemButton setItemButton;
@@ -91,7 +103,7 @@ public class MemoryIconController implements Controller<MemoryIcon> {
             this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.gui.memoryIcons.dimension")));
 
             this.setItemButton = new ItemButton(option.pendingValue().icon().toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.gui.memoryIcons.icon"),
-                b -> Minecraft.getInstance().setScreen(new ItemSelectorScreen(screen, item -> {
+                b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
                     if (item != null)
                         option.requestSet(new MemoryIcon(option.binding().getValue().id(), new LightweightStack(item)));
                 })));
