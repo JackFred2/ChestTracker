@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -20,7 +21,13 @@ import red.jackf.chesttracker.gui.RenderUtil;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.world.LocationTracking;
+import red.jackf.whereisit.api.SearchResult;
+import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
+import red.jackf.whereisit.search.SearchHandler;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
@@ -76,5 +83,25 @@ public class ChestTracker implements ClientModInitializer {
 
         // Title Colour grabber for the main GUI
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
+
+        // add our memories as a handler for where is it
+        SearchInvoker.EVENT.register((request, resultConsumer) -> {
+            if (ItemMemory.INSTANCE == null) return true;
+            var level = Minecraft.getInstance().level;
+            var memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
+            var thisDim = ItemMemory.INSTANCE.getMemories().get(memoryId);
+            if (thisDim == null) return true;
+            Set<SearchResult> results = new HashSet<>();
+            for (var entry : thisDim.entrySet()) {
+                for (var item : entry.getValue().items()) {
+                    if (request.test(item)) {
+                        results.add(new SearchResult(entry.getKey(), item));
+                        break;
+                    }
+                }
+            }
+            if (!results.isEmpty()) resultConsumer.accept(results);
+            return true;
+        });
     }
 }
