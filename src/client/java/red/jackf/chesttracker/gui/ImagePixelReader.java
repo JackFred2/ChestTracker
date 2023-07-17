@@ -74,5 +74,9 @@ public class ImagePixelReader {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ImagePixelReader.TitleListener());
 
         addPixelColourListener(0, 76, 0xFF_404040, ChestTrackerScreen::setTitleColour);
+        addPixelColourListener(168, 23, 0xFFFFFF, CustomSearchablesFormatter::setTextColour);
+        addPixelColourListener(217, 31, 0xFF0000, CustomSearchablesFormatter::setErrorColour);
+        addPixelColourListener(168, 31, 0x669BBC, CustomSearchablesFormatter::setSearchKeyColour);
+        addPixelColourListener(217, 23, 0xEECC77, CustomSearchablesFormatter::setSearchTermColour);
     }
 }

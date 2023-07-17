@@ -3,7 +3,6 @@ package red.jackf.chesttracker.gui;
 import com.blamejared.searchables.api.SearchablesConstants;
 import com.blamejared.searchables.api.autcomplete.AutoComplete;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
-import com.blamejared.searchables.api.formatter.FormattingVisitor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -112,8 +111,9 @@ public class ChestTrackerScreen extends Screen {
         // search
         var shouldFocusSearch = this.search == null || this.search.isFocused();
         shouldFocusSearch &= config.gui.autofocusSearchBar;
+        var formatter = new CustomSearchablesFormatter(SearchablesUtil.ITEM_STACK);
         if (config.gui.showAutocomplete) {
-            this.search = addRenderableWidget(new AutoCompletingEditBox<>(
+            var autocompleting = addRenderableWidget(new AutoCompletingEditBox<>(
                     font,
                     left + SEARCH_LEFT,
                     top + SEARCH_TOP,
@@ -124,7 +124,10 @@ public class ChestTrackerScreen extends Screen {
                     SearchablesUtil.ITEM_STACK,
                     () -> items
             ));
-            this.search.setResponder(this::filter);
+            autocompleting.setFormatter(formatter);
+            autocompleting.addResponder(formatter);
+            autocompleting.addResponder(this::filter);
+            this.search = autocompleting;
         } else {
             this.search = addRenderableWidget(new EditBox(
                     font,
@@ -146,7 +149,6 @@ public class ChestTrackerScreen extends Screen {
                     return super.mouseClicked(mouseX, mouseY, button);
                 }
             });
-            var formatter = new FormattingVisitor(SearchablesUtil.ITEM_STACK);
             this.search.setFormatter(formatter);
             this.search.setHint(SearchablesConstants.COMPONENT_SEARCH);
             this.search.setResponder(s -> {
@@ -154,6 +156,7 @@ public class ChestTrackerScreen extends Screen {
                 this.filter(s);
             });
         }
+        this.search.setTextColor(CustomSearchablesFormatter.getTextColour());
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
         if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
