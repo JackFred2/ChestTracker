@@ -50,6 +50,9 @@ public class ChestTrackerConfig {
         public boolean autofocusSearchBar = true;
 
         @ConfigEntry
+        public boolean showAutocomplete = true;
+
+        @ConfigEntry
         public boolean autocompleteShowsRegularNames = true;
 
         @ConfigEntry

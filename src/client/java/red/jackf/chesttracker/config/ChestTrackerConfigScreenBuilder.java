@@ -100,6 +100,19 @@ public class ChestTrackerConfigScreenBuilder {
                                 b -> instance.getConfig().gui.autofocusSearchBar = b)
                         .build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.gui.showAutocomplete"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .image(getDescriptionImage("show_autocomplete", b), 85, 59)
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().gui.showAutocomplete,
+                                () -> instance.getConfig().gui.showAutocomplete,
+                                b -> instance.getConfig().gui.showAutocomplete = b)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.autocompleteShowsRegularNames"))
                         .description(b -> OptionDescription.createBuilder()
                                 .image(getDescriptionImage("show_unnamed_in_autocomplete", b), 118, 85)
