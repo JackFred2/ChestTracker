@@ -51,6 +51,7 @@ public class ChestTrackerScreen extends Screen {
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
     private static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
+    private static Integer titleColour;
 
     private int left = 0;
     private int top = 0;
@@ -74,6 +75,11 @@ public class ChestTrackerScreen extends Screen {
         this.parent = parent;
         var level = Minecraft.getInstance().level;
         this.memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
+    }
+
+    public static void setTitleColour(Integer titleColour) {
+        ChestTracker.LOGGER.debug("Set title colour to 0x%X".formatted(titleColour));
+        ChestTrackerScreen.titleColour = titleColour;
     }
 
     @Override
@@ -227,7 +233,7 @@ public class ChestTrackerScreen extends Screen {
         SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
-        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, RenderUtil.titleColour, false); // title
+        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, titleColour, false); // title
     }
 
     @Override

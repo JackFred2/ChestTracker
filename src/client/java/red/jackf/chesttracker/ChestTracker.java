@@ -7,17 +7,15 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
-import red.jackf.chesttracker.gui.RenderUtil;
+import red.jackf.chesttracker.gui.ImagePixelReader;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.world.LocationTracking;
@@ -80,16 +78,15 @@ public class ChestTracker implements ClientModInitializer {
             }
         });
 
-        // Title Colour grabber for the main GUI
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new RenderUtil.TitleListener());
+        ImagePixelReader.setup();
 
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {
-            if (ItemMemory.INSTANCE == null) return true;
+            if (ItemMemory.INSTANCE == null) return false;
             var level = Minecraft.getInstance().level;
             var memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
             var thisDim = ItemMemory.INSTANCE.getMemories().get(memoryId);
-            if (thisDim == null) return true;
+            if (thisDim == null) return false;
             Set<SearchResult> results = new HashSet<>();
             for (var entry : thisDim.entrySet()) {
                 for (var item : entry.getValue().items()) {
