@@ -42,8 +42,7 @@ public class ChestTrackerScreen extends Screen {
     private static final int SETTINGS_SIZE = 14;
     private static final int SETTINGS_UV_X = 0;
     private static final int SETTINGS_UV_Y = 86;
-    private static final int SCROLL_WIDTH = 12;
-    private static final int SMALL_MENU_WIDTH = 176 + SCROLL_WIDTH + 2;
+    private static final int SMALL_MENU_WIDTH = 192;
     private static final int SMALL_MENU_HEIGHT = 153;
 
     private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
@@ -97,7 +96,7 @@ public class ChestTrackerScreen extends Screen {
         this.itemList = this.addRenderableWidget(new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight));
 
         // scroll
-        this.scroll = this.addRenderableWidget(new VerticalScrollWidget(left + menuWidth - 7 - SCROLL_WIDTH, top + GRID_TOP, SCROLL_WIDTH, this.itemList.getHeight(), Component.empty()));
+        this.scroll = this.addRenderableWidget(new VerticalScrollWidget(left + menuWidth - 19, top + GRID_TOP, this.itemList.getHeight(), Component.empty()));
         this.scroll.setResponder(this.itemList::onScroll);
 
         // search

@@ -7,7 +7,6 @@ import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
@@ -17,7 +16,7 @@ import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
-import red.jackf.chesttracker.util.Magnitudes;
+import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import java.nio.file.Files;
@@ -84,7 +83,7 @@ public class ChestTrackerConfigScreenBuilder {
         long size = 0;
         if (Files.isDirectory(Constants.STORAGE_DIR))
             size = FileUtils.sizeOfDirectory(Constants.STORAGE_DIR.toFile());
-        return Magnitudes.format(size, 2, "B");
+        return StringUtil.magnitudeSpace(size, 2) + "B";
     }
 
     private static OptionGroup makeGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {

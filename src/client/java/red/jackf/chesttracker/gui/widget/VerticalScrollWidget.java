@@ -21,14 +21,16 @@ public class VerticalScrollWidget extends AbstractWidget {
     private static final int DISABLED_OFFSET = HANDLE_HEIGHT + 1;
     private static final int INSET = 1;
 
+    public static final int WIDTH = 2 * INSET + HANDLE_WIDTH;
+
     private float progress = 0f;
     private boolean scrolling = false;
     private boolean disabled = false;
     @Nullable
     private Consumer<Float> responder = null;
 
-    public VerticalScrollWidget(int x, int y, int width, int height, Component message) {
-        super(x, y, width, height, message);
+    public VerticalScrollWidget(int x, int y, int height, Component message) {
+        super(x, y, WIDTH, height, message);
     }
 
     public void setDisabled(boolean disabled) {

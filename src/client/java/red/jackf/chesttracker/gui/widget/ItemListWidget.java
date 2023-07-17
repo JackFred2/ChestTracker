@@ -1,16 +1,18 @@
 package red.jackf.chesttracker.gui.widget;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.util.Constants;
-import red.jackf.chesttracker.util.Magnitudes;
+import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.SearchRequestPopulator;
@@ -94,7 +96,7 @@ public class ItemListWidget extends AbstractWidget {
             var item = items.get(i);
             var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
-            graphics.renderItemDecorations(Minecraft.getInstance().font, item, x + 1, y + 1, Magnitudes.format(item.getCount(), 0)); // Counts
+            graphics.renderItemDecorations(Minecraft.getInstance().font, item, x + 1, y + 1, StringUtil.magnitude(item.getCount(), 0)); // Counts
         }
     }
 
@@ -109,8 +111,13 @@ public class ItemListWidget extends AbstractWidget {
         var slotX = getX() + x * Constants.SLOT_SIZE;
         var slotY = getY() + y * Constants.SLOT_SIZE;
         graphics.fill(slotX + 1, slotY + 1, slotX + Constants.SLOT_SIZE - 1, slotY + Constants.SLOT_SIZE - 1, 0x80_FFFFFF);
-        if (this.shouldShowTooltip)
-            graphics.renderTooltip(Minecraft.getInstance().font, items.get(index), mouseX, mouseY);
+        if (this.shouldShowTooltip) {
+            var stack = items.get(index);
+            var lines =  Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+            if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount())).withStyle(ChatFormatting.GREEN));
+            var image = stack.getTooltipImage();
+            graphics.renderTooltip(Minecraft.getInstance().font, lines, image, mouseX, mouseY);
+        }
     }
 
     private void renderItems(GuiGraphics graphics) {
