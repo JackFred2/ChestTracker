@@ -106,8 +106,7 @@ public class MemoryIconController implements Controller<MemoryIcon> {
                 b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
                     if (item != null)
                         option.requestSet(new MemoryIcon(option.binding().getValue().id(), new LightweightStack(item)));
-                })));
-            this.setItemButton.showBackground(true);
+                })), true, 0, false);
         }
 
         @Override

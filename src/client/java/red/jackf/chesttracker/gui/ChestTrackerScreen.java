@@ -12,12 +12,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
+import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.gui.widget.ItemListWidget;
 import red.jackf.chesttracker.gui.widget.ResizeWidget;
 import red.jackf.chesttracker.gui.widget.VerticalScrollWidget;
@@ -25,10 +27,7 @@ import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -45,6 +44,8 @@ public class ChestTrackerScreen extends Screen {
     private static final int SETTINGS_SIZE = 14;
     private static final int SETTINGS_UV_X = 0;
     private static final int SETTINGS_UV_Y = 86;
+    private static final int MEMORY_ICON_OFFSET = 24;
+    private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
     private static final int SMALL_MENU_HEIGHT = 153;
 
@@ -185,6 +186,32 @@ public class ChestTrackerScreen extends Screen {
                 ChestTrackerConfig.INSTANCE.save();
                 rebuildWidgets();
             }));
+
+        // key buttons
+        if (ItemMemory.INSTANCE != null) {
+            var index = 0;
+            Map<ResourceLocation, ItemButton> buttons = new HashMap<>(); // used to manage highlights
+
+            for (ResourceLocation resloc : ItemMemory.INSTANCE.getKeys()) {
+                var icon = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryIcons.stream()
+                        .filter(memIcon -> memIcon.id().equals(resloc))
+                        .map(memIcon -> memIcon.icon().toStack())
+                        .findFirst()
+                        .orElse(new ItemStack(Items.CRAFTING_TABLE));
+                var button = this.addRenderableWidget(new ItemButton(icon, this.left - MEMORY_ICON_OFFSET, this.top + (index++) * MEMORY_ICON_SPACING, Component.literal(resloc.toString()), b -> {
+                    buttons.get(this.memoryId).setHighlighted(false);
+
+                    this.memoryId = resloc;
+                    updateItems();
+
+                    buttons.get(resloc).setHighlighted(true);
+                }, true, 200, true));
+                buttons.put(resloc, button);
+
+                // inital button highlight
+                if (memoryId.equals(resloc)) button.setHighlighted(true);
+            }
+        }
 
         updateItems();
     }

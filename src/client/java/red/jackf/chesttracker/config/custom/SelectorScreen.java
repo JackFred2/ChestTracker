@@ -97,7 +97,7 @@ public class SelectorScreen<T> extends Screen {
                         option.getValue().getHoverName(), b -> {
                     SelectorScreen.this.consumer.accept(option.getKey());
                     this.onClose();
-                }));
+                }, false, 0, false));
             }
         }
     }

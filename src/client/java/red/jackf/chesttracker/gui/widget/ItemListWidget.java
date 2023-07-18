@@ -76,7 +76,7 @@ public class ItemListWidget extends AbstractWidget {
         var index = (y * gridWidth) + x;
         if (index >= items.size()) return;
         var request = new SearchRequest();
-        SearchRequestPopulator.addItemStack(request, items.get(index), SearchRequestPopulator.Context.inventory());
+        SearchRequestPopulator.addItemStack(request, items.get(index), SearchRequestPopulator.Context.INVENTORY_PRECISE);
         SearchInvoker.doSearch(request);
     }
 
@@ -84,7 +84,6 @@ public class ItemListWidget extends AbstractWidget {
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.renderItems(graphics);
         graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 250.0f);
         this.renderItemDecorations(graphics);
         this.renderAdditional(graphics, mouseX, mouseY);
         graphics.pose().popPose();
@@ -116,7 +115,10 @@ public class ItemListWidget extends AbstractWidget {
             var lines =  Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
             if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount())).withStyle(ChatFormatting.GREEN));
             var image = stack.getTooltipImage();
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 200f);
             graphics.renderTooltip(Minecraft.getInstance().font, lines, image, mouseX, mouseY);
+            graphics.pose().popPose();
         }
     }
 
