@@ -18,6 +18,7 @@ import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.ImagePixelReader;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
+import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
@@ -75,6 +76,7 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         ImagePixelReader.setup();
+        StorageUtil.setup();
 
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {
