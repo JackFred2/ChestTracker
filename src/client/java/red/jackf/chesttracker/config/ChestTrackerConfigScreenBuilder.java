@@ -14,11 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.custom.HoldToConfirmButtonOption;
 import red.jackf.chesttracker.config.custom.MemoryIconController;
 import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
@@ -57,17 +59,54 @@ public class ChestTrackerConfigScreenBuilder {
     }
 
     private static ConfigCategory makeMemoryCategory(GsonConfigInstance<ChestTrackerConfig> instance) {
-        return ConfigCategory.createBuilder()
+        var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
+                .group(makeGlobalMemoryGroup(instance));
+        if (ItemMemory.INSTANCE != null) builder.group(makeLocalMemoryGroup(instance, ItemMemory.INSTANCE));
+        return builder.build();
+    }
+
+    private static OptionGroup makeLocalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, ItemMemory memory) {
+        var builder = OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.memory.local.title", memory.getId()))
+                .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
+                        OptionDescription.EMPTY,
+                        (screen, button) -> {
+                            memory.getKeys().forEach(key -> deleteKey(memory, key));
+                            button.setAvailable(false);
+                        },
+                        null,
+                        true,
+                        60));
+        memory.getKeys().forEach(resloc -> builder.option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.deleteKey", resloc),
+                OptionDescription.EMPTY,
+                (screen, button) -> {
+                    deleteKey(memory, resloc);
+                    button.setAvailable(false);
+                },
+                null,
+                true,
+                40)));
+        StorageUtil.getStorage().appendOptions(memory, builder);
+        return builder.build();
+    }
+
+    private static void deleteKey(ItemMemory memory, ResourceLocation key) {
+        memory.removeKey(key);
+    }
+
+    private static OptionGroup makeGlobalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+        return OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.memory.global"))
                 .option(ButtonOption.createBuilder()
-                        .name(translatable("chesttracker.config.memory.openFolder"))
+                        .name(translatable("chesttracker.config.memory.global.openFolder"))
                         .action((screen, button) -> Util.getPlatform().openUri(Constants.STORAGE_DIR.toUri()))
                         .text(literal(getDirectorySizeString()))
                         .build())
                 .option(Option.<Boolean>createBuilder()
-                        .name(translatable("chesttracker.config.memory.readableMemories"))
+                        .name(translatable("chesttracker.config.memory.global.readableMemories"))
                         .description(b -> OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.readableMemories.description"))
+                                .text(translatable("chesttracker.config.memory.global.readableMemories.description"))
                                 .image(getDescriptionImage("readable_memories", b), 468, 244)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
@@ -82,17 +121,18 @@ public class ChestTrackerConfigScreenBuilder {
                                 })
                         .build())
                 .option(Option.<Storage.Backend>createBuilder()
-                        .name(translatable("chesttracker.config.memory.storageBackend"))
+                        .name(translatable("chesttracker.config.memory.global.storageBackend"))
                         .description(b -> {
                             var builder = OptionDescription.createBuilder()
-                                    .text(translatable("chesttracker.config.memory.storageBackend.description"))
+                                    .text(translatable("chesttracker.config.memory.global.storageBackend.description"))
                                     .text(CommonComponents.NEW_LINE)
                                     .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
-                                            .append(translatable("chesttracker.config.memory.storageBackend.description." + b.name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.WHITE)));
-                                    if (b == Storage.Backend.MEMORY)
-                                        builder.text(CommonComponents.NEW_LINE)
-                                                .text(translatable("chesttracker.config.memory.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
-                                    return builder.build();
+                                            .append(translatable("chesttracker.config.memory.global.storageBackend.description." + b.name()
+                                                    .toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.WHITE)));
+                            if (b == Storage.Backend.MEMORY)
+                                builder.text(CommonComponents.NEW_LINE)
+                                        .text(translatable("chesttracker.config.memory.global.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
+                            return builder.build();
                         })
                         .controller(opt -> EnumControllerBuilder.create(opt)
                                 .enumClass(Storage.Backend.class))
@@ -195,18 +235,18 @@ public class ChestTrackerConfigScreenBuilder {
         //don't close the level
         //noinspection resource
         return ListOption.<MemoryIcon>createBuilder()
-            .name(translatable("chesttracker.config.gui.memoryIcons"))
-            .controller(MemoryIconController.Builder::new)
-            .binding(
-                    instance.getDefaults().gui.memoryIcons,
-                    () -> instance.getConfig().gui.memoryIcons,
-                    l -> instance.getConfig().gui.memoryIcons = l
-            )
-            .initial(new MemoryIcon(Minecraft.getInstance().player != null ?
-                    Minecraft.getInstance().player.level().dimension().location() :
-                    new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
-            //.collapsed(true)
-            .build();
+                .name(translatable("chesttracker.config.gui.memoryIcons"))
+                .controller(MemoryIconController.Builder::new)
+                .binding(
+                        instance.getDefaults().gui.memoryIcons,
+                        () -> instance.getConfig().gui.memoryIcons,
+                        l -> instance.getConfig().gui.memoryIcons = l
+                )
+                .initial(new MemoryIcon(Minecraft.getInstance().player != null ?
+                        Minecraft.getInstance().player.level().dimension().location() :
+                        new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
+                //.collapsed(true)
+                .build();
     }
 
     private static ConfigCategory makeWhereIsItLink() {

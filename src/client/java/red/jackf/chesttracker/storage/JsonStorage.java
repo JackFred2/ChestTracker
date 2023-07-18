@@ -4,16 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import dev.isxander.yacl3.api.LabelOption;
+import dev.isxander.yacl3.api.OptionGroup;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.util.Codecs;
 import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.util.StringUtil;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
+import static net.minecraft.network.chat.Component.translatable;
 
 public class JsonStorage implements Storage {
     private static final Gson GSON_COMPACT = new GsonBuilder().create();
@@ -61,5 +66,12 @@ public class JsonStorage implements Storage {
         } catch(IOException ex) {
             ChestTracker.LOGGER.error("Error saving memories", ex);
         }
+    }
+
+    @Override
+    public void appendOptions(ItemMemory memory, OptionGroup.Builder builder) {
+        var path = Constants.STORAGE_DIR.resolve(memory.getId() + ".json");
+        var size = Files.isRegularFile(path) ? FileUtils.sizeOf(path.toFile()) : 0L;
+        builder.option(LabelOption.create(translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B")));
     }
 }

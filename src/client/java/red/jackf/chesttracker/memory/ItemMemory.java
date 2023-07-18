@@ -62,6 +62,10 @@ public class ItemMemory {
         return memories.keySet();
     }
 
+    public void removeKey(ResourceLocation key) {
+        memories.remove(key);
+    }
+
     public Map<LightweightStack, Integer> getCounts(ResourceLocation key) {
         if (memories.containsKey(key))
             return memories.get(key).values().stream()

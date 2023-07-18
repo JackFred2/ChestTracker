@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.storage;
 
+import dev.isxander.yacl3.api.OptionGroup;
 import red.jackf.chesttracker.memory.ItemMemory;
 
 import java.util.HashMap;
@@ -17,4 +18,7 @@ public class MemoryStorage implements Storage {
     public void save(ItemMemory memory) {
         storage.put(memory.getId(), memory);
     }
+
+    @Override
+    public void appendOptions(ItemMemory memory, OptionGroup.Builder builder) {}
 }
