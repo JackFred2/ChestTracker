@@ -30,13 +30,16 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
     private final List<Pair<TokenRange, Style>> tokens = new ArrayList<>();
     private TokenRange lastRange = TokenRange.at(0);
 
-    public CustomSearchablesFormatter(final SearchableType<?> type) {
-        this.type = type;
-
+    static {
+        // defaults, though these get overwritten on asset load anyway
         setTextColour(0xFFFFFF);
         setErrorColour(0xFF0000);
         setSearchKeyColour(0x669BBC);
         setSearchTermColour(0xEECC77);
+    }
+
+    public CustomSearchablesFormatter(final SearchableType<?> type) {
+        this.type = type;
     }
 
     public static int getTextColour() {

@@ -6,6 +6,9 @@ import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.FastColor;
+import net.minecraft.util.FastColor.ABGR32;
+import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.profiling.ProfilerFiller;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.util.Constants;
@@ -30,13 +33,21 @@ public class ImagePixelReader {
     private static void addPixelColourListener(int x, int y, int defaultColour, Consumer<Integer> result) {
         hooks.add(image -> {
             if (image.getWidth() > x && image.getHeight() > y) {
-                return image.getPixelRGBA(x, y);
+                return abgrToArgb(image.getPixelRGBA(x, y));
             } else {
                 return defaultColour;
             }
         });
 
         results.add(result);
+    }
+
+    private static int abgrToArgb(int abgr) {
+        var r = ABGR32.red(abgr);
+        var g = ABGR32.green(abgr);
+        var b = ABGR32.blue(abgr);
+        var a = ABGR32.alpha(abgr);
+        return ARGB32.color(a, r, g, b);
     }
 
     public static class TitleListener implements SimpleResourceReloadListener<List<Integer>> {
@@ -64,8 +75,9 @@ public class ImagePixelReader {
 
         @Override
         public CompletableFuture<Void> apply(List<Integer> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
-            for (int i = 0; i < data.size(); i++)
+            for (int i = 0; i < data.size(); i++) {
                 results.get(i).accept(data.get(i));
+            }
             return CompletableFuture.completedFuture(null);
         }
     }
