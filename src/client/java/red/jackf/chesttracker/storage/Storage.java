@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.storage;
 
-import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.ItemMemory;
 
 import java.util.function.Supplier;

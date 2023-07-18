@@ -19,12 +19,8 @@ import red.jackf.chesttracker.gui.ImagePixelReader;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.world.LocationTracking;
-import red.jackf.whereisit.api.SearchResult;
 import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";

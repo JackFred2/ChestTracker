@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryStorage implements Storage {
-    private static Map<String, ItemMemory> storage = new HashMap<>();
+    private static final Map<String, ItemMemory> storage = new HashMap<>();
 
     @Override
     public ItemMemory load(String worldId) {
