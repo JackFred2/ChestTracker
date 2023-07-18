@@ -17,6 +17,7 @@
   "chesttracker.config.gui.memoryIcons.dimension": "Dimension ID",
   "chesttracker.config.gui.memoryIcons.icon": "Set Icon",
   "chesttracker.config.memory": "Storage & Memories",
+  "chesttracker.config.memory.irreversable": "Warning: this action can not be undone.",
   "chesttracker.config.memory.global": "Global Settings",
   "chesttracker.config.memory.global.openFolder": "Open Memory Folder",
   "chesttracker.config.memory.global.readableMemories": "Readable JSON Files",
@@ -28,7 +29,9 @@
   "chesttracker.config.memory.global.storageBackend.description.memoryLossOnReboot": "Warning: all memories stored this way are lost when the game closes.",
   "chesttracker.config.memory.local.title": "Loaded: %s",
   "chesttracker.config.memory.local.delete": "Delete All",
+  "chesttracker.config.memory.local.delete.description": "Delete all memories in all keys from the selected storage.",
   "chesttracker.config.memory.local.deleteKey": "Delete %s",
+  "chesttracker.config.memory.local.deleteKey.description": "Delete all memories in %s from the selected storage.",
   "chesttracker.config.memory.local.json.fileSize": "File Size: %s",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

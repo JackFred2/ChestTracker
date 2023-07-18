@@ -63,15 +63,19 @@ public class ChestTrackerConfigScreenBuilder {
         var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
                 .group(makeGlobalMemoryGroup(instance, parent));
-        if (ItemMemory.INSTANCE != null) builder.group(makeLocalMemoryGroup(instance, ItemMemory.INSTANCE, parent));
+        if (ItemMemory.INSTANCE != null) builder.group(makeLocalMemoryGroup(ItemMemory.INSTANCE, parent));
         return builder.build();
     }
 
-    private static OptionGroup makeLocalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, ItemMemory memory, Screen parent) {
+    private static OptionGroup makeLocalMemoryGroup(ItemMemory memory, Screen parent) {
         var builder = OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.memory.local.title", memory.getId()))
                 .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
-                        OptionDescription.EMPTY,
+                        OptionDescription.createBuilder()
+                                .text(translatable("chesttracker.config.memory.local.delete.description"))
+                                .text(CommonComponents.NEW_LINE)
+                                .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
+                                .build(),
                         (screen, button) -> {
                             memory.getMemories().clear();
                             StorageUtil.getStorage().save(memory);
@@ -81,7 +85,11 @@ public class ChestTrackerConfigScreenBuilder {
                         true,
                         60));
         memory.getKeys().forEach(resloc -> builder.option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.deleteKey", resloc),
-                OptionDescription.EMPTY,
+                OptionDescription.createBuilder()
+                        .text(translatable("chesttracker.config.memory.local.deleteKey.description", resloc))
+                        .text(CommonComponents.NEW_LINE)
+                        .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
+                        .build(),
                 (screen, button) -> {
                     deleteKey(memory, resloc);
                     StorageUtil.getStorage().save(memory);
