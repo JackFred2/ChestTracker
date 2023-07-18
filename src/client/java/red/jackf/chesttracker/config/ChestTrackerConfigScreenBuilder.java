@@ -2,11 +2,14 @@ package red.jackf.chesttracker.config;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
@@ -15,11 +18,13 @@ import red.jackf.chesttracker.config.custom.MemoryIconController;
 import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import java.nio.file.Files;
+import java.util.Locale;
 
 import static net.minecraft.network.chat.Component.literal;
 import static net.minecraft.network.chat.Component.translatable;
@@ -74,6 +79,29 @@ public class ChestTrackerConfigScreenBuilder {
                                 b -> {
                                     instance.getConfig().memory.readableMemories = b;
                                     ItemMemory.save();
+                                })
+                        .build())
+                .option(Option.<Storage.Backend>createBuilder()
+                        .name(translatable("chesttracker.config.memory.storageBackend"))
+                        .description(b -> {
+                            var builder = OptionDescription.createBuilder()
+                                    .text(translatable("chesttracker.config.memory.storageBackend.description"))
+                                    .text(CommonComponents.NEW_LINE)
+                                    .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
+                                            .append(translatable("chesttracker.config.memory.storageBackend.description." + b.name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.WHITE)));
+                                    if (b == Storage.Backend.MEMORY)
+                                        builder.text(CommonComponents.NEW_LINE)
+                                                .text(translatable("chesttracker.config.memory.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
+                                    return builder.build();
+                        })
+                        .controller(opt -> EnumControllerBuilder.create(opt)
+                                .enumClass(Storage.Backend.class))
+                        .binding(
+                                instance.getDefaults().memory.storageBackend,
+                                () -> instance.getConfig().memory.storageBackend,
+                                e -> {
+                                    instance.getConfig().memory.storageBackend = e;
+                                    e.load();
                                 })
                         .build())
                 .build();

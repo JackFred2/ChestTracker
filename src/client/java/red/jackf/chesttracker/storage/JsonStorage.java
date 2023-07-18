@@ -43,7 +43,7 @@ public class JsonStorage implements Storage {
                 ChestTracker.LOGGER.error("Error loading %s".formatted(path), ex);
             }
         }
-        return new ItemMemory(new HashMap<>());
+        return new ItemMemory();
     }
 
     @Override

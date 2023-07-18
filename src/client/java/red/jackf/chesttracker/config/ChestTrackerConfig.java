@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.MemoryIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.Constants;
 
 import java.io.IOException;
@@ -79,10 +80,14 @@ public class ChestTrackerConfig {
     public static class Memory {
         @ConfigEntry
         public boolean readableMemories = false;
+
+        @ConfigEntry
+        public Storage.Backend storageBackend = Storage.Backend.JSON;
     }
 
     public void validate() {
         this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, Constants.MIN_GRID_WIDTH, Constants.MAX_GRID_WIDTH);
         this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_HEIGHT);
+        if (this.memory.storageBackend == null) this.memory.storageBackend = Storage.Backend.JSON;
     }
 }

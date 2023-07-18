@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.whereisit.api.SearchRequest;
 
 import java.util.*;
@@ -19,19 +19,23 @@ public class ItemMemory {
 
     public static void load(String id) {
         if (INSTANCE != null) unload();
-        INSTANCE = Storage.INSTANCE.load(id);
+        INSTANCE = StorageUtil.getStorage().load(id);
         INSTANCE.id = id;
     }
 
     public static void save() {
         if (INSTANCE == null) return;
-        Storage.INSTANCE.save(INSTANCE);
+        StorageUtil.getStorage().save(INSTANCE);
     }
 
     public static void unload() {
         if (INSTANCE == null) return;
         save();
         INSTANCE = null;
+    }
+
+    public ItemMemory() {
+        this(new HashMap<>());
     }
 
     public ItemMemory(Map<ResourceLocation, Map<BlockPos, LocationData>> map) {
