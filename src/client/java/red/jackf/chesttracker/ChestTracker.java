@@ -84,18 +84,8 @@ public class ChestTracker implements ClientModInitializer {
         SearchInvoker.EVENT.register((request, resultConsumer) -> {
             if (ItemMemory.INSTANCE == null) return false;
             var level = Minecraft.getInstance().level;
-            var memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
-            var thisDim = ItemMemory.INSTANCE.getMemories().get(memoryId);
-            if (thisDim == null) return false;
-            Set<SearchResult> results = new HashSet<>();
-            for (var entry : thisDim.entrySet()) {
-                for (var item : entry.getValue().items()) {
-                    if (request.test(item)) {
-                        results.add(new SearchResult(entry.getKey(), item));
-                        break;
-                    }
-                }
-            }
+            if (level == null) return false;
+            var results = ItemMemory.INSTANCE.getPositions(level.dimension().location(), request);
             if (!results.isEmpty()) resultConsumer.accept(results);
             return true;
         });

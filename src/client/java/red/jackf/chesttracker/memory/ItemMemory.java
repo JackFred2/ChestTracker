@@ -1,11 +1,13 @@
 package red.jackf.chesttracker.memory;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.whereisit.api.SearchRequest;
+import red.jackf.whereisit.api.SearchResult;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -70,11 +72,12 @@ public class ItemMemory {
             return Collections.emptyMap();
     }
 
-    public List<BlockPos> getPositions(ResourceLocation key, SearchRequest request) {
+    public List<SearchResult> getPositions(ResourceLocation key, SearchRequest request) {
         if (memories.containsKey(key))
             return memories.get(key).entrySet().stream()
-                    .filter(e -> e.getValue().items().stream().anyMatch(request::test))
-                    .map(Map.Entry::getKey)
+                    .map(e -> Pair.of(e.getKey(), e.getValue().items().stream().filter(request::test).findFirst()))
+                    .filter(pair -> pair.getSecond().isPresent())
+                    .map(pair -> new SearchResult(pair.getFirst(), pair.getSecond().get()))
                     .collect(Collectors.toList());
         else
             return Collections.emptyList();

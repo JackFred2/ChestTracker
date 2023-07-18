@@ -39,13 +39,13 @@ public class ItemListWidget extends AbstractWidget {
     public void setItems(List<ItemStack> items) {
         this.items = items;
         int rows = getRows();
-        this.offset = Mth.clamp(this.offset, 0, (rows - gridHeight) * gridWidth);
+        this.offset = Mth.clamp(this.offset, 0, Math.max((rows - gridHeight) * gridWidth, 0));
     }
 
     private List<ItemStack> getOffsetItems() {
         if (this.items.size() == 0) return Collections.emptyList();
         int min = Mth.clamp(this.offset, 0, this.items.size() - 1);
-        int max = Mth.clamp(this.offset + gridWidth * gridHeight, 0, this.items.size() - 1);
+        int max = Mth.clamp(this.offset + gridWidth * gridHeight, 0, this.items.size());
         return this.items.subList(min, max);
     }
 

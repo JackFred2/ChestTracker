@@ -24,6 +24,6 @@
   "chesttracker.config.memory.storageBackend.description": "Defines how memories are stored between worlds/sessions.",
   "chesttracker.config.memory.storageBackend.description.json": "Stores all memories as JSON files in your game's 'chesttracker' directory.",
   "chesttracker.config.memory.storageBackend.description.memory": "Stores all memories in game memory.",
-  "chesttracker.config.memory.storageBackend.description.memoryLossOnReboot": "Warning: all memories stored this way are lost on reboot.",
+  "chesttracker.config.memory.storageBackend.description.memoryLossOnReboot": "Warning: all memories stored this way are lost when the game closes.",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }
