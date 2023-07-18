@@ -58,10 +58,6 @@ public class ItemMemory {
         }
     }
 
-    public Set<ResourceLocation> getKeys() {
-        return memories.keySet();
-    }
-
     public void removeKey(ResourceLocation key) {
         memories.remove(key);
     }
@@ -89,5 +85,9 @@ public class ItemMemory {
 
     public String getId() {
         return id;
+    }
+
+    public Set<ResourceLocation> getKeys() {
+        return memories.keySet();
     }
 }

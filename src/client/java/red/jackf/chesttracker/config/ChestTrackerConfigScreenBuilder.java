@@ -5,6 +5,7 @@ import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.GsonConfigInstance;
+import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class ChestTrackerConfigScreenBuilder {
         return YetAnotherConfigLib.createBuilder()
                 .title(translatable("chesttracker.title"))
                 .category(makeMainCategory(instance))
-                .category(makeMemoryCategory(instance))
+                .category(makeMemoryCategory(instance, parent))
                 .category(makeWhereIsItLink())
                 .save(instance::save)
                 .build()
@@ -58,22 +59,23 @@ public class ChestTrackerConfigScreenBuilder {
                 .build();
     }
 
-    private static ConfigCategory makeMemoryCategory(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static ConfigCategory makeMemoryCategory(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
         var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
-                .group(makeGlobalMemoryGroup(instance));
-        if (ItemMemory.INSTANCE != null) builder.group(makeLocalMemoryGroup(instance, ItemMemory.INSTANCE));
+                .group(makeGlobalMemoryGroup(instance, parent));
+        if (ItemMemory.INSTANCE != null) builder.group(makeLocalMemoryGroup(instance, ItemMemory.INSTANCE, parent));
         return builder.build();
     }
 
-    private static OptionGroup makeLocalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, ItemMemory memory) {
+    private static OptionGroup makeLocalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, ItemMemory memory, Screen parent) {
         var builder = OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.memory.local.title", memory.getId()))
                 .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
                         OptionDescription.EMPTY,
                         (screen, button) -> {
-                            memory.getKeys().forEach(key -> deleteKey(memory, key));
-                            button.setAvailable(false);
+                            memory.getMemories().clear();
+                            StorageUtil.getStorage().save(memory);
+                            refreshConfigScreen(parent);
                         },
                         null,
                         true,
@@ -82,7 +84,8 @@ public class ChestTrackerConfigScreenBuilder {
                 OptionDescription.EMPTY,
                 (screen, button) -> {
                     deleteKey(memory, resloc);
-                    button.setAvailable(false);
+                    StorageUtil.getStorage().save(memory);
+                    refreshConfigScreen(parent);
                 },
                 null,
                 true,
@@ -91,11 +94,20 @@ public class ChestTrackerConfigScreenBuilder {
         return builder.build();
     }
 
+    private static void refreshConfigScreen(Screen parent) {
+        if (Minecraft.getInstance().screen instanceof YACLScreen yacl1) {
+            var currentIndex = yacl1.tabNavigationBar.currentTabIndex();
+            Minecraft.getInstance().setScreen(build(parent));
+            if (Minecraft.getInstance().screen instanceof YACLScreen yacl2)
+                yacl2.tabNavigationBar.selectTab(currentIndex, false);
+        }
+    }
+
     private static void deleteKey(ItemMemory memory, ResourceLocation key) {
         memory.removeKey(key);
     }
 
-    private static OptionGroup makeGlobalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeGlobalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.memory.global"))
                 .option(ButtonOption.createBuilder()
@@ -118,6 +130,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 b -> {
                                     instance.getConfig().memory.readableMemories = b;
                                     ItemMemory.save();
+                                    refreshConfigScreen(parent);
                                 })
                         .build())
                 .option(Option.<Storage.Backend>createBuilder()
@@ -142,6 +155,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 e -> {
                                     instance.getConfig().memory.storageBackend = e;
                                     e.load();
+                                    refreshConfigScreen(parent);
                                 })
                         .build())
                 .build();

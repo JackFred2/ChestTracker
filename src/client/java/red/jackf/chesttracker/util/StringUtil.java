@@ -11,7 +11,7 @@ public class StringUtil {
             index++;
         }
         if (index == -1)
-            return String.valueOf(in);
+            return in + (withSpace ? " " : "");
         // god help you
         index = Math.min(index, siSuffixes.length - 1);
         var formatStr = "%." + decimalPlaces + "f";
