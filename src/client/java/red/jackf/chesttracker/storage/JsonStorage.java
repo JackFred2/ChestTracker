@@ -25,7 +25,7 @@ public class JsonStorage implements Storage {
     private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();
 
     private static Gson gson() {
-        return ChestTrackerConfig.INSTANCE.getConfig().memory.readableMemories ? GSON : GSON_COMPACT;
+        return ChestTrackerConfig.INSTANCE.getConfig().memory.readableJsonMemories ? GSON : GSON_COMPACT;
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -146,7 +147,7 @@ public class ChestTrackerScreen extends Screen {
                 // copy Searchables's AutoCompletingEditBox's right click -> clear functionality
                 @Override
                 public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                    if(isMouseOver(mouseX, mouseY) && button == GLFW.GLFW_MOUSE_BUTTON_2) {
+                    if (isMouseOver(mouseX, mouseY) && button == GLFW.GLFW_MOUSE_BUTTON_2) {
                         this.setValue("");
                         return true;
                     }
@@ -224,6 +225,13 @@ public class ChestTrackerScreen extends Screen {
         }
 
         updateItems();
+
+        // add warning, this should hopefully never be displayed
+        if (ItemMemory.INSTANCE == null) {
+            this.search.setEditable(false);
+            this.search.setValue(I18n.get("chesttracker.config.memory.global.noMemoriesLoaded"));
+            this.search.setTextColorUneditable(0xFF4040);
+        }
     }
 
     @Override

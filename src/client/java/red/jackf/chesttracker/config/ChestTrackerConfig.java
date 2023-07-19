@@ -78,7 +78,9 @@ public class ChestTrackerConfig {
 
     public static class Memory {
         @ConfigEntry
-        public boolean readableMemories = false;
+        public boolean autoLoadMemories = true;
+        @ConfigEntry
+        public boolean readableJsonMemories = false;
 
         @ConfigEntry
         public Storage.Backend storageBackend = Storage.Backend.JSON;

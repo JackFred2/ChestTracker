@@ -42,11 +42,11 @@ public class StorageUtil {
         var connection = mc.getConnection();
         if (connection != null && connection.getConnection().isConnected()) {
             var currentServer = mc.getCurrentServer();
-            if (mc.getSingleplayerServer() != null) { // we dont care if we've published to LAN
+            if (mc.getSingleplayerServer() != null) { // we dont care if we've published to LAN as the host
                 // singleplayer
                 return "singleplayer/" + StringUtil.sanitizeForPath(((MinecraftServerAccessor) mc.getSingleplayerServer()).getStorageSource().getLevelId());
             } else if (mc.isConnectedToRealms()) {
-                // realms
+                // realms, dont store username in case of changes so just use unique(?) id
                 return "realms/" + StringUtil.sanitizeForPath(StringUtils.leftPad(Long.toHexString(lastRealmId), 16));
             } else if (mc.getSingleplayerServer() == null && currentServer != null) {
                 if (currentServer.isLan())
@@ -63,8 +63,9 @@ public class StorageUtil {
      * Load the appropriate memory based on the current context
      */
     public static void load(Minecraft mc) {
+        if (!ChestTrackerConfig.INSTANCE.getConfig().memory.autoLoadMemories) return;
         var path = getLoadID(mc);
-        ChestTracker.LOGGER.debug("Path: {}", path);
+        ChestTracker.LOGGER.debug("Loading {} using {}", path, instance.getClass().getSimpleName());
         if (path == null) ItemMemory.unload();
         else ItemMemory.load(path);
     }
