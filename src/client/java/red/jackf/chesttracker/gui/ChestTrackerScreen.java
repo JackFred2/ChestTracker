@@ -249,7 +249,7 @@ public class ChestTrackerScreen extends Screen {
      * Updates the items list with the current items, filtered by the search bar
      */
     private void filter(String filter) {
-        var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter);
+        var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
         this.itemList.setItems(filtered);
         var guiConfig = ChestTrackerConfig.INSTANCE.getConfig().gui;
         this.scroll.setDisabled(filtered.size() <= (guiConfig.gridWidth * guiConfig.gridHeight));

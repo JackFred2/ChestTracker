@@ -2,14 +2,20 @@ package red.jackf.chesttracker.gui;
 
 import com.blamejared.searchables.api.SearchableComponent;
 import com.blamejared.searchables.api.SearchableType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.StringUtils;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class SearchablesUtil {
@@ -19,28 +25,71 @@ public class SearchablesUtil {
         return new SearchableType.Builder<ItemStack>()
                 .defaultComponent(SearchableComponent.create("text", SearchablesUtil::anyTextFilter))
                 .component(SearchableComponent.create("name", SearchablesUtil::stackNameSuggestions, SearchablesUtil::stackNameFilter))
+                .component(SearchableComponent.create("tooltip", SearchablesUtil::stackTooltipFilter))
                 .component(SearchableComponent.create("id", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath())))
                 .component(SearchableComponent.create("tag", SearchablesUtil::stackTagFilter))
                 .component(SearchableComponent.create("mod", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem())).map(ResourceLocation::getNamespace)))
                 .component(SearchableComponent.create("enchantment", SearchablesUtil::stackEnchantmentFilter))
+                .component(SearchableComponent.create("potion", SearchablesUtil::stackPotionFilter))
                 .build();
+    }
+
+    private static boolean testLang(String key, String filter) {
+        return Language.getInstance().has(key) &&
+                Language.getInstance().getOrDefault(key).toLowerCase().contains(filter);
+    }
+
+    private static boolean anyTextFilter(ItemStack stack, String filter) {
+        return stackNameFilter(stack, filter)
+                || stackTooltipFilter(stack, filter);
+    }
+
+    private static boolean stackTooltipFilter(ItemStack stack, String filter) {
+        var player = Minecraft.getInstance().player;
+        if (player == null) return false;
+        var advanced = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
+        for (Component line : stack.getTooltipLines(player, advanced)) {
+            if (line.getString().toLowerCase().contains(filter)) return true;
+        }
+        return false;
+    }
+
+    private static boolean stackPotionFilter(ItemStack stack, String filter) {
+        // potion presets
+        var potion = PotionUtils.getPotion(stack);
+        if (potion != Potions.EMPTY) {
+            var langKey = potion.getName(stack.getDescriptionId() + ".effect.");
+            if (testLang(langKey, filter)) return true;
+            var resloc = BuiltInRegistries.POTION.getKey(potion);
+            //noinspection ConstantValue
+            if (resloc != null && resloc.toString().contains(filter)) return true;
+        }
+
+        // specific effects
+        var effects = PotionUtils.getMobEffects(stack);
+        for (MobEffectInstance effect : effects) {
+            var langKey = effect.getDescriptionId();
+            if (testLang(langKey, filter)) return true;
+            var resloc = BuiltInRegistries.MOB_EFFECT.getKey(effect.getEffect());
+            if (resloc != null && resloc.toString().contains(filter)) return true;
+        }
+
+        return false;
     }
 
     private static boolean stackEnchantmentFilter(ItemStack stack, String filter) {
         var enchantments = EnchantmentHelper.getEnchantments(stack);
         if (enchantments.isEmpty()) return false;
         return enchantments.keySet().stream()
-                .map(BuiltInRegistries.ENCHANTMENT::getKey)
-                .filter(Objects::nonNull)
-                .anyMatch(resLoc -> resLoc.getPath().contains(filter));
+                .anyMatch(ench -> {
+                    if (testLang(ench.getDescriptionId(), filter)) return true;
+                    var resloc = BuiltInRegistries.ENCHANTMENT.getKey(ench);
+                    return resloc != null && resloc.toString().contains(filter);
+                });
     }
 
     private static boolean stackTagFilter(ItemStack stack, String filter) {
         return stack.getItemHolder().tags().anyMatch(tag -> tag.location().getPath().contains(filter));
-    }
-
-    private static boolean anyTextFilter(ItemStack stack, String filter) {
-        return stackNameFilter(stack, filter);
     }
 
     private static Optional<String> stackNameSuggestions(ItemStack stack) {
