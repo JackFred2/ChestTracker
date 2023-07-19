@@ -189,16 +189,22 @@ public class ChestTrackerScreen extends Screen {
 
         // key buttons
         if (ItemMemory.INSTANCE != null) {
-            var index = 0;
+            var iconList = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryIcons;
+            var keys = ItemMemory.INSTANCE.getKeys();
+            List<ResourceLocation> todo = new ArrayList<>(keys.size());
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>(); // used to manage highlights
+            // order by config list first, then arbitrary for unknown
+            for (MemoryIcon icon : iconList)
+                if (keys.contains(icon.id()))
+                    todo.add(icon.id());
+            for (ResourceLocation key : keys)
+                if (!todo.contains(key))
+                    todo.add(key);
 
-            for (ResourceLocation resloc : ItemMemory.INSTANCE.getKeys()) {
-                var icon = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryIcons.stream()
-                        .filter(memIcon -> memIcon.id().equals(resloc))
-                        .map(memIcon -> memIcon.icon().toStack())
-                        .findFirst()
-                        .orElse(new ItemStack(Items.CRAFTING_TABLE));
-                var button = this.addRenderableWidget(new ItemButton(icon, this.left - MEMORY_ICON_OFFSET, this.top + (index++) * MEMORY_ICON_SPACING, Component.literal(resloc.toString()), b -> {
+            for (int index = 0; index < todo.size(); index++) {
+                var resloc = todo.get(index);
+                var icon = iconList.stream().filter(mi -> mi.id().equals(resloc)).findFirst().map(mi -> mi.icon().toStack()).orElse(new ItemStack(Items.CRAFTING_TABLE));
+                var button = this.addRenderableWidget(new ItemButton(icon, this.left - MEMORY_ICON_OFFSET, this.top + index * MEMORY_ICON_SPACING, Component.literal(resloc.toString()), b -> {
                     buttons.get(this.memoryId).setHighlighted(false);
 
                     this.memoryId = resloc;
@@ -206,6 +212,7 @@ public class ChestTrackerScreen extends Screen {
 
                     buttons.get(resloc).setHighlighted(true);
                 }, true, 200, true));
+
                 buttons.put(resloc, button);
 
                 // inital button highlight

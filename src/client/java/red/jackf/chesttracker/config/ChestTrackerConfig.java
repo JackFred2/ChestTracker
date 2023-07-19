@@ -69,11 +69,10 @@ public class ChestTrackerConfig {
         public List<MemoryIcon> memoryIcons = new ArrayList<>(ICON_DEFAULTS);
 
         private static final List<MemoryIcon> ICON_DEFAULTS = List.of(
+                new MemoryIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST)),
                 new MemoryIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
                 new MemoryIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
-                new MemoryIcon(Level.END.location(), new LightweightStack(Items.END_STONE)),
-
-                new MemoryIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST))
+                new MemoryIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
         );
     }
 

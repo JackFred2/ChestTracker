@@ -258,6 +258,10 @@ public class ChestTrackerConfigScreenBuilder {
         //noinspection resource
         return ListOption.<MemoryIcon>createBuilder()
                 .name(translatable("chesttracker.config.gui.memoryIcons"))
+                .description(OptionDescription.createBuilder()
+                        .image(ChestTracker.id("textures/gui/config/memory_icon_list.png"), 624, 285)
+                        .text(translatable("chesttracker.config.gui.memoryIcons.description"))
+                        .build())
                 .controller(MemoryIconController.Builder::new)
                 .binding(
                         instance.getDefaults().gui.memoryIcons,
@@ -267,7 +271,6 @@ public class ChestTrackerConfigScreenBuilder {
                 .initial(new MemoryIcon(Minecraft.getInstance().player != null ?
                         Minecraft.getInstance().player.level().dimension().location() :
                         new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
-                //.collapsed(true)
                 .build();
     }
 

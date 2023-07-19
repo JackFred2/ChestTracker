@@ -14,6 +14,7 @@
   "chesttracker.config.gui.gridHeight": "Grid Height",
   "chesttracker.config.gui.gridSizeSlider": "%d slots",
   "chesttracker.config.gui.memoryIcons": "Memory Icons",
+  "chesttracker.config.gui.memoryIcons.description": "Defines how the buttons for the memory keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
   "chesttracker.config.gui.memoryIcons.dimension": "Dimension ID",
   "chesttracker.config.gui.memoryIcons.icon": "Set Icon",
   "chesttracker.config.memory": "Storage & Memories",
