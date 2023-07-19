@@ -50,7 +50,8 @@ public class StorageUtil {
                 return "realms/" + StringUtil.sanitize(StringUtils.leftPad(Long.toHexString(lastRealmId), 16));
             } else if (mc.getSingleplayerServer() == null && currentServer != null) {
                 if (currentServer.isLan())
-                    return "lan/" + StringUtil.sanitize(currentServer.ip);
+                    // remove LAN port because while port changes a lot ip probably doesn't
+                    return "lan/" + StringUtil.sanitize(currentServer.ip.replaceFirst(":\\d+$", ""));
                 else
                     return "multiplayer/" +  StringUtil.sanitize(currentServer.ip);
             }
