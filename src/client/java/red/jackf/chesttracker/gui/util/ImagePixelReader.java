@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui;
+package red.jackf.chesttracker.gui.util;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -6,11 +6,11 @@ import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.FastColor.ABGR32;
 import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.profiling.ProfilerFiller;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.util.Constants;
 
 import java.io.IOException;

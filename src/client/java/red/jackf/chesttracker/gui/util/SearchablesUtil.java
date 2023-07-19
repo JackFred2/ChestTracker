@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui;
+package red.jackf.chesttracker.gui.util;
 
 import com.blamejared.searchables.api.SearchableComponent;
 import com.blamejared.searchables.api.SearchableType;

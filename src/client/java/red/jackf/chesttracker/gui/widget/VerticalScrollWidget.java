@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.NinePatcher;
+import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.util.Constants;
 
 import java.util.function.Consumer;

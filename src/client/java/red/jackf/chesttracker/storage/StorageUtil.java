@@ -44,16 +44,16 @@ public class StorageUtil {
             var currentServer = mc.getCurrentServer();
             if (mc.getSingleplayerServer() != null) { // we dont care if we've published to LAN
                 // singleplayer
-                return "singleplayer/" + StringUtil.sanitize(((MinecraftServerAccessor) mc.getSingleplayerServer()).getStorageSource().getLevelId());
+                return "singleplayer/" + StringUtil.sanitizeForPath(((MinecraftServerAccessor) mc.getSingleplayerServer()).getStorageSource().getLevelId());
             } else if (mc.isConnectedToRealms()) {
                 // realms
-                return "realms/" + StringUtil.sanitize(StringUtils.leftPad(Long.toHexString(lastRealmId), 16));
+                return "realms/" + StringUtil.sanitizeForPath(StringUtils.leftPad(Long.toHexString(lastRealmId), 16));
             } else if (mc.getSingleplayerServer() == null && currentServer != null) {
                 if (currentServer.isLan())
                     // remove LAN port because while port changes a lot ip probably doesn't
-                    return "lan/" + StringUtil.sanitize(currentServer.ip.replaceFirst(":\\d+$", ""));
+                    return "lan/" + StringUtil.sanitizeForPath(currentServer.ip.replaceFirst(":\\d+$", ""));
                 else
-                    return "multiplayer/" +  StringUtil.sanitize(currentServer.ip);
+                    return "multiplayer/" +  StringUtil.sanitizeForPath(currentServer.ip);
             }
         }
         return null;

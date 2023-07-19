@@ -51,7 +51,7 @@ public class StringUtil {
      * Makes a string of text safe to be used as a windows file
      * adjusted from net.minecraft.FileUtil
      */
-    public static String sanitize(String text) {
+    public static String sanitizeForPath(String text) {
         if (text == null) return null;
         char[] var3 = SharedConstants.ILLEGAL_FILE_CHARACTERS;
 
