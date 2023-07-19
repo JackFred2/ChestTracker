@@ -43,7 +43,7 @@ public class ChestTracker implements ClientModInitializer {
         LocationTracking.setup();
 
         // load and unload memory storage
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> ItemMemory.load("test"));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> StorageUtil.load(client));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ItemMemory.unload());
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {

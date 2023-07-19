@@ -23,7 +23,12 @@
 			"red.jackf.chesttracker.compat.ChestTrackerModMenu"
 		]
 	},
-	"mixins": [],
+	"mixins": [
+		{
+			"config": "chesttracker.mixins.json",
+			"environment": "client"
+		}
+	],
 	"accessWidener": "chesttracker.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.14.21",
