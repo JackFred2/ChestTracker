@@ -5,6 +5,7 @@ import com.blamejared.searchables.api.SearchableType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,8 +41,47 @@ public class SearchablesUtil {
     }
 
     private static boolean anyTextFilter(ItemStack stack, String filter) {
-        return stackNameFilter(stack, filter)
-                || stackTooltipFilter(stack, filter);
+        return (stackNameFilter(stack, filter)
+                || stackLoreFilter(stack, filter)
+                || stackEnchantmentFilter(stack, filter)
+                || stackPotionFilter(stack, filter)
+                || countFilter(stack, filter));
+    }
+
+    private static boolean countFilter(ItemStack stack, String filter) {
+        try {
+            if (filter.startsWith(">="))
+                return stack.getCount() >= Integer.parseInt(filter.substring(2));
+            else if (filter.startsWith(">"))
+                return stack.getCount() > Integer.parseInt(filter.substring(1));
+            else if (filter.startsWith("<="))
+                return stack.getCount() <= Integer.parseInt(filter.substring(2));
+            else if (filter.startsWith("<"))
+                return stack.getCount() < Integer.parseInt(filter.substring(1));
+            else if (filter.startsWith("="))
+                return stack.getCount() == Integer.parseInt(filter.substring(1));
+        } catch (NumberFormatException ignored) {}
+
+        return false;
+    }
+
+    private static boolean stackLoreFilter(ItemStack stack, String filter) {
+        var tag = stack.getTag();
+        if (tag == null) return false;
+        if (!tag.contains(ItemStack.TAG_DISPLAY, Tag.TAG_COMPOUND)) return false;
+        var display = tag.getCompound(ItemStack.TAG_DISPLAY);
+        if (!display.contains(ItemStack.TAG_LORE, Tag.TAG_LIST)) return false;
+        var lore = tag.getList(ItemStack.TAG_LORE, Tag.TAG_STRING);
+        for (int i = 0; i < lore.size(); i++) {
+            String line = lore.getString(i);
+            try {
+                var component = Component.Serializer.fromJson(line);
+                if (component != null && component.getString().toLowerCase().contains(filter)) return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+        return false;
     }
 
     private static boolean stackTooltipFilter(ItemStack stack, String filter) {
