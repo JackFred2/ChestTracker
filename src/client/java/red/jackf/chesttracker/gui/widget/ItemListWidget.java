@@ -124,10 +124,11 @@ public class ItemListWidget extends AbstractWidget {
 
     private void renderItems(GuiGraphics graphics) {
         var items = getOffsetItems();
+        // background
+        graphics.innerBlit(TEXTURE, getX(), getX() + getWidth(), getY(), getY() + getHeight(), 0, 0, gridWidth, 0, gridHeight);
         for (int i = 0; i < (gridWidth * gridHeight); i++) {
             var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
-            graphics.blit(TEXTURE, x, y, 0, 0, Constants.SLOT_SIZE, Constants.SLOT_SIZE, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
             if (i < items.size()) {
                 var item = items.get(i);
                 graphics.renderItem(item, x + 1, y + 1); // Item
