@@ -13,7 +13,7 @@ import red.jackf.chesttracker.util.Constants;
 public class ItemButton extends Button {
     private static final int SIZE = 20;
     private static final int CUSTOM_BACKGROUND_UV_X = 0;
-    private static final int CUSTOM_BACKGROUND_UV_Y = 140;
+    private static final int CUSTOM_BACKGROUND_UV_Y = 153;
     private final ItemStack stack;
     private final Component tooltip;
     private final boolean shouldShowBackground;

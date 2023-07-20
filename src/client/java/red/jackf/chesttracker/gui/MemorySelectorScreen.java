@@ -37,6 +37,8 @@ public class MemorySelectorScreen extends Screen {
     private static final int SEARCH_HEIGHT = 12;
     private static final int LIST_TOP = 36;
     private static final int NEW_BUTTON_SIZE = 12;
+    private static final int NEW_BUTTON_UV_X = 0;
+    private static final int NEW_BUTTON_UV_Y = 195;
 
 
     private final Screen parent;
@@ -68,8 +70,8 @@ public class MemorySelectorScreen extends Screen {
                 this.top + SEARCH_TOP,
                 NEW_BUTTON_SIZE,
                 NEW_BUTTON_SIZE,
-                0,
-                182,
+                NEW_BUTTON_UV_X,
+                NEW_BUTTON_UV_Y,
                 Constants.TEXTURE,
                 b -> {
                     if (!this.search.getValue().isEmpty())
@@ -122,7 +124,7 @@ public class MemorySelectorScreen extends Screen {
 
     private void open(String memoryId) {
         ItemMemory.load(memoryId);
-        Minecraft.getInstance().setScreen(new ChestTrackerScreen(parent));
+        Minecraft.getInstance().setScreen(parent instanceof ChestTrackerScreen ? parent : new ChestTrackerScreen(parent));
     }
 
     @Override

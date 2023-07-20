@@ -40,11 +40,14 @@ public class ChestTrackerScreen extends Screen {
     private static final int SEARCH_TOP = 24;
     private static final int GRID_LEFT = 7;
     private static final int GRID_TOP = 38;
+    private static final int BUTTON_SIZE = 14;
+    private static final int BUTTON_TOP = 5;
     private static final int SETTINGS_RIGHT = 6;
-    private static final int SETTINGS_TOP = 5;
-    private static final int SETTINGS_SIZE = 14;
     private static final int SETTINGS_UV_X = 0;
     private static final int SETTINGS_UV_Y = 86;
+    private static final int CHANGE_MEMORY_RIGHT = 26;
+    private static final int CHANGE_MEMORY_UV_X = 94;
+    private static final int CHANGE_MEMORY_UV_Y = 0;
     private static final int MEMORY_ICON_OFFSET = 24;
     private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
@@ -154,13 +157,27 @@ public class ChestTrackerScreen extends Screen {
             this.setInitialFocus(search);
 
         // settings
-        var settingsButton = this.addRenderableWidget(new ImageButton(left + menuWidth - SETTINGS_RIGHT - SETTINGS_SIZE, top + SETTINGS_TOP,
-                SETTINGS_SIZE, SETTINGS_SIZE,
-                SETTINGS_UV_X, SETTINGS_UV_Y,
-                0, Constants.TEXTURE, 256, 256,
-                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this)),
-                Component.translatable("mco.configure.world.buttons.settings")));
+        var settingsButton = this.addRenderableWidget(new ImageButton(
+                left + menuWidth - SETTINGS_RIGHT - BUTTON_SIZE,
+                top + BUTTON_TOP,
+                BUTTON_SIZE,
+                BUTTON_SIZE,
+                SETTINGS_UV_X,
+                SETTINGS_UV_Y,
+                Constants.TEXTURE,
+                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))));
         settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
+
+        // change memories
+        this.addRenderableWidget(new ImageButton(
+                left + menuWidth - CHANGE_MEMORY_RIGHT - BUTTON_SIZE,
+                top + BUTTON_TOP,
+                BUTTON_SIZE,
+                BUTTON_SIZE,
+                CHANGE_MEMORY_UV_X,
+                CHANGE_MEMORY_UV_Y,
+                Constants.TEXTURE,
+                b -> Minecraft.getInstance().setScreen(new MemorySelectorScreen(this))));
 
         // resize
         if (config.gui.showResizeWidget)

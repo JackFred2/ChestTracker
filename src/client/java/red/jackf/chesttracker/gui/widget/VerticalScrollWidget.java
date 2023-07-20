@@ -13,12 +13,11 @@ import red.jackf.chesttracker.util.Constants;
 import java.util.function.Consumer;
 
 public class VerticalScrollWidget extends AbstractWidget {
-    private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 102, 3, 1);
+    private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 116, 3, 1);
     private static final int HANDLE_UV_X = 0;
-    private static final int HANDLE_UV_Y = 115;
+    private static final int HANDLE_UV_Y = 129;
     private static final int HANDLE_WIDTH = 10;
     private static final int HANDLE_HEIGHT = 11;
-    private static final int DISABLED_OFFSET = HANDLE_HEIGHT + 1;
     private static final int INSET = 1;
 
     public static final int WIDTH = 2 * INSET + HANDLE_WIDTH;
@@ -50,7 +49,7 @@ public class VerticalScrollWidget extends AbstractWidget {
 
         int handleY = (int) ((this.height - HANDLE_HEIGHT - 2 * INSET) * progress);
         graphics.blit(Constants.TEXTURE, this.getX() + INSET, this.getY() + INSET + handleY,
-                HANDLE_UV_X, HANDLE_UV_Y + (disabled ? DISABLED_OFFSET : 0), HANDLE_WIDTH, HANDLE_HEIGHT);
+                HANDLE_UV_X, HANDLE_UV_Y + (disabled ? HANDLE_HEIGHT : 0), HANDLE_WIDTH, HANDLE_HEIGHT);
     }
 
     private boolean isWithinBounds(double x, double y) {

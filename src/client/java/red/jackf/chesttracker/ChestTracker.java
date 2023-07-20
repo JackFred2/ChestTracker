@@ -62,7 +62,7 @@ public class ChestTracker implements ClientModInitializer {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof AbstractContainerScreen<?>) {
                 // opening Chest Tracker GUI with a screen open
-                ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+                ScreenKeyboardEvents.afterKeyPress(screen).register((parent, key, scancode, modifiers) -> {
                     // don't search in search bars, etc
                     if (ShouldIgnoreKey.EVENT.invoker().shouldIgnoreKey()) {
                         return;
@@ -70,9 +70,9 @@ public class ChestTracker implements ClientModInitializer {
 
                     if (OPEN_GUI.matches(key, scancode)) {
                         if (ItemMemory.INSTANCE == null) {
-                            client.setScreen(new MemorySelectorScreen(screen1));
+                            client.setScreen(new MemorySelectorScreen(parent));
                         } else {
-                            client.setScreen(new ChestTrackerScreen(screen1));
+                            client.setScreen(new ChestTrackerScreen(parent));
                         }
                     }
                 });
