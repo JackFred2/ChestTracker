@@ -2,6 +2,7 @@ package red.jackf.chesttracker.util;
 
 import net.minecraft.SharedConstants;
 
+import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 public class StringUtil {
@@ -65,5 +66,18 @@ public class StringUtil {
         }
 
         return text;
+    }
+
+    /**
+     * Formats a Path into a string with a '/' separator.
+     */
+    public static String formatPath(Path path) {
+        var builder = new StringBuilder();
+        for (var iter = path.iterator(); iter.hasNext(); ) {
+            Path name = iter.next();
+            builder.append(name.getFileName());
+            if (iter.hasNext()) builder.append("/");
+        }
+        return builder.toString();
     }
 }

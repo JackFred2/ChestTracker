@@ -307,7 +307,7 @@ public class ChestTrackerConfigScreenBuilder {
                         null,
                         true,
                         40)));
-        StorageUtil.getStorage().appendOptions(memory, builder);
+        StorageUtil.getStorage().appendOptionsToSettings(memory, builder);
         return builder.build();
     }
 

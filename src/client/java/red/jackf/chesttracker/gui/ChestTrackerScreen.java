@@ -23,10 +23,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.SearchablesUtil;
-import red.jackf.chesttracker.gui.widget.ItemButton;
-import red.jackf.chesttracker.gui.widget.ItemListWidget;
-import red.jackf.chesttracker.gui.widget.ResizeWidget;
-import red.jackf.chesttracker.gui.widget.VerticalScrollWidget;
+import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
@@ -52,10 +49,7 @@ public class ChestTrackerScreen extends Screen {
     private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
     private static final int SMALL_MENU_HEIGHT = 153;
-
-    private static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
-    private static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
-    private static Integer titleColour;
+    static Integer titleColour;
 
     private int left = 0;
     private int top = 0;
@@ -134,7 +128,7 @@ public class ChestTrackerScreen extends Screen {
             autocompleting.addResponder(this::filter);
             this.search = autocompleting;
         } else {
-            this.search = addRenderableWidget(new EditBox(
+            this.search = addRenderableWidget(new CustomEditBox(
                     font,
                     left + SEARCH_LEFT,
                     top + SEARCH_TOP,
@@ -142,18 +136,7 @@ public class ChestTrackerScreen extends Screen {
                     12,
                     this.search,
                     SearchablesConstants.COMPONENT_SEARCH
-            ) {
-
-                // copy Searchables's AutoCompletingEditBox's right click -> clear functionality
-                @Override
-                public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                    if (isMouseOver(mouseX, mouseY) && button == GLFW.GLFW_MOUSE_BUTTON_2) {
-                        this.setValue("");
-                        return true;
-                    }
-                    return super.mouseClicked(mouseX, mouseY, button);
-                }
-            });
+            ));
             this.search.setFormatter(formatter);
             this.search.setHint(SearchablesConstants.COMPONENT_SEARCH);
             this.search.setResponder(s -> {
@@ -277,8 +260,9 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
         this.renderBackground(graphics); // background darken
-        BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
-        SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
+        NinePatcher.BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
+        if (this.search instanceof AutoCompletingEditBox<?>)
+            NinePatcher.SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, titleColour, false); // title

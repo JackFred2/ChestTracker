@@ -2,11 +2,14 @@ package red.jackf.chesttracker.gui.util;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import red.jackf.chesttracker.util.Constants;
 
 /**
  * Draws the background for the GUI, with dynamic sizes.
  */
 public record NinePatcher(ResourceLocation texture, int uvStartX, int uvStartY, int patchSize, int patchGap) {
+    public static final NinePatcher BACKGROUND = new NinePatcher(Constants.TEXTURE, 0, 0, 8, 1);
+    public static final NinePatcher SEARCH = new NinePatcher(Constants.TEXTURE, 0, 28, 4, 1);
 
     public void draw(GuiGraphics graphics, int x, int y, int width, int height) {
         if (height < 2 * patchSize) throw new IllegalArgumentException("Height %d too small; must be at least %d".formatted(height, patchSize * 2));

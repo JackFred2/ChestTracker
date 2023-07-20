@@ -3,6 +3,7 @@ package red.jackf.chesttracker.storage;
 import dev.isxander.yacl3.api.OptionGroup;
 import red.jackf.chesttracker.memory.ItemMemory;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
@@ -13,7 +14,9 @@ public interface Storage {
 
     void save(ItemMemory memory);
 
-    void appendOptions(ItemMemory memory, OptionGroup.Builder builder);
+    void appendOptionsToSettings(ItemMemory memory, OptionGroup.Builder builder);
+
+    Collection<String> getAllIds();
 
     enum Backend {
         JSON(JsonStorage::new),

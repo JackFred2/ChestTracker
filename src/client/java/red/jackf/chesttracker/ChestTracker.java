@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
+import red.jackf.chesttracker.gui.MemorySelectorScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.ItemMemory;
 import red.jackf.chesttracker.memory.ScreenHandler;
@@ -49,8 +50,13 @@ public class ChestTracker implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // opening Chest Tracker GUI with no screen open
             if (client.screen == null && client.getOverlay() == null)
-                while (OPEN_GUI.consumeClick())
-                    client.setScreen(new ChestTrackerScreen(null));
+                while (OPEN_GUI.consumeClick()) {
+                    if (ItemMemory.INSTANCE == null) {
+                        client.setScreen(new MemorySelectorScreen(null));
+                    } else {
+                        client.setScreen(new ChestTrackerScreen(null));
+                    }
+                }
         });
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -62,8 +68,13 @@ public class ChestTracker implements ClientModInitializer {
                         return;
                     }
 
-                    if (OPEN_GUI.matches(key, scancode))
-                        client.setScreen(new ChestTrackerScreen(screen1));
+                    if (OPEN_GUI.matches(key, scancode)) {
+                        if (ItemMemory.INSTANCE == null) {
+                            client.setScreen(new MemorySelectorScreen(screen1));
+                        } else {
+                            client.setScreen(new ChestTrackerScreen(screen1));
+                        }
+                    }
                 });
 
                 // counting items after screen close

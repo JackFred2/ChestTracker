@@ -17,12 +17,16 @@ import red.jackf.chesttracker.util.StringUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
 
 public class JsonStorage implements Storage {
     private static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();
+    private static final String EXT = ".json";
 
     private static Gson gson() {
         return ChestTrackerConfig.INSTANCE.getConfig().memory.readableJsonMemories ? GSON : GSON_COMPACT;
@@ -30,7 +34,7 @@ public class JsonStorage implements Storage {
 
     @Override
     public ItemMemory load(String worldId) {
-        var path = Constants.STORAGE_DIR.resolve(worldId + ".json");
+        var path = Constants.STORAGE_DIR.resolve(worldId + EXT);
         ChestTracker.LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
             try {
@@ -55,7 +59,7 @@ public class JsonStorage implements Storage {
         ChestTracker.LOGGER.debug("Saving {}", memory.getId());
         try {
             Files.createDirectories(Constants.STORAGE_DIR);
-            var path = Constants.STORAGE_DIR.resolve(memory.getId() + ".json");
+            var path = Constants.STORAGE_DIR.resolve(memory.getId() + EXT);
             var jsonParsed = Codecs.ITEM_MEMORY.encodeStart(JsonOps.INSTANCE, memory).get();
             if (jsonParsed.right().isPresent()) {
                 throw new IOException("Error encoding memory to JSON: %s".formatted(jsonParsed.right().get()));
@@ -69,9 +73,22 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public void appendOptions(ItemMemory memory, OptionGroup.Builder builder) {
-        var path = Constants.STORAGE_DIR.resolve(memory.getId() + ".json");
+    public void appendOptionsToSettings(ItemMemory memory, OptionGroup.Builder builder) {
+        var path = Constants.STORAGE_DIR.resolve(memory.getId() + EXT);
         var size = Files.isRegularFile(path) ? FileUtils.sizeOf(path.toFile()) : 0L;
         builder.option(LabelOption.create(translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B")));
+    }
+
+    @Override
+    public Collection<String> getAllIds() {
+        try(var stream = Files.walk(Constants.STORAGE_DIR)) {
+            return stream.filter(path -> path.getFileName().toString().endsWith(EXT))
+                    .map(path -> StringUtil.formatPath(Constants.STORAGE_DIR.relativize(path)))
+                    .map(s -> s.substring(0, s.length() - EXT.length()))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            ChestTracker.LOGGER.error(e);
+            return Collections.emptyList();
+        }
     }
 }
