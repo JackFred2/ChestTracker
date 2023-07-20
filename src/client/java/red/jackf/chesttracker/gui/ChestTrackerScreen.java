@@ -23,9 +23,10 @@ import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.SearchablesUtil;
+import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
-import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 
 import java.util.*;
@@ -37,22 +38,17 @@ public class ChestTrackerScreen extends Screen {
     private static final int TITLE_LEFT = 8;
     private static final int TITLE_TOP = 8;
     private static final int SEARCH_LEFT = 8;
-    private static final int SEARCH_TOP = 24;
+    private static final int SEARCH_TOP = 27;
     private static final int GRID_LEFT = 7;
-    private static final int GRID_TOP = 38;
+    private static final int GRID_TOP = 41;
     private static final int BUTTON_SIZE = 14;
-    private static final int BUTTON_TOP = 5;
+    private static final int BUTTON_TOP = 7;
     private static final int SETTINGS_RIGHT = 6;
-    private static final int SETTINGS_UV_X = 0;
-    private static final int SETTINGS_UV_Y = 86;
     private static final int CHANGE_MEMORY_RIGHT = 26;
-    private static final int CHANGE_MEMORY_UV_X = 94;
-    private static final int CHANGE_MEMORY_UV_Y = 0;
     private static final int MEMORY_ICON_OFFSET = 24;
     private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
-    private static final int SMALL_MENU_HEIGHT = 153;
-    static Integer titleColour;
+    private static final int SMALL_MENU_HEIGHT = 156;
 
     private int left = 0;
     private int top = 0;
@@ -78,11 +74,6 @@ public class ChestTrackerScreen extends Screen {
         this.memoryKey = level == null ? ChestTracker.id("unknown") : level.dimension().location();
     }
 
-    public static void setTitleColour(Integer titleColour) {
-        ChestTracker.LOGGER.debug("Set title colour to 0x%X".formatted(titleColour));
-        ChestTrackerScreen.titleColour = titleColour;
-    }
-
     @Override
     protected void init() {
         var config = ChestTrackerConfig.INSTANCE.getConfig();
@@ -97,6 +88,9 @@ public class ChestTrackerScreen extends Screen {
             this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * Constants.SLOT_SIZE;
         while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
 
+        // resize so background ninepatcher looks nice
+        this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(this.menuWidth);
+        this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(this.menuHeight);
 
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
@@ -147,7 +141,7 @@ public class ChestTrackerScreen extends Screen {
                 this.filter(s);
             });
         }
-        this.search.setTextColor(CustomSearchablesFormatter.getTextColour());
+        this.search.setTextColor(TextColours.getSearchTextColour());
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
         if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
@@ -162,9 +156,12 @@ public class ChestTrackerScreen extends Screen {
                 top + BUTTON_TOP,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
-                SETTINGS_UV_X,
-                SETTINGS_UV_Y,
-                Constants.TEXTURE,
+                0,
+                0,
+                BUTTON_SIZE,
+                ChestTracker.guiTex("widgets/settings_button"),
+                BUTTON_SIZE,
+                BUTTON_SIZE * 2,
                 button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))));
         settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
 
@@ -174,9 +171,12 @@ public class ChestTrackerScreen extends Screen {
                 top + BUTTON_TOP,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
-                CHANGE_MEMORY_UV_X,
-                CHANGE_MEMORY_UV_Y,
-                Constants.TEXTURE,
+                0,
+                0,
+                BUTTON_SIZE,
+                ChestTracker.guiTex("widgets/change_memory_bank_button"),
+                BUTTON_SIZE,
+                BUTTON_SIZE * 2,
                 b -> Minecraft.getInstance().setScreen(new MemorySelectorScreen(this))));
 
         // resize
@@ -213,7 +213,10 @@ public class ChestTrackerScreen extends Screen {
                         .findFirst()
                         .map(mi -> mi.icon().toStack())
                         .orElse(new ItemStack(Items.CRAFTING_TABLE));
-                var button = this.addRenderableWidget(new ItemButton(icon, this.left - MEMORY_ICON_OFFSET, this.top + index * MEMORY_ICON_SPACING, Component.literal(resloc.toString()), b -> {
+                var button = this.addRenderableWidget(new ItemButton(icon,
+                        this.left - MEMORY_ICON_OFFSET,
+                        this.top + index * MEMORY_ICON_SPACING,
+                        Component.literal(resloc.toString()), b -> {
                     buttons.get(this.memoryKey).setHighlighted(false);
 
                     this.memoryKey = resloc;
@@ -290,7 +293,7 @@ public class ChestTrackerScreen extends Screen {
             NinePatcher.SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
-        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, titleColour, false); // title
+        graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, TextColours.getTitleColour(), false); // title
     }
 
     @Override

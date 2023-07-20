@@ -18,8 +18,8 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.custom.HoldToConfirmButtonOption;
 import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
@@ -54,7 +54,7 @@ public class ChestTrackerConfigScreenBuilder {
     // UTILS //
     ///////////
     private static ResourceLocation getDescriptionImage(String basePath, boolean value) {
-        return ChestTracker.id("textures/gui/config/%s_%s.png".formatted(basePath, value ? "enabled" : "disabled"));
+        return ChestTracker.guiTex("config/%s_%s".formatted(basePath, value ? "enabled" : "disabled"));
     }
 
     private static void refreshConfigScreen(Screen parent) {
@@ -152,7 +152,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.gui.gridWidth"))
                         .description(OptionDescription.createBuilder()
-                                .image(ChestTracker.id("textures/gui/config/grid_width.png"), 135, 102)
+                                .image(ChestTracker.guiTex("config/grid_width"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(Constants.MIN_GRID_WIDTH, Constants.MAX_GRID_HEIGHT)
@@ -166,7 +166,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.gui.gridHeight"))
                         .description(OptionDescription.createBuilder()
-                                .image(ChestTracker.id("textures/gui/config/grid_height.png"), 135, 102)
+                                .image(ChestTracker.guiTex("config/grid_height"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_HEIGHT)
@@ -186,7 +186,7 @@ public class ChestTrackerConfigScreenBuilder {
         return ListOption.<MemoryKeyIcon>createBuilder()
                 .name(translatable("chesttracker.config.gui.memoryKeyIcons"))
                 .description(OptionDescription.createBuilder()
-                        .image(ChestTracker.id("textures/gui/config/memory_key_icon_list.png"), 624, 285)
+                        .image(ChestTracker.guiTex("config/memory_key_icon_list"), 624, 285)
                         .text(translatable("chesttracker.config.gui.memoryKeyIcons.description"))
                         .build())
                 .controller(MemoryKeyIconController.Builder::new)

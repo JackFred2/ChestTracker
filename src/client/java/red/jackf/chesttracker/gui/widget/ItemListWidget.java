@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ItemListWidget extends AbstractWidget {
-    private static final int UV_X = 0;
-    private static final int UV_Y = 44;
+    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/slot_background");
 
     private final int gridWidth;
     private final int gridHeight;
@@ -127,7 +127,7 @@ public class ItemListWidget extends AbstractWidget {
         for (int i = 0; i < (gridWidth * gridHeight); i++) {
             var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
-            graphics.blit(Constants.TEXTURE, x, y, UV_X, UV_Y, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
+            graphics.blit(TEXTURE, x, y, 0, 0, Constants.SLOT_SIZE, Constants.SLOT_SIZE, Constants.SLOT_SIZE, Constants.SLOT_SIZE); // Slot Background
             if (i < items.size()) {
                 var item = items.get(i);
                 graphics.renderItem(item, x + 1, y + 1); // Item

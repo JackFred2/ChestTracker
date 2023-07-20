@@ -6,7 +6,7 @@
   "chesttracker.gui.memorySelector.title": "Load or create Memory Bank",
   "chesttracker.gui.memorySelector.search": "Search or create a Memory Bank",
   "chesttracker.gui.memorySelector.selectedBackend": "Backend: %s",
-  "chesttracker.gui.memorySelector.newMemory": "Create new Memory Banks: %s",
+  "chesttracker.gui.memorySelector.newMemory": "Create new Memory Bank: %s",
   "chesttracker.gui.memorySelector.newMemoryInvalidName": "Enter a valid, not existing Memory Bank name.",
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.config.selectorScreen": "Choose an option",

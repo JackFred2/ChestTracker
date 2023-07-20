@@ -20,35 +20,14 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRange, FormattingContext>, Consumer<String>, BiFunction<String, Integer, FormattedCharSequence> {
-    private static int TEXT;
-    private static Style ERROR_STYLE;
-    private static Style KEY_STYLE;
-    private static int TERM;
-    private static Style TERM_STYLE;
 
     private final SearchableType<?> type;
 
     private final List<Pair<TokenRange, Style>> tokens = new ArrayList<>();
     private TokenRange lastRange = TokenRange.at(0);
 
-    static {
-        // defaults, though these get overwritten on asset load anyway
-        setTextColour(0xFFFFFF);
-        setErrorColour(0xFF0000);
-        setSearchKeyColour(0x669BBC);
-        setSearchTermColour(0xEECC77);
-    }
-
     public CustomSearchablesFormatter(final SearchableType<?> type) {
         this.type = type;
-    }
-
-    public static int getTextColour() {
-        return TEXT;
-    }
-
-    public static int getSearchTermColour() {
-        return TERM;
     }
 
     /**
@@ -73,9 +52,9 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
     public TokenRange visitComponent(final ComponentExpression expr, final FormattingContext context) {
 
         boolean valid = context.valid() && expr.left() instanceof LiteralExpression && expr.right() instanceof LiteralExpression;
-        TokenRange leftRange = expr.left().accept(this, FormattingContext.key(KEY_STYLE, valid));
+        TokenRange leftRange = expr.left().accept(this, FormattingContext.key(Style.EMPTY.withColor(TextColours.getSearchKeyColour()), valid));
         tokens.add(Pair.of(getAndPushRange(), context.style(valid)));
-        TokenRange rightRange = expr.right().accept(this, FormattingContext.literal(TERM_STYLE, valid));
+        TokenRange rightRange = expr.right().accept(this, FormattingContext.literal(Style.EMPTY.withColor(TextColours.getSearchTermColour()), valid));
         return TokenRange.encompassing(leftRange, rightRange);
     }
 
@@ -85,7 +64,7 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
 
         Style style = context.style();
         if(!context.valid() || context.isKey() && !type.components().containsKey(expr.value())) {
-            style = ERROR_STYLE;
+            style = Style.EMPTY.withColor(TextColours.getSearchErrorColour()).withUnderlined(true);
         }
         TokenRange range = getAndPushRange(expr.displayValue().length());
         tokens.add(Pair.of(range, style));
@@ -142,22 +121,5 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
         sequences.add(FormattedCharSequence.forward(currentString.substring(index), Style.EMPTY));
 
         return FormattedCharSequence.composite(sequences);
-    }
-
-    public static void setTextColour(int textColour) {
-        TEXT = textColour;
-    }
-
-    public static void setErrorColour(int errorColour) {
-        ERROR_STYLE = Style.EMPTY.withColor(errorColour).withUnderlined(true);
-    }
-
-    public static void setSearchKeyColour(int searchKeyColour) {
-        KEY_STYLE = Style.EMPTY.withColor(searchKeyColour);
-    }
-
-    public static void setSearchTermColour(int term) {
-        TERM_STYLE = Style.EMPTY.withColor(term);
-        CustomSearchablesFormatter.TERM = term;
     }
 }

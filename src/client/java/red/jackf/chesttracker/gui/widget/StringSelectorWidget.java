@@ -7,8 +7,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
+import red.jackf.chesttracker.gui.util.TextColours;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +45,7 @@ public class StringSelectorWidget extends AbstractWidget {
                     option,
                     this.getX() + 2 + (hovered ? 6 : 0),
                     this.getY() + 2 + ROW_HEIGHT * i,
-                     hovered ? CustomSearchablesFormatter.getSearchTermColour() : CustomSearchablesFormatter.getTextColour());
+                     hovered ? TextColours.getSearchTermColour() : TextColours.getSearchTextColour());
         }
     }
 

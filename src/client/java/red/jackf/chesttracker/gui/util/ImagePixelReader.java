@@ -10,8 +10,6 @@ import net.minecraft.util.FastColor.ABGR32;
 import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.profiling.ProfilerFiller;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.ChestTrackerScreen;
-import red.jackf.chesttracker.util.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,14 +20,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Reads colours from an image every reload. Used in ChestTracker for getting title colours
+ * Reads colours from an image every reload. Used to get text colours .
  */
 public class ImagePixelReader {
+    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("text_colours");
     private ImagePixelReader() {}
 
     private static final List<Consumer<Integer>> results = new ArrayList<>();
     private static final List<Function<NativeImage, Integer>> hooks = new ArrayList<>();
 
+    @SuppressWarnings("SameParameterValue")
     private static void addPixelColourListener(int x, int y, int defaultColour, Consumer<Integer> result) {
         hooks.add(image -> {
             if (image.getWidth() > x && image.getHeight() > y) {
@@ -58,16 +58,16 @@ public class ImagePixelReader {
 
         @Override
         public CompletableFuture<List<Integer>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
-            var resource = manager.getResource(Constants.TEXTURE);
+            var resource = manager.getResource(TEXTURE);
             var list = new ArrayList<Integer>();
             if (resource.isEmpty()) {
-                ChestTracker.LOGGER.warn("Texture {} not found", Constants.TEXTURE);
+                ChestTracker.LOGGER.warn("Texture {} not found", TEXTURE);
             } else {
                 try (var image = NativeImage.read(resource.get().open())) {
                     for (var hook : hooks)
                         list.add(hook.apply(image));
                 } catch (IOException e) {
-                    ChestTracker.LOGGER.warn("Error loading %s: ".formatted(Constants.TEXTURE), e);
+                    ChestTracker.LOGGER.warn("Error loading %s: ".formatted(TEXTURE), e);
                 }
             }
             return CompletableFuture.completedFuture(list);
@@ -85,10 +85,10 @@ public class ImagePixelReader {
     public static void setup() {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ImagePixelReader.TitleListener());
 
-        addPixelColourListener(0, 76, 0xFF_404040, ChestTrackerScreen::setTitleColour);
-        addPixelColourListener(168, 23, 0xFFFFFF, CustomSearchablesFormatter::setTextColour);
-        addPixelColourListener(217, 31, 0xFF0000, CustomSearchablesFormatter::setErrorColour);
-        addPixelColourListener(168, 31, 0x669BBC, CustomSearchablesFormatter::setSearchKeyColour);
-        addPixelColourListener(217, 23, 0xEECC77, CustomSearchablesFormatter::setSearchTermColour);
+        addPixelColourListener(2, 5, 0x404040, TextColours::setTitleColour);
+        addPixelColourListener(2, 14, 0xFFFFFF, TextColours::setSearchTextColour);
+        addPixelColourListener(2, 22, 0x669BBC, TextColours::setSearchKeyColour);
+        addPixelColourListener(2, 32, 0xEECC77, TextColours::setSearchTermColour);
+        addPixelColourListener(2, 40, 0xFF0000, TextColours::setSearchErrorColour);
     }
 }

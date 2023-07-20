@@ -30,6 +30,9 @@ public class ChestTracker implements ClientModInitializer {
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);
     }
+    public static ResourceLocation guiTex(String path) {
+        return new ResourceLocation(ID, "textures/gui/" + path + ".png");
+    }
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static final KeyMapping OPEN_GUI = KeyBindingHelper.registerKeyBinding(

@@ -6,17 +6,17 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.ChestTracker;
 
 import java.util.function.BiConsumer;
 
 public class ResizeWidget extends AbstractWidget {
-    private static final int TEXTURE_SIZE = 10; // px
-    private static final int TEXTURE_UV_X = 0; // px
-    private static final int TEXTURE_UV_Y = 64; // px
+    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/resize");
+    private static final int SIZE = 10; // px
     private final int stepSize;
     private final int currentWidth;
     private final int currentHeight;
@@ -31,7 +31,7 @@ public class ResizeWidget extends AbstractWidget {
     private Pair<Integer, Integer> target = null;
 
     public ResizeWidget(int x, int y, int screenLeft, int screenTop, int stepSize, int currentWidth, int currentHeight, int minWidth, int minHeight, int maxWidth, int maxHeight, BiConsumer<Integer, Integer> callback) {
-        super(x, y, TEXTURE_SIZE, TEXTURE_SIZE, Component.empty());
+        super(x, y, SIZE, SIZE, Component.empty());
         this.left = screenLeft;
         this.top = screenTop;
         if (currentWidth < minWidth || currentWidth > maxWidth) throw new IllegalArgumentException("Resize width out of bounds: %d".formatted(currentWidth));
@@ -50,7 +50,7 @@ public class ResizeWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blit(Constants.TEXTURE, this.getX(), this.getY(), TEXTURE_UV_X, TEXTURE_UV_Y, TEXTURE_SIZE, TEXTURE_SIZE);
+        graphics.blit(TEXTURE, this.getX(), this.getY(), 0, 0, SIZE, SIZE, SIZE, SIZE);
 
         // border
         if (this.target != null) {

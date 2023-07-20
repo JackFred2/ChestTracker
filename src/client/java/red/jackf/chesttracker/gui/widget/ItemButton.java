@@ -6,14 +6,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.ChestTracker;
 
 public class ItemButton extends Button {
     private static final int SIZE = 20;
-    private static final int CUSTOM_BACKGROUND_UV_X = 0;
-    private static final int CUSTOM_BACKGROUND_UV_Y = 153;
+    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/memory_key_background");
     private final ItemStack stack;
     private final Component tooltip;
     private final boolean shouldShowBackground;
@@ -38,9 +38,8 @@ public class ItemButton extends Button {
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (this.shouldShowBackground) {
             if (useChestTrackerBackground) {
-                var texY = CUSTOM_BACKGROUND_UV_Y;
-                if (this.highlighted || this.isHovered()) texY += SIZE;
-                graphics.blit(Constants.TEXTURE, getX(), getY(), CUSTOM_BACKGROUND_UV_X, texY, SIZE, SIZE);
+                var texY = (this.highlighted || this.isHovered()) ? SIZE : 0;
+                graphics.blit(TEXTURE, getX(), getY(), 0, texY, SIZE, SIZE, SIZE, SIZE * 2);
             } else {
                 super.renderWidget(graphics, mouseX, mouseY, partialTick);
             }
