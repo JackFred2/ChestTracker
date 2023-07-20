@@ -13,13 +13,16 @@ import red.jackf.chesttracker.gui.util.NinePatcher;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class StringSelectorWidget extends AbstractWidget {
     private static final int ROW_HEIGHT = 12;
+    private final Consumer<String> onSelect;
     private List<String> options = Collections.emptyList();
 
-    public StringSelectorWidget(int x, int y, int width, int height, Component message) {
+    public StringSelectorWidget(int x, int y, int width, int height, Component message, Consumer<String> onSelect) {
         super(x, y, width, height, message);
+        this.onSelect = onSelect;
     }
 
     public void setOptions(List<String> options) {
@@ -43,6 +46,14 @@ public class StringSelectorWidget extends AbstractWidget {
                     this.getX() + 2 + (hovered ? 6 : 0),
                     this.getY() + 2 + ROW_HEIGHT * i,
                      hovered ? CustomSearchablesFormatter.getSearchTermColour() : CustomSearchablesFormatter.getTextColour());
+        }
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        var index = getHoveredIndex((int) mouseX, (int) mouseY);
+        if (index != null && index >= 0 && index < options.size()) {
+            onSelect.accept(options.get(index));
         }
     }
 
