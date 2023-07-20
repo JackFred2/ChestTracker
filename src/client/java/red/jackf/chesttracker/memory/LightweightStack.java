@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * Fake itemstack that has no count and easier equality check
+ * Fake itemstack that has no count, and so easier equality check
  */
 public record LightweightStack(Item item, @Nullable CompoundTag tag) {
     public static final Codec<LightweightStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(

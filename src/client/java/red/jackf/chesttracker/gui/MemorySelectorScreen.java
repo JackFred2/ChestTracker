@@ -16,7 +16,7 @@ import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
@@ -123,7 +123,7 @@ public class MemorySelectorScreen extends Screen {
     }
 
     private void open(String memoryId) {
-        ItemMemory.load(memoryId);
+        MemoryBank.load(memoryId);
         Minecraft.getInstance().setScreen(parent instanceof ChestTrackerScreen ? parent : new ChestTrackerScreen(parent));
     }
 

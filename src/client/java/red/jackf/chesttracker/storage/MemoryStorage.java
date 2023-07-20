@@ -1,18 +1,18 @@
 package red.jackf.chesttracker.storage;
 
 import dev.isxander.yacl3.api.OptionGroup;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.MemoryBank;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryStorage implements Storage {
-    private static final Map<String, ItemMemory> storage = new HashMap<>();
+    private static final Map<String, MemoryBank> storage = new HashMap<>();
 
     @Override
-    public ItemMemory load(String id) {
-        return storage.computeIfAbsent(id, s -> new ItemMemory());
+    public MemoryBank load(String id) {
+        return storage.computeIfAbsent(id, s -> new MemoryBank());
     }
 
     @Override
@@ -21,12 +21,12 @@ public class MemoryStorage implements Storage {
     }
 
     @Override
-    public void save(ItemMemory memory) {
-        storage.put(memory.getId(), memory);
+    public void save(MemoryBank memoryBank) {
+        storage.put(memoryBank.getId(), memoryBank);
     }
 
     @Override
-    public void appendOptionsToSettings(ItemMemory memory, OptionGroup.Builder builder) {}
+    public void appendOptionsToSettings(MemoryBank memoryBank, OptionGroup.Builder builder) {}
 
     @Override
     public Collection<String> getAllIds() {

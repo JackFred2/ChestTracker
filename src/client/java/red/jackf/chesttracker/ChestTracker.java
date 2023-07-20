@@ -17,7 +17,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.MemorySelectorScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.world.LocationTracking;
@@ -45,13 +45,13 @@ public class ChestTracker implements ClientModInitializer {
 
         // load and unload memory storage
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> StorageUtil.load(client));
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ItemMemory.unload());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> MemoryBank.unload());
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // opening Chest Tracker GUI with no screen open
             if (client.screen == null && client.getOverlay() == null)
                 while (OPEN_GUI.consumeClick()) {
-                    if (ItemMemory.INSTANCE == null) {
+                    if (MemoryBank.INSTANCE == null) {
                         client.setScreen(new MemorySelectorScreen(null));
                     } else {
                         client.setScreen(new ChestTrackerScreen(null));
@@ -69,7 +69,7 @@ public class ChestTracker implements ClientModInitializer {
                     }
 
                     if (OPEN_GUI.matches(key, scancode)) {
-                        if (ItemMemory.INSTANCE == null) {
+                        if (MemoryBank.INSTANCE == null) {
                             client.setScreen(new MemorySelectorScreen(parent));
                         } else {
                             client.setScreen(new ChestTrackerScreen(parent));
@@ -91,10 +91,10 @@ public class ChestTracker implements ClientModInitializer {
 
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {
-            if (ItemMemory.INSTANCE == null) return false;
+            if (MemoryBank.INSTANCE == null) return false;
             var level = Minecraft.getInstance().level;
             if (level == null) return false;
-            var results = ItemMemory.INSTANCE.getPositions(level.dimension().location(), request);
+            var results = MemoryBank.INSTANCE.getPositions(level.dimension().location(), request);
             if (!results.isEmpty()) resultConsumer.accept(results);
             return true;
         });

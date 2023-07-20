@@ -1,22 +1,33 @@
 package red.jackf.chesttracker.memory;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.util.ModCodec;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemMemory {
-    private final Map<ResourceLocation, Map<BlockPos, LocationData>> memories;
+public class MemoryBank {
+    public static final Codec<MemoryBank> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(ModCodec.makeMutableMap(Codec.unboundedMap(
+                    ResourceLocation.CODEC,
+                    ModCodec.makeMutableMap(Codec.unboundedMap(
+                            ModCodec.BLOCK_POS_STRING,
+                            Memory.CODEC
+                    ))
+            )).fieldOf("memories").forGetter(MemoryBank::getMemories)).apply(instance, MemoryBank::new));
+    private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
 
     @Nullable
-    public static ItemMemory INSTANCE = null;
+    public static MemoryBank INSTANCE = null;
     private String id;
 
     public static void load(String id) {
@@ -36,20 +47,20 @@ public class ItemMemory {
         INSTANCE = null;
     }
 
-    public ItemMemory() {
+    public MemoryBank() {
         this(new HashMap<>());
     }
 
-    public ItemMemory(Map<ResourceLocation, Map<BlockPos, LocationData>> map) {
+    public MemoryBank(Map<ResourceLocation, Map<BlockPos, Memory>> map) {
         this.memories = map;
     }
 
-    public Map<ResourceLocation, Map<BlockPos, LocationData>> getMemories() {
+    public Map<ResourceLocation, Map<BlockPos, Memory>> getMemories() {
         return memories;
     }
 
-    public void addMemory(ResourceLocation key, BlockPos pos, LocationData data) {
-        memories.computeIfAbsent(key, u -> new HashMap<>()).put(pos, data);
+    public void addMemory(ResourceLocation key, BlockPos pos, Memory memory) {
+        memories.computeIfAbsent(key, u -> new HashMap<>()).put(pos, memory);
     }
 
     public void removeMemory(ResourceLocation key, BlockPos pos) {

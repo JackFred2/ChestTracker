@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.mixins.MinecraftServerAccessor;
 import red.jackf.chesttracker.util.StringUtil;
 
@@ -33,7 +33,7 @@ public class StorageUtil {
 
         // on pause
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof PauseScreen) ItemMemory.save();
+            if (screen instanceof PauseScreen) MemoryBank.save();
         });
     }
 
@@ -66,8 +66,8 @@ public class StorageUtil {
         if (!ChestTrackerConfig.INSTANCE.getConfig().memory.autoLoadMemories) return;
         var path = getLoadID(mc);
         ChestTracker.LOGGER.debug("Loading {} using {}", path, instance.getClass().getSimpleName());
-        if (path == null) ItemMemory.unload();
-        else ItemMemory.load(path);
+        if (path == null) MemoryBank.unload();
+        else MemoryBank.load(path);
     }
 
     public static void setLastRealmID(long lastRealmId) {

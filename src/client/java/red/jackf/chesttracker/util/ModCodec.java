@@ -2,12 +2,7 @@ package red.jackf.chesttracker.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import red.jackf.chesttracker.memory.ItemMemory;
-import red.jackf.chesttracker.memory.LocationData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class Codecs {
+/**
+ * Codecs for classes that aren't ours
+ */
+public class ModCodec {
+    /**
+     * Short form block pos codec
+     */
     public static final Codec<BlockPos> BLOCK_POS_STRING = Codec.STRING.comapFlatMap(
             s -> {
                 String[] split = s.split(",");
@@ -34,18 +35,6 @@ public class Codecs {
                 }
             }, pos -> "%d,%d,%d".formatted(pos.getX(), pos.getY(), pos.getZ())
     );
-
-    public static final Codec<LocationData> LOCATION_DATA = RecordCodecBuilder.create(instance ->
-            instance.group(makeMutableList(ItemStack.CODEC.listOf()).fieldOf("items").forGetter(LocationData::items)).apply(instance, LocationData::new));
-
-    public static final Codec<ItemMemory> ITEM_MEMORY = RecordCodecBuilder.create(instance ->
-            instance.group(makeMutableMap(Codec.unboundedMap(
-                    ResourceLocation.CODEC,
-                    makeMutableMap(Codec.unboundedMap(
-                            BLOCK_POS_STRING,
-                            LOCATION_DATA
-                    ))
-            )).fieldOf("memories").forGetter(ItemMemory::getMemories)).apply(instance, ItemMemory::new));
 
 
     /**

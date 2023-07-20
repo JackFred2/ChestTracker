@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.MemoryIcon;
+import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.LightweightStack;
 
@@ -34,17 +34,7 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
 
-public class MemoryIconController implements Controller<MemoryIcon> {
-    private final Option<MemoryIcon> option;
-
-    public MemoryIconController(Option<MemoryIcon> option) {
-        this.option = option;
-    }
-
-    @Override
-    public Option<MemoryIcon> option() {
-        return option;
-    }
+public record MemoryKeyIconController(Option<MemoryKeyIcon> option) implements Controller<MemoryKeyIcon> {
 
     @Override
     public Component formatValue() {
@@ -56,17 +46,17 @@ public class MemoryIconController implements Controller<MemoryIcon> {
         return new Widget(screen, this.option, widgetDimension);
     }
 
-    public static class Builder implements ControllerBuilder<MemoryIcon> {
-        private final Option<MemoryIcon> option;
+    public static class Builder implements ControllerBuilder<MemoryKeyIcon> {
+        private final Option<MemoryKeyIcon> option;
 
-        public Builder(Option<MemoryIcon> option) {
+        public Builder(Option<MemoryKeyIcon> option) {
             this.option = option;
         }
 
         @SuppressWarnings("UnstableApiUsage")
         @Override
-        public Controller<MemoryIcon> build() {
-            return new MemoryIconController(option);
+        public Controller<MemoryKeyIcon> build() {
+            return new MemoryKeyIconController(option);
         }
     }
 
@@ -81,7 +71,7 @@ public class MemoryIconController implements Controller<MemoryIcon> {
         private GuiEventListener focused;
         private boolean dragging;
 
-        public Widget(YACLScreen screen, Option<MemoryIcon> option, Dimension<Integer> dim) {
+        public Widget(YACLScreen screen, Option<MemoryKeyIcon> option, Dimension<Integer> dim) {
             super(dim);
 
             this.editBox = new EditBox(Minecraft.getInstance().font,
@@ -92,21 +82,23 @@ public class MemoryIconController implements Controller<MemoryIcon> {
             this.editBox.setValue(option.pendingValue().id().toString());
             this.editBox.setResponder(s -> {
                 var parsed = ResourceLocation.tryParse(s);
-                if (parsed != null) option.requestSet(new MemoryIcon(parsed, option.binding().getValue().icon()));
+                if (parsed != null) option.requestSet(new MemoryKeyIcon(parsed, option.binding().getValue().icon()));
 
                 if (s.isEmpty()) {
-                    this.editBox.setSuggestion(translatable("chesttracker.config.gui.memoryIcons.dimension").getString());
+                    this.editBox.setSuggestion(translatable("chesttracker.config.gui.memoryKeyIcons.dimension").getString());
                 } else {
                     this.editBox.setSuggestion("");
                 }
             });
-            this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.gui.memoryIcons.dimension")));
+            this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.gui.memoryKeyIcons.dimension")));
 
-            this.setItemButton = new ItemButton(option.pendingValue().icon().toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.gui.memoryIcons.icon"),
-                b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
-                    if (item != null)
-                        option.requestSet(new MemoryIcon(option.binding().getValue().id(), new LightweightStack(item)));
-                })), true, 0, false);
+            this.setItemButton = new ItemButton(option.pendingValue().icon()
+                    .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.gui.memoryKeyIcons.icon"),
+                    b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
+                        if (item != null)
+                            option.requestSet(new MemoryKeyIcon(option.binding().getValue()
+                                    .id(), new LightweightStack(item)));
+                    })), true, 0, false);
         }
 
         @Override

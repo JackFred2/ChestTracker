@@ -24,7 +24,7 @@ import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.SearchablesUtil;
 import red.jackf.chesttracker.gui.widget.*;
-import red.jackf.chesttracker.memory.ItemMemory;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.Constants;
 
@@ -65,7 +65,7 @@ public class ChestTrackerScreen extends Screen {
     @Nullable
     private ResizeWidget resize = null;
     private VerticalScrollWidget scroll;
-    private ResourceLocation memoryId;
+    private ResourceLocation memoryKey;
     private List<ItemStack> items = Collections.emptyList();
     private int menuWidth;
     private int menuHeight;
@@ -75,7 +75,7 @@ public class ChestTrackerScreen extends Screen {
         ChestTracker.LOGGER.debug("Open Screen");
         this.parent = parent;
         var level = Minecraft.getInstance().level;
-        this.memoryId = level == null ? ChestTracker.id("unknown") : level.dimension().location();
+        this.memoryKey = level == null ? ChestTracker.id("unknown") : level.dimension().location();
     }
 
     public static void setTitleColour(Integer titleColour) {
@@ -192,13 +192,14 @@ public class ChestTrackerScreen extends Screen {
             }));
 
         // key buttons
-        if (ItemMemory.INSTANCE != null) {
-            var iconList = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryIcons;
-            var keys = ItemMemory.INSTANCE.getKeys();
+        if (MemoryBank.INSTANCE != null) {
+            var iconList = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryKeyIcons;
+            var keys = MemoryBank.INSTANCE.getKeys();
             List<ResourceLocation> todo = new ArrayList<>(keys.size());
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>(); // used to manage highlights
+
             // order by config list first, then arbitrary for unknown
-            for (MemoryIcon icon : iconList)
+            for (MemoryKeyIcon icon : iconList)
                 if (keys.contains(icon.id()))
                     todo.add(icon.id());
             for (ResourceLocation key : keys)
@@ -207,11 +208,15 @@ public class ChestTrackerScreen extends Screen {
 
             for (int index = 0; index < todo.size(); index++) {
                 var resloc = todo.get(index);
-                var icon = iconList.stream().filter(mi -> mi.id().equals(resloc)).findFirst().map(mi -> mi.icon().toStack()).orElse(new ItemStack(Items.CRAFTING_TABLE));
+                var icon = iconList.stream()
+                        .filter(memoryKeyIcon -> memoryKeyIcon.id().equals(resloc))
+                        .findFirst()
+                        .map(mi -> mi.icon().toStack())
+                        .orElse(new ItemStack(Items.CRAFTING_TABLE));
                 var button = this.addRenderableWidget(new ItemButton(icon, this.left - MEMORY_ICON_OFFSET, this.top + index * MEMORY_ICON_SPACING, Component.literal(resloc.toString()), b -> {
-                    buttons.get(this.memoryId).setHighlighted(false);
+                    buttons.get(this.memoryKey).setHighlighted(false);
 
-                    this.memoryId = resloc;
+                    this.memoryKey = resloc;
                     updateItems();
 
                     buttons.get(resloc).setHighlighted(true);
@@ -220,16 +225,16 @@ public class ChestTrackerScreen extends Screen {
                 buttons.put(resloc, button);
 
                 // inital button highlight
-                if (memoryId.equals(resloc)) button.setHighlighted(true);
+                if (memoryKey.equals(resloc)) button.setHighlighted(true);
             }
         }
 
         updateItems();
 
         // add warning, this should hopefully never be displayed
-        if (ItemMemory.INSTANCE == null) {
+        if (MemoryBank.INSTANCE == null) {
             this.search.setEditable(false);
-            this.search.setValue(I18n.get("chesttracker.config.memory.global.noMemoriesLoaded"));
+            this.search.setValue(I18n.get("chesttracker.config.memory.global.noMemoryBankLoaded"));
             this.search.setTextColorUneditable(0xFF4040);
         }
     }
@@ -240,11 +245,11 @@ public class ChestTrackerScreen extends Screen {
     }
 
     /**
-     * Loads the items from the given save and dimension ID
+     * Update the cached item list from the current Memory Bank, then runs a filter operation..
      */
     private void updateItems() {
-        if (ItemMemory.INSTANCE == null) return;
-        var counts = ItemMemory.INSTANCE.getCounts(memoryId);
+        if (MemoryBank.INSTANCE == null) return;
+        var counts = MemoryBank.INSTANCE.getCounts(memoryKey);
         this.items = counts.entrySet().stream()
                 .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest
                 .map(e -> { // lightweight stack -> full stacks
@@ -257,7 +262,7 @@ public class ChestTrackerScreen extends Screen {
     }
 
     /**
-     * Updates the items list with the current items, filtered by the search bar
+     * Update the items list with the currently cached items, filtered by the search bar.
      */
     private void filter(String filter) {
         var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
@@ -266,6 +271,9 @@ public class ChestTrackerScreen extends Screen {
         this.scroll.setDisabled(filtered.size() <= (guiConfig.gridWidth * guiConfig.gridHeight));
     }
 
+    /**
+     * Test for autocomplete-specific operations. Used to check mouse operations over the autocomplete bar.
+     */
     private boolean ifAutocomplete(Predicate<AutoComplete<?>> predicate) {
         if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
             return predicate.test(autoCompleting.autoComplete());
@@ -283,12 +291,6 @@ public class ChestTrackerScreen extends Screen {
         this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, titleColour, false); // title
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.search.isFocused() && ifAutocomplete(a -> a.mouseClicked(mouseX, mouseY, button))) return true;
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -316,6 +318,12 @@ public class ChestTrackerScreen extends Screen {
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.search.isFocused() && ifAutocomplete(a -> a.mouseClicked(mouseX, mouseY, button))) return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

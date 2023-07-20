@@ -7,13 +7,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.MemoryIcon;
+import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.Constants;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ChestTrackerConfig {
             ChestTracker.LOGGER.error("Error loading Chest Tracker config, backing it up and restoring default", ex);
             var path = INSTANCE.getPath();
             try {
-                Files.move(path, path.resolveSibling(path.getFileName().toString() + ".errored"));
+                Files.move(path, path.resolveSibling(path.getFileName().toString() + ".errored"), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 ChestTracker.LOGGER.fatal("Error backing up errored config", e);
             }
@@ -66,13 +67,13 @@ public class ChestTrackerConfig {
         public int gridHeight = Constants.MIN_GRID_HEIGHT;
 
         @ConfigEntry
-        public List<MemoryIcon> memoryIcons = new ArrayList<>(ICON_DEFAULTS);
+        public List<MemoryKeyIcon> memoryKeyIcons = new ArrayList<>(ICON_DEFAULTS);
 
-        private static final List<MemoryIcon> ICON_DEFAULTS = List.of(
-                new MemoryIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST)),
-                new MemoryIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
-                new MemoryIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
-                new MemoryIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
+        private static final List<MemoryKeyIcon> ICON_DEFAULTS = List.of(
+                new MemoryKeyIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST)),
+                new MemoryKeyIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
+                new MemoryKeyIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
+                new MemoryKeyIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
         );
     }
 

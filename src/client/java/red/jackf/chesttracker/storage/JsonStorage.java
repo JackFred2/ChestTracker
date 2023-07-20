@@ -11,8 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.memory.ItemMemory;
-import red.jackf.chesttracker.util.Codecs;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
@@ -36,16 +35,16 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public ItemMemory load(String id) {
+    public MemoryBank load(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + EXT);
         LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
             try {
                 var str = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
                 var json = gson().fromJson(str, JsonElement.class);
-                var loaded = Codecs.ITEM_MEMORY.decode(JsonOps.INSTANCE, json).get();
+                var loaded = MemoryBank.CODEC.decode(JsonOps.INSTANCE, json).get();
                 if (loaded.right().isPresent()) {
-                    throw new IOException("Invalid memory JSON: %s".formatted(loaded.right().get()));
+                    throw new IOException("Invalid memoryBank JSON: %s".formatted(loaded.right().get()));
                 } else {
                     //noinspection OptionalGetWithoutIsPresent
                     return loaded.left().get().getFirst();
@@ -54,7 +53,7 @@ public class JsonStorage implements Storage {
                 LOGGER.error("Error loading %s".formatted(path), ex);
             }
         }
-        return new ItemMemory();
+        return new MemoryBank();
     }
 
     @Override
@@ -71,14 +70,14 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public void save(ItemMemory memory) {
-        LOGGER.debug("Saving {}", memory.getId());
+    public void save(MemoryBank memoryBank) {
+        LOGGER.debug("Saving {}", memoryBank.getId());
         try {
             Files.createDirectories(Constants.STORAGE_DIR);
-            var path = Constants.STORAGE_DIR.resolve(memory.getId() + EXT);
-            var jsonParsed = Codecs.ITEM_MEMORY.encodeStart(JsonOps.INSTANCE, memory).get();
+            var path = Constants.STORAGE_DIR.resolve(memoryBank.getId() + EXT);
+            var jsonParsed = MemoryBank.CODEC.encodeStart(JsonOps.INSTANCE, memoryBank).get();
             if (jsonParsed.right().isPresent()) {
-                throw new IOException("Error encoding memory to JSON: %s".formatted(jsonParsed.right().get()));
+                throw new IOException("Error encoding memoryBank to JSON: %s".formatted(jsonParsed.right().get()));
             } else {
                 //noinspection OptionalGetWithoutIsPresent
                 FileUtils.writeStringToFile(path.toFile(), gson().toJson(jsonParsed.left().get()), StandardCharsets.UTF_8);
@@ -89,8 +88,8 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public void appendOptionsToSettings(ItemMemory memory, OptionGroup.Builder builder) {
-        var path = Constants.STORAGE_DIR.resolve(memory.getId() + EXT);
+    public void appendOptionsToSettings(MemoryBank memoryBank, OptionGroup.Builder builder) {
+        var path = Constants.STORAGE_DIR.resolve(memoryBank.getId() + EXT);
         var size = Files.isRegularFile(path) ? FileUtils.sizeOf(path.toFile()) : 0L;
         builder.option(LabelOption.create(translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B")));
     }

@@ -49,8 +49,8 @@ public class StringUtil {
     }
 
     /**
-     * Makes a string of text safe to be used as a windows file
-     * adjusted from net.minecraft.FileUtil
+     * Makes a string of text safe to be used as a windows file.
+     * Adjusted from net.minecraft.FileUtil
      */
     public static String sanitizeForPath(String text) {
         if (text == null) return null;

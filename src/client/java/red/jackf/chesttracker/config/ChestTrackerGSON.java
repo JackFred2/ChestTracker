@@ -9,7 +9,7 @@ import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import red.jackf.chesttracker.gui.MemoryIcon;
+import red.jackf.chesttracker.gui.MemoryKeyIcon;
 
 import java.awt.*;
 import java.lang.reflect.Type;
@@ -23,7 +23,7 @@ public class ChestTrackerGSON {
                 .registerTypeHierarchyAdapter(Component.class, new Component.Serializer())
                 .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
                 .registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
-                .registerTypeHierarchyAdapter(MemoryIcon.class, adapterFor(MemoryIcon.CODEC))
+                .registerTypeHierarchyAdapter(MemoryKeyIcon.class, adapterFor(MemoryKeyIcon.CODEC))
                 .registerTypeHierarchyAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
                 .create();
     }
