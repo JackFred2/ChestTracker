@@ -11,8 +11,13 @@ public class MemoryStorage implements Storage {
     private static final Map<String, ItemMemory> storage = new HashMap<>();
 
     @Override
-    public ItemMemory load(String worldId) {
-        return storage.computeIfAbsent(worldId, s -> new ItemMemory());
+    public ItemMemory load(String id) {
+        return storage.computeIfAbsent(id, s -> new ItemMemory());
+    }
+
+    @Override
+    public void delete(String id) {
+        storage.remove(id);
     }
 
     @Override

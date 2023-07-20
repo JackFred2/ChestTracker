@@ -285,8 +285,8 @@ public class ChestTrackerConfigScreenBuilder {
                                 .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
                                 .build(),
                         (screen, button) -> {
-                            memory.getMemories().clear();
-                            StorageUtil.getStorage().save(memory);
+                            ItemMemory.unload();
+                            StorageUtil.getStorage().delete(memory.getId());
                             refreshConfigScreen(parent);
                         },
                         null,

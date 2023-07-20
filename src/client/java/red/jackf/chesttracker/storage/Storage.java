@@ -10,7 +10,8 @@ import java.util.function.Supplier;
  * Handles saving/loading for memory
  */
 public interface Storage {
-    ItemMemory load(String worldId);
+    ItemMemory load(String id);
+    void delete(String id);
 
     void save(ItemMemory memory);
 

@@ -7,6 +7,8 @@ import com.mojang.serialization.JsonOps;
 import dev.isxander.yacl3.api.LabelOption;
 import dev.isxander.yacl3.api.OptionGroup;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.ItemMemory;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class JsonStorage implements Storage {
+    private static final Logger LOGGER = LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/JSON");
     private static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();
     private static final String EXT = ".json";
@@ -33,9 +36,9 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public ItemMemory load(String worldId) {
-        var path = Constants.STORAGE_DIR.resolve(worldId + EXT);
-        ChestTracker.LOGGER.debug("Loading {}", path);
+    public ItemMemory load(String id) {
+        var path = Constants.STORAGE_DIR.resolve(id + EXT);
+        LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
             try {
                 var str = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
@@ -48,15 +51,28 @@ public class JsonStorage implements Storage {
                     return loaded.left().get().getFirst();
                 }
             } catch (IOException ex) {
-                ChestTracker.LOGGER.error("Error loading %s".formatted(path), ex);
+                LOGGER.error("Error loading %s".formatted(path), ex);
             }
         }
         return new ItemMemory();
     }
 
     @Override
+    public void delete(String id) {
+        var path = Constants.STORAGE_DIR.resolve(id + EXT);
+        if (Files.isRegularFile(path)) {
+            try {
+                Files.delete(path);
+                LOGGER.info("Deleted {}", path);
+            } catch (IOException e) {
+                LOGGER.error(e);
+            }
+        }
+    }
+
+    @Override
     public void save(ItemMemory memory) {
-        ChestTracker.LOGGER.debug("Saving {}", memory.getId());
+        LOGGER.debug("Saving {}", memory.getId());
         try {
             Files.createDirectories(Constants.STORAGE_DIR);
             var path = Constants.STORAGE_DIR.resolve(memory.getId() + EXT);
@@ -68,7 +84,7 @@ public class JsonStorage implements Storage {
                 FileUtils.writeStringToFile(path.toFile(), gson().toJson(jsonParsed.left().get()), StandardCharsets.UTF_8);
             }
         } catch(IOException ex) {
-            ChestTracker.LOGGER.error("Error saving memories", ex);
+            LOGGER.error("Error saving memories", ex);
         }
     }
 
