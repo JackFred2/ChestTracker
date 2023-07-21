@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -22,7 +23,8 @@ import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.StringUtil;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -48,10 +50,10 @@ public class MemoryBankManagerScreen extends Screen {
     private int top = 0;
 
     private EditBox search = null;
-    private StringSelectorWidget list;
+    private StringSelectorWidget<String> metaList;
     @Nullable
     private ImageButton newMemoryButton = null;
-    private final List<String> ids;
+    private final Map<String, MemoryBank.Metadata> memoryBanks;
 
     /**
      * @param parent - Screen to open on cancel, usually when pressing escape
@@ -61,7 +63,10 @@ public class MemoryBankManagerScreen extends Screen {
         super(Component.translatable("chesttracker.gui.memoryManager.title"));
         this.parent = parent;
         this.onSelect = onSelect;
-        this.ids = StorageUtil.getStorage().getAllIds().stream().sorted().collect(Collectors.toList());
+        this.memoryBanks = StorageUtil.getStorage().getAllIds().stream()
+                .sorted()
+                .map(id -> Pair.of(id, StorageUtil.getStorage().getMetadata(id)))
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
     }
 
     public MemoryBankManagerScreen(@Nullable Screen parent) {
@@ -111,14 +116,19 @@ public class MemoryBankManagerScreen extends Screen {
         this.search.setBordered(false);
         this.search.setHint(Component.translatable("chesttracker.gui.memoryManager.search"));
         this.search.setResponder(term -> {
-            this.list.setOptions(this.ids.stream()
-                    .filter(id -> id.toLowerCase().contains(term.toLowerCase()))
-                    .collect(Collectors.toList()));
+            this.metaList.setOptions(this.memoryBanks.entrySet().stream()
+                    .filter(entry -> entry.getKey().toLowerCase().contains(term.toLowerCase()))
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e -> e.getValue().getName() != null ? e.getValue().getName() : e.getKey(),
+                            (a, b) -> a,
+                            LinkedHashMap::new
+                    )));
 
             var resultTerm = makeUserId(term);
 
             if (newMemoryButton != null)
-                if (term.isEmpty() || this.ids.contains(resultTerm)) {
+                if (term.isEmpty() || this.memoryBanks.containsKey(resultTerm)) {
                     newMemoryButton.active = false;
                     newMemoryButton.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.invalidName")));
                 } else {
@@ -127,7 +137,7 @@ public class MemoryBankManagerScreen extends Screen {
                 }
         });
 
-        this.list = this.addRenderableWidget(new StringSelectorWidget(
+        this.metaList = this.addRenderableWidget(new StringSelectorWidget<>(
                 this.left + MARGIN,
                 this.top + LIST_TOP,
                 this.menuWidth - 2 * MARGIN,

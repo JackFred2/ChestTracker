@@ -1,19 +1,20 @@
 package red.jackf.chesttracker.storage;
 
 import dev.isxander.yacl3.api.OptionGroup;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class GameMemoryStorage implements Storage {
     private static final Map<String, MemoryBank> storage = new HashMap<>();
 
+    @Nullable
     @Override
-    public MemoryBank loadOrCreate(String id, Supplier<MemoryBank> constructor) {
-        return storage.computeIfAbsent(id, s -> constructor.get());
+    public MemoryBank load(String id) {
+        return storage.get(id);
     }
 
     @Override

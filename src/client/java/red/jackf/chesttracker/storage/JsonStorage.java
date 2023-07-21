@@ -9,6 +9,7 @@ import dev.isxander.yacl3.api.OptionGroup;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -20,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -35,8 +35,9 @@ public class JsonStorage implements Storage {
         return ChestTrackerConfig.INSTANCE.getConfig().memory.readableJsonMemories ? GSON : GSON_COMPACT;
     }
 
+    @Nullable
     @Override
-    public MemoryBank loadOrCreate(String id, Supplier<MemoryBank> constructor) {
+    public MemoryBank load(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + EXT);
         LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
@@ -45,7 +46,7 @@ public class JsonStorage implements Storage {
                 var json = gson().fromJson(str, JsonElement.class);
                 var loaded = MemoryBank.CODEC.decode(JsonOps.INSTANCE, json).get();
                 if (loaded.right().isPresent()) {
-                    throw new IOException("Invalid memoryBank JSON: %s".formatted(loaded.right().get()));
+                    LOGGER.error(new IOException("Invalid memoryBank JSON: %s".formatted(loaded.right().get())));
                 } else {
                     //noinspection OptionalGetWithoutIsPresent
                     return loaded.left().get().getFirst();
@@ -55,7 +56,7 @@ public class JsonStorage implements Storage {
             }
         }
         LOGGER.debug("Creating new memory bank");
-        return constructor.get();
+        return null;
     }
 
     @Override

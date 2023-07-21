@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.storage;
 
 import dev.isxander.yacl3.api.OptionGroup;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
 
 import java.util.Collection;
@@ -11,13 +12,12 @@ import java.util.function.Supplier;
  */
 public interface Storage {
     /**
-     * Load a memory bank if it exists, or return a new one from 'newConstructor' if not.
+     * Load a memory bank if it exists, or return null if not.
      * @param id ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
-     * @param newConstructor Supplier for a new memory bank. This should be called if an existing memory is not at `id`.
-     *                       Do not save right away, as the memory bank hasn't been given its ID yet.
-     * @return Loaded or newly created Memory Bank
+     * @return Loaded Memory Bank, or null if not available.
      */
-    MemoryBank loadOrCreate(String id, Supplier<MemoryBank> newConstructor);
+    @Nullable
+    MemoryBank load(String id);
 
     /**
      * Delete a memory from this storage. Not reversible.
@@ -45,6 +45,17 @@ public interface Storage {
      * @return All memory bank IDs accessible by this storage.
      */
     Collection<String> getAllIds();
+
+    /**
+     * Returns just the metadata of a memory bank. If possible, load only the metadata instead of the whole file.
+     * @param id ID of the memory bank to load
+     * @return Metadata from the memory bank, or null if not.
+     */
+    @Nullable
+    default MemoryBank.Metadata getMetadata(String id) {
+        var loaded = load(id);
+        return loaded != null ? loaded.getMetadata() : null;
+    }
 
     enum Backend {
         JSON(JsonStorage::new),

@@ -39,7 +39,10 @@ public class MemoryBank {
 
     public static void loadOrCreate(String id, @NotNull LoadContext ctx) {
         unload();
-        INSTANCE = StorageUtil.getStorage().loadOrCreate(id, () -> new MemoryBank(Metadata.from(ctx), new HashMap<>()));
+        INSTANCE = StorageUtil.getStorage().load(id);
+        if (INSTANCE == null) {
+            INSTANCE = new MemoryBank(Metadata.from(ctx), new HashMap<>());
+        }
         INSTANCE.setId(id);
     }
 
@@ -77,6 +80,10 @@ public class MemoryBank {
 
     public Metadata getMetadata() {
         return metadata;
+    }
+
+    public String getDisplayName() {
+        return metadata.name != null ? metadata.name : id;
     }
 
     ///////////////////////

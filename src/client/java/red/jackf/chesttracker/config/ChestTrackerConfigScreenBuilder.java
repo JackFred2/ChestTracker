@@ -287,7 +287,7 @@ public class ChestTrackerConfigScreenBuilder {
 
     private static OptionGroup makeLocalMemoryGroup(MemoryBank memory, Screen parent) {
         var builder = OptionGroup.createBuilder()
-                .name(translatable("chesttracker.config.memory.local.title", memory.getId()))
+                .name(translatable("chesttracker.config.memory.local.title", memory.getDisplayName()))
                 .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
                         OptionDescription.createBuilder()
                                 .text(translatable("chesttracker.config.memory.local.delete.description"))

@@ -10,22 +10,25 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class StringSelectorWidget extends AbstractWidget {
+/**
+ * @param <T> Result to be returned
+ */
+public class StringSelectorWidget<T> extends AbstractWidget {
     private static final int ROW_HEIGHT = 12;
-    private final Consumer<String> onSelect;
-    private List<String> options = Collections.emptyList();
+    private final Consumer<T> onSelect;
+    private Map<T, String> options = Collections.emptyMap();
+    @Nullable
+    private T lastHovered = null;
 
-    public StringSelectorWidget(int x, int y, int width, int height, Component message, Consumer<String> onSelect) {
+    public StringSelectorWidget(int x, int y, int width, int height, Component message, Consumer<T> onSelect) {
         super(x, y, width, height, message);
         this.onSelect = onSelect;
     }
 
-    public void setOptions(List<String> options) {
+    public void setOptions(Map<T, String> options) {
         this.options = options;
     }
 
@@ -38,23 +41,24 @@ public class StringSelectorWidget extends AbstractWidget {
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         NinePatcher.SEARCH.draw(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        for (int i = 0; i < options.size() && i < this.getHeight() / ROW_HEIGHT; i++) {
-            String option = options.get(i);
-            var hovered = Objects.equals(getHoveredIndex(mouseX, mouseY), i);
+        int i = 0;
+        var hoveredIndex = getHoveredIndex(mouseX, mouseY);
+        for (var entry : options.entrySet()) {
+            if (i >= this.getHeight() / ROW_HEIGHT) break;
+            boolean hovered = Objects.equals(i, hoveredIndex);
+            if (hovered) lastHovered = entry.getKey();
             graphics.drawString(Minecraft.getInstance().font,
-                    option,
+                    entry.getValue(),
                     this.getX() + 2 + (hovered ? 6 : 0),
                     this.getY() + 2 + ROW_HEIGHT * i,
-                     hovered ? TextColours.getSearchTermColour() : TextColours.getSearchTextColour());
+                    hovered ? TextColours.getSearchTermColour() : TextColours.getSearchTextColour());
+            i++;
         }
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        var index = getHoveredIndex((int) mouseX, (int) mouseY);
-        if (index != null && index >= 0 && index < options.size()) {
-            onSelect.accept(options.get(index));
-        }
+        if (lastHovered != null) onSelect.accept(lastHovered);
     }
 
     @Override
