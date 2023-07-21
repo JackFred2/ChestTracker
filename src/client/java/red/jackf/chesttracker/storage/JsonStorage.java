@@ -18,6 +18,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.Timer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,45 +47,51 @@ public class JsonStorage implements Storage {
     @Override
     public MemoryBank load(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + EXT);
-        LOGGER.debug("Loading {}", path);
-        if (Files.isRegularFile(path)) {
-            try {
-                var str = FileUtils.readFileToString(path.toFile(), CHARSET);
-                var json = gson().fromJson(str, JsonElement.class);
-                var loaded = MemoryBank.CODEC.decode(JsonOps.INSTANCE, json).get();
-                if (loaded.right().isPresent()) {
-                    LOGGER.error(new IOException("Invalid memoryBank JSON: %s".formatted(loaded.right().get())));
-                } else {
-                    //noinspection OptionalGetWithoutIsPresent
-                    return loaded.left().get().getFirst();
+        var result = Timer.time(() -> {
+            if (Files.isRegularFile(path)) {
+                try {
+                    var str = FileUtils.readFileToString(path.toFile(), CHARSET);
+                    var json = gson().fromJson(str, JsonElement.class);
+                    var loaded = MemoryBank.CODEC.decode(JsonOps.INSTANCE, json).get();
+                    if (loaded.right().isPresent()) {
+                        throw new IOException("Invalid memoryBank JSON: %s".formatted(loaded.right().get()));
+                    } else {
+                        //noinspection OptionalGetWithoutIsPresent
+                        return loaded.left().get().getFirst();
+                    }
+                } catch (IOException ex) {
+                    LOGGER.error("Error loading %s".formatted(path), ex);
                 }
-            } catch (IOException ex) {
-                LOGGER.error("Error loading %s".formatted(path), ex);
             }
-        }
-        LOGGER.debug("Creating new memory bank");
-        return null;
+            return null;
+        });
+        LOGGER.debug("Loaded {} in {}ns", path, result.getSecond());
+        return result.getFirst();
     }
 
     @Override
     public @Nullable MemoryBank.Metadata getMetadata(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + EXT);
-        if (Files.isRegularFile(path)) {
-            try (var reader = new JsonReader(new InputStreamReader(new FileInputStream(path.toFile()), CHARSET))) {
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    if (reader.nextName().equals("metadata")) {
-                        var element = JsonParser.parseReader(reader);
-                        return tryParseRawMetadata(element);
-                    } else {
-                        reader.skipValue();
+        var result = Timer.time(() -> {
+            if (Files.isRegularFile(path)) {
+                try (var reader = new JsonReader(new InputStreamReader(new FileInputStream(path.toFile()), CHARSET))) {
+                    reader.beginObject();
+                    while (reader.hasNext()) {
+                        if (reader.nextName().equals("metadata")) {
+                            var element = JsonParser.parseReader(reader);
+                            return tryParseRawMetadata(element);
+                        } else {
+                            reader.skipValue();
+                        }
                     }
+                } catch (IOException e) {
+                    LOGGER.error("Error loading metadata for %s".formatted(id), e);
                 }
-            } catch (IOException e) {
-                LOGGER.error("Error loading metadata for %s".formatted(id), e);
             }
-        }
-        return null;
+            return null;
+        });
+        LOGGER.debug("Loaded metadata for {} in {}ns", path, result.getSecond());
+        return result.getFirst();
     }
 
     @Nullable

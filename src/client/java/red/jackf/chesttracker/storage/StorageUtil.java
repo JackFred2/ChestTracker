@@ -40,7 +40,7 @@ public class StorageUtil {
         var loadContext = LoadContext.get(mc);
         if (loadContext == null) MemoryBank.unload();
         else {
-            ChestTracker.LOGGER.debug("Loading {} using {}", loadContext, instance.getClass().getSimpleName());
+            ChestTracker.LOGGER.debug("Loading {} using {}", loadContext.id(), instance.getClass().getSimpleName());
             MemoryBank.loadOrCreate(loadContext.id(), loadContext);
         }
     }
