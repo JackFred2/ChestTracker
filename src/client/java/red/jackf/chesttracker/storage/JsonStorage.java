@@ -3,6 +3,9 @@ package red.jackf.chesttracker.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.isxander.yacl3.api.LabelOption;
 import dev.isxander.yacl3.api.OptionGroup;
@@ -16,7 +19,10 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -30,6 +36,7 @@ public class JsonStorage implements Storage {
     private static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();
     private static final String EXT = ".json";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private static Gson gson() {
         return ChestTrackerConfig.INSTANCE.getConfig().memory.readableJsonMemories ? GSON : GSON_COMPACT;
@@ -42,7 +49,7 @@ public class JsonStorage implements Storage {
         LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
             try {
-                var str = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
+                var str = FileUtils.readFileToString(path.toFile(), CHARSET);
                 var json = gson().fromJson(str, JsonElement.class);
                 var loaded = MemoryBank.CODEC.decode(JsonOps.INSTANCE, json).get();
                 if (loaded.right().isPresent()) {
@@ -57,6 +64,35 @@ public class JsonStorage implements Storage {
         }
         LOGGER.debug("Creating new memory bank");
         return null;
+    }
+
+    @Override
+    public @Nullable MemoryBank.Metadata getMetadata(String id) {
+        var path = Constants.STORAGE_DIR.resolve(id + EXT);
+        if (Files.isRegularFile(path)) {
+            try (var reader = new JsonReader(new InputStreamReader(new FileInputStream(path.toFile()), CHARSET))) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    if (reader.nextName().equals("metadata")) {
+                        var element = JsonParser.parseReader(reader);
+                        return tryParseRawMetadata(element);
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error loading metadata for %s".formatted(id), e);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private MemoryBank.Metadata tryParseRawMetadata(JsonElement element) {
+        return MemoryBank.Metadata.CODEC.decode(JsonOps.INSTANCE, element)
+                .resultOrPartial(LOGGER::error)
+                .map(Pair::getFirst)
+                .orElse(null);
     }
 
     @Override
@@ -84,7 +120,7 @@ public class JsonStorage implements Storage {
                 throw new IOException("Error encoding memoryBank to JSON: %s".formatted(jsonParsed.right().get()));
             } else {
                 //noinspection OptionalGetWithoutIsPresent
-                FileUtils.writeStringToFile(path.toFile(), gson().toJson(jsonParsed.left().get()), StandardCharsets.UTF_8);
+                FileUtils.writeStringToFile(path.toFile(), gson().toJson(jsonParsed.left().get()), CHARSET);
             }
         } catch(IOException ex) {
             LOGGER.error("Error saving memories", ex);

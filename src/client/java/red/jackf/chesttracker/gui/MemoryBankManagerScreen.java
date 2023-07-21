@@ -66,6 +66,7 @@ public class MemoryBankManagerScreen extends Screen {
         this.memoryBanks = StorageUtil.getStorage().getAllIds().stream()
                 .sorted()
                 .map(id -> Pair.of(id, StorageUtil.getStorage().getMetadata(id)))
+                .filter(pair -> pair.getSecond() != null)
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
     }
 
