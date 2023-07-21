@@ -1,20 +1,23 @@
 package red.jackf.chesttracker.gui.util;
 
+/**
+ * List of text colours used in the mod; sourced from assets/chesttracker/textures/gui/text_colours.png
+ */
 public class TextColours {
     private TextColours() {}
 
-    private static int titleColour = 0x404040;
+    private static int labelColour = 0x404040;
     private static int searchTextColour = 0xFFFFFF;
     private static int searchKeyColour = 0x669BBC;
     private static int searchTermColour = 0xEECC77;
     private static int searchErrorColour = 0xFF0000;
 
-    public static int getTitleColour() {
-        return titleColour;
+    public static int getLabelColour() {
+        return labelColour;
     }
 
-    static void setTitleColour(int titleColour) {
-        TextColours.titleColour = titleColour;
+    static void setLabelColour(int labelColour) {
+        TextColours.labelColour = labelColour;
     }
 
     public static int getSearchTextColour() {

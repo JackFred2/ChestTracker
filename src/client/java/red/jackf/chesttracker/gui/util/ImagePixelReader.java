@@ -85,7 +85,7 @@ public class ImagePixelReader {
     public static void setup() {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ImagePixelReader.TitleListener());
 
-        addPixelColourListener(2, 5, 0x404040, TextColours::setTitleColour);
+        addPixelColourListener(2, 5, 0x404040, TextColours::setLabelColour);
         addPixelColourListener(2, 14, 0xFFFFFF, TextColours::setSearchTextColour);
         addPixelColourListener(2, 22, 0x669BBC, TextColours::setSearchKeyColour);
         addPixelColourListener(2, 32, 0xEECC77, TextColours::setSearchTermColour);

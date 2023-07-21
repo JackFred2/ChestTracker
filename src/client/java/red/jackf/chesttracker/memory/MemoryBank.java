@@ -37,13 +37,14 @@ public class MemoryBank {
     @Nullable
     public static MemoryBank INSTANCE = null;
 
-    public static void loadOrCreate(String id, @NotNull LoadContext ctx) {
+    public static void loadOrCreate(String id, @NotNull LoadContext newBankContext) {
         unload();
         INSTANCE = StorageUtil.getStorage().load(id);
         if (INSTANCE == null) {
-            INSTANCE = new MemoryBank(Metadata.from(ctx), new HashMap<>());
+            INSTANCE = new MemoryBank(Metadata.from(newBankContext), new HashMap<>());
         }
         INSTANCE.setId(id);
+        save();
     }
 
     public static void save() {
@@ -62,15 +63,15 @@ public class MemoryBank {
     ////////////
 
     private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
-    private final Metadata metadata;
+    private Metadata metadata;
     private String id;
 
-    private MemoryBank(Metadata metadata, Map<ResourceLocation, Map<BlockPos, Memory>> map) {
+    public MemoryBank(Metadata metadata, Map<ResourceLocation, Map<BlockPos, Memory>> map) {
         this.metadata = metadata;
         this.memories = map;
     }
 
-    private void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -80,6 +81,10 @@ public class MemoryBank {
 
     public Metadata getMetadata() {
         return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     public String getDisplayName() {
@@ -148,6 +153,10 @@ public class MemoryBank {
         public Metadata(@Nullable String name, Instant lastModified) {
             this.name = name;
             this.lastModified = lastModified;
+        }
+
+        public static Metadata blank() {
+            return new Metadata(null, Instant.now());
         }
 
         public static Metadata from(LoadContext ctx) {

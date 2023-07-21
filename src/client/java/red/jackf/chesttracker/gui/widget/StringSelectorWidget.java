@@ -10,11 +10,17 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * @param <T> Result to be returned
+ * Displays a list of strings (the values in `option`), and runs a callback on selection of one. Recommended to use
+ * a {@link LinkedHashMap}.
+ *
+ * @param <T> Type of result to be returned
  */
 public class StringSelectorWidget<T> extends AbstractWidget {
     private static final int ROW_HEIGHT = 12;
@@ -22,10 +28,16 @@ public class StringSelectorWidget<T> extends AbstractWidget {
     private Map<T, String> options = Collections.emptyMap();
     @Nullable
     private T lastHovered = null;
+    @Nullable
+    private T highlight = null;
 
     public StringSelectorWidget(int x, int y, int width, int height, Component message, Consumer<T> onSelect) {
         super(x, y, width, height, message);
         this.onSelect = onSelect;
+    }
+
+    public void setHighlight(@Nullable T highlight) {
+        this.highlight = highlight;
     }
 
     public void setOptions(Map<T, String> options) {
@@ -43,15 +55,17 @@ public class StringSelectorWidget<T> extends AbstractWidget {
         NinePatcher.SEARCH.draw(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight());
         int i = 0;
         var hoveredIndex = getHoveredIndex(mouseX, mouseY);
+        lastHovered = null;
         for (var entry : options.entrySet()) {
             if (i >= this.getHeight() / ROW_HEIGHT) break;
             boolean hovered = Objects.equals(i, hoveredIndex);
             if (hovered) lastHovered = entry.getKey();
+            var textColour = hovered ? TextColours.getSearchTermColour() : entry.getKey().equals(highlight) ? TextColours.getSearchKeyColour() : TextColours.getSearchTextColour();
             graphics.drawString(Minecraft.getInstance().font,
                     entry.getValue(),
                     this.getX() + 2 + (hovered ? 6 : 0),
                     this.getY() + 2 + ROW_HEIGHT * i,
-                    hovered ? TextColours.getSearchTermColour() : TextColours.getSearchTextColour());
+                    textColour);
             i++;
         }
     }

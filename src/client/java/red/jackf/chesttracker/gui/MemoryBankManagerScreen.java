@@ -19,23 +19,23 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
-import red.jackf.chesttracker.util.StringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Allows a user to select a memory id, or create a new one.
+ * Allows a user to select (if in game) and manage memory banks.
  */
 public class MemoryBankManagerScreen extends Screen {
     private static final int SCREEN_MARGIN = 50;
     private static final int MIN_WIDTH = 250;
     private static final int MAX_WIDTH = 400;
     private static final int MARGIN = 8;
-    private static final int TITLE_TOP = 8;
+    private static final int BUTTON_MARGIN = 5;
+    private static final int CLOSE_BUTTON_RIGHT = 17;
+    private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int SEARCH_TOP = 19;
     private static final int SEARCH_HEIGHT = 12;
     private static final int LIST_TOP = 36;
@@ -43,31 +43,24 @@ public class MemoryBankManagerScreen extends Screen {
 
 
     private final Screen parent;
-    private final Runnable onSelect;
+    private final Runnable afterBankLoaded;
     private int menuWidth = 0;
     private int menuHeight = 0;
     private int left = 0;
     private int top = 0;
 
     private EditBox search = null;
-    private StringSelectorWidget<String> metaList;
-    @Nullable
-    private ImageButton newMemoryButton = null;
-    private final Map<String, MemoryBank.Metadata> memoryBanks;
+    private StringSelectorWidget<String> memoryBankList;
+    private Map<String, MemoryBank.Metadata> memoryBanks;
 
     /**
      * @param parent - Screen to open on cancel, usually when pressing escape
-     * @param onSelect - Runnable to run on selection (creation or selection of existing)
+     * @param afterBankLoaded - Runnable to run after selection or creation of a new memory bank
      */
-    public MemoryBankManagerScreen(@Nullable Screen parent, Runnable onSelect) {
+    public MemoryBankManagerScreen(@Nullable Screen parent, Runnable afterBankLoaded) {
         super(Component.translatable("chesttracker.gui.memoryManager.title"));
         this.parent = parent;
-        this.onSelect = onSelect;
-        this.memoryBanks = StorageUtil.getStorage().getAllIds().stream()
-                .sorted()
-                .map(id -> Pair.of(id, StorageUtil.getStorage().getMetadata(id)))
-                .filter(pair -> pair.getSecond() != null)
-                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
+        this.afterBankLoaded = afterBankLoaded;
     }
 
     public MemoryBankManagerScreen(@Nullable Screen parent) {
@@ -78,6 +71,12 @@ public class MemoryBankManagerScreen extends Screen {
     protected void init() {
         super.init();
 
+        this.memoryBanks = StorageUtil.getStorage().getAllIds().stream()
+                .sorted()
+                .map(id -> Pair.of(id, StorageUtil.getStorage().getMetadata(id)))
+                .filter(pair -> pair.getSecond() != null)
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
+
         this.menuWidth = Mth.clamp(this.width - 2 * SCREEN_MARGIN, MIN_WIDTH, MAX_WIDTH);
         this.menuHeight = this.height - 2 * SCREEN_MARGIN;
 
@@ -86,10 +85,25 @@ public class MemoryBankManagerScreen extends Screen {
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
 
-        var ingame = Minecraft.getInstance().level != null;
+        // close button
+        this.addRenderableWidget(new ImageButton(
+                left + menuWidth - CLOSE_BUTTON_RIGHT,
+                top + BUTTON_MARGIN,
+                CLOSE_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE,
+                0,
+                0,
+                CLOSE_BUTTON_SIZE,
+                ChestTracker.guiTex("widgets/return_button"),
+                CLOSE_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE * 3,
+                b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
 
-        if (ingame)
-            newMemoryButton = this.addRenderableWidget(new ImageButton(this.left + menuWidth - NEW_BUTTON_SIZE - MARGIN,
+        var inGame = Minecraft.getInstance().level != null;
+
+        if (inGame) {
+            // button to create a new memory; not shown if not ingame
+            this.addRenderableWidget(new ImageButton(this.left + menuWidth - NEW_BUTTON_SIZE - MARGIN,
                     this.top + SEARCH_TOP,
                     NEW_BUTTON_SIZE,
                     NEW_BUTTON_SIZE,
@@ -99,16 +113,16 @@ public class MemoryBankManagerScreen extends Screen {
                     ChestTracker.guiTex("widgets/new_memory_bank_button"),
                     NEW_BUTTON_SIZE,
                     NEW_BUTTON_SIZE * 3,
-                    b -> {
-                        if (!this.search.getValue().isEmpty())
-                            select(makeUserId(this.search.getValue()));
-                    }));
+                    b -> openEditScreen(afterBankLoaded, null)))
+                    .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.newMemoryBank")));
+        }
 
+        // search bar
         this.search = this.addRenderableWidget(new CustomEditBox(
                 Minecraft.getInstance().font,
                 this.left + MARGIN,
                 this.top + SEARCH_TOP ,
-                this.menuWidth - 2 * MARGIN - (ingame ? (NEW_BUTTON_SIZE + 6) : 0),
+                this.menuWidth - 2 * MARGIN - (inGame ? (NEW_BUTTON_SIZE + 6) : 0),
                 SEARCH_HEIGHT,
                 this.search,
                 Component.translatable("chesttracker.gui.memoryManager.search")
@@ -117,48 +131,36 @@ public class MemoryBankManagerScreen extends Screen {
         this.search.setBordered(false);
         this.search.setHint(Component.translatable("chesttracker.gui.memoryManager.search"));
         this.search.setResponder(term -> {
-            this.metaList.setOptions(this.memoryBanks.entrySet().stream()
-                    .filter(entry -> entry.getKey().toLowerCase().contains(term.toLowerCase()))
-                    .collect(Collectors.toMap(
+            // update string list options
+            this.memoryBankList.setOptions(this.memoryBanks.entrySet().stream()
+                    .filter(entry -> {
+                        var name = entry.getValue().getName();
+                        if (name == null) name = entry.getKey();
+                        return name.toLowerCase().contains(term.toLowerCase());
+                    }).collect(Collectors.toMap(
                             Map.Entry::getKey,
                             e -> e.getValue().getName() != null ? e.getValue().getName() : e.getKey(),
                             (a, b) -> a,
                             LinkedHashMap::new
                     )));
-
-            var resultTerm = makeUserId(term);
-
-            if (newMemoryButton != null)
-                if (term.isEmpty() || this.memoryBanks.containsKey(resultTerm)) {
-                    newMemoryButton.active = false;
-                    newMemoryButton.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.invalidName")));
-                } else {
-                    newMemoryButton.active = true;
-                    newMemoryButton.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.newMemoryBank", resultTerm)));
-                }
         });
 
-        this.metaList = this.addRenderableWidget(new StringSelectorWidget<>(
+        // String list
+        this.memoryBankList = this.addRenderableWidget(new StringSelectorWidget<>(
                 this.left + MARGIN,
                 this.top + LIST_TOP,
                 this.menuWidth - 2 * MARGIN,
                 this.menuHeight - LIST_TOP - MARGIN,
                 CommonComponents.EMPTY,
-                this::select
+                id -> openEditScreen(afterBankLoaded, id)
         ));
+        this.memoryBankList.setHighlight(MemoryBank.INSTANCE != null ? MemoryBank.INSTANCE.getId() : null);
 
         this.search.setValue("");
     }
 
-    private String makeUserId(String id) {
-        return "user/" + StringUtil.sanitizeForPath(id);
-    }
-
-    private void select(String memoryId) {
-        var context = LoadContext.get(Minecraft.getInstance());
-        if (context == null) return;
-        MemoryBank.loadOrCreate(memoryId, context);
-        this.onSelect.run();
+    private void openEditScreen(Runnable afterBankLoaded, @Nullable String idToOpen) {
+        Minecraft.getInstance().setScreen(new EditMemoryBankScreen(this, afterBankLoaded, idToOpen));
     }
 
     @Override
@@ -166,10 +168,10 @@ public class MemoryBankManagerScreen extends Screen {
         this.renderBackground(graphics);
         NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(Minecraft.getInstance().font, this.title, left + MARGIN, this.top + TITLE_TOP, TextColours.getTitleColour(), false);
+        graphics.drawString(Minecraft.getInstance().font, this.title, left + MARGIN, this.top + MARGIN, TextColours.getLabelColour(), false);
         var backendText = Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().memory.storageBackend.name());
         var textWidth = Minecraft.getInstance().font.width(backendText);
-        graphics.drawString(Minecraft.getInstance().font, backendText, left + menuWidth - MARGIN - textWidth, this.top + TITLE_TOP, TextColours.getTitleColour(), false);
+        graphics.drawString(Minecraft.getInstance().font, backendText, left + menuWidth - MARGIN - textWidth - BUTTON_MARGIN - CLOSE_BUTTON_SIZE, this.top + MARGIN, TextColours.getLabelColour(), false);
     }
 
     @Override
