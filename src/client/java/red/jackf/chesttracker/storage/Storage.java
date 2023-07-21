@@ -13,8 +13,8 @@ public interface Storage {
     /**
      * Load a memory bank if it exists, or return a new one from 'newConstructor' if not.
      * @param id ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
-     * @param newConstructor Supplier for a new memory bank. This should be called if an existing memory is not at `id`,
-     *                       and should be entered into a storage structure if applicable and returned.
+     * @param newConstructor Supplier for a new memory bank. This should be called if an existing memory is not at `id`.
+     *                       Do not save right away, as the memory bank hasn't been given its ID yet.
      * @return Loaded or newly created Memory Bank
      */
     MemoryBank loadOrCreate(String id, Supplier<MemoryBank> newConstructor);

@@ -16,7 +16,7 @@ public record LoadContext(String id, String name) {
      * Returns a relevant ID and user facing name from the current Minecraft instance, or null if not applicable.
      */
     @Nullable
-    static LoadContext get(Minecraft mc) {
+    public static LoadContext get(Minecraft mc) {
         var connection = mc.getConnection();
         if (connection != null && connection.getConnection().isConnected()) {
             var currentServer = mc.getCurrentServer();

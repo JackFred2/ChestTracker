@@ -4,6 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.BlockPos;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.function.Function;
 /**
  * Codecs for classes that aren't ours
  */
-public class ModCodec {
+public class ModCodecs {
     /**
      * Short form block pos codec
      */
@@ -36,6 +39,15 @@ public class ModCodec {
             }, pos -> "%d,%d,%d".formatted(pos.getX(), pos.getY(), pos.getZ())
     );
 
+    public static final Codec<Instant> INSTANT = Codec.STRING.comapFlatMap(
+            str -> {
+                try {
+                    return DataResult.success(Instant.parse(str));
+                } catch (DateTimeParseException ex) {
+                    return DataResult.error(() -> "Could not parse timestamp");
+                }
+            }, DateTimeFormatter.ISO_INSTANT::format
+    );
 
     /**
      * Makes a list codec return a mutable list instance of the default immutable one.

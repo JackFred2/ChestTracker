@@ -55,9 +55,7 @@ public class JsonStorage implements Storage {
             }
         }
         LOGGER.debug("Creating new memory bank");
-        var loaded = constructor.get();
-        save(loaded);
-        return loaded;
+        return constructor.get();
     }
 
     @Override
@@ -76,6 +74,7 @@ public class JsonStorage implements Storage {
     @Override
     public void save(MemoryBank memoryBank) {
         LOGGER.debug("Saving {}", memoryBank.getId());
+        memoryBank.getMetadata().updateModified();
         try {
             Files.createDirectories(Constants.STORAGE_DIR);
             var path = Constants.STORAGE_DIR.resolve(memoryBank.getId() + EXT);

@@ -18,6 +18,7 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.StringUtil;
 
@@ -143,8 +144,9 @@ public class MemoryBankManagerScreen extends Screen {
     }
 
     private void select(String memoryId) {
-        if (Minecraft.getInstance().level == null) return; // don't load in main menu
-        MemoryBank.loadOrCreate(memoryId, null);
+        var context = LoadContext.get(Minecraft.getInstance());
+        if (context == null) return;
+        MemoryBank.loadOrCreate(memoryId, context);
         this.onSelect.run();
     }
 

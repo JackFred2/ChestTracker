@@ -3,7 +3,7 @@ package red.jackf.chesttracker.memory;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
-import red.jackf.chesttracker.util.ModCodec;
+import red.jackf.chesttracker.util.ModCodecs;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public record Memory(List<ItemStack> items) {
     public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(ModCodec.makeMutableList(ItemStack.CODEC.listOf())
+            instance.group(ModCodecs.makeMutableList(ItemStack.CODEC.listOf())
                     .fieldOf("items").forGetter(Memory::items))
                     .apply(instance, Memory::new));
 }

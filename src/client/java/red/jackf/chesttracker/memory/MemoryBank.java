@@ -6,49 +6,40 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
-import red.jackf.chesttracker.util.ModCodec;
+import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MemoryBank {
-    private static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORY_CODEC = ModCodec.makeMutableMap(
+    private static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORY_CODEC = ModCodecs.makeMutableMap(
             Codec.unboundedMap(
                 ResourceLocation.CODEC,
-                ModCodec.makeMutableMap(Codec.unboundedMap(
-                        ModCodec.BLOCK_POS_STRING,
+                ModCodecs.makeMutableMap(Codec.unboundedMap(
+                        ModCodecs.BLOCK_POS_STRING,
                         Memory.CODEC
                 ))
             ));
 
     public static final Codec<MemoryBank> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    MEMORY_CODEC.fieldOf("memories").forGetter(MemoryBank::getMemories),
-                    Codec.STRING.optionalFieldOf("name").forGetter(bank -> Optional.ofNullable(bank.getName()))
-            ).apply(instance, (memories, name) -> new MemoryBank(memories, name.orElse(null))));
-    private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
-    @Nullable
-    private String name;
+                    Metadata.CODEC.fieldOf("metadata").forGetter(MemoryBank::getMetadata),
+                    MEMORY_CODEC.fieldOf("memories").forGetter(MemoryBank::getMemories)
+            ).apply(instance, MemoryBank::new));
 
     @Nullable
     public static MemoryBank INSTANCE = null;
-    private String id;
 
-    private void setId(String id) {
-        this.id = id;
-    }
-
-    public static void loadOrCreate(String id, @Nullable LoadContext ctx) {
+    public static void loadOrCreate(String id, @NotNull LoadContext ctx) {
         unload();
-        INSTANCE = StorageUtil.getStorage().loadOrCreate(id, () -> {
-            if (ctx == null) return new MemoryBank(new HashMap<>(), null);
-            return new MemoryBank(new HashMap<>(), ctx.name());
-        });
+        INSTANCE = StorageUtil.getStorage().loadOrCreate(id, () -> new MemoryBank(Metadata.from(ctx), new HashMap<>()));
         INSTANCE.setId(id);
     }
 
@@ -63,10 +54,34 @@ public class MemoryBank {
         INSTANCE = null;
     }
 
-    private MemoryBank(Map<ResourceLocation, Map<BlockPos, Memory>> map, @Nullable String name) {
+    ////////////
+    // OBJECT //
+    ////////////
+
+    private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
+    private final Metadata metadata;
+    private String id;
+
+    private MemoryBank(Metadata metadata, Map<ResourceLocation, Map<BlockPos, Memory>> map) {
+        this.metadata = metadata;
         this.memories = map;
-        this.name = name;
     }
+
+    private void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    ///////////////////////
+    // MEMORY MANAGEMENT //
+    ///////////////////////
 
     public Map<ResourceLocation, Map<BlockPos, Memory>> getMemories() {
         return memories;
@@ -107,15 +122,46 @@ public class MemoryBank {
             return Collections.emptyList();
     }
 
-    public String getId() {
-        return id;
-    }
-
     public Set<ResourceLocation> getKeys() {
         return memories.keySet();
     }
 
-    public String getName() {
-        return name == null ? id : name;
+    public static class Metadata {
+        public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
+                    ModCodecs.INSTANT.fieldOf("lastModified").forGetter(meta -> meta.lastModified)
+            ).apply(instance, (name, modified) -> new Metadata(name.orElse(null), modified))
+        );
+
+        @Nullable
+        private String name;
+        private Instant lastModified;
+
+        public Metadata(@Nullable String name, Instant lastModified) {
+            this.name = name;
+            this.lastModified = lastModified;
+        }
+
+        public static Metadata from(LoadContext ctx) {
+            return new Metadata(ctx.name(), Instant.now());
+        }
+
+        @Nullable
+        public String getName() {
+            return name;
+        }
+
+        public void setName(@Nullable String name) {
+            this.name = name;
+        }
+
+        public Instant getLastModified() {
+            return lastModified;
+        }
+
+        public void updateModified() {
+            this.lastModified = Instant.now();
+        }
     }
 }
