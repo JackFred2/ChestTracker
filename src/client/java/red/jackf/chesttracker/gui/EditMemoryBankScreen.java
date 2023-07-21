@@ -18,6 +18,7 @@ import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.StringUtil;
 
@@ -33,7 +34,7 @@ public class EditMemoryBankScreen extends Screen {
     private static final int MARGIN = 8;
     private static final int BUTTON_MARGIN = 5;
     private static final int CONFIRM_BUTTON_SIZE = 12;
-    private static final int DELETE_BUTTON_HEIGHT = 20;
+    private static final int BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
     private static final int NAME_TOP = 45;
     private int menuWidth = 0;
@@ -80,6 +81,7 @@ public class EditMemoryBankScreen extends Screen {
         super.init();
 
         var font = Minecraft.getInstance().font;
+        var inGame = Minecraft.getInstance().level != null;
 
         this.menuWidth = WIDTH;
         this.menuHeight = HEIGHT;
@@ -144,13 +146,35 @@ public class EditMemoryBankScreen extends Screen {
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : memoryBankId);
         this.nameEditBox.setResponder(metadata::setName);
 
-        this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
-                this.top + this.menuHeight - MARGIN - DELETE_BUTTON_HEIGHT,
-                this.menuWidth - 2 * MARGIN,
-                DELETE_BUTTON_HEIGHT,
-                Component.translatable("chesttracker.gui.editMemoryBank.delete"),
-                50L,
-                this::delete));
+        var bottomButtons = 1;
+
+        if (inGame && !isCurrentIdLoaded()) {
+            this.addRenderableWidget(Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.load"), this::load)
+                    .bounds(left + MARGIN,
+                            this.top + this.menuHeight - bottomButtons * (MARGIN + BUTTON_HEIGHT),
+                            this.menuWidth - 2 * MARGIN,
+                            BUTTON_HEIGHT)
+                    .build());
+            bottomButtons++;
+        }
+
+        if (StorageUtil.getStorage().getAllIds().contains(memoryBankId))
+            this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
+                    this.top + this.menuHeight - bottomButtons * (MARGIN + BUTTON_HEIGHT),
+                    this.menuWidth - 2 * MARGIN,
+                    BUTTON_HEIGHT,
+                    Component.translatable("chesttracker.gui.editMemoryBank.delete"),
+                    50L,
+                    this::delete));
+    }
+
+    private void load(Button button) {
+        if (!isCurrentIdLoaded()) {
+            var ctx = LoadContext.get(Minecraft.getInstance());
+            if (ctx != null)
+                MemoryBank.loadOrCreate(memoryBankId, ctx);
+        }
+        afterBankLoaded.run();
     }
 
     private boolean isCurrentIdLoaded() {

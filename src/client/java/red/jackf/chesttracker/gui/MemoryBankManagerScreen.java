@@ -43,7 +43,7 @@ public class MemoryBankManagerScreen extends Screen {
     private static final int NEW_BUTTON_SIZE = 12;
 
 
-    private final Supplier<@Nullable Screen> onRemoveScreen;
+    private final Runnable onRemoveScreen;
     private final Runnable afterBankLoaded;
     private int menuWidth = 0;
     private int menuHeight = 0;
@@ -55,13 +55,21 @@ public class MemoryBankManagerScreen extends Screen {
     private Map<String, MemoryBank.Metadata> memoryBanks;
 
     /**
+     * @param onRemoveScreen - Runnable to run on cancel, usually when pressing escape or a back button
+     * @param afterBankLoaded - Runnable to run after selection of a new memory bank
+     */
+    public MemoryBankManagerScreen(Runnable onRemoveScreen, Runnable afterBankLoaded) {
+        super(Component.translatable("chesttracker.gui.memoryManager.title"));
+        this.onRemoveScreen = onRemoveScreen;
+        this.afterBankLoaded = afterBankLoaded;
+    }
+
+    /**
      * @param onRemoveScreen - Screen to open on cancel, usually when pressing escape or a back button
      * @param afterBankLoaded - Runnable to run after selection of a new memory bank
      */
     public MemoryBankManagerScreen(Supplier<@Nullable Screen> onRemoveScreen, Runnable afterBankLoaded) {
-        super(Component.translatable("chesttracker.gui.memoryManager.title"));
-        this.onRemoveScreen = onRemoveScreen;
-        this.afterBankLoaded = afterBankLoaded;
+        this(() -> Minecraft.getInstance().setScreen(onRemoveScreen.get()), afterBankLoaded);
     }
 
     public MemoryBankManagerScreen(@Nullable Screen parent, Runnable afterBankLoaded) {
@@ -177,6 +185,6 @@ public class MemoryBankManagerScreen extends Screen {
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().setScreen(onRemoveScreen.get());
+        onRemoveScreen.run();
     }
 }

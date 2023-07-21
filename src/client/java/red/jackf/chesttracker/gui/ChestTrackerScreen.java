@@ -76,6 +76,12 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     protected void init() {
+        // ask for a memory to be loaded if not available
+        if (MemoryBank.INSTANCE == null) {
+            Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(parent, () -> Minecraft.getInstance().setScreen(this)));
+            return;
+        }
+
         var config = ChestTrackerConfig.INSTANCE.getConfig();
         var liveGridWidth = config.gui.gridWidth + 1;
         var liveGridHeight = config.gui.gridHeight + 1;

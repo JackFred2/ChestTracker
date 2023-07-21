@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
-import red.jackf.chesttracker.gui.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.ScreenHandler;
@@ -42,12 +41,7 @@ public class ChestTracker implements ClientModInitializer {
     );
 
     private void openInGame(Minecraft client, @Nullable Screen parent) {
-        if (MemoryBank.INSTANCE == null) {
-            client.setScreen(new MemoryBankManagerScreen(parent, () ->
-                Minecraft.getInstance().setScreen(new ChestTrackerScreen(null))));
-        } else {
-            client.setScreen(new ChestTrackerScreen(parent));
-        }
+        client.setScreen(new ChestTrackerScreen(parent));
     }
 
     @Override

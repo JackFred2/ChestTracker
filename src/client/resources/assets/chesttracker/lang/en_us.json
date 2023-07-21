@@ -11,6 +11,7 @@
   "chesttracker.gui.memoryManager.invalidName": "Enter a valid, not existing Memory Bank name.",
   "chesttracker.gui.editMemoryBank.create": "Creating new Memory Bank",
   "chesttracker.gui.editMemoryBank.edit": "Editing Memory Bank",
+  "chesttracker.gui.editMemoryBank.load": "Load this Memory Bank",
   "chesttracker.gui.editMemoryBank.id": "ID",
   "chesttracker.gui.editMemoryBank.delete": "Delete this Memory Bank",
   "chesttracker.gui.narration.drag": "Click and drag",

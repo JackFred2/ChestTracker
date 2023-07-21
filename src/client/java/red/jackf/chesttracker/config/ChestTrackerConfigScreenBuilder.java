@@ -272,11 +272,13 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.gui.memoryManager.title"))
                         .text(translatable("chesttracker.config.open"))
-                        .action(((screen, option) ->
-                                Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(screen, () -> {
-                            Minecraft.getInstance().setScreen(screen);
-                            refreshConfigScreen(parent);
-                        }))))
+                        .action(((screen, option) -> {
+                            Runnable lambda = () -> {
+                                Minecraft.getInstance().setScreen(screen);
+                                refreshConfigScreen(parent);
+                            };
+                            Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(lambda, lambda));
+                        }))
                         .build());
 
         if (MemoryBank.INSTANCE == null)
