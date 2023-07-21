@@ -1,5 +1,6 @@
 package red.jackf.chesttracker;
 
+import blue.endless.jankson.annotation.Nullable;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -9,13 +10,14 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
-import red.jackf.chesttracker.gui.MemorySelectorScreen;
+import red.jackf.chesttracker.gui.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.ScreenHandler;
@@ -39,6 +41,15 @@ public class ChestTracker implements ClientModInitializer {
             new KeyMapping("key.chesttracker.open_gui", InputConstants.Type.KEYSYM, InputConstants.KEY_GRAVE, "chesttracker.title")
     );
 
+    private void openInGame(Minecraft client, @Nullable Screen parent) {
+        if (MemoryBank.INSTANCE == null) {
+            client.setScreen(new MemoryBankManagerScreen(parent, () ->
+                Minecraft.getInstance().setScreen(new ChestTrackerScreen(null))));
+        } else {
+            client.setScreen(new ChestTrackerScreen(parent));
+        }
+    }
+
     @Override
     public void onInitializeClient() {
         ChestTrackerConfig.init();
@@ -54,15 +65,12 @@ public class ChestTracker implements ClientModInitializer {
             // opening Chest Tracker GUI with no screen open
             if (client.screen == null && client.getOverlay() == null)
                 while (OPEN_GUI.consumeClick()) {
-                    if (MemoryBank.INSTANCE == null) {
-                        client.setScreen(new MemorySelectorScreen(null));
-                    } else {
-                        client.setScreen(new ChestTrackerScreen(null));
-                    }
+                    openInGame(client, null);
                 }
         });
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (Minecraft.getInstance().level == null) return;
             if (screen instanceof AbstractContainerScreen<?>) {
                 // opening Chest Tracker GUI with a screen open
                 ScreenKeyboardEvents.afterKeyPress(screen).register((parent, key, scancode, modifiers) -> {
@@ -72,11 +80,7 @@ public class ChestTracker implements ClientModInitializer {
                     }
 
                     if (OPEN_GUI.matches(key, scancode)) {
-                        if (MemoryBank.INSTANCE == null) {
-                            client.setScreen(new MemorySelectorScreen(parent));
-                        } else {
-                            client.setScreen(new ChestTrackerScreen(parent));
-                        }
+                        openInGame(client, parent);
                     }
                 });
 

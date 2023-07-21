@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -35,7 +36,7 @@ public class JsonStorage implements Storage {
     }
 
     @Override
-    public MemoryBank load(String id) {
+    public MemoryBank loadOrCreate(String id, Supplier<MemoryBank> constructor) {
         var path = Constants.STORAGE_DIR.resolve(id + EXT);
         LOGGER.debug("Loading {}", path);
         if (Files.isRegularFile(path)) {
@@ -53,7 +54,10 @@ public class JsonStorage implements Storage {
                 LOGGER.error("Error loading %s".formatted(path), ex);
             }
         }
-        return new MemoryBank();
+        LOGGER.debug("Creating new memory bank");
+        var loaded = constructor.get();
+        save(loaded);
+        return loaded;
     }
 
     @Override

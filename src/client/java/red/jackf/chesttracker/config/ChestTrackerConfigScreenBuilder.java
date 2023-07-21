@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.custom.HoldToConfirmButtonOption;
 import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
+import red.jackf.chesttracker.gui.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -267,6 +268,15 @@ public class ChestTrackerConfigScreenBuilder {
                                     e.load();
                                     refreshConfigScreen(parent);
                                 })
+                        .build())
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("chesttracker.gui.memoryManager.title"))
+                        .text(translatable("chesttracker.config.open"))
+                        .action(((screen, option) ->
+                                Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(screen, () -> {
+                            Minecraft.getInstance().setScreen(screen);
+                            refreshConfigScreen(parent);
+                        }))))
                         .build());
 
         if (MemoryBank.INSTANCE == null)

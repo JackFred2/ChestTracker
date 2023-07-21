@@ -7,16 +7,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.storage.LoadContext;
 
 /**
- * get the ID for the last connected realm
+ * Grabs some data from a connected realm; used to get a unique ID for the realm and a name for user-facing labels
  */
 @Mixin(RealmsConnect.class)
 public class RealmsConnectMixin {
 
     @Inject(method = "connect", at = @At("HEAD"))
     public void getLastRealmsID(final RealmsServer server, ServerAddress address, CallbackInfo ci) {
-        StorageUtil.setLastRealmID(server.id);
+        LoadContext.setLastRealm(server);
     }
 }
