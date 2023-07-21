@@ -104,11 +104,13 @@ public class ChestTrackerScreen extends Screen {
         super.init();
 
         // items
-        this.itemList = this.addRenderableWidget(new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight));
+        this.itemList = new ItemListWidget(left + GRID_LEFT, top + GRID_TOP, liveGridWidth, liveGridHeight);
 
         // scroll
         this.scroll = this.addRenderableWidget(new VerticalScrollWidget(left + menuWidth - 19, top + GRID_TOP, this.itemList.getHeight(), Component.empty()));
         this.scroll.setResponder(this.itemList::onScroll);
+
+        this.addRenderableWidget(this.itemList);
 
         // search
         var shouldFocusSearch = this.search == null || this.search.isFocused();
@@ -186,7 +188,7 @@ public class ChestTrackerScreen extends Screen {
                 b -> Minecraft.getInstance().setScreen(
                         new MemoryBankManagerScreen(() -> MemoryBank.INSTANCE == null ? parent : this, () ->
                                 // return to this screen unless the memories have been unloaded, in which case the parent
-                                Minecraft.getInstance().setScreen(this)))));
+                                Minecraft.getInstance().setScreen(this))))).setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
 
         // resize
         if (config.gui.showResizeWidget)

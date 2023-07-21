@@ -116,7 +116,7 @@ public class ItemListWidget extends AbstractWidget {
             if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount())).withStyle(ChatFormatting.GREEN));
             var image = stack.getTooltipImage();
             graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 200f);
+            graphics.pose().translate(0, 0, 250f);
             graphics.renderTooltip(Minecraft.getInstance().font, lines, image, mouseX, mouseY);
             graphics.pose().popPose();
         }

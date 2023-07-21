@@ -3,7 +3,7 @@
 
   "chesttracker.title": "Chest Tracker",
   "chesttracker.gui.resize": "Resize GUI",
-  "chesttracker.gui.openMemoryManager": "",
+  "chesttracker.gui.openMemoryManager": "Open Memory Manager",
   "chesttracker.gui.memoryManager.title": "Manage Memory Banks",
   "chesttracker.gui.memoryManager.search": "Search Memory Banks",
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",

@@ -35,7 +35,7 @@ public class MemoryBankManagerScreen extends Screen {
     private static final int MAX_WIDTH = 400;
     private static final int MARGIN = 8;
     private static final int BUTTON_MARGIN = 5;
-    private static final int CLOSE_BUTTON_RIGHT = 17;
+    private static final int CLOSE_BUTTON_RIGHT = 20;
     private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int SEARCH_TOP = 19;
     private static final int SEARCH_HEIGHT = 12;
