@@ -15,6 +15,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
+import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.StorageUtil;
@@ -23,12 +24,16 @@ import red.jackf.chesttracker.util.StringUtil;
 import java.time.Instant;
 import java.util.HashMap;
 
+/**
+ * Shows a UI for managing an individual memory bank. Possibly the currently loaded bank.
+ */
 public class EditMemoryBankScreen extends Screen {
     private static final int WIDTH = 264;
     private static final int HEIGHT = 192;
     private static final int MARGIN = 8;
     private static final int BUTTON_MARGIN = 5;
     private static final int CONFIRM_BUTTON_SIZE = 12;
+    private static final int DELETE_BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
     private static final int NAME_TOP = 45;
     private int menuWidth = 0;
@@ -138,10 +143,29 @@ public class EditMemoryBankScreen extends Screen {
                 CommonComponents.EMPTY));
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : memoryBankId);
         this.nameEditBox.setResponder(metadata::setName);
+
+        this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
+                this.top + this.menuHeight - MARGIN - DELETE_BUTTON_HEIGHT,
+                this.menuWidth - 2 * MARGIN,
+                DELETE_BUTTON_HEIGHT,
+                Component.translatable("chesttracker.gui.editMemoryBank.delete"),
+                50L,
+                this::delete));
+    }
+
+    private boolean isCurrentIdLoaded() {
+        return MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId);
+    }
+
+    private void delete(HoldToConfirmButton button) {
+        if (isCurrentIdLoaded()) MemoryBank.unload();
+        StorageUtil.getStorage().delete(memoryBankId);
+        this.onClose();
     }
 
     private void finish(Button button) {
-        if (MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId)) {
+        if (isCurrentIdLoaded()) {
+            //noinspection DataFlowIssue
             MemoryBank.INSTANCE.setMetadata(metadata);
             MemoryBank.save();
         } else {

@@ -43,8 +43,8 @@ public class HoldToConfirmActionController implements Controller<BiConsumer<YACL
     }
 
     public static class Widget extends ControllerWidget<HoldToConfirmActionController> {
-        private static final float REGRESSION_MULTIPLIER = 2;
-        private static final int PROGRESS_COLOUR = 0x40_FF0000;
+        public static final float REGRESSION_MULTIPLIER = 2;
+        public static final int PROGRESS_COLOUR = 0x40_FF0000;
         private final String buttonString;
         private final long holdTime;
 
@@ -77,6 +77,7 @@ public class HoldToConfirmActionController implements Controller<BiConsumer<YACL
             }
 
             if (!this.isAvailable()) held.clear();
+            if (this.held.contains(-1) && !this.isMouseOver(mouseX, mouseY)) held.remove(-1);
         }
 
         public void executeAction() {

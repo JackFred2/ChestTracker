@@ -290,7 +290,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .name(translatable("chesttracker.config.memory.local.title", memory.getDisplayName()))
                 .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
                         OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.local.delete.description"))
+                                .text(translatable("chesttracker.gui.editMemoryBank.delete"))
                                 .text(CommonComponents.NEW_LINE)
                                 .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
                                 .build(),

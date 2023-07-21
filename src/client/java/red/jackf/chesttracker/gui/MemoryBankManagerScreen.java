@@ -23,6 +23,7 @@ import red.jackf.chesttracker.storage.StorageUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +43,7 @@ public class MemoryBankManagerScreen extends Screen {
     private static final int NEW_BUTTON_SIZE = 12;
 
 
-    private final Screen parent;
+    private final Supplier<@Nullable Screen> onRemoveScreen;
     private final Runnable afterBankLoaded;
     private int menuWidth = 0;
     private int menuHeight = 0;
@@ -54,17 +55,17 @@ public class MemoryBankManagerScreen extends Screen {
     private Map<String, MemoryBank.Metadata> memoryBanks;
 
     /**
-     * @param parent - Screen to open on cancel, usually when pressing escape
-     * @param afterBankLoaded - Runnable to run after selection or creation of a new memory bank
+     * @param onRemoveScreen - Screen to open on cancel, usually when pressing escape or a back button
+     * @param afterBankLoaded - Runnable to run after selection of a new memory bank
      */
-    public MemoryBankManagerScreen(@Nullable Screen parent, Runnable afterBankLoaded) {
+    public MemoryBankManagerScreen(Supplier<@Nullable Screen> onRemoveScreen, Runnable afterBankLoaded) {
         super(Component.translatable("chesttracker.gui.memoryManager.title"));
-        this.parent = parent;
+        this.onRemoveScreen = onRemoveScreen;
         this.afterBankLoaded = afterBankLoaded;
     }
 
-    public MemoryBankManagerScreen(@Nullable Screen parent) {
-        this(parent, () -> Minecraft.getInstance().setScreen(parent));
+    public MemoryBankManagerScreen(@Nullable Screen parent, Runnable afterBankLoaded) {
+        this(() -> parent, afterBankLoaded);
     }
 
     @Override
@@ -176,6 +177,6 @@ public class MemoryBankManagerScreen extends Screen {
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().setScreen(parent);
+        Minecraft.getInstance().setScreen(onRemoveScreen.get());
     }
 }

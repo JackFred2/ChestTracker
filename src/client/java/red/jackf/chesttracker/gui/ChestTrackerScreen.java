@@ -177,7 +177,10 @@ public class ChestTrackerScreen extends Screen {
                 ChestTracker.guiTex("widgets/change_memory_bank_button"),
                 BUTTON_SIZE,
                 BUTTON_SIZE * 2,
-                b -> Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(this))));
+                b -> Minecraft.getInstance().setScreen(
+                        new MemoryBankManagerScreen(() -> MemoryBank.INSTANCE == null ? parent : this, () ->
+                                // return to this screen unless the memories have been unloaded, in which case the parent
+                                Minecraft.getInstance().setScreen(this)))));
 
         // resize
         if (config.gui.showResizeWidget)
