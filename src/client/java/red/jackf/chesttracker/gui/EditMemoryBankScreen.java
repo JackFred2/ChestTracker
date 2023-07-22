@@ -20,6 +20,7 @@ import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
 import java.time.Instant;
@@ -47,18 +48,20 @@ public class EditMemoryBankScreen extends Screen {
     private final Runnable afterBankLoaded;
     private final String memoryBankId;
     private final MemoryBank.Metadata metadata;
+    private final boolean isCreatingNewBank;
 
     protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, @Nullable String memoryBankId) {
         super(Component.translatable("chesttracker.gui.editMemoryBank." + (memoryBankId == null ? "create" : "edit")));
         this.parent = parent;
         this.afterBankLoaded = afterBankLoaded;
-        if (memoryBankId != null) {
+        this.isCreatingNewBank = memoryBankId == null;
+        if (isCreatingNewBank) {
+            this.memoryBankId = getNextIdDefault();
+            this.metadata = new MemoryBank.Metadata(this.memoryBankId.substring("user/".length()), Instant.now());
+        } else {
             this.memoryBankId = memoryBankId;
             var metadata = StorageUtil.getStorage().getMetadata(memoryBankId);
             this.metadata = metadata == null ? MemoryBank.Metadata.blank() : metadata;
-        } else {
-            this.memoryBankId = getNextIdDefault();
-            this.metadata = new MemoryBank.Metadata(this.memoryBankId.substring("user/".length()), Instant.now());
         }
     }
 
@@ -102,20 +105,6 @@ public class EditMemoryBankScreen extends Screen {
                 CONFIRM_BUTTON_SIZE * 3,
                 b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
 
-        // finalize button
-        this.addRenderableWidget(new ImageButton(
-                left + menuWidth - 2 * (BUTTON_MARGIN + CONFIRM_BUTTON_SIZE),
-                top + BUTTON_MARGIN,
-                CONFIRM_BUTTON_SIZE,
-                CONFIRM_BUTTON_SIZE,
-                0,
-                0,
-                CONFIRM_BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/confirm_changes_button"),
-                CONFIRM_BUTTON_SIZE,
-                CONFIRM_BUTTON_SIZE * 3,
-                this::finish)).setTooltip(Tooltip.create(Component.translatable("selectWorld.edit.save")));
-
         // ID
         var idLabel = Component.translatable("chesttracker.gui.editMemoryBank.id");
         this.addRenderableOnly(new TextWidget(this.left + MARGIN,
@@ -143,36 +132,50 @@ public class EditMemoryBankScreen extends Screen {
                 font.lineHeight + 3,
                 this.nameEditBox,
                 CommonComponents.EMPTY));
-        this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : memoryBankId);
         this.nameEditBox.setResponder(metadata::setName);
+        this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : memoryBankId);
 
-        var bottomButtons = 1;
+        int saveLoadButtonsHeight = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
 
-        if (inGame && !isCurrentIdLoaded()) {
-            this.addRenderableWidget(Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.load"), this::load)
-                    .bounds(left + MARGIN,
-                            this.top + this.menuHeight - bottomButtons * (MARGIN + BUTTON_HEIGHT),
-                            this.menuWidth - 2 * MARGIN,
-                            BUTTON_HEIGHT)
-                    .build());
-            bottomButtons++;
-        }
-
-        if (StorageUtil.getStorage().getAllIds().contains(memoryBankId))
+        // delete
+        if (StorageUtil.getStorage().getAllIds().contains(memoryBankId)) {
+            saveLoadButtonsHeight -= (BUTTON_HEIGHT + BUTTON_MARGIN);
             this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
-                    this.top + this.menuHeight - bottomButtons * (MARGIN + BUTTON_HEIGHT),
+                    this.top + this.menuHeight - (MARGIN + BUTTON_HEIGHT),
                     this.menuWidth - 2 * MARGIN,
                     BUTTON_HEIGHT,
-                    Component.translatable("chesttracker.gui.editMemoryBank.delete"),
-                    50L,
+                    Component.translatable("selectServer.deleteButton"),
+                    Constants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
                     this::delete));
+        }
+
+        int saveLoadButtonWidth = this.menuWidth - 2 * MARGIN;
+
+        // load
+        if (inGame && !isCurrentIdLoaded()) {
+            saveLoadButtonWidth = (saveLoadButtonWidth - BUTTON_MARGIN) / 2;
+            this.addRenderableWidget(Button.builder(Component.translatable(isCreatingNewBank ? "mco.create.world" : "structure_block.mode.load"), this::load)
+                    .bounds(left + saveLoadButtonWidth + MARGIN + BUTTON_MARGIN,
+                            saveLoadButtonsHeight,
+                            saveLoadButtonWidth,
+                            BUTTON_HEIGHT)
+                    .build());
+        }
+
+        // save
+        this.addRenderableWidget(Button.builder(Component.translatable("selectWorld.edit.save"), this::finish)
+                .bounds(left + MARGIN,
+                        saveLoadButtonsHeight,
+                        saveLoadButtonWidth,
+                        BUTTON_HEIGHT)
+                .build());
     }
 
     private void load(Button button) {
         if (!isCurrentIdLoaded()) {
             var ctx = LoadContext.get(Minecraft.getInstance());
             if (ctx != null)
-                MemoryBank.loadOrCreate(memoryBankId, ctx);
+                MemoryBank.loadOrCreate(memoryBankId, metadata);
         }
         afterBankLoaded.run();
     }

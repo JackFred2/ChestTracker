@@ -37,11 +37,11 @@ public class MemoryBank {
     @Nullable
     public static MemoryBank INSTANCE = null;
 
-    public static void loadOrCreate(String id, @NotNull LoadContext newBankContext) {
+    public static void loadOrCreate(String id, @NotNull Metadata creationMetadata) {
         unload();
         INSTANCE = StorageUtil.getStorage().load(id);
         if (INSTANCE == null) {
-            INSTANCE = new MemoryBank(Metadata.from(newBankContext), new HashMap<>());
+            INSTANCE = new MemoryBank(creationMetadata, new HashMap<>());
         }
         INSTANCE.setId(id);
         save();

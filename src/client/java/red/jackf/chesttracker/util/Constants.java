@@ -11,5 +11,8 @@ public class Constants {
     public static final int MIN_GRID_HEIGHT = 6;
     public static final int MAX_GRID_HEIGHT = 12;
 
+    public static final long ARE_YOU_SURE_BUTTON_HOLD_TIME = 20;
+    public static final long ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME = 30L;
+
     public static final Path STORAGE_DIR = FabricLoader.getInstance().getGameDir().resolve("chesttracker");
 }

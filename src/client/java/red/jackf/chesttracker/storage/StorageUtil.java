@@ -38,10 +38,11 @@ public class StorageUtil {
     public static void load(Minecraft mc) {
         if (!ChestTrackerConfig.INSTANCE.getConfig().memory.autoLoadMemories) return;
         var loadContext = LoadContext.get(mc);
-        if (loadContext == null) MemoryBank.unload();
-        else {
+        if (loadContext == null) {
+            MemoryBank.unload();
+        } else {
             ChestTracker.LOGGER.debug("Loading {} using {}", loadContext.id(), instance.getClass().getSimpleName());
-            MemoryBank.loadOrCreate(loadContext.id(), loadContext);
+            MemoryBank.loadOrCreate(loadContext.id(), MemoryBank.Metadata.from(loadContext));
         }
     }
 

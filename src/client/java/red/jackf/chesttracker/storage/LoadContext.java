@@ -28,7 +28,7 @@ public record LoadContext(String id, String name) {
                         I18n.get("menu.singleplayer") + ": " + mc.getSingleplayerServer().getWorldData().getLevelName()
                 );
             } else if (mc.isConnectedToRealms()) {
-                // realms, use username as ID in case of changes so just use unique(?) id
+                // realms, can't use username as ID in case of changes so just use unique(?) id
                 return new LoadContext(
                         "realms/" + StringUtil.sanitizeForPath(StringUtils.leftPad(Long.toHexString(lastRealmId), 16)),
                         I18n.get("menu.online") + ": " + lastRealmName
