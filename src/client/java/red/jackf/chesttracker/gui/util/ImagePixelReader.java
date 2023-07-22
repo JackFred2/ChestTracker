@@ -87,8 +87,9 @@ public class ImagePixelReader {
 
         addPixelColourListener(2, 5, 0x404040, TextColours::setLabelColour);
         addPixelColourListener(2, 14, 0xFFFFFF, TextColours::setSearchTextColour);
-        addPixelColourListener(2, 22, 0x669BBC, TextColours::setSearchKeyColour);
-        addPixelColourListener(2, 32, 0xEECC77, TextColours::setSearchTermColour);
-        addPixelColourListener(2, 40, 0xFF0000, TextColours::setSearchErrorColour);
+        addPixelColourListener(2, 23, 0x808080, TextColours::setSearchHintColour);
+        addPixelColourListener(2, 31, 0x669BBC, TextColours::setSearchKeyColour);
+        addPixelColourListener(2, 41, 0xEECC77, TextColours::setSearchTermColour);
+        addPixelColourListener(2, 49, 0xFF0000, TextColours::setSearchErrorColour);
     }
 }

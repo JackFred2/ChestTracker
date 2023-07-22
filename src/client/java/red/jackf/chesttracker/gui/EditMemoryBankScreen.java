@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
@@ -116,7 +117,7 @@ public class EditMemoryBankScreen extends Screen {
                 this.top + ID_TOP,
                 Component.literal(memoryBankId),
                 TextColours.getLabelColour(),
-                true));
+                ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds));
 
         // Name
         var nameLabel = Component.translatable("mco.backup.entry.name");
@@ -132,8 +133,17 @@ public class EditMemoryBankScreen extends Screen {
                 font.lineHeight + 3,
                 this.nameEditBox,
                 CommonComponents.EMPTY));
-        this.nameEditBox.setResponder(metadata::setName);
-        this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : memoryBankId);
+        this.nameEditBox.setResponder(s -> {
+            if (s.isEmpty() && !ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) {
+                this.nameEditBox.setHint(Component.literal(memoryBankId));
+                this.nameEditBox.setTextColor(TextColours.getSearchHintColour());
+            } else {
+                this.nameEditBox.setHint(CommonComponents.EMPTY);
+                this.nameEditBox.setTextColor(TextColours.getSearchTextColour());
+            }
+            this.metadata.setName(s.isEmpty() ? null : s);
+        });
+        this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : "");
 
         int saveLoadButtonsHeight = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
 
@@ -163,7 +173,7 @@ public class EditMemoryBankScreen extends Screen {
         }
 
         // save
-        this.addRenderableWidget(Button.builder(Component.translatable("selectWorld.edit.save"), this::finish)
+        this.addRenderableWidget(Button.builder(Component.translatable("selectWorld.edit.save"), this::save)
                 .bounds(left + MARGIN,
                         saveLoadButtonsHeight,
                         saveLoadButtonWidth,
@@ -190,7 +200,7 @@ public class EditMemoryBankScreen extends Screen {
         this.onClose();
     }
 
-    private void finish(Button button) {
+    private void save(Button button) {
         if (isCurrentIdLoaded()) {
             //noinspection DataFlowIssue
             MemoryBank.INSTANCE.setMetadata(metadata);

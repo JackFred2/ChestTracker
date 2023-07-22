@@ -69,6 +69,9 @@ public class ChestTrackerConfig {
         @ConfigEntry
         public List<MemoryKeyIcon> memoryKeyIcons = new ArrayList<>(ICON_DEFAULTS);
 
+        @ConfigEntry
+        public boolean hideMemoryIds = false;
+
         private static final List<MemoryKeyIcon> ICON_DEFAULTS = List.of(
                 new MemoryKeyIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST)),
                 new MemoryKeyIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),

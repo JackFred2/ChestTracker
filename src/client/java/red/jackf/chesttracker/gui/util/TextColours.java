@@ -8,6 +8,7 @@ public class TextColours {
 
     private static int labelColour = 0x404040;
     private static int searchTextColour = 0xFFFFFF;
+    private static int searchHintColour = 0x808080;
     private static int searchKeyColour = 0x669BBC;
     private static int searchTermColour = 0xEECC77;
     private static int searchErrorColour = 0xFF0000;
@@ -50,5 +51,13 @@ public class TextColours {
 
     static void setSearchErrorColour(int searchErrorColour) {
         TextColours.searchErrorColour = searchErrorColour;
+    }
+
+    public static void setSearchHintColour(int searchHintColour) {
+        TextColours.searchHintColour = searchHintColour;
+    }
+
+    public static int getSearchHintColour() {
+        return searchHintColour;
     }
 }

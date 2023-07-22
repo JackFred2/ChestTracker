@@ -85,15 +85,15 @@ public record MemoryKeyIconController(Option<MemoryKeyIcon> option) implements C
                 if (parsed != null) option.requestSet(new MemoryKeyIcon(parsed, option.binding().getValue().icon()));
 
                 if (s.isEmpty()) {
-                    this.editBox.setSuggestion(translatable("chesttracker.config.gui.memoryKeyIcons.dimension").getString());
+                    this.editBox.setSuggestion(translatable("chesttracker.config.mainGui.memoryKeyIcons.dimension").getString());
                 } else {
                     this.editBox.setSuggestion("");
                 }
             });
-            this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.gui.memoryKeyIcons.dimension")));
+            this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.mainGui.memoryKeyIcons.dimension")));
 
             this.setItemButton = new ItemButton(option.pendingValue().icon()
-                    .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.gui.memoryKeyIcons.icon"),
+                    .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.mainGui.memoryKeyIcons.icon"),
                     b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
                         if (item != null)
                             option.requestSet(new MemoryKeyIcon(option.binding().getValue()
