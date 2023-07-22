@@ -215,6 +215,7 @@ public class EditMemoryBankScreen extends Screen {
             memory.setId(memoryBankId);
             StorageUtil.getStorage().save(memory);
         }
+        this.onClose();
     }
 
     @Override

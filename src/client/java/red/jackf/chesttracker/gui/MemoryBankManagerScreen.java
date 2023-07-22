@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -148,7 +149,15 @@ public class MemoryBankManagerScreen extends Screen {
                         return name.toLowerCase().contains(term.toLowerCase());
                     }).collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            e -> e.getValue().getName() != null ? e.getValue().getName() : e.getKey(),
+                            e -> {
+                                if (e.getValue().getName() != null) {
+                                    return Component.literal(e.getValue().getName()); // custom user-defined name
+                                } else {
+                                    var id = Component.literal(e.getKey());
+                                    if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) id.setStyle(Style.EMPTY.withObfuscated(true));
+                                    return id;
+                                }
+                            },
                             (a, b) -> a,
                             LinkedHashMap::new
                     )));

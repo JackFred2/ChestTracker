@@ -17,15 +17,15 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Displays a list of strings (the values in `option`), and runs a callback on selection of one. Recommended to use
- * a {@link LinkedHashMap}.
+ * Displays a list of components (the values in the `options` map), and runs a callback on selection of one. Recommended to use
+ * a {@link LinkedHashMap} if you want a specific ordering.
  *
  * @param <T> Type of result to be returned
  */
 public class StringSelectorWidget<T> extends AbstractWidget {
     private static final int ROW_HEIGHT = 12;
     private final Consumer<T> onSelect;
-    private Map<T, String> options = Collections.emptyMap();
+    private Map<T, Component> options = Collections.emptyMap();
     @Nullable
     private T lastHovered = null;
     @Nullable
@@ -40,7 +40,7 @@ public class StringSelectorWidget<T> extends AbstractWidget {
         this.highlight = highlight;
     }
 
-    public void setOptions(Map<T, String> options) {
+    public void setOptions(Map<T, Component> options) {
         this.options = options;
     }
 

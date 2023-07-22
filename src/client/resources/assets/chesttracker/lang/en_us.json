@@ -29,6 +29,8 @@
   "chesttracker.config.mainGui.memoryKeyIcons.icon": "Set Icon",
   "chesttracker.config.managementGui": "Management GUI",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
+  "chesttracker.config.managementGui.hideMemoryBankIds.description1": "Hide the Memory Bank ID from the edit GUIs, in case you're streaming and want to hide an IP or similar.",
+  "chesttracker.config.managementGui.hideMemoryBankIds.description2": "You can still view the ID by hovering over the ID field in the edit GUI.",
   "chesttracker.config.memory": "Storage & Memories",
   "chesttracker.config.memory.irreversable": "Warning: this action can not be undone.",
   "chesttracker.config.memory.global": "Global Settings",
