@@ -223,7 +223,7 @@ public class EditMemoryBankScreen extends Screen {
                     .description(OptionDescription.of(
                             Component.translatable("chesttracker.gui.editMemoryBank.deleteKey.description", key),
                             CommonComponents.NEW_LINE,
-                            translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED)
+                            translatable("chesttracker.config.irreversable").withStyle(ChatFormatting.RED)
                     )).action((screen, option) -> {
                         bank.removeKey(key);
                         option.setAvailable(false);

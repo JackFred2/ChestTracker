@@ -22,7 +22,7 @@ public class StorageUtil {
     }
 
     public static void setup() {
-        ChestTrackerConfig.INSTANCE.getConfig().memory.storageBackend.load();
+        ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.load();
 
         // storage saving hooks
 

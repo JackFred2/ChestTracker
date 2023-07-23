@@ -42,7 +42,7 @@ public class ChestTrackerConfigScreenBuilder {
         return YetAnotherConfigLib.createBuilder()
                 .title(translatable("chesttracker.title"))
                 .category(makeMainCategory(instance))
-                .category(makeMemoryCategory(instance, parent))
+                .category(makeMemoryAndStorageCategory(instance, parent))
                 .category(makeWhereIsItLink())
                 .save(instance::save)
                 .build()
@@ -84,10 +84,11 @@ public class ChestTrackerConfigScreenBuilder {
                 .build();
     }
 
-    private static ConfigCategory makeMemoryCategory(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+    private static ConfigCategory makeMemoryAndStorageCategory(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
         var builder = ConfigCategory.createBuilder()
-                .name(translatable("chesttracker.config.memory"))
-                .group(makeGlobalMemoryGroup(instance, parent));
+                .name(translatable("chesttracker.config.memoryAndStorage"))
+                .group(makeMemoryGroup(instance, parent))
+                .group(makeStorageGroup(instance, parent));
         return builder.build();
     }
 
@@ -223,72 +224,11 @@ public class ChestTrackerConfigScreenBuilder {
     }
 
     ////////////
-    // MEMORY //
+    // STORAGE //
     ////////////
-    private static OptionGroup makeGlobalMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
-        var rootBuilder = OptionGroup.createBuilder()
-                .name(translatable("chesttracker.config.memory.global"))
-                .option(ButtonOption.createBuilder()
-                        .name(translatable("chesttracker.config.memory.global.openFolder"))
-                        .action((screen, button) -> Util.getPlatform().openUri(Constants.STORAGE_DIR.toUri()))
-                        .text(literal(getDirectorySizeString()))
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(translatable("chesttracker.config.memory.global.autoLoadMemories"))
-                        .description(OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.global.autoLoadMemories.description"))
-                                .build())
-                        .controller(opt -> BooleanControllerBuilder.create(opt)
-                                .yesNoFormatter()
-                                .coloured(true))
-                        .binding(
-                                instance.getDefaults().memory.autoLoadMemories,
-                                () -> instance.getConfig().memory.autoLoadMemories,
-                                b -> instance.getConfig().memory.autoLoadMemories = b)
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(translatable("chesttracker.config.memory.global.readableJsonMemories"))
-                        .description(b -> OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.global.readableJsonMemories.description"))
-                                .image(getDescriptionImage("readable_json_memories", b), 468, 244)
-                                .build())
-                        .controller(opt -> BooleanControllerBuilder.create(opt)
-                                .yesNoFormatter()
-                                .coloured(true))
-                        .binding(
-                                instance.getDefaults().memory.readableJsonMemories,
-                                () -> instance.getConfig().memory.readableJsonMemories,
-                                b -> {
-                                    instance.getConfig().memory.readableJsonMemories = b;
-                                    MemoryBank.save();
-                                    refreshConfigScreen(parent);
-                                })
-                        .build())
-                .option(Option.<Storage.Backend>createBuilder()
-                        .name(translatable("chesttracker.config.memory.global.storageBackend"))
-                        .description(b -> {
-                            var builder = OptionDescription.createBuilder()
-                                    .text(translatable("chesttracker.config.memory.global.storageBackend.description"))
-                                    .text(CommonComponents.NEW_LINE)
-                                    .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
-                                            .append(translatable("chesttracker.config.memory.global.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
-                                                    .withStyle(ChatFormatting.WHITE)));
-                            if (b == Storage.Backend.MEMORY)
-                                builder.text(CommonComponents.NEW_LINE)
-                                        .text(translatable("chesttracker.config.memory.global.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
-                            return builder.build();
-                        })
-                        .controller(opt -> EnumControllerBuilder.create(opt)
-                                .enumClass(Storage.Backend.class))
-                        .binding(
-                                instance.getDefaults().memory.storageBackend,
-                                () -> instance.getConfig().memory.storageBackend,
-                                e -> {
-                                    instance.getConfig().memory.storageBackend = e;
-                                    e.load();
-                                    refreshConfigScreen(parent);
-                                })
-                        .build())
+    private static OptionGroup makeMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+        var builder = OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.memory"))
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.gui.memoryManager.title"))
                         .text(translatable("chesttracker.config.open"))
@@ -299,10 +239,78 @@ public class ChestTrackerConfigScreenBuilder {
                             };
                             Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(lambda, lambda));
                         }))
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.memory.autoLoadMemories"))
+                        .description(OptionDescription.createBuilder()
+                                .text(translatable("chesttracker.config.memory.autoLoadMemories.description"))
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().memory.autoLoadMemories,
+                                () -> instance.getConfig().memory.autoLoadMemories,
+                                b -> instance.getConfig().memory.autoLoadMemories = b)
                         .build());
 
         if (MemoryBank.INSTANCE == null)
-            rootBuilder.option(LabelOption.create(translatable("chesttracker.config.memory.global.noMemoryBankLoaded")));
+            builder.option(LabelOption.create(translatable("chesttracker.config.memory.noMemoryBankLoaded")));
+
+        return builder.build();
+    }
+
+    private static OptionGroup makeStorageGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+        var rootBuilder = OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.storage"))
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("chesttracker.config.storage.openFolder"))
+                        .action((screen, button) -> Util.getPlatform().openUri(Constants.STORAGE_DIR.toUri()))
+                        .text(literal(getDirectorySizeString()))
+                        .build())
+                .option(Option.<Storage.Backend>createBuilder()
+                        .name(translatable("chesttracker.config.storage.storageBackend"))
+                        .description(b -> {
+                            var builder = OptionDescription.createBuilder()
+                                    .text(translatable("chesttracker.config.storage.storageBackend.description"))
+                                    .text(CommonComponents.NEW_LINE)
+                                    .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
+                                            .append(translatable("chesttracker.config.storage.global.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
+                                                    .withStyle(ChatFormatting.WHITE)));
+                            if (b == Storage.Backend.MEMORY)
+                                builder.text(CommonComponents.NEW_LINE)
+                                        .text(translatable("chesttracker.config.storage.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
+                            return builder.build();
+                        })
+                        .controller(opt -> EnumControllerBuilder.create(opt)
+                                .enumClass(Storage.Backend.class))
+                        .binding(
+                                instance.getDefaults().storage.storageBackend,
+                                () -> instance.getConfig().storage.storageBackend,
+                                e -> {
+                                    instance.getConfig().storage.storageBackend = e;
+                                    e.load();
+                                    refreshConfigScreen(parent);
+                                })
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.storage.json.readableJsonMemories"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .text(translatable("chesttracker.config.storage.json.readableJsonMemories.description"))
+                                .image(getDescriptionImage("readable_json_memories", b), 468, 244)
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().storage.readableJsonMemories,
+                                () -> instance.getConfig().storage.readableJsonMemories,
+                                b -> {
+                                    instance.getConfig().storage.readableJsonMemories = b;
+                                    MemoryBank.save();
+                                    refreshConfigScreen(parent);
+                                })
+                        .build());
 
         return rootBuilder.build();
     }

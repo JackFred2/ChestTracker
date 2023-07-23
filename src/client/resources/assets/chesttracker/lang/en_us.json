@@ -14,8 +14,12 @@
   "chesttracker.gui.editMemoryBank.manageKeys": "Manage keys",
   "chesttracker.gui.editMemoryBank.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
   "chesttracker.gui.narration.drag": "Click and drag",
+  "chesttracker.storage.json.fileSize": "File Size: %s",
+
   "chesttracker.config.open": "Open",
   "chesttracker.config.selectorScreen": "Choose an option",
+  "chesttracker.config.irreversable": "Warning: this action can not be undone.",
+
   "chesttracker.config.mainGui": "Main Gui",
   "chesttracker.config.mainGui.autofocusSearchBar": "Auto-focus Search Bar",
   "chesttracker.config.mainGui.autofocusSearchBar.description": "Whether to automatically focus the search bar when the GUI is opened.",
@@ -29,24 +33,28 @@
   "chesttracker.config.mainGui.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
   "chesttracker.config.mainGui.memoryKeyIcons.dimension": "Dimension ID",
   "chesttracker.config.mainGui.memoryKeyIcons.icon": "Set Icon",
+
   "chesttracker.config.managementGui": "Management GUI",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
   "chesttracker.config.managementGui.hideMemoryBankIds.description1": "Hide the Memory Bank ID from the edit GUIs, in case you're streaming and want to hide an IP or similar.",
   "chesttracker.config.managementGui.hideMemoryBankIds.description2": "You can still view the ID by hovering over the ID field in the edit GUI.",
-  "chesttracker.config.memory": "Storage & Memories",
-  "chesttracker.config.memory.irreversable": "Warning: this action can not be undone.",
-  "chesttracker.config.memory.global": "Global Settings",
-  "chesttracker.config.memory.global.openFolder": "Open Memory Folder",
-  "chesttracker.config.memory.global.autoLoadMemories": "Automatically Load Memory Banks",
-  "chesttracker.config.memory.global.autoLoadMemories.description": "Whether to automatically load Memory Banks on game load, creating an ID from world name / server IP / Realm ID. Disable to always need to select manually. You can always change the loaded Memory Bank in-game.",
-  "chesttracker.config.memory.global.readableJsonMemories": "Readable JSON Files",
-  "chesttracker.config.memory.global.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
-  "chesttracker.config.memory.global.storageBackend": "Storage Backend",
-  "chesttracker.config.memory.global.storageBackend.description": "Defines how Memory Banks are stored between worlds/sessions.",
-  "chesttracker.config.memory.global.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory.",
-  "chesttracker.config.memory.global.storageBackend.description.memory": "Stores Memory Banks in game memory.",
-  "chesttracker.config.memory.global.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
-  "chesttracker.config.memory.global.noMemoryBankLoaded": "No Memory Bank currently loaded.",
-  "chesttracker.config.memory.local.json.fileSize": "File Size: %s",
+
+  "chesttracker.config.memoryAndStorage": "Memory & Storage",
+  "chesttracker.config.memory": "Memory Settings",
+  "chesttracker.config.memory.autoLoadMemories": "Automatically Load Memory Banks",
+  "chesttracker.config.memory.autoLoadMemories.description": "Whether to automatically load Memory Banks on game load, creating an ID from world name / server IP / Realm ID. Disable to always need to select manually. You can always change the loaded Memory Bank in-game.",
+  "chesttracker.config.memory.noMemoryBankLoaded": "No Memory Bank currently loaded.",
+
+  "chesttracker.config.storage": "Storage Settings ",
+  "chesttracker.config.storage.openFolder": "Open Memory Folder",
+  "chesttracker.config.storage.storageBackend": "Storage Backend",
+  "chesttracker.config.storage.storageBackend.description": "Defines how Memory Banks are stored between worlds/sessions.",
+  "chesttracker.config.storage.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory.",
+  "chesttracker.config.storage.storageBackend.description.memory": "Stores Memory Banks in game memory.",
+  "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
+
+  "chesttracker.config.storage.json.readableJsonMemories": "Readable JSON Files",
+  "chesttracker.config.storage.json.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
+
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

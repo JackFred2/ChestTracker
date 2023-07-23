@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 
 import java.util.LinkedHashMap;
@@ -57,7 +56,7 @@ public class SelectorScreen<T> extends Screen {
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
 
-        this.search = this.addRenderableWidget(new CustomEditBox(Minecraft.getInstance().font,
+        this.search = this.addRenderableWidget(new EditBox(Minecraft.getInstance().font,
                 this.left,
                 this.top + 20,
                 menuWidth,

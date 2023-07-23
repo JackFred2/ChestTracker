@@ -39,7 +39,7 @@ public class JsonStorage implements Storage {
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private static Gson gson() {
-        return ChestTrackerConfig.INSTANCE.getConfig().memory.readableJsonMemories ? GSON : GSON_COMPACT;
+        return ChestTrackerConfig.INSTANCE.getConfig().storage.readableJsonMemories ? GSON : GSON_COMPACT;
     }
 
     @Nullable
@@ -136,7 +136,7 @@ public class JsonStorage implements Storage {
     public Component getDescriptionLabel(String memoryBankId) {
         var path = Constants.STORAGE_DIR.resolve(memoryBankId + EXT);
         var size = Files.isRegularFile(path) ? FileUtils.sizeOf(path.toFile()) : 0L;
-        return translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B");
+        return translatable("chesttracker.storage.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B");
     }
 
     @Override

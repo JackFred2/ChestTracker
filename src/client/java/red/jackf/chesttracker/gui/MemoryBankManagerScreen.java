@@ -187,7 +187,7 @@ public class MemoryBankManagerScreen extends Screen {
         NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(Minecraft.getInstance().font, this.title, left + MARGIN, this.top + MARGIN, TextColours.getLabelColour(), false);
-        var backendText = Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().memory.storageBackend.name());
+        var backendText = Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.name());
         var textWidth = Minecraft.getInstance().font.width(backendText);
         graphics.drawString(Minecraft.getInstance().font, backendText, left + menuWidth - MARGIN - textWidth - BUTTON_MARGIN - CLOSE_BUTTON_SIZE, this.top + MARGIN, TextColours.getLabelColour(), false);
     }
