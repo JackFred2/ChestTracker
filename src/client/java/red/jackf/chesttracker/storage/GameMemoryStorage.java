@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.storage;
 
-import dev.isxander.yacl3.api.OptionGroup;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
 
@@ -26,9 +25,6 @@ public class GameMemoryStorage implements Storage {
     public void save(MemoryBank memoryBank) {
         storage.put(memoryBank.getId(), memoryBank);
     }
-
-    @Override
-    public void appendOptionsToSettings(MemoryBank memoryBank, OptionGroup.Builder builder) {}
 
     @Override
     public Collection<String> getAllIds() {

@@ -1,5 +1,10 @@
 package red.jackf.chesttracker.gui;
 
+import dev.isxander.yacl3.api.ButtonOption;
+import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -9,6 +14,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -27,6 +33,8 @@ import red.jackf.chesttracker.util.StringUtil;
 import java.time.Instant;
 import java.util.HashMap;
 
+import static net.minecraft.network.chat.Component.translatable;
+
 /**
  * Shows a UI for managing an individual memory bank. Possibly the currently loaded bank.
  */
@@ -35,7 +43,7 @@ public class EditMemoryBankScreen extends Screen {
     private static final int HEIGHT = 192;
     private static final int MARGIN = 8;
     private static final int BUTTON_MARGIN = 5;
-    private static final int CONFIRM_BUTTON_SIZE = 12;
+    private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
     private static final int NAME_TOP = 45;
@@ -94,17 +102,28 @@ public class EditMemoryBankScreen extends Screen {
 
         // close button
         this.addRenderableWidget(new ImageButton(
-                left + menuWidth - (BUTTON_MARGIN + CONFIRM_BUTTON_SIZE),
+                left + menuWidth - (BUTTON_MARGIN + CLOSE_BUTTON_SIZE),
                 top + BUTTON_MARGIN,
-                CONFIRM_BUTTON_SIZE,
-                CONFIRM_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE,
                 0,
                 0,
-                CONFIRM_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE,
                 ChestTracker.guiTex("widgets/return_button"),
-                CONFIRM_BUTTON_SIZE,
-                CONFIRM_BUTTON_SIZE * 3,
+                CLOSE_BUTTON_SIZE,
+                CLOSE_BUTTON_SIZE * 3,
                 b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
+
+        // details label
+        if (!isCreatingNewBank) {
+            var label = StorageUtil.getStorage().getDescriptionLabel(memoryBankId);
+            var width = font.width(label);
+            this.addRenderableOnly(new TextWidget(this.left + menuWidth - BUTTON_MARGIN - CLOSE_BUTTON_SIZE - BUTTON_MARGIN - width,
+                    top + MARGIN,
+                    label,
+                    TextColours.getLabelColour(),
+                    false));
+        }
 
         // ID
         var idLabel = Component.translatable("chesttracker.gui.editMemoryBank.id");
@@ -145,27 +164,35 @@ public class EditMemoryBankScreen extends Screen {
         });
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : "");
 
+        // bottom buttons
         int saveLoadButtonsHeight = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
+        int fullWidth = this.menuWidth - 2 * MARGIN;
+        int halfWidth = (fullWidth - BUTTON_MARGIN) / 2;
+        int halfXPos = left + halfWidth + MARGIN + BUTTON_MARGIN;
 
-        // delete
+        // delete everything
         if (StorageUtil.getStorage().getAllIds().contains(memoryBankId)) {
             saveLoadButtonsHeight -= (BUTTON_HEIGHT + BUTTON_MARGIN);
             this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
                     this.top + this.menuHeight - (MARGIN + BUTTON_HEIGHT),
-                    this.menuWidth - 2 * MARGIN,
+                    halfWidth,
                     BUTTON_HEIGHT,
                     Component.translatable("selectServer.deleteButton"),
                     Constants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
                     this::delete));
+
+            this.addRenderableWidget(Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
+                    .bounds(halfXPos, this.top + this.menuHeight - (MARGIN + BUTTON_HEIGHT), halfWidth, BUTTON_HEIGHT)
+                    .build());
         }
 
-        int saveLoadButtonWidth = this.menuWidth - 2 * MARGIN;
+        int saveLoadButtonWidth = fullWidth;
 
         // load
         if (inGame && !isCurrentIdLoaded()) {
-            saveLoadButtonWidth = (saveLoadButtonWidth - BUTTON_MARGIN) / 2;
+            saveLoadButtonWidth = halfWidth;
             this.addRenderableWidget(Button.builder(Component.translatable(isCreatingNewBank ? "mco.create.world" : "structure_block.mode.load"), this::load)
-                    .bounds(left + saveLoadButtonWidth + MARGIN + BUTTON_MARGIN,
+                    .bounds(halfXPos,
                             saveLoadButtonsHeight,
                             saveLoadButtonWidth,
                             BUTTON_HEIGHT)
@@ -179,6 +206,43 @@ public class EditMemoryBankScreen extends Screen {
                         saveLoadButtonWidth,
                         BUTTON_HEIGHT)
                 .build());
+    }
+
+    // we use YACL here because I'm lazy
+    private void openDeleteKeys(Button button) {
+        MemoryBank bank = isCurrentIdLoaded() ? MemoryBank.INSTANCE : StorageUtil.getStorage().load(memoryBankId);
+        if (bank == null) return;
+
+        var category = ConfigCategory.createBuilder()
+                .name(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"));
+
+        for (ResourceLocation key : bank.getKeys()) {
+            category.option(ButtonOption.createBuilder()
+                    .name(Component.literal(key.toString()))
+                    .text(Component.translatable("selectServer.delete"))
+                    .description(OptionDescription.of(
+                            Component.translatable("chesttracker.gui.editMemoryBank.deleteKey.description", key),
+                            CommonComponents.NEW_LINE,
+                            translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED)
+                    )).action((screen, option) -> {
+                        bank.removeKey(key);
+                        option.setAvailable(false);
+                        if (isCurrentIdLoaded()) {
+                            MemoryBank.save();
+                        } else {
+                            bank.setId(memoryBankId);
+                            StorageUtil.getStorage().save(bank);
+                        }
+                    })
+                    .build());
+        }
+
+        Minecraft.getInstance().setScreen(YetAnotherConfigLib.createBuilder()
+                .title(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"))
+                .category(category.build())
+                .build()
+                .generateScreen(this));
+
     }
 
     private void load(Button button) {

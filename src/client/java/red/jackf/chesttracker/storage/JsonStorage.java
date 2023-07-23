@@ -7,8 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
-import dev.isxander.yacl3.api.LabelOption;
-import dev.isxander.yacl3.api.OptionGroup;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -134,11 +133,10 @@ public class JsonStorage implements Storage {
         }
     }
 
-    @Override
-    public void appendOptionsToSettings(MemoryBank memoryBank, OptionGroup.Builder builder) {
-        var path = Constants.STORAGE_DIR.resolve(memoryBank.getId() + EXT);
+    public Component getDescriptionLabel(String memoryBankId) {
+        var path = Constants.STORAGE_DIR.resolve(memoryBankId + EXT);
         var size = Files.isRegularFile(path) ? FileUtils.sizeOf(path.toFile()) : 0L;
-        builder.option(LabelOption.create(translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B")));
+        return translatable("chesttracker.config.memory.local.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B");
     }
 
     @Override

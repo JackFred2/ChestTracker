@@ -205,17 +205,8 @@ public class ChestTrackerScreen extends Screen {
         // key buttons
         if (MemoryBank.INSTANCE != null) {
             var iconList = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryKeyIcons;
-            var keys = MemoryBank.INSTANCE.getKeys();
-            List<ResourceLocation> todo = new ArrayList<>(keys.size());
+            var todo = MemoryBank.INSTANCE.getKeys();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>(); // used to manage highlights
-
-            // order by config list first, then arbitrary for unknown
-            for (MemoryKeyIcon icon : iconList)
-                if (keys.contains(icon.id()))
-                    todo.add(icon.id());
-            for (ResourceLocation key : keys)
-                if (!todo.contains(key))
-                    todo.add(key);
 
             for (int index = 0; index < todo.size(); index++) {
                 var resloc = todo.get(index);

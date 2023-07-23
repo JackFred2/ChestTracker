@@ -11,6 +11,8 @@
   "chesttracker.gui.editMemoryBank.create": "Creating new Memory Bank",
   "chesttracker.gui.editMemoryBank.edit": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.id": "ID",
+  "chesttracker.gui.editMemoryBank.manageKeys": "Manage keys",
+  "chesttracker.gui.editMemoryBank.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.config.open": "Open",
   "chesttracker.config.selectorScreen": "Choose an option",
@@ -45,10 +47,6 @@
   "chesttracker.config.memory.global.storageBackend.description.memory": "Stores Memory Banks in game memory.",
   "chesttracker.config.memory.global.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
   "chesttracker.config.memory.global.noMemoryBankLoaded": "No Memory Bank currently loaded.",
-  "chesttracker.config.memory.local.title": "Loaded: %s",
-  "chesttracker.config.memory.local.delete": "Delete Memory Bank",
-  "chesttracker.config.memory.local.deleteKey": "Delete %s",
-  "chesttracker.config.memory.local.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
   "chesttracker.config.memory.local.json.fileSize": "File Size: %s",
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

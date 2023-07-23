@@ -15,14 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.config.custom.HoldToConfirmButtonOption;
 import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
 import red.jackf.chesttracker.gui.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.Storage;
-import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
@@ -90,7 +88,6 @@ public class ChestTrackerConfigScreenBuilder {
         var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
                 .group(makeGlobalMemoryGroup(instance, parent));
-        if (MemoryBank.INSTANCE != null) builder.group(makeLocalMemoryGroup(MemoryBank.INSTANCE, parent));
         return builder.build();
     }
 
@@ -308,42 +305,6 @@ public class ChestTrackerConfigScreenBuilder {
             rootBuilder.option(LabelOption.create(translatable("chesttracker.config.memory.global.noMemoryBankLoaded")));
 
         return rootBuilder.build();
-    }
-
-    private static OptionGroup makeLocalMemoryGroup(MemoryBank memory, Screen parent) {
-        var builder = OptionGroup.createBuilder()
-                .name(translatable("chesttracker.config.memory.local.title", memory.getDisplayName()))
-                .option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.delete"),
-                        OptionDescription.createBuilder()
-                                .text(translatable("selectServer.deleteButton"))
-                                .text(CommonComponents.NEW_LINE)
-                                .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
-                                .build(),
-                        (screen, button) -> {
-                            MemoryBank.unload();
-                            StorageUtil.getStorage().delete(memory.getId());
-                            refreshConfigScreen(parent);
-                        },
-                        null,
-                        true,
-                        60));
-        memory.getKeys()
-                .forEach(resloc -> builder.option(new HoldToConfirmButtonOption(translatable("chesttracker.config.memory.local.deleteKey", resloc),
-                        OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.local.deleteKey.description", resloc))
-                                .text(CommonComponents.NEW_LINE)
-                                .text(translatable("chesttracker.config.memory.irreversable").withStyle(ChatFormatting.RED))
-                                .build(),
-                        (screen, button) -> {
-                            memory.removeKey(resloc);
-                            StorageUtil.getStorage().save(memory);
-                            refreshConfigScreen(parent);
-                        },
-                        null,
-                        true,
-                        40)));
-        StorageUtil.getStorage().appendOptionsToSettings(memory, builder);
-        return builder.build();
     }
 
     /////////////////

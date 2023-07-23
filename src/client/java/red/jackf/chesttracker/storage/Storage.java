@@ -1,6 +1,6 @@
 package red.jackf.chesttracker.storage;
 
-import dev.isxander.yacl3.api.OptionGroup;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
 
@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
- * Handles saving/loading for memoryBank
+ * Handles saving/loading for bank
  */
 public interface Storage {
     /**
@@ -33,12 +33,13 @@ public interface Storage {
     void save(MemoryBank memoryBank);
 
     /**
-     * Add any storage-specific options to the config GUI. Generally used with {@link dev.isxander.yacl3.api.LabelOption}s
-     * to add specific info.
-     * @param memoryBank Memory bank to parse options for
-     * @param builder YACL group builder to append options to.
+     * Returns a small label to show at the top of the "edit memory bank" screen.
+     * @param memoryBankId ID of a memory bank to generate a label for.
+     * @return Component to show at the top of the edit memory bank screen.
      */
-    void appendOptionsToSettings(MemoryBank memoryBank, OptionGroup.Builder builder);
+    default Component getDescriptionLabel(String memoryBankId) {
+        return Component.empty();
+    }
 
     /**
      * Return all IDs in this storage, such as all files, in no particular order.

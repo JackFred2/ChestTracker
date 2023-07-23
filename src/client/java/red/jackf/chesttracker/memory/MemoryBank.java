@@ -8,6 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.ModCodecs;
@@ -87,10 +89,6 @@ public class MemoryBank {
         this.metadata = metadata;
     }
 
-    public String getDisplayName() {
-        return metadata.name != null ? metadata.name : id;
-    }
-
     ///////////////////////
     // MEMORY MANAGEMENT //
     ///////////////////////
@@ -134,8 +132,19 @@ public class MemoryBank {
             return Collections.emptyList();
     }
 
-    public Set<ResourceLocation> getKeys() {
-        return memories.keySet();
+    /**
+     * Returns a list of all memory keys in this bank, in order of the list in the config, then an arbitrary order.
+     */
+    public List<ResourceLocation> getKeys() {
+        var keys = memories.keySet();
+        List<ResourceLocation> sorted = new ArrayList<>(keys.size());
+        for (MemoryKeyIcon icon : ChestTrackerConfig.INSTANCE.getConfig().gui.memoryKeyIcons)
+            if (keys.contains(icon.id()))
+                sorted.add(icon.id());
+        for (var key : keys)
+            if (!sorted.contains(key))
+                sorted.add(key);
+        return sorted;
     }
 
     public static class Metadata {
