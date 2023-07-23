@@ -5,7 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.config.custom.HoldToConfirmActionController;
 
@@ -16,9 +18,11 @@ import java.util.function.Consumer;
 public class HoldToConfirmButton extends AbstractButton {
     private final Consumer<HoldToConfirmButton> callback;
     private final long holdToActivateTime;
+    private static final int PROGRESS_TICKS = 5;
 
     private final Set<Integer> held = new HashSet<>(4);
     private float progress = 0f;
+    private int progressTicks = 0;
 
     public HoldToConfirmButton(int x, int y, int width, int height, Component component, long holdToActivateTime, Consumer<HoldToConfirmButton> callback) {
         super(x, y, width, height, component);
@@ -28,8 +32,12 @@ public class HoldToConfirmButton extends AbstractButton {
 
     @Override
     public void onPress() {
-        playDownSound();
+        playDownSound(getPitch());
         callback.accept(this);
+    }
+
+    private float getPitch() {
+        return 1f + 0.2f * (progress / holdToActivateTime);
     }
 
     @Override
@@ -46,7 +54,11 @@ public class HoldToConfirmButton extends AbstractButton {
             if (progress == holdToActivateTime) {
                 this.onPress();
                 progress = 0f;
+                progressTicks = 0;
             }
+            var newProgressTicks = (int) (progress * PROGRESS_TICKS / holdToActivateTime);
+            if (newProgressTicks > progressTicks) playDownSound(getPitch());
+            progressTicks = newProgressTicks;
         } else {
             progress = Math.max(0, progress - HoldToConfirmActionController.Widget.REGRESSION_MULTIPLIER * partialTick);
         }
@@ -58,7 +70,7 @@ public class HoldToConfirmButton extends AbstractButton {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY) && active) {
-            playDownSound();
+            playDownSound(1f);
             held.add(-1);
             return true;
         }
@@ -88,7 +100,7 @@ public class HoldToConfirmButton extends AbstractButton {
         }
 
         if (isActivationKeybind(keyCode)) {
-            if (held.isEmpty()) playDownSound();
+            if (held.isEmpty()) playDownSound(1f);
             held.add(keyCode);
             return true;
         }
@@ -107,11 +119,11 @@ public class HoldToConfirmButton extends AbstractButton {
     @Override
     public void setFocused(boolean focused) {
         super.setFocused(focused);
-        //if (!focused) held.clear();
     }
 
-    private void playDownSound() {
-        this.playDownSound(Minecraft.getInstance().getSoundManager());
+
+    public void playDownSound(float pitch) {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, pitch));
     }
 
     @Override
