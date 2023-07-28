@@ -15,4 +15,8 @@ public record Memory(List<ItemStack> items) {
             instance.group(ModCodecs.makeMutableList(ItemStack.CODEC.listOf())
                     .fieldOf("items").forGetter(Memory::items))
                     .apply(instance, Memory::new));
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
 }

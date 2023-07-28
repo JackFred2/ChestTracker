@@ -101,7 +101,17 @@ public class MemoryBank {
     }
 
     public void addMemory(ResourceLocation key, BlockPos pos, Memory memory) {
-        memories.computeIfAbsent(key, u -> new HashMap<>()).put(pos, memory);
+        var keyMemories = memories.get(key);
+        if (memory.isEmpty() && keyMemories != null) {
+            keyMemories.remove(pos);
+            if (keyMemories.isEmpty()) memories.remove(key);
+        } else {
+            if (keyMemories == null) {
+                keyMemories = new HashMap<>();
+                memories.put(key, keyMemories);
+            }
+            keyMemories.put(pos, memory);
+        }
     }
 
     public void removeMemory(ResourceLocation key, BlockPos pos) {
