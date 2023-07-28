@@ -219,11 +219,15 @@ public class ChestTrackerScreen extends Screen {
                         this.left - MEMORY_ICON_OFFSET,
                         this.top + index * MEMORY_ICON_SPACING,
                         Component.literal(resloc.toString()), b -> {
-                    buttons.get(this.memoryKey).setHighlighted(false);
+                    // unhighlight old
+                    if (buttons.containsKey(this.memoryKey))
+                        buttons.get(this.memoryKey).setHighlighted(false);
 
+                    // set item list
                     this.memoryKey = resloc;
                     updateItems();
 
+                    // highlight new
                     buttons.get(resloc).setHighlighted(true);
                 }, true, 200, true));
 

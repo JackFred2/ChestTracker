@@ -81,6 +81,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .group(makeMainGuiGroup(instance))
                 .group(makeMemoryKeyIconGroup(instance))
                 .group(makeManagementGuiGroup(instance))
+                .group(makeDevGuiGroup(instance))
                 .build();
     }
 
@@ -184,10 +185,10 @@ public class ChestTrackerConfigScreenBuilder {
         //don't close the level
         //noinspection resource
         return ListOption.<MemoryKeyIcon>createBuilder()
-                .name(translatable("chesttracker.config.mainGui.memoryKeyIcons"))
+                .name(translatable("chesttracker.config.memoryKeyIcons"))
                 .description(OptionDescription.createBuilder()
                         .image(ChestTracker.guiTex("config/memory_key_icon_list"), 624, 285)
-                        .text(translatable("chesttracker.config.mainGui.memoryKeyIcons.description"))
+                        .text(translatable("chesttracker.config.memoryKeyIcons.description"))
                         .build())
                 .controller(MemoryKeyIconController.Builder::new)
                 .binding(
@@ -219,6 +220,24 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.getDefaults().gui.hideMemoryIds,
                                 () -> instance.getConfig().gui.hideMemoryIds,
                                 b -> instance.getConfig().gui.hideMemoryIds = b)
+                        .build())
+                .build();
+    }
+
+    private static OptionGroup makeDevGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+        return OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.devGui"))
+                .collapsed(true)
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.devGui.showDevHud"))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.getDefaults().gui.showDevHud,
+                                () -> instance.getConfig().gui.showDevHud,
+                                b -> instance.getConfig().gui.showDevHud = b
+                        )
                         .build())
                 .build();
     }

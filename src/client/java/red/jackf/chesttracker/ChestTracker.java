@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
+import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.ScreenHandler;
@@ -89,6 +90,7 @@ public class ChestTracker implements ClientModInitializer {
 
         ImagePixelReader.setup();
         StorageUtil.setup();
+        DeveloperOverlay.setup();
 
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {

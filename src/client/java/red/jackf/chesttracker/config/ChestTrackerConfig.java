@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 
 import java.io.IOException;
@@ -71,15 +72,18 @@ public class ChestTrackerConfig {
         @ConfigEntry
         public List<MemoryKeyIcon> memoryKeyIcons = new ArrayList<>(ICON_DEFAULTS);
 
-        @ConfigEntry
-        public boolean hideMemoryIds = false;
-
         private static final List<MemoryKeyIcon> ICON_DEFAULTS = List.of(
-                new MemoryKeyIcon(ChestTracker.id("ender_chest"), new LightweightStack(Items.ENDER_CHEST)),
+                new MemoryKeyIcon(MemoryBank.ENDER_CHEST_KEY, new LightweightStack(Items.ENDER_CHEST)),
                 new MemoryKeyIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
                 new MemoryKeyIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
                 new MemoryKeyIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
         );
+
+        @ConfigEntry
+        public boolean hideMemoryIds = false;
+
+        @ConfigEntry
+        public boolean showDevHud = false;
     }
 
     public static class Memory {

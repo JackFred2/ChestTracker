@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import red.jackf.chesttracker.world.Location;
+import red.jackf.chesttracker.api.location.Location;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -15,7 +15,7 @@ public class ScreenHandler {
     public static void handle(Location loc, AbstractContainerScreen<?> screen) {
         if (!isValidScreen(screen)) return;
         if (MemoryBank.INSTANCE == null) return;
-        MemoryBank.INSTANCE.addMemory(loc.level().location(), loc.pos(), new Memory(getItems(screen)));
+        MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), new Memory(getItems(screen)));
     }
 
     private static List<ItemStack> getItems(AbstractContainerScreen<?> screen) {

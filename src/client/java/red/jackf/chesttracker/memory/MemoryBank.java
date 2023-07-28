@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.storage.LoadContext;
@@ -35,6 +36,8 @@ public class MemoryBank {
                     Metadata.CODEC.fieldOf("metadata").forGetter(MemoryBank::getMetadata),
                     MEMORY_CODEC.fieldOf("memories").forGetter(MemoryBank::getMemories)
             ).apply(instance, MemoryBank::new));
+
+    public static final ResourceLocation ENDER_CHEST_KEY = ChestTracker.id("ender_chest");
 
     @Nullable
     public static MemoryBank INSTANCE = null;

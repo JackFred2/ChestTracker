@@ -29,15 +29,19 @@
   "chesttracker.config.mainGui.gridWidth": "Grid Width",
   "chesttracker.config.mainGui.gridHeight": "Grid Height",
   "chesttracker.config.mainGui.gridSizeSlider": "%d slots",
-  "chesttracker.config.mainGui.memoryKeyIcons": "Memory Key Icons",
-  "chesttracker.config.mainGui.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
-  "chesttracker.config.mainGui.memoryKeyIcons.dimension": "Dimension ID",
-  "chesttracker.config.mainGui.memoryKeyIcons.icon": "Set Icon",
+
+  "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
+  "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
+  "chesttracker.config.memoryKeyIcons.dimension": "Dimension ID",
+  "chesttracker.config.memoryKeyIcons.icon": "Set Icon",
 
   "chesttracker.config.managementGui": "Management GUI",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
   "chesttracker.config.managementGui.hideMemoryBankIds.description1": "Hide the Memory Bank ID from the edit GUIs, in case you're streaming and want to hide an IP or similar.",
   "chesttracker.config.managementGui.hideMemoryBankIds.description2": "You can still view the ID by hovering over the ID field in the edit GUI.",
+
+  "chesttracker.config.devGui": "Developer Utils",
+  "chesttracker.config.devGui.showDevHud": "Show Developer Hud",
 
   "chesttracker.config.memoryAndStorage": "Memory & Storage",
   "chesttracker.config.memory": "Memory Settings",
