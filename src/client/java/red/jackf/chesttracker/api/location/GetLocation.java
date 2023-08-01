@@ -9,12 +9,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import red.jackf.chesttracker.ChestTracker;
-
-import java.util.Optional;
+import red.jackf.chesttracker.api.ResultHolder;
 
 /**
- * Handles obtaining locations from specific events. These run through until the first non-empty Optional is produced;
- * following callbacks are not ran.
+ * <p>Handles obtaining locations from specific events. These run through until the first non-empty Optional is produced;
+ * following callbacks are not ran.</p>
+ *
+ * <p>Use cases for this are for custom inventories, such as server-side vaults, or not tracking certain containers, such
+ * as Hypixel's loot box ender chest.</p>
  */
 public class GetLocation {
     private GetLocation() {}
@@ -36,9 +38,9 @@ public class GetLocation {
     public static final Event<FromBlock> FROM_BLOCK = EventFactory.createWithPhases(FromBlock.class, listeners -> (player, level, hit) -> {
         for (FromBlock listener : listeners) {
             var result = listener.fromBlock(player, level, hit);
-            if (result.isPresent()) return result;
+            if (result.shouldTerminate()) return result;
         }
-        return Optional.empty();
+        return ResultHolder.empty();
     }, PRIORITY_PHASE, Event.DEFAULT_PHASE, FALLBACK_PHASE);
 
     /**
@@ -47,9 +49,9 @@ public class GetLocation {
     public static final Event<FromItem> FROM_ITEM = EventFactory.createWithPhases(FromItem.class, listeners -> (player, level, hand) -> {
         for (FromItem listener : listeners) {
             var result = listener.fromItem(player, level, hand);
-            if (result.isPresent()) return result;
+            if (result.shouldTerminate()) return result;
         }
-        return Optional.empty();
+        return ResultHolder.empty();
     }, PRIORITY_PHASE, Event.DEFAULT_PHASE, FALLBACK_PHASE);
 
     /**
@@ -58,20 +60,20 @@ public class GetLocation {
     public static final Event<FromEntity> FROM_ENTITY = EventFactory.createWithPhases(FromEntity.class, listeners -> (player, level, hand, hit) -> {
         for (FromEntity listener : listeners) {
             var result = listener.fromEntity(player, level, hand, hit);
-            if (result.isPresent()) return result;
+            if (result.shouldTerminate()) return result;
         }
-        return Optional.empty();
+        return ResultHolder.empty();
     }, PRIORITY_PHASE, Event.DEFAULT_PHASE, FALLBACK_PHASE);
 
     public interface FromBlock {
-        Optional<Location> fromBlock(Player player, ClientLevel level, BlockHitResult hit);
+        ResultHolder<Location> fromBlock(Player player, ClientLevel level, BlockHitResult hit);
     }
 
     public interface FromItem {
-        Optional<Location> fromItem(Player player, ClientLevel level, InteractionHand hand);
+        ResultHolder<Location> fromItem(Player player, ClientLevel level, InteractionHand hand);
     }
 
     public interface FromEntity {
-        Optional<Location> fromEntity(Player player, ClientLevel level, InteractionHand hand, EntityHitResult hit);
+        ResultHolder<Location> fromEntity(Player player, ClientLevel level, InteractionHand hand, EntityHitResult hit);
     }
 }

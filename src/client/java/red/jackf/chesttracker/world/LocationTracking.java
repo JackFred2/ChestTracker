@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.world;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -12,11 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.api.ResultHolder;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.MemoryBank;
-
-import java.util.Optional;
 
 /**
  * Since we technically don't immediately know what container is open, we try to smartly track it here.
@@ -31,7 +31,7 @@ public class LocationTracking {
             if (hand == InteractionHand.MAIN_HAND && level instanceof ClientLevel clientLevel) {
                 setLocation(GetLocation.FROM_BLOCK.invoker()
                         .fromBlock(player, clientLevel, hitResult)
-                        .orElse(null));
+                        .getNullable());
             }
             return InteractionResult.PASS;
         });
@@ -40,7 +40,7 @@ public class LocationTracking {
             if (level instanceof ClientLevel clientLevel) {
                 setLocation(GetLocation.FROM_ITEM.invoker()
                         .fromItem(player, clientLevel, hand)
-                        .orElse(null));
+                        .getNullable());
             }
             return InteractionResultHolder.pass(ItemStack.EMPTY);
         });
@@ -49,7 +49,7 @@ public class LocationTracking {
             if (level instanceof ClientLevel clientLevel) {
                 setLocation(GetLocation.FROM_ENTITY.invoker()
                         .fromEntity(player, clientLevel, hand, hit)
-                        .orElse(null));
+                        .getNullable());
             }
             return InteractionResult.PASS;
         });
@@ -83,14 +83,14 @@ public class LocationTracking {
 
     private static void setupDefaults() {
         GetLocation.FROM_BLOCK.register(GetLocation.FALLBACK_PHASE, (player, level, hit) ->
-                Optional.of(new Location(level.dimension().location(), hit.getBlockPos())));
+                ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos())));
 
         // Ender Chest
-        GetLocation.FROM_BLOCK.register(((player, level, hit) -> {
+        GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, hit) -> {
             if (level.getBlockState(hit.getBlockPos()).is(Blocks.ENDER_CHEST)) {
-                return Optional.of(new Location(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
+                return ResultHolder.value(new Location(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
             } else {
-                return Optional.empty();
+                return ResultHolder.pass();
             }
         }));
     }
