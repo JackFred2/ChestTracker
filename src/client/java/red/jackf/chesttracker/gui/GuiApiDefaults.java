@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.gui;
 
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,21 +21,18 @@ public class GuiApiDefaults {
     private GuiApiDefaults() {}
 
     public static void setup() {
-        // default, "grab everything from the slots"
+        // default, "grab everything from the slots that's not from the player's inventory"
         GetMemory.EVENT.register(EventPhases.FALLBACK_PHASE, (location, screen, level) -> {
-            if (!(screen instanceof EffectRenderingInventoryScreen<?>)) {
-                Component name = GetCustomName.EVENT.invoker().getName(location, screen).getNullable();
-                return ResultHolder.value(new Memory(screen.getMenu().slots.stream()
-                        .filter(GuiApiDefaults::isValidSlot)
-                        .map(Slot::getItem)
-                        .filter(Predicate.not(ItemStack::isEmpty))
-                        .collect(Collectors.toList()), name));
-            } else {
-                return ResultHolder.pass();
-            }
+            Component name = GetCustomName.EVENT.invoker().getName(location, screen).getNullable();
+            return ResultHolder.value(new Memory(screen.getMenu().slots.stream()
+                    .filter(GuiApiDefaults::isValidSlot)
+                    .map(Slot::getItem)
+                    .filter(Predicate.not(ItemStack::isEmpty))
+                    .collect(Collectors.toList()), name));
         });
 
         GetCustomName.EVENT.register(EventPhases.FALLBACK_PHASE, ((location, screen) -> {
+            // if it's not translatable, it's very likely a custom name
             if (screen.getTitle().getContents() instanceof LiteralContents) {
                 return ResultHolder.value(screen.getTitle());
             } else {

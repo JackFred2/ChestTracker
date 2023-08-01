@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
@@ -83,8 +84,13 @@ public class LocationTracking {
     }
 
     private static void setupDefaults() {
-        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, hit) ->
-                ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos().immutable())));
+        // only track block entities which can be renamed, which lines up will vanilla storage options
+        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, hit) -> {
+            if (level.getBlockEntity(hit.getBlockPos()) instanceof MenuProvider)
+                return ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos().immutable()));
+            else
+                return ResultHolder.pass();
+        });
 
         // Ender Chest
         GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, hit) -> {
