@@ -15,12 +15,13 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.jackf.chesttracker.api.gui.GetMemory;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
+import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.ScreenHandler;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.SearchInvoker;
@@ -49,8 +50,6 @@ public class ChestTracker implements ClientModInitializer {
     public void onInitializeClient() {
         ChestTrackerConfig.init();
         LOGGER.debug("Loading ChestTracker");
-
-        LocationTracking.setup();
 
         // load and unload memory storage
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> StorageUtil.load(client)));
@@ -81,16 +80,21 @@ public class ChestTracker implements ClientModInitializer {
 
                 // counting items after screen close
                 ScreenEvents.remove(screen).register(screen1 -> {
+                    if (MemoryBank.INSTANCE == null) return;
+                    if (Minecraft.getInstance().level == null) return;
                     var loc = LocationTracking.popLocation();
                     if (loc == null) return;
-                    ScreenHandler.handle(loc, (AbstractContainerScreen<?>) screen1);
+                    var memory = GetMemory.EVENT.invoker().createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
+                    if (memory.hasValue()) MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory.get());
                 });
             }
         });
 
+        LocationTracking.setup();
         ImagePixelReader.setup();
         StorageUtil.setup();
         DeveloperOverlay.setup();
+        GuiApiDefaults.setup();
 
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {

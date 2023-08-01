@@ -33,7 +33,9 @@ public class DeveloperOverlay {
                         lines.add("No memories in current dimension");
                 }
                 lines.add("");
-                lines.add("Location: " + LocationTracking.peekLocation());
+                var loc = LocationTracking.peekLocation();
+                var locStr = loc == null ? "<none>" : loc.pos().toShortString() + "@" + loc.key();
+                lines.add("Location: " + locStr);
             } else {
                 lines.add("No memory bank loaded");
             }

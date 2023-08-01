@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.ResultHolder;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.api.location.Location;
@@ -82,8 +83,8 @@ public class LocationTracking {
     }
 
     private static void setupDefaults() {
-        GetLocation.FROM_BLOCK.register(GetLocation.FALLBACK_PHASE, (player, level, hit) ->
-                ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos())));
+        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, hit) ->
+                ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos().immutable())));
 
         // Ender Chest
         GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, hit) -> {
