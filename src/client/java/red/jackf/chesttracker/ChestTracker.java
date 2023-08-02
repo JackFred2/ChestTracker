@@ -22,6 +22,7 @@ import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.MemoryIntegrity;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.SearchInvoker;
@@ -91,6 +92,7 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         LocationTracking.setup();
+        MemoryIntegrity.setup();
         ImagePixelReader.setup();
         StorageUtil.setup();
         DeveloperOverlay.setup();

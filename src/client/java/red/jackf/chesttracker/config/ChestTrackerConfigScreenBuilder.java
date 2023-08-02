@@ -294,7 +294,7 @@ public class ChestTrackerConfigScreenBuilder {
                                     .text(translatable("chesttracker.config.storage.storageBackend.description"))
                                     .text(CommonComponents.NEW_LINE)
                                     .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
-                                            .append(translatable("chesttracker.config.storage.global.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
+                                            .append(translatable("chesttracker.config.storage.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
                                                     .withStyle(ChatFormatting.WHITE)));
                             if (b == Storage.Backend.MEMORY)
                                 builder.text(CommonComponents.NEW_LINE)

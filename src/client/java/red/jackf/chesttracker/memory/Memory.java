@@ -18,9 +18,9 @@ public record Memory(List<ItemStack> items, @Nullable Component name) {
 
     public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    ModCodecs.makeMutableList(ItemStack.CODEC.listOf()).fieldOf("items").forGetter(Memory::items),
-                    ExtraCodecs.COMPONENT.optionalFieldOf("name").forGetter(m -> Optional.ofNullable(m.name()))
-            ).apply(instance, (items, nameOpt) -> new Memory(items, nameOpt.orElse(null))));
+                    ExtraCodecs.COMPONENT.optionalFieldOf("name").forGetter(m -> Optional.ofNullable(m.name())),
+                    ModCodecs.makeMutableList(ItemStack.CODEC.listOf()).fieldOf("items").forGetter(Memory::items)
+            ).apply(instance, (nameOpt, items) -> new Memory(items, nameOpt.orElse(null))));
 
     public boolean isEmpty() {
         return items.isEmpty();
