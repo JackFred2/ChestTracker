@@ -206,16 +206,20 @@ public class MemoryBank {
      * @return A list of search requests consisting of matching memories in this key.
      */
     public List<SearchResult> getPositions(ResourceLocation key, SearchRequest request) {
-        if (memories.containsKey(key))
-            return memories.get(key).entrySet().stream()
-                    .map(e -> Pair.of(e.getKey(), e.getValue().items().stream().filter(request::test).findFirst()))
-                    .filter(pair -> pair.getSecond().isPresent())
-                    .map(pair -> SearchResult.builder(pair.getFirst())
-                            .item(pair.getSecond().get())
-                            .build())
-                    .collect(Collectors.toList());
-        else
+        if (memories.containsKey(key)) {
+            var results = new ArrayList<SearchResult>();
+            for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
+                var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request)).findFirst();
+                if (matchedItem.isEmpty()) continue;
+                results.add(SearchResult.builder(entry.getKey())
+                        .item(matchedItem.get())
+                        .name(entry.getValue().name(), null)
+                        .build());
+            }
+            return results;
+        } else {
             return Collections.emptyList();
+        }
     }
 
     /**
