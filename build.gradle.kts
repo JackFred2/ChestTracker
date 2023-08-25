@@ -4,6 +4,7 @@ import com.matthewprenger.cursegradle.CurseArtifact
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
+import red.jackf.UpdateDependenciesTask
 import java.net.URI
 
 plugins {
@@ -30,6 +31,8 @@ repositories {
 			includeGroup("red.jackf")
 		}
 	}
+
+	// Parchment Mappings
 	maven {
 		name = "ParchmentMC"
 		url = URI("https://maven.parchmentmc.org")
@@ -37,6 +40,8 @@ repositories {
 			includeGroup("org.parchmentmc.data")
 		}
 	}
+
+	// Mod Menu, EMI
 	maven {
 		name = "TerraformersMC"
 		url = URI("https://maven.terraformersmc.com/releases/")
@@ -45,6 +50,8 @@ repositories {
 			includeGroup("dev.emi")
 		}
 	}
+
+	// YACL
 	maven {
 		name = "Xander Maven"
 		url = URI("https://maven.isxander.dev/releases")
@@ -52,6 +59,17 @@ repositories {
 			includeGroup("dev.isxander.yacl")
 		}
 	}
+
+	// YACL Dependencies
+	maven {
+		name = "Sonatype"
+		url = URI("https://oss.sonatype.org/content/repositories/snapshots")
+		content {
+			includeGroupByRegex("com.twelvemonkeys.*")
+		}
+	}
+
+	// Searchables
 	maven {
 		name = "BlameJared"
 		url = URI("https://maven.blamejared.com")
@@ -59,6 +77,8 @@ repositories {
 			includeGroupByRegex("com.blamejared.searchables.*")
 		}
 	}
+
+	// Dev Utils
 	maven {
 		name = "Modrinth Maven"
 		url = URI("https://api.modrinth.com/maven")
@@ -66,6 +86,8 @@ repositories {
 			includeGroup("maven.modrinth")
 		}
 	}
+
+	// Where Is It, JackFredLib
 	maven {
 		name = "GitHubPackages"
 		url = URI("https://maven.pkg.github.com/JackFred2/WhereIsIt")
@@ -107,10 +129,10 @@ dependencies {
 	})
 	modImplementation("net.fabricmc:fabric-loader:${findProperty("loader_version")}")
 
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${findProperty("fabric_version")}")
+	modImplementation("net.fabricmc.fabric-api:fabric-api:${findProperty("fabric-api_version")}")
 	modImplementation("com.terraformersmc:modmenu:${findProperty("modmenu_version")}")
 
-	modImplementation("red.jackf:whereisit:${findProperty("whereisit_version")}")
+	modImplementation("red.jackf:whereisit:${findProperty("where-is-it_version")}")
 
 	// Config
 	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${findProperty("yacl_version")}")
@@ -227,4 +249,9 @@ publishing {
 
 	repositories {
 	}
+}
+
+tasks.register<UpdateDependenciesTask>("updateModDependencies") {
+	mcVersion.set(properties["minecraft_version"]!!.toString())
+	loader.set("fabric")
 }

@@ -26,7 +26,7 @@ public class DeveloperOverlay {
                 var level = Minecraft.getInstance().level;
                 if (level != null) {
                     lines.add("Current dimension: " + level.dimension().location());
-                    var currentLevelMemories = MemoryBank.INSTANCE.getMemories().get(level.dimension().location());
+                    var currentLevelMemories = MemoryBank.INSTANCE.getMemories(level.dimension().location());
                     if (currentLevelMemories != null)
                         lines.add("Memories in current dimension: " + currentLevelMemories.size());
                     else

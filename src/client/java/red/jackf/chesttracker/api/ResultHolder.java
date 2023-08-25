@@ -1,16 +1,17 @@
 package red.jackf.chesttracker.api;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a result of an action that either holds an object ({@link State#VALUE}), an explicit lack of an object
- * ({@link State#EMPTY}), or to pass for further processing ({@link State#PASS}).
- * processing.
+ * ({@link State#EMPTY}), or to pass for further processing ({@link State#PASS}). Designed for use with Fabric
+ * {@link net.fabricmc.fabric.api.event.Event}s.
  *
  * @param <T> Type of result to hold, in the case of {@link State#VALUE}.
  */
 public final class ResultHolder<T> {
+    private static final ResultHolder<?> EMPTY = new ResultHolder<>(State.EMPTY, null);
+    private static final ResultHolder<?> PASS = new ResultHolder<>(State.PASS, null);
     private final State state;
     private final T value;
     private ResultHolder(State state, T value) {
@@ -35,7 +36,8 @@ public final class ResultHolder<T> {
      * @return Built EMPTY result holding the given value
      */
     public static <T> ResultHolder<T> empty() {
-        return new ResultHolder<>(State.EMPTY, null);
+        //noinspection unchecked
+        return (ResultHolder<T>) EMPTY;
     }
 
     /**
@@ -43,7 +45,8 @@ public final class ResultHolder<T> {
      * @return Built PASS result holding the given value
      */
     public static <T> ResultHolder<T> pass() {
-        return new ResultHolder<>(State.PASS, null);
+        //noinspection unchecked
+        return (ResultHolder<T>) PASS;
     }
 
     /**
