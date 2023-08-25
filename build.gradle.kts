@@ -1,17 +1,18 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.matthewprenger.cursegradle.CurseArtifact
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.Options
+import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
+import me.modmuss50.mpp.ReleaseType
+import net.fabricmc.loom.task.RemapJarTask
+import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
 import java.net.URI
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.2-SNAPSHOT"
-	id("com.modrinth.minotaur") version "2.+"
-	id("com.matthewprenger.cursegradle") version "1.4.0"
+	id("fabric-loom") version "1.3-SNAPSHOT"
+	id("com.github.breadmoirai.github-release") version "2.4.1"
+	id("org.ajoberstar.grgit") version "5.0.+"
+	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
 }
 
 fun Project.findPropertyStr(name: String) = findProperty(name) as String?
@@ -133,6 +134,7 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${findProperty("modmenu_version")}")
 
 	modImplementation("red.jackf:whereisit:${findProperty("where-is-it_version")}")
+	include("red.jackf:whereisit:${findProperty("where-is-it_version")}")
 
 	// Config
 	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${findProperty("yacl_version")}")
@@ -174,66 +176,104 @@ tasks.jar {
 	}
 }
 
-curseforge {
-	if (System.getenv("CURSEFORGE_TOKEN") != null && version != "UNKNOWN") {
-		apiKey = System.getenv("CURSEFORGE_TOKEN")
-		project(closureOf<CurseProject> {
-			id = "397217"
-			changelog = "Check the GitHub for changes: https://github.com/JackFred2/ChestTracker/releases"
-			releaseType = "release"
-
-			releaseType = modReleaseType
-
-			addGameVersion("Fabric")
-			addGameVersion("Quilt")
-			addGameVersion("Java 17")
-
-			project.findPropertyStr("game_versions")?.split(",")?.forEach { addGameVersion(it) }
-
-			mainArtifact(tasks.remapJar.get().archiveFile, closureOf<CurseArtifact> {
-				relations(closureOf<CurseRelation> {
-					requiredDependency("fabric-api")
-					requiredDependency("yacl")
-					optionalDependency("modmenu")
-				})
-				displayName = if (project.hasProperty("prefix")) {
-					"${findPropertyStr("prefix")} ${base.archivesName.get()}-$version.jar"
-				} else {
-					"${base.archivesName.get()}-$version.jar"
-				}
-			})
-
-		})
-
-		options(closureOf<Options> {
-			forgeGradleIntegration = false
-		})
-	} else {
-		println("No CURSEFORGE_TOKEN set, skipping...")
+val lastTagVal = properties["lastTag"]?.toString()
+val newTagVal = properties["newTag"]?.toString()
+if (lastTagVal != null && newTagVal != null) {
+	val generateChangelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
+		lastTag.set(lastTagVal)
+		newTag.set(newTagVal)
+		githubUrl.set(properties["github_url"]!!.toString())
+		prefixFilters.set(properties["changelog_filter"]!!.toString().split(","))
 	}
-}
 
-modrinth {
-	if (System.getenv("MODRINTH_TOKEN") != null && version != "UNKNOWN") {
-		token.set(System.getenv("MODRINTH_TOKEN"))
-		projectId.set("ni4SrKmq")
-		versionNumber.set(version as String)
-		versionName.set("Chest Tracker $version")
-		versionType.set(modReleaseType)
-		uploadFile.set(tasks.remapJar)
-		changelog.set("Check the GitHub for changes: https://github.com/JackFred2/ChestTracker/releases")
-		project.findPropertyStr("game_versions")?.let {
-			gameVersions.set(it.split(","))
-		}
-		loaders.set(listOf("fabric", "quilt"))
-		dependencies {
-			required.project("1eAoo2KR") // YACL
-			required.project("P7dR8mSH") // fabric api
+	if (System.getenv().containsKey("GITHUB_TOKEN")) {
+		tasks.named<GithubReleaseTask>("githubRelease") {
+			dependsOn(generateChangelogTask)
 
-			optional.project("mOgUt4GM") // Mod Menu
+			authorization.set(System.getenv("GITHUB_TOKEN")?.let { "Bearer $it" })
+			owner.set(properties["github_owner"]!!.toString())
+			repo.set(properties["github_repo"]!!.toString())
+			tagName.set(newTagVal)
+			releaseName.set("${properties["mod_name"]} $newTagVal")
+			targetCommitish.set(grgit.branch.current().name)
+			releaseAssets.from(
+				tasks["remapJar"].outputs.files,
+				tasks["remapSourcesJar"].outputs.files,
+			)
+
+			body.set(provider {
+				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
+			})
 		}
-	} else {
-		println("No MODRINTH_TOKEN set, skipping...")
+	}
+
+	tasks.named<DefaultTask>("publishMods") {
+		dependsOn(generateChangelogTask)
+	}
+
+	if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsKey(it) }) {
+		publishMods {
+			changelog.set(provider {
+				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
+			})
+			type.set(ReleaseType.STABLE)
+			modLoaders.add("fabric")
+			modLoaders.add("quilt")
+			file.set(tasks.named<RemapJarTask>("remapJar").get().archiveFile)
+			// additionalFiles.from(tasks.named<RemapSourcesJarTask>("remapSourcesJar").get().archiveFile)
+
+			if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
+				curseforge {
+					projectId.set("397217")
+					accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+					properties["game_versions"]!!.toString().split(",").forEach {
+						minecraftVersions.add(it)
+					}
+					displayName.set("${properties["prefix"]!!} ${properties["mod_name"]!!} ${version.get()}")
+					listOf("fabric-api", "yacl").forEach {
+						requires {
+							slug.set(it)
+						}
+					}
+					listOf("where-is-it", "searchables").forEach {
+						embeds {
+							slug.set(it)
+						}
+					}
+					listOf("emi", "jei", "roughly-enough-items", "modmenu").forEach {
+						optional {
+							slug.set(it)
+						}
+					}
+				}
+			}
+
+			if (System.getenv().containsKey("MODRINTH_TOKEN") || dryRun.get()) {
+				modrinth {
+					accessToken.set(System.getenv("MODRINTH_TOKEN"))
+					projectId.set("ni4SrKmq")
+					properties["game_versions"]!!.toString().split(",").forEach {
+						minecraftVersions.add(it)
+					}
+					displayName.set("${properties["mod_name"]!!} ${version.get()}")
+					listOf("fabric-api", "yacl").forEach {
+						requires {
+							slug.set(it)
+						}
+					}
+					listOf("where-is-it", "searchables").forEach {
+						embeds {
+							slug.set(it)
+						}
+					}
+					listOf("emi", "jei", "rei", "modmenu").forEach {
+						optional {
+							slug.set(it)
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
