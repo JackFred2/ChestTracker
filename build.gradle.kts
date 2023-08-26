@@ -15,15 +15,13 @@ plugins {
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
 }
 
-fun Project.findPropertyStr(name: String) = findProperty(name) as String?
+group = properties["maven_group"] !!
+version = properties["mod_version"] ?: "dev"
 
-group = findProperty("maven_group") !!
-version = findPropertyStr("mod_version") ?: "dev"
-
-val modReleaseType = findPropertyStr("type") ?: "release"
+val modReleaseType = properties["type"] ?: "release"
 
 base {
-	archivesName.set("${findProperty("archives_base_name")}-${findProperty("minecraft_version")}")
+	archivesName.set("${properties["archives_base_name"]}-${properties["minecraft_version"]}")
 }
 
 repositories {
@@ -96,8 +94,8 @@ repositories {
 			includeGroup("red.jackf")
 		}
 		credentials {
-			username = findPropertyStr("gpr.user")
-			password = findPropertyStr("gpr.key")
+			username = properties["gpr.user"]?.toString() ?: System.getenv("GITHUB_ACTOR")
+			password = properties["gpr.key"]?.toString() ?: System.getenv("GITHUB_TOKEN")
 		}
 	}
 }
@@ -123,30 +121,30 @@ loom {
 
 dependencies {
 	// To change the versions see the gradle.properties file
-	minecraft("com.mojang:minecraft:${findProperty("minecraft_version")}")
+	minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
 	mappings(loom.layered {
 		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${findProperty("parchment_version")}@zip")
+		parchment("org.parchmentmc.data:parchment-${properties["parchment_version"]}@zip")
 	})
-	modImplementation("net.fabricmc:fabric-loader:${findProperty("loader_version")}")
+	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${findProperty("fabric-api_version")}")
-	modImplementation("com.terraformersmc:modmenu:${findProperty("modmenu_version")}")
+	modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
+	modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
-	modImplementation("red.jackf:whereisit:${findProperty("where-is-it_version")}")
-	include("red.jackf:whereisit:${findProperty("where-is-it_version")}")
+	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}")
+	include("red.jackf:whereisit:${properties["where-is-it_version"]}")
 
 	// Config
-	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${findProperty("yacl_version")}")
-	implementation("blue.endless:jankson:${findProperty("jankson_version")}")
+	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}")
+	implementation("blue.endless:jankson:${properties["jankson_version"]}")
 
 	// Gui
-	modImplementation("com.blamejared.searchables:Searchables-fabric-1.20.1:${findProperty("searchables_version")}")
-	include("com.blamejared.searchables:Searchables-fabric-1.20.1:${findProperty("searchables_version")}")
+	modImplementation("com.blamejared.searchables:Searchables-fabric-1.20.1:${properties["searchables_version"]}")
+	include("com.blamejared.searchables:Searchables-fabric-1.20.1:${properties["searchables_version"]}")
 
 	// dev util
-	modCompileOnly("dev.emi:emi-fabric:${findProperty("emi_version")}:api")
-	modLocalRuntime("dev.emi:emi-fabric:${findProperty("emi_version")}")
+	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
+	modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 }
 
@@ -172,7 +170,7 @@ java {
 
 tasks.jar {
 	from("LICENSE") {
-		rename { "${it}_${findProperty("archivesBaseName")}"}
+		rename { "${it}_${properties["archivesBaseName"]}"}
 	}
 }
 
