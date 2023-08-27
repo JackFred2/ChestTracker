@@ -68,6 +68,7 @@ public class MemoryBank {
     ////////////
 
     private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
+    private final Map<ResourceLocation, Map<BlockPos, BlockPos>> linkedPositions = new HashMap<>();
 
     // copy of memories with only named ones present for faster rendering iteration
     private final Map<ResourceLocation, Map<BlockPos, Memory>> namedMemories = new HashMap<>();
@@ -78,10 +79,17 @@ public class MemoryBank {
         this.metadata = metadata;
         this.memories = map;
 
-        for (var entry : memories.entrySet())
-            for (var memory : entry.getValue().entrySet())
+        for (var entry : memories.entrySet()) {
+            for (var memory : entry.getValue().entrySet()) {
+                // load named memory cache
                 if (memory.getValue().name() != null)
-                    this.namedMemories.computeIfAbsent(entry.getKey(), k -> new HashMap<>()).put(memory.getKey(), memory.getValue());
+                    this.namedMemories.computeIfAbsent(entry.getKey(), k -> new HashMap<>())
+                            .put(memory.getKey(), memory.getValue());
+
+                // load linked positions
+                addLinked(entry.getKey(), memory.getKey(), memory.getValue());
+            }
+        }
     }
 
     public void setId(String id) {
@@ -128,7 +136,7 @@ public class MemoryBank {
      */
     @Nullable
     public Map<BlockPos, Memory> getNamedMemories(ResourceLocation key) {
-        return memories.get(key);
+        return namedMemories.get(key);
     }
 
     /**
@@ -140,6 +148,7 @@ public class MemoryBank {
     public void addMemory(ResourceLocation key, BlockPos pos, Memory memory) {
         _addMemory(memories, key, pos, memory);
         if (memory.name() != null) _addMemory(namedMemories, key, pos, memory);
+        addLinked(key, pos, memory);
     }
 
     private static void _addMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos, Memory memory) {
@@ -156,14 +165,25 @@ public class MemoryBank {
         }
     }
 
+    private void addLinked(ResourceLocation key, BlockPos pos, Memory memory) {
+        if (!memory.getOtherPositions().isEmpty()) {
+            var keyMap = this.linkedPositions.computeIfAbsent(key, k -> new HashMap<>());
+            memory.getOtherPositions().forEach(linkedPos -> keyMap.put(linkedPos, pos));
+        }
+    }
+
     /**
      * Remove a memory from a given position and memory key, if one exists.
      * @param key Memory key to check and remove
      * @param pos Position to remove in said key
      */
     public void removeMemory(ResourceLocation key, BlockPos pos) {
+        if (linkedPositions.getOrDefault(key, Collections.emptyMap()).containsKey(pos))
+            pos = linkedPositions.get(key).get(pos);
         _removeMemory(memories, key, pos);
         _removeMemory(namedMemories, key, pos);
+        //noinspection StatementWithEmptyBody
+        while (linkedPositions.getOrDefault(key, Collections.emptyMap()).values().remove(pos));
     }
 
     private static void _removeMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos) {
@@ -182,6 +202,7 @@ public class MemoryBank {
     public void removeKey(ResourceLocation key) {
         memories.remove(key);
         namedMemories.remove(key);
+        linkedPositions.remove(key);
     }
 
     /**
