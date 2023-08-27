@@ -19,6 +19,7 @@ import red.jackf.chesttracker.api.ResultHolder;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 /**
  * Since we technically don't immediately know what container is open, we try to smartly track it here.
@@ -84,12 +85,15 @@ public class LocationTracking {
     }
 
     private static void setupDefaults() {
-        // only track block entities which can be renamed, which lines up will vanilla storage options
+        // only track block entities which can be renamed, which lines up with vanilla storage options
+        // get a consistent 'root' inventory; solves double-saving chests
         GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, hit) -> {
-            if (level.getBlockEntity(hit.getBlockPos()) instanceof MenuProvider)
-                return ResultHolder.value(new Location(level.dimension().location(), hit.getBlockPos().immutable()));
-            else
+            if (level.getBlockEntity(hit.getBlockPos()) instanceof MenuProvider) {
+                var connected = ConnectedBlocksGrabber.getConnected(level, level.getBlockState(hit.getBlockPos()), hit.getBlockPos().immutable());
+                return ResultHolder.value(new Location(level.dimension().location(), connected.get(0)));
+            } else {
                 return ResultHolder.pass();
+            }
         });
 
         // Ender Chest

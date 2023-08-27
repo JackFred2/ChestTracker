@@ -25,7 +25,6 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.world.LocationTracking;
-import red.jackf.whereisit.client.api.SearchInvoker;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
 public class ChestTracker implements ClientModInitializer {
@@ -97,15 +96,5 @@ public class ChestTracker implements ClientModInitializer {
         StorageUtil.setup();
         DeveloperOverlay.setup();
         GuiApiDefaults.setup();
-
-        // add our memories as a handler for where is it
-        SearchInvoker.EVENT.register((request, resultConsumer) -> {
-            if (MemoryBank.INSTANCE == null) return false;
-            var level = Minecraft.getInstance().level;
-            if (level == null) return false;
-            var results = MemoryBank.INSTANCE.getPositions(level.dimension().location(), request);
-            if (!results.isEmpty()) resultConsumer.accept(results);
-            return true;
-        });
     }
 }

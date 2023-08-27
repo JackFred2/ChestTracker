@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.memory;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -13,6 +12,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
@@ -211,9 +211,11 @@ public class MemoryBank {
             for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
                 var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request)).findFirst();
                 if (matchedItem.isEmpty()) continue;
+                var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().getOtherPositions());
                 results.add(SearchResult.builder(entry.getKey())
                         .item(matchedItem.get())
-                        .name(entry.getValue().name(), null)
+                        .name(entry.getValue().name(), offset)
+                        .otherPositions(entry.getValue().getOtherPositions())
                         .build());
             }
             return results;

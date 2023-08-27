@@ -21,6 +21,9 @@
 		],
 		"modmenu": [
 			"red.jackf.chesttracker.compat.ChestTrackerModMenu"
+		],
+		"whereisit_client": [
+			"red.jackf.chesttracker.compat.ChestTrackerWhereIsItPlugin"
 		]
 	},
 	"mixins": [
