@@ -6,6 +6,14 @@ import net.minecraft.client.gui.screens.PauseScreen;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.util.StringUtil;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StorageUtil {
 
@@ -46,4 +54,15 @@ public class StorageUtil {
         }
     }
 
+    public static List<String> getMemoryIdsFilteringFileExtension(String extension) {
+        try(var stream = Files.walk(Constants.STORAGE_DIR)) {
+            return stream.filter(path -> path.getFileName().toString().endsWith(extension))
+                    .map(path -> StringUtil.formatPath(Constants.STORAGE_DIR.relativize(path)))
+                    .map(s -> s.substring(0, s.length() - extension.length()))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            ChestTracker.LOGGER.error(e);
+            return Collections.emptyList();
+        }
+    }
 }

@@ -1,7 +1,8 @@
-package red.jackf.chesttracker.storage;
+package red.jackf.chesttracker.storage.impl;
 
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.storage.Storage;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -3,6 +3,9 @@ package red.jackf.chesttracker.storage;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.storage.impl.GameMemoryStorage;
+import red.jackf.chesttracker.storage.impl.JsonStorage;
+import red.jackf.chesttracker.storage.impl.NbtStorage;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -60,6 +63,7 @@ public interface Storage {
 
     enum Backend {
         JSON(JsonStorage::new),
+        NBT(NbtStorage::new),
         MEMORY(GameMemoryStorage::new);
 
         private final Supplier<Storage> constructor;
