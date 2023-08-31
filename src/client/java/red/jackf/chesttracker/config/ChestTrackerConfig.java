@@ -45,9 +45,6 @@ public class ChestTrackerConfig {
     public Gui gui = new Gui();
 
     @ConfigEntry
-    public Memory memory = new Memory();
-
-    @ConfigEntry
     public Storage storage = new Storage();
 
     public static class Gui {
@@ -85,11 +82,6 @@ public class ChestTrackerConfig {
 
         @ConfigEntry
         public boolean showDevHud = false;
-    }
-
-    public static class Memory {
-        @ConfigEntry
-        public boolean autoLoadMemories = true;
     }
 
     public static class Storage {

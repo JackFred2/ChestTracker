@@ -45,15 +45,14 @@
 
   "chesttracker.config.memoryAndStorage": "Memory & Storage",
   "chesttracker.config.memory": "Memory Settings",
-  "chesttracker.config.memory.autoLoadMemories": "Automatically Load Memory Banks",
-  "chesttracker.config.memory.autoLoadMemories.description": "Whether to automatically load Memory Banks on game load, creating an ID from world name / server IP / Realm ID. Disable to always need to select manually. You can always change the loaded Memory Bank in-game.",
   "chesttracker.config.memory.noMemoryBankLoaded": "No Memory Bank currently loaded.",
 
   "chesttracker.config.storage": "Storage Settings ",
   "chesttracker.config.storage.openFolder": "Open Memory Folder",
   "chesttracker.config.storage.storageBackend": "Storage Backend",
   "chesttracker.config.storage.storageBackend.description": "Defines how Memory Banks are stored between worlds/sessions.",
-  "chesttracker.config.storage.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory.",
+  "chesttracker.config.storage.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory. Readable, but takes up more disk space.",
+  "chesttracker.config.storage.storageBackend.description.nbt": "Stores all Memory Banks as NBT files in your game's 'chesttracker' directory. More compact, but not readable without an external viewer.",
   "chesttracker.config.storage.storageBackend.description.memory": "Stores Memory Banks in game memory.",
   "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
 

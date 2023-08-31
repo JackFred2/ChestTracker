@@ -25,7 +25,6 @@ import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
@@ -247,9 +246,7 @@ public class EditMemoryBankScreen extends Screen {
 
     private void load(Button button) {
         if (!isCurrentIdLoaded()) {
-            var ctx = LoadContext.get(Minecraft.getInstance());
-            if (ctx != null)
-                MemoryBank.loadOrCreate(memoryBankId, metadata);
+            MemoryBank.loadOrCreate(memoryBankId, metadata);
         }
         afterBankLoaded.run();
     }

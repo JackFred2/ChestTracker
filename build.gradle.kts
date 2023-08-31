@@ -86,12 +86,25 @@ repositories {
 		}
 	}
 
-	// Where Is It, JackFredLib
+	// Where Is It
 	maven {
-		name = "GitHubPackages"
+		name = "GHPR Where Is It"
 		url = URI("https://maven.pkg.github.com/JackFred2/WhereIsIt")
 		content {
 			includeGroup("red.jackf")
+		}
+		credentials {
+			username = properties["gpr.user"]?.toString() ?: System.getenv("GITHUB_ACTOR")
+			password = properties["gpr.key"]?.toString() ?: System.getenv("GITHUB_TOKEN")
+		}
+	}
+
+	// JackFredLib
+	maven {
+		name = "GHPR JackFredLib"
+		url = URI("https://maven.pkg.github.com/JackFred2/JackFredLib")
+		content {
+			includeGroup("red.jackf.jackfredlib")
 		}
 		credentials {
 			username = properties["gpr.user"]?.toString() ?: System.getenv("GITHUB_ACTOR")

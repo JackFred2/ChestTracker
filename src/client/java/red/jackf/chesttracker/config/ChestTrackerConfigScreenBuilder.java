@@ -258,19 +258,6 @@ public class ChestTrackerConfigScreenBuilder {
                             };
                             Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(lambda, lambda));
                         }))
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(translatable("chesttracker.config.memory.autoLoadMemories"))
-                        .description(OptionDescription.createBuilder()
-                                .text(translatable("chesttracker.config.memory.autoLoadMemories.description"))
-                                .build())
-                        .controller(opt -> BooleanControllerBuilder.create(opt)
-                                .yesNoFormatter()
-                                .coloured(true))
-                        .binding(
-                                instance.getDefaults().memory.autoLoadMemories,
-                                () -> instance.getConfig().memory.autoLoadMemories,
-                                b -> instance.getConfig().memory.autoLoadMemories = b)
                         .build());
 
         if (MemoryBank.INSTANCE == null)

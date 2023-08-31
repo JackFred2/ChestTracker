@@ -61,6 +61,8 @@ public interface Storage {
         return loaded != null ? loaded.getMetadata() : null;
     }
 
+
+
     enum Backend {
         JSON(JsonStorage::new),
         NBT(NbtStorage::new),
