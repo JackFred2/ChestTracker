@@ -3,6 +3,7 @@ package red.jackf.chesttracker.storage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.util.ModCodecs;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -38,5 +39,5 @@ public record ConnectionSettings(boolean autoLoadMemories, Optional<String> memo
             Codec.BOOL.fieldOf("auto_load_memories").forGetter(ConnectionSettings::autoLoadMemories),
             Codec.STRING.optionalFieldOf("memory_bank_id_override").forGetter(ConnectionSettings::memoryBankIdOverride)
     ).apply(i, ConnectionSettings::new));
-    private static final Codec<Map<String, ConnectionSettings>> FILE_CODEC = Codec.unboundedMap(Codec.STRING, CONNECTION_SETTINGS_CODEC);
+    private static final Codec<Map<String, ConnectionSettings>> FILE_CODEC = ModCodecs.makeMutableMap(Codec.unboundedMap(Codec.STRING, CONNECTION_SETTINGS_CODEC));
 }
