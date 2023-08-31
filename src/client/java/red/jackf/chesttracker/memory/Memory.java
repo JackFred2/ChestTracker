@@ -58,7 +58,7 @@ public final class Memory {
         return otherPositions;
     }
 
-    private Instant getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 

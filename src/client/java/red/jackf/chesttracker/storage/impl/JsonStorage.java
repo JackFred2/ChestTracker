@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.Timer;
 
@@ -66,7 +67,7 @@ public class JsonStorage implements FileBasedStorage {
     }
 
     @Override
-    public @Nullable MemoryBank.Metadata getMetadata(String id) {
+    public @Nullable Metadata getMetadata(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + extension());
         var result = Timer.time(() -> {
             if (Files.isRegularFile(path)) {
@@ -91,8 +92,8 @@ public class JsonStorage implements FileBasedStorage {
     }
 
     @Nullable
-    private MemoryBank.Metadata tryParseRawMetadata(JsonElement element) {
-        return MemoryBank.Metadata.CODEC.decode(JsonOps.INSTANCE, element)
+    private Metadata tryParseRawMetadata(JsonElement element) {
+        return Metadata.CODEC.decode(JsonOps.INSTANCE, element)
                 .resultOrPartial(LOGGER::error)
                 .map(Pair::getFirst)
                 .orElse(null);

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
@@ -66,7 +67,7 @@ public class StorageUtil {
             }
             var id = settings.memoryBankIdOverride().orElse(loadContext.id());
             ChestTracker.LOGGER.debug("Loading {} using {}", id, instance.getClass().getSimpleName());
-            MemoryBank.loadOrCreate(id, MemoryBank.Metadata.from(loadContext));
+            MemoryBank.loadOrCreate(id, Metadata.from(loadContext.name()));
         }
     }
 

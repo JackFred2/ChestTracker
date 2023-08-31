@@ -10,14 +10,12 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -258,48 +256,5 @@ public class MemoryBank {
             if (!sorted.contains(key))
                 sorted.add(key);
         return sorted;
-    }
-
-    public static class Metadata {
-        public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
-                    ModCodecs.INSTANT.fieldOf("lastModified").forGetter(meta -> meta.lastModified)
-            ).apply(instance, (name, modified) -> new Metadata(name.orElse(null), modified))
-        );
-
-        @Nullable
-        private String name;
-        private Instant lastModified;
-
-        public Metadata(@Nullable String name, Instant lastModified) {
-            this.name = name;
-            this.lastModified = lastModified;
-        }
-
-        public static Metadata blank() {
-            return new Metadata(null, Instant.now());
-        }
-
-        public static Metadata from(LoadContext ctx) {
-            return new Metadata(ctx.name(), Instant.now());
-        }
-
-        @Nullable
-        public String getName() {
-            return name;
-        }
-
-        public void setName(@Nullable String name) {
-            this.name = name;
-        }
-
-        public Instant getLastModified() {
-            return lastModified;
-        }
-
-        public void updateModified() {
-            this.lastModified = Instant.now();
-        }
     }
 }

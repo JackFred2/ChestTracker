@@ -38,6 +38,9 @@ public class ChestTracker implements ClientModInitializer {
         return new ResourceLocation(ID, "textures/gui/" + path + ".png");
     }
     public static final Logger LOGGER = LogManager.getLogger();
+    public static Logger getLogger(String suffix) {
+        return LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/" + suffix);
+    }
 
     public static final KeyMapping OPEN_GUI = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.chesttracker.open_gui", InputConstants.Type.KEYSYM, InputConstants.KEY_GRAVE, "chesttracker.title")

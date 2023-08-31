@@ -3,6 +3,7 @@ package red.jackf.chesttracker.storage;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.impl.GameMemoryStorage;
 import red.jackf.chesttracker.storage.impl.JsonStorage;
 import red.jackf.chesttracker.storage.impl.NbtStorage;
@@ -56,7 +57,7 @@ public interface Storage {
      * @return Metadata from the memory bank, or null if not.
      */
     @Nullable
-    default MemoryBank.Metadata getMetadata(String id) {
+    default Metadata getMetadata(String id) {
         var loaded = load(id);
         return loaded != null ? loaded.getMetadata() : null;
     }

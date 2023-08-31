@@ -20,6 +20,7 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.StorageUtil;
 
 import java.util.LinkedHashMap;
@@ -53,7 +54,7 @@ public class MemoryBankManagerScreen extends Screen {
 
     private EditBox search = null;
     private StringSelectorWidget<String> memoryBankList;
-    private Map<String, MemoryBank.Metadata> memoryBanks;
+    private Map<String, Metadata> memoryBanks;
 
     /**
      * @param onRemoveScreen - Runnable to run on cancel, usually when pressing escape or a back button

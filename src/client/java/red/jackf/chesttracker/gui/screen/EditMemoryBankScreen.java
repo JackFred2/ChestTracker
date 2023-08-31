@@ -25,6 +25,7 @@ import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
@@ -55,7 +56,7 @@ public class EditMemoryBankScreen extends Screen {
     private final Screen parent;
     private final Runnable afterBankLoaded;
     private final String memoryBankId;
-    private final MemoryBank.Metadata metadata;
+    private final Metadata metadata;
     private final boolean isCreatingNewBank;
 
     protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, @Nullable String memoryBankId) {
@@ -65,11 +66,11 @@ public class EditMemoryBankScreen extends Screen {
         this.isCreatingNewBank = memoryBankId == null;
         if (isCreatingNewBank) {
             this.memoryBankId = getNextIdDefault();
-            this.metadata = new MemoryBank.Metadata(this.memoryBankId.substring("user/".length()), Instant.now());
+            this.metadata = Metadata.from(this.memoryBankId.substring("user/".length()));
         } else {
             this.memoryBankId = memoryBankId;
             var metadata = StorageUtil.getStorage().getMetadata(memoryBankId);
-            this.metadata = metadata == null ? MemoryBank.Metadata.blank() : metadata;
+            this.metadata = metadata == null ? Metadata.blank() : metadata;
         }
     }
 
