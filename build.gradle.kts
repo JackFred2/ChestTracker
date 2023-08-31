@@ -27,7 +27,7 @@ base {
 repositories {
 	mavenLocal {
 		content {
-			includeGroup("red.jackf")
+			includeGroupByRegex("red.jackf.*")
 		}
 	}
 

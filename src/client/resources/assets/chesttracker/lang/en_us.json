@@ -32,7 +32,7 @@
 
   "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
   "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
-  "chesttracker.config.memoryKeyIcons.dimension": "Dimension ID",
+  "chesttracker.config.memoryKeyIcons.dimension": "Memory Key",
   "chesttracker.config.memoryKeyIcons.icon": "Set Icon",
 
   "chesttracker.config.managementGui": "Management GUI",

@@ -5,9 +5,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import red.jackf.chesttracker.api.EventPhases;
-import red.jackf.chesttracker.api.ResultHolder;
 import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.Memory;
+import red.jackf.jackfredlib.api.ResultHolder;
 
 public interface GetMemory {
     Event<GetMemory> EVENT = EventFactory.createWithPhases(GetMemory.class, invokers -> (location, screen, level) -> {

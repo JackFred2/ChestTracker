@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.EventPhases;
-import red.jackf.chesttracker.api.ResultHolder;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.jackfredlib.api.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 /**

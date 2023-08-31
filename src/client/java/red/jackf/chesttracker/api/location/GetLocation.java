@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import red.jackf.chesttracker.api.EventPhases;
-import red.jackf.chesttracker.api.ResultHolder;
+import red.jackf.jackfredlib.api.ResultHolder;
 
 /**
  * <p>Handles obtaining locations from specific events. These run through until the first non-empty Optional is produced;
