@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui;
+package red.jackf.chesttracker.gui.screen;
 
 import com.blamejared.searchables.api.SearchablesConstants;
 import com.blamejared.searchables.api.autcomplete.AutoComplete;
@@ -33,6 +33,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * The main screen
+ */
 public class ChestTrackerScreen extends Screen {
     private static final Component TITLE = Component.translatable("chesttracker.title");
     private static final int TITLE_LEFT = 8;

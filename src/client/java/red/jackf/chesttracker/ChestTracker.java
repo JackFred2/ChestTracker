@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.api.gui.GetMemory;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.ChestTrackerScreen;
+import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;

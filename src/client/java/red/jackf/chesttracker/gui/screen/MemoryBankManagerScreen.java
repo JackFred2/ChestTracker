@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui;
+package red.jackf.chesttracker.gui.screen;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;

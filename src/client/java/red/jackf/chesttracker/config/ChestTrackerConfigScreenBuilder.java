@@ -16,7 +16,7 @@ import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
-import red.jackf.chesttracker.gui.MemoryBankManagerScreen;
+import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;

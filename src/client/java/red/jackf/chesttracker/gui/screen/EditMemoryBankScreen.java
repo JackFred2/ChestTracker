@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui;
+package red.jackf.chesttracker.gui.screen;
 
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
