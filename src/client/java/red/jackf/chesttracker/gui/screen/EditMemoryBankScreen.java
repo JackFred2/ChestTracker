@@ -120,8 +120,7 @@ public class EditMemoryBankScreen extends Screen {
             this.addRenderableOnly(new TextWidget(this.left + menuWidth - BUTTON_MARGIN - CLOSE_BUTTON_SIZE - BUTTON_MARGIN - width,
                     top + MARGIN,
                     label,
-                    TextColours.getLabelColour(),
-                    false));
+                    TextColours.getLabelColour()));
         }
 
         // ID
@@ -129,21 +128,20 @@ public class EditMemoryBankScreen extends Screen {
         this.addRenderableOnly(new TextWidget(this.left + MARGIN,
                 this.top + ID_TOP,
                 idLabel,
-                TextColours.getLabelColour(),
-                false));
+                TextColours.getLabelColour()));
+        var bankIdText = Component.literal(memoryBankId);
+        if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
         this.addRenderableOnly(new TextWidget(this.left + MARGIN + font.width(idLabel) + 4,
                 this.top + ID_TOP,
-                Component.literal(memoryBankId),
-                TextColours.getLabelColour(),
-                ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds));
+                bankIdText,
+                TextColours.getLabelColour()));
 
         // Name
         var nameLabel = Component.translatable("mco.backup.entry.name");
         this.addRenderableOnly(new TextWidget(this.left + MARGIN,
                 this.top + NAME_TOP,
                 nameLabel,
-                TextColours.getLabelColour(),
-                false));
+                TextColours.getLabelColour()));
         this.nameEditBox = this.addRenderableWidget(new CustomEditBox(font,
                 this.left + MARGIN + font.width(nameLabel) + 4,
                 this.top + NAME_TOP - 2,
