@@ -3,7 +3,6 @@ package red.jackf.chesttracker.memory;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.SharedConstants;
 import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
@@ -46,10 +45,6 @@ public class Metadata {
 
     public void setName(@Nullable String name) {
         this.name = name;
-    }
-
-    public Instant getLastModified() {
-        return lastModified;
     }
 
     public void updateModified() {

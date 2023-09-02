@@ -30,7 +30,6 @@ import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
-import java.time.Instant;
 import java.util.HashMap;
 
 import static net.minecraft.network.chat.Component.translatable;
