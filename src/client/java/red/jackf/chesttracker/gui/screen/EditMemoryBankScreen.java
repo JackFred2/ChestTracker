@@ -7,10 +7,9 @@ import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -30,7 +29,9 @@ import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -162,47 +163,62 @@ public class EditMemoryBankScreen extends Screen {
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : "");
 
         // bottom buttons
-        int saveLoadButtonsHeight = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
-        int fullWidth = this.menuWidth - 2 * MARGIN;
-        int halfWidth = (fullWidth - BUTTON_MARGIN) / 2;
-        int halfXPos = left + halfWidth + MARGIN + BUTTON_MARGIN;
+        List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
+
+        //var markDefaultButton = this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.editMemoryBank.setAsDefault"), this::markDefault).build());
 
         // delete everything
         if (StorageUtil.getStorage().getAllIds().contains(memoryBankId)) {
-            saveLoadButtonsHeight -= (BUTTON_HEIGHT + BUTTON_MARGIN);
-            this.addRenderableWidget(new HoldToConfirmButton(this.left + MARGIN,
-                    this.top + this.menuHeight - (MARGIN + BUTTON_HEIGHT),
-                    halfWidth,
-                    BUTTON_HEIGHT,
+            List<RenderableThingGetter<?>> deleteButtons = new ArrayList<>(2);
+
+            deleteButtons.add((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
                     Component.translatable("selectServer.deleteButton"),
                     Constants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
                     this::delete));
 
-            this.addRenderableWidget(Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
-                    .bounds(halfXPos, this.top + this.menuHeight - (MARGIN + BUTTON_HEIGHT), halfWidth, BUTTON_HEIGHT)
-                    .build());
+            deleteButtons.add(((x, y, width, height) -> Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
+                    .bounds(x, y, width, height)
+                    .build()));
+
+            bottomButtons.add(deleteButtons);
         }
 
-        int saveLoadButtonWidth = fullWidth;
-
-        // load
+        List<RenderableThingGetter<?>> saveCreateLoadRow = new ArrayList<>();
+        bottomButtons.add(saveCreateLoadRow);
         if (inGame && !isCurrentIdLoaded()) {
-            saveLoadButtonWidth = halfWidth;
-            this.addRenderableWidget(Button.builder(Component.translatable(isCreatingNewBank ? "mco.create.world" : "structure_block.mode.load"), this::load)
-                    .bounds(halfXPos,
-                            saveLoadButtonsHeight,
-                            saveLoadButtonWidth,
-                            BUTTON_HEIGHT)
+            // [create and] load
+            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(Component.translatable(isCreatingNewBank ? "chesttracker.gui.editMemoryBank.createAndLoad" : "structure_block.mode.load"), this::loadOrCreate)
+                    .bounds(x, y, width, height)
                     .build());
         }
 
         // save
-        this.addRenderableWidget(Button.builder(Component.translatable("selectWorld.edit.save"), this::save)
-                .bounds(left + MARGIN,
-                        saveLoadButtonsHeight,
-                        saveLoadButtonWidth,
-                        BUTTON_HEIGHT)
-                .build());
+        if (!isCreatingNewBank)
+            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(Component.translatable("selectWorld.edit.save"), this::save)
+                    .bounds(x, y, width, height)
+                    .build());
+
+        addBottomButtons(bottomButtons);
+    }
+
+    private void addBottomButtons(List<List<RenderableThingGetter<?>>> buttons) {
+        final int rowWidth = this.menuWidth - 2 * MARGIN;
+        final int startX = this.left + MARGIN;
+        final int startY = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
+        final int yOffset = BUTTON_HEIGHT + BUTTON_MARGIN;
+
+        // bottom upwards
+        for (int i = 0; i < buttons.size(); i++) {
+            var row = buttons.get(i);
+            int buttonWidth = (rowWidth - (BUTTON_MARGIN * (row.size() - 1))) / row.size();
+            for (int buttonIndex = 0; buttonIndex < row.size(); buttonIndex++) {
+                this.addRenderableWidget(row.get(buttonIndex).get(startX + buttonIndex * (buttonWidth + BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
+            }
+        }
+    }
+
+    private void markDefault(Button button) {
+
     }
 
     // we use YACL here because I'm lazy
@@ -242,10 +258,8 @@ public class EditMemoryBankScreen extends Screen {
 
     }
 
-    private void load(Button button) {
-        if (!isCurrentIdLoaded()) {
-            MemoryBank.loadOrCreate(memoryBankId, metadata);
-        }
+    private void loadOrCreate(Button button) {
+        MemoryBank.loadOrCreate(memoryBankId, metadata);
         afterBankLoaded.run();
     }
 
@@ -288,5 +302,10 @@ public class EditMemoryBankScreen extends Screen {
     @Override
     public void onClose() {
         Minecraft.getInstance().setScreen(parent);
+    }
+
+    @FunctionalInterface
+    private interface RenderableThingGetter<T extends GuiEventListener & Renderable & NarratableEntry> {
+        T get(int x, int y, int width, int height);
     }
 }
