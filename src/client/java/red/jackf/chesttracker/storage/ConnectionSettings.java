@@ -12,11 +12,18 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A map of {@link LoadContext} ids to memory bank ids to various connection-specific settings, such as whether to
- * auto-load memory banks or the specific override.
+ * A map of {@link LoadContext} ids to memory bank ids to various connection-specific settings; currently this allows a
+ * user to override which file gets loaded.
  */
-public record ConnectionSettings(boolean autoLoadMemories, Optional<String> memoryBankIdOverride) {
-    private static final Path PATH = Constants.STORAGE_DIR.resolve("default_ids.dat");
+public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
+    public ConnectionSettings setOverride(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<String> memoryBankIdOverride) {
+        return new ConnectionSettings(memoryBankIdOverride);
+    }
+
+    ///////////////
+    // INTERNALS //
+    ///////////////
+    private static final Path PATH = Constants.STORAGE_DIR.resolve("connection_settings.dat");
 
     private static Map<String, ConnectionSettings> settings = new HashMap<>();
 
@@ -30,7 +37,7 @@ public record ConnectionSettings(boolean autoLoadMemories, Optional<String> memo
 
     public static ConnectionSettings getOrCreate(String connectionId) {
         if (!settings.containsKey(connectionId)) {
-            settings.put(connectionId, new ConnectionSettings(true, Optional.empty()));
+            settings.put(connectionId, new ConnectionSettings(Optional.empty()));
             save();
         }
         return settings.get(connectionId);
@@ -47,7 +54,6 @@ public record ConnectionSettings(boolean autoLoadMemories, Optional<String> memo
     }
 
     private static final Codec<ConnectionSettings> CONNECTION_SETTINGS_CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.BOOL.fieldOf("auto_load_memories").forGetter(ConnectionSettings::autoLoadMemories),
             Codec.STRING.optionalFieldOf("memory_bank_id_override").forGetter(ConnectionSettings::memoryBankIdOverride)
     ).apply(i, ConnectionSettings::new));
     private static final Codec<Map<String, ConnectionSettings>> FILE_CODEC = ModCodecs.makeMutableMap(Codec.unboundedMap(Codec.STRING, CONNECTION_SETTINGS_CODEC));

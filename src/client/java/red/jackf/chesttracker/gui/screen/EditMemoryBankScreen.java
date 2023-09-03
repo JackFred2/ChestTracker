@@ -247,8 +247,8 @@ public class EditMemoryBankScreen extends Screen {
     private void markDefault(Button button) {
         var ctx = LoadContext.get(Minecraft.getInstance());
         if (ctx != null) {
-            var old = ConnectionSettings.getOrCreate(ctx.id());
-            ConnectionSettings.put(ctx.id(), new ConnectionSettings(old.autoLoadMemories(), memoryBankId.equals(ctx.id()) ? Optional.empty() : Optional.of(memoryBankId)));
+            ConnectionSettings.put(ctx.id(), ConnectionSettings.getOrCreate(ctx.id())
+                    .setOverride(memoryBankId.equals(ctx.id()) ? Optional.empty() : Optional.of(memoryBankId)));
             button.active = false;
         }
     }

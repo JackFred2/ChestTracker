@@ -61,10 +61,6 @@ public class StorageUtil {
             MemoryBank.unload();
         } else {
             var settings = ConnectionSettings.getOrCreate(loadContext.id());
-            if (!settings.autoLoadMemories()) {
-                MemoryBank.unload();
-                return;
-            }
             var id = settings.memoryBankIdOverride().orElse(loadContext.id());
             ChestTracker.LOGGER.debug("Loading {} using {}", id, instance.getClass().getSimpleName());
             MemoryBank.loadOrCreate(id, Metadata.from(loadContext.name()));
