@@ -2,7 +2,6 @@ package red.jackf.chesttracker.storage;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -52,16 +51,16 @@ public class StorageUtil {
     /**
      * Automatically get and load a default memory based on the current context and connection-specific settings
      */
-    public static void load(Minecraft mc) {
+    public static void load() {
         // if (!ChestTrackerConfig.INSTANCE.getConfig().memory.autoLoadMemories) return;
-        var loadContext = LoadContext.get(mc);
+        var loadContext = LoadContext.get();
 
         // not in-game; don't load
         if (loadContext == null) {
             MemoryBank.unload();
         } else {
-            var settings = ConnectionSettings.getOrCreate(loadContext.id());
-            var id = settings.memoryBankIdOverride().orElse(loadContext.id());
+            var settings = ConnectionSettings.getOrCreate(loadContext.connectionId());
+            var id = settings.memoryBankIdOverride().orElse(loadContext.connectionId());
             ChestTracker.LOGGER.debug("Loading {} using {}", id, instance.getClass().getSimpleName());
             MemoryBank.loadOrCreate(id, Metadata.from(loadContext.name()));
         }

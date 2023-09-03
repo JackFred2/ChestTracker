@@ -10,10 +10,10 @@ import red.jackf.chesttracker.util.StringUtil;
 
 /**
  * Reusable data for a game 'connection' - this connection being a world, LAN server, multiplayer server or realm.
- * @param id
+ * @param connectionId
  * @param name
  */
-public record LoadContext(String id, String name) {
+public record LoadContext(String connectionId, String name) {
     private static String lastRealmName = "Unknown Realm";
     private static long lastRealmId = -1L;
 
@@ -21,7 +21,8 @@ public record LoadContext(String id, String name) {
      * Returns a relevant ID and user facing name from the current Minecraft instance, or null if not applicable.
      */
     @Nullable
-    public static LoadContext get(Minecraft mc) {
+    public static LoadContext get() {
+        var mc = Minecraft.getInstance();
         var connection = mc.getConnection();
         if (connection != null && connection.getConnection().isConnected()) {
             var currentServer = mc.getCurrentServer();
@@ -33,7 +34,7 @@ public record LoadContext(String id, String name) {
                         I18n.get("menu.singleplayer") + ": " + mc.getSingleplayerServer().getWorldData().getLevelName()
                 );
             } else if (mc.isConnectedToRealms()) {
-                // realms, can't use username as ID in case of changes so just use unique(?) id
+                // realms, can't use username as ID in case of changes so just use unique(?) connectionId
                 return new LoadContext(
                         "realms/" + StringUtil.sanitizeForPath(StringUtils.leftPad(Long.toHexString(lastRealmId), 16)),
                         I18n.get("menu.online") + ": " + lastRealmName

@@ -81,6 +81,10 @@ public class EditMemoryBankScreen extends Screen {
         return "user/" + StringUtil.sanitizeForPath(id);
     }
 
+    private boolean isCurrentIdLoaded() {
+        return MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId);
+    }
+
     private String getNextIdDefault() {
         var keys = StorageUtil.getStorage().getAllIds();
         int index = 1;
@@ -203,12 +207,12 @@ public class EditMemoryBankScreen extends Screen {
 
             // mark default if ingame
             if (inGame) {
-                var ctx = LoadContext.get(Minecraft.getInstance());
-                var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.id()) : null;
+                var ctx = LoadContext.get();
+                var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.connectionId()) : null;
 
                 if (connectionSettings != null)
                     saveCreateLoadRow.add((x, y, width, height) -> {
-                        if (connectionSettings.memoryBankIdOverride().orElse(ctx.id()).equals(memoryBankId)) {
+                        if (connectionSettings.memoryBankIdOverride().orElse(ctx.connectionId()).equals(memoryBankId)) {
                             // disable if already the default for the current connection
                             var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {})
                                     .bounds(x, y, width, height)
@@ -223,6 +227,13 @@ public class EditMemoryBankScreen extends Screen {
                         }
                     });
             }
+        } else {
+            // add a button to create a bank for the default ID, if not existing
+            var ctx = LoadContext.get();
+            if (ctx != null && !StorageUtil.getStorage().getAllIds().contains(ctx.connectionId()))
+                bottomButtons.add(List.of((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.createDefault"), ignored -> createDefault(ctx))
+                        .bounds(x, y, width, height)
+                        .build()));
         }
 
         addBottomButtons(bottomButtons);
@@ -245,10 +256,10 @@ public class EditMemoryBankScreen extends Screen {
     }
 
     private void markDefault(Button button) {
-        var ctx = LoadContext.get(Minecraft.getInstance());
+        var ctx = LoadContext.get();
         if (ctx != null) {
-            ConnectionSettings.put(ctx.id(), ConnectionSettings.getOrCreate(ctx.id())
-                    .setOverride(memoryBankId.equals(ctx.id()) ? Optional.empty() : Optional.of(memoryBankId)));
+            ConnectionSettings.put(ctx.connectionId(), ConnectionSettings.getOrCreate(ctx.connectionId())
+                    .setOverride(memoryBankId.equals(ctx.connectionId()) ? Optional.empty() : Optional.of(memoryBankId)));
             button.active = false;
         }
     }
@@ -290,21 +301,26 @@ public class EditMemoryBankScreen extends Screen {
 
     }
 
+    // Create and load a memory bank using the current load context, then run the load callback.
     private void loadOrCreate(Button button) {
         MemoryBank.loadOrCreate(memoryBankId, metadata);
         afterBankLoaded.run();
     }
 
-    private boolean isCurrentIdLoaded() {
-        return MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId);
+    // Create and load a memory bank using the current load context, then run the load callback.
+    private void createDefault(LoadContext ctx) {
+        MemoryBank.loadOrCreate(ctx.connectionId(), Metadata.from(ctx.name()));
+        afterBankLoaded.run();
     }
 
+    // Delete the selected memory bank, and close the GUI.
     private void delete(HoldToConfirmButton button) {
         if (isCurrentIdLoaded()) MemoryBank.unload();
         StorageUtil.getStorage().delete(memoryBankId);
         this.onClose();
     }
 
+    // Save the selected memory bank, and close the GUI.
     private void save(Button button) {
         if (isCurrentIdLoaded()) {
             //noinspection DataFlowIssue

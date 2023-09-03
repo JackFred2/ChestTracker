@@ -9,6 +9,7 @@
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",
   "chesttracker.gui.memoryManager.newMemoryBank": "Create new Memory Bank",
   "chesttracker.gui.editMemoryBank.create": "Creating new Memory Bank",
+  "chesttracker.gui.editMemoryBank.createDefault": "Create default for this connection",
   "chesttracker.gui.editMemoryBank.createAndLoad": "Create and Load",
   "chesttracker.gui.editMemoryBank.edit": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.id": "ID:",

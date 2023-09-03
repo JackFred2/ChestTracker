@@ -76,10 +76,10 @@ public interface Storage {
         }
 
         public void load() {
-            // var id = MemoryBank.INSTANCE != null ? MemoryBank.INSTANCE.getId() : null;
+            // var connectionId = MemoryBank.INSTANCE != null ? MemoryBank.INSTANCE.getId() : null;
             MemoryBank.unload();
             StorageUtil.setStorage(constructor.get());
-            // if (id != null) MemoryBank.load(id);
+            // if (connectionId != null) MemoryBank.load(connectionId);
         }
     }
 }

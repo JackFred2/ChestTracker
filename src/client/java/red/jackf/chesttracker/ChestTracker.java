@@ -56,7 +56,7 @@ public class ChestTracker implements ClientModInitializer {
         LOGGER.debug("Loading ChestTracker");
 
         // load and unload memory storage
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> StorageUtil.load(client)));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(StorageUtil::load));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(MemoryBank::unload));
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
