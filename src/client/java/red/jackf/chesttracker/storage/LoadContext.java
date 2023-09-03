@@ -8,6 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.mixins.MinecraftServerAccessor;
 import red.jackf.chesttracker.util.StringUtil;
 
+/**
+ * Reusable data for a game 'connection' - this connection being a world, LAN server, multiplayer server or realm.
+ * @param id
+ * @param name
+ */
 public record LoadContext(String id, String name) {
     private static String lastRealmName = "Unknown Realm";
     private static long lastRealmId = -1L;

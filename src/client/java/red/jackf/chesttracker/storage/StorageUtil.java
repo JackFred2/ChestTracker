@@ -60,7 +60,7 @@ public class StorageUtil {
         if (loadContext == null) {
             MemoryBank.unload();
         } else {
-            var settings = ConnectionSettings.get(loadContext.id());
+            var settings = ConnectionSettings.getOrCreate(loadContext.id());
             if (!settings.autoLoadMemories()) {
                 MemoryBank.unload();
                 return;

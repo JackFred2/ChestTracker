@@ -2,6 +2,7 @@ package red.jackf.chesttracker.storage;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.ModCodecs;
 
@@ -27,12 +28,22 @@ public record ConnectionSettings(boolean autoLoadMemories, Optional<String> memo
         StorageUtil.saveToNbt(settings, FILE_CODEC, PATH);
     }
 
-    public static ConnectionSettings get(String id) {
-        if (!settings.containsKey(id)) {
-            settings.put(id, new ConnectionSettings(true, Optional.empty()));
+    public static ConnectionSettings getOrCreate(String connectionId) {
+        if (!settings.containsKey(connectionId)) {
+            settings.put(connectionId, new ConnectionSettings(true, Optional.empty()));
             save();
         }
-        return settings.get(id);
+        return settings.get(connectionId);
+    }
+
+    @Nullable
+    public static ConnectionSettings get(String connectionId) {
+        return settings.get(connectionId);
+    }
+
+    public static void put(String id, ConnectionSettings connectionSettings) {
+        settings.put(id, connectionSettings);
+        save();
     }
 
     private static final Codec<ConnectionSettings> CONNECTION_SETTINGS_CODEC = RecordCodecBuilder.create(i -> i.group(

@@ -25,6 +25,8 @@ import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.storage.ConnectionSettings;
+import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
@@ -32,6 +34,7 @@ import red.jackf.chesttracker.util.StringUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -60,7 +63,7 @@ public class EditMemoryBankScreen extends Screen {
     private final boolean isCreatingNewBank;
 
     protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, @Nullable String memoryBankId) {
-        super(Component.translatable("chesttracker.gui.editMemoryBank." + (memoryBankId == null ? "create" : "edit")));
+        super(translatable("chesttracker.gui.editMemoryBank." + (memoryBankId == null ? "create" : "edit")));
         this.parent = parent;
         this.afterBankLoaded = afterBankLoaded;
         this.isCreatingNewBank = memoryBankId == null;
@@ -112,7 +115,7 @@ public class EditMemoryBankScreen extends Screen {
                 ChestTracker.guiTex("widgets/return_button"),
                 CLOSE_BUTTON_SIZE,
                 CLOSE_BUTTON_SIZE * 3,
-                b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
+                b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         // details label
         if (!isCreatingNewBank) {
@@ -125,7 +128,7 @@ public class EditMemoryBankScreen extends Screen {
         }
 
         // ID
-        var idLabel = Component.translatable("chesttracker.gui.editMemoryBank.id");
+        var idLabel = translatable("chesttracker.gui.editMemoryBank.id");
         this.addRenderableOnly(new TextWidget(this.left + MARGIN,
                 this.top + ID_TOP,
                 idLabel,
@@ -138,7 +141,7 @@ public class EditMemoryBankScreen extends Screen {
                 TextColours.getLabelColour()));
 
         // Name
-        var nameLabel = Component.translatable("mco.backup.entry.name");
+        var nameLabel = translatable("mco.backup.entry.name");
         this.addRenderableOnly(new TextWidget(this.left + MARGIN,
                 this.top + NAME_TOP,
                 nameLabel,
@@ -172,11 +175,11 @@ public class EditMemoryBankScreen extends Screen {
             List<RenderableThingGetter<?>> deleteButtons = new ArrayList<>(2);
 
             deleteButtons.add((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
-                    Component.translatable("selectServer.deleteButton"),
+                    translatable("selectServer.deleteButton"),
                     Constants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
                     this::delete));
 
-            deleteButtons.add(((x, y, width, height) -> Button.builder(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
+            deleteButtons.add(((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
                     .bounds(x, y, width, height)
                     .build()));
 
@@ -187,16 +190,40 @@ public class EditMemoryBankScreen extends Screen {
         bottomButtons.add(saveCreateLoadRow);
         if (inGame && !isCurrentIdLoaded()) {
             // [create and] load
-            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(Component.translatable(isCreatingNewBank ? "chesttracker.gui.editMemoryBank.createAndLoad" : "structure_block.mode.load"), this::loadOrCreate)
+            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable(isCreatingNewBank ? "chesttracker.gui.editMemoryBank.createAndLoad" : "structure_block.mode.load"), this::loadOrCreate)
                     .bounds(x, y, width, height)
                     .build());
         }
 
-        // save
-        if (!isCreatingNewBank)
-            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(Component.translatable("selectWorld.edit.save"), this::save)
+        if (!isCreatingNewBank) {
+            // save
+            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable("selectWorld.edit.save"), this::save)
                     .bounds(x, y, width, height)
                     .build());
+
+            // mark default if ingame
+            if (inGame) {
+                var ctx = LoadContext.get(Minecraft.getInstance());
+                var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.id()) : null;
+
+                if (connectionSettings != null)
+                    saveCreateLoadRow.add((x, y, width, height) -> {
+                        if (connectionSettings.memoryBankIdOverride().orElse(ctx.id()).equals(memoryBankId)) {
+                            // disable if already the default for the current connection
+                            var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {})
+                                    .bounds(x, y, width, height)
+                                    .build();
+                            defaultButton.active = false;
+                            return defaultButton;
+                        } else {
+                            return Button.builder(translatable("chesttracker.gui.editMemoryBank.markDefault"), this::markDefault)
+                                    .tooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.markDefault.tooltip")))
+                                    .bounds(x, y, width, height)
+                                    .build();
+                        }
+                    });
+            }
+        }
 
         addBottomButtons(bottomButtons);
     }
@@ -218,7 +245,12 @@ public class EditMemoryBankScreen extends Screen {
     }
 
     private void markDefault(Button button) {
-
+        var ctx = LoadContext.get(Minecraft.getInstance());
+        if (ctx != null) {
+            var old = ConnectionSettings.getOrCreate(ctx.id());
+            ConnectionSettings.put(ctx.id(), new ConnectionSettings(old.autoLoadMemories(), memoryBankId.equals(ctx.id()) ? Optional.empty() : Optional.of(memoryBankId)));
+            button.active = false;
+        }
     }
 
     // we use YACL here because I'm lazy
@@ -227,14 +259,14 @@ public class EditMemoryBankScreen extends Screen {
         if (bank == null) return;
 
         var category = ConfigCategory.createBuilder()
-                .name(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"));
+                .name(translatable("chesttracker.gui.editMemoryBank.manageKeys"));
 
         for (ResourceLocation key : bank.getKeys()) {
             category.option(ButtonOption.createBuilder()
                     .name(Component.literal(key.toString()))
-                    .text(Component.translatable("selectServer.delete"))
+                    .text(translatable("selectServer.delete"))
                     .description(OptionDescription.of(
-                            Component.translatable("chesttracker.gui.editMemoryBank.deleteKey.description", key),
+                            translatable("chesttracker.gui.editMemoryBank.deleteKey.description", key),
                             CommonComponents.NEW_LINE,
                             translatable("chesttracker.config.irreversable").withStyle(ChatFormatting.RED)
                     )).action((screen, option) -> {
@@ -251,7 +283,7 @@ public class EditMemoryBankScreen extends Screen {
         }
 
         Minecraft.getInstance().setScreen(YetAnotherConfigLib.createBuilder()
-                .title(Component.translatable("chesttracker.gui.editMemoryBank.manageKeys"))
+                .title(translatable("chesttracker.gui.editMemoryBank.manageKeys"))
                 .category(category.build())
                 .build()
                 .generateScreen(this));
