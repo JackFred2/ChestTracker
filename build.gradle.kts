@@ -15,8 +15,8 @@ plugins {
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
 }
 
-group = properties["maven_group"] !!
-version = properties["mod_version"] ?: "dev"
+group = properties["maven_group"]!!
+version = "${properties["mod_version"]!!}+${properties["minecraft_version"]!!}"
 
 val modReleaseType = properties["type"] ?: "release"
 
@@ -25,12 +25,6 @@ base {
 }
 
 repositories {
-	mavenLocal {
-		content {
-			includeGroupByRegex("red.jackf.*")
-		}
-	}
-
 	// Parchment Mappings
 	maven {
 		name = "ParchmentMC"
@@ -86,29 +80,12 @@ repositories {
 		}
 	}
 
-	// Where Is It
+	// Where Is It, JackFredLib
 	maven {
-		name = "GHPR Where Is It"
-		url = URI("https://maven.pkg.github.com/JackFred2/WhereIsIt")
+		name = "JackFredMaven"
+		url = URI("https://maven.jackf.red/releases/")
 		content {
-			includeGroup("red.jackf")
-		}
-		credentials {
-			username = properties["gpr.user"]?.toString() ?: System.getenv("GITHUB_ACTOR")
-			password = properties["gpr.key"]?.toString() ?: System.getenv("GITHUB_TOKEN")
-		}
-	}
-
-	// JackFredLib
-	maven {
-		name = "GHPR JackFredLib"
-		url = URI("https://maven.pkg.github.com/JackFred2/JackFredLib")
-		content {
-			includeGroup("red.jackf.jackfredlib")
-		}
-		credentials {
-			username = properties["gpr.user"]?.toString() ?: System.getenv("GITHUB_ACTOR")
-			password = properties["gpr.key"]?.toString() ?: System.getenv("GITHUB_TOKEN")
+			includeGroupByRegex("red.jackf.*")
 		}
 	}
 }
@@ -299,6 +276,17 @@ publishing {
 	}
 
 	repositories {
+		maven {
+			name = "JackFredMaven"
+			url = URI("https://maven.jackf.red/releases/")
+			content {
+				includeGroupByRegex("red.jackf.*")
+			}
+			credentials {
+				username = properties["jfmaven.user"]?.toString() ?: System.getenv("JACKFRED_MAVEN_USER")
+				password = properties["jfmaven.key"]?.toString() ?: System.getenv("JACKFRED_MAVEN_PASS")
+			}
+		}
 	}
 }
 

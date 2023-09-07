@@ -2,6 +2,8 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
 
   "chesttracker.title": "Chest Tracker",
+  "chesttracker.gui.button.on": "On",
+  "chesttracker.gui.button.off": "Off",
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
   "chesttracker.gui.memoryManager.title": "Manage Memory Banks",
@@ -56,7 +58,7 @@
   "chesttracker.config.storage.storageBackend": "Storage Backend",
   "chesttracker.config.storage.storageBackend.description": "Defines how Memory Banks are stored between worlds/sessions.",
   "chesttracker.config.storage.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory. Readable, but takes up more disk space.",
-  "chesttracker.config.storage.storageBackend.description.nbt": "Stores all Memory Banks as NBT files in your game's 'chesttracker' directory. More compact, but not readable without an external viewer.",
+  "chesttracker.config.storage.storageBackend.description.nbt": "Stores all Memory Banks as NBT files in your game's 'chesttracker' directory. More compact, but not readable without an external viewer. Recommended option.",
   "chesttracker.config.storage.storageBackend.description.memory": "Stores Memory Banks in game memory.",
   "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
 
