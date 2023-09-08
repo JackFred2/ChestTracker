@@ -24,16 +24,17 @@ import java.util.stream.Collectors;
  * @param <T> Type to be selected from
  */
 public class SelectorScreen<T> extends Screen {
-    private static final int TOP_BUFFER = 40;
-    private static final int HORIZONTAL_PADDING = 20;
-    private static final int TOP_PADDING = 10;
-    private static final int BOTTOM_PADDING = 20;
+    private static final int PADDING = 8;
+    private static final int CLOSE_BUTTON_SIZE = 20;
+    private static final int SEARCH_TOP = 20;
+    private static final int WIDTH = 320;
+    private static final int HEIGHT = 240;
+    private static final int COLUMNS = 13;
+    private static final int ROWS = 8;
     private final Screen parent;
     private final Consumer<@Nullable T> consumer;
     private final Map<T, ItemStack> options;
     private Map<T, ItemStack> filteredOptions;
-    private int menuWidth;
-    private int menuHeight;
     private EditBox search;
     private int left = 0;
     private int top = 0;
@@ -50,16 +51,13 @@ public class SelectorScreen<T> extends Screen {
 
     @Override
     protected void init() {
-        this.menuWidth = this.width - 2 * HORIZONTAL_PADDING;
-        this.menuHeight = this.height - TOP_PADDING - BOTTOM_PADDING;
-
-        this.left = (this.width - menuWidth) / 2;
-        this.top = (this.height - menuHeight) / 2;
+        this.left = (this.width - WIDTH) / 2;
+        this.top = (this.height - HEIGHT) / 2;
 
         this.search = this.addRenderableWidget(new EditBox(Minecraft.getInstance().font,
-                this.left,
-                this.top + 20,
-                menuWidth,
+                this.left + PADDING,
+                this.top + SEARCH_TOP,
+                WIDTH - 3 * PADDING - CLOSE_BUTTON_SIZE,
                 16,
                 this.search,
                 CommonComponents.EMPTY));
@@ -75,25 +73,26 @@ public class SelectorScreen<T> extends Screen {
 
         this.addRenderableWidget(Button.builder(Component.literal("❌"), b -> this.onClose())
                 .tooltip(Tooltip.create(CommonComponents.GUI_CANCEL))
-                .size(20, 20)
-                .pos(this.left + this.menuWidth - 20, 8)
+                .size(CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE)
+                .pos(this.left + WIDTH - CLOSE_BUTTON_SIZE - PADDING, this.top + SEARCH_TOP - 2)
                 .build());
 
         setupItems();
     }
 
     private void setupItems() {
-        final int spacing = 24;
+        final int spacing = 4;
+        final int xOffset = 5;
 
         var iterator = this.filteredOptions.entrySet().iterator();
 
-        for (int y = 0; y < menuHeight - TOP_BUFFER; y += spacing) {
-            for (int x = 0; x < menuWidth; x += spacing) {
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
                 if (!iterator.hasNext()) return;
                 var option = iterator.next();
                 this.addRenderableWidget(new ItemButton(option.getValue(),
-                        this.left + x,
-                        this.top + TOP_BUFFER + y,
+                        this.left + xOffset + column * (ItemButton.SIZE + spacing),
+                        this.top + 40 + row * (ItemButton.SIZE + spacing),
                         option.getValue().getHoverName(), b -> {
                     SelectorScreen.this.consumer.accept(option.getKey());
                     this.onClose();
@@ -106,7 +105,7 @@ public class SelectorScreen<T> extends Screen {
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(graphics); // background darken
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(this.font, this.title, this.left, this.top, 0xFF_FFFFFF, true); // title
+        graphics.drawString(this.font, this.title, this.left + PADDING, this.top + PADDING, 0xFF_FFFFFF, true); // title
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 
 public class ItemButton extends Button {
-    private static final int SIZE = 20;
+    public static final int SIZE = 20;
     private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/memory_key_background");
     private final ItemStack stack;
     private final Component tooltip;
