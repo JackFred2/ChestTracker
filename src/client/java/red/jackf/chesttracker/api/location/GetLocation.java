@@ -3,10 +3,10 @@ package red.jackf.chesttracker.api.location;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.jackfredlib.api.ResultHolder;
 
@@ -54,7 +54,7 @@ public class GetLocation {
     }, EventPhases.PRIORITY_PHASE, Event.DEFAULT_PHASE, EventPhases.FALLBACK_PHASE);
 
     public interface FromBlock {
-        ResultHolder<Location> fromBlock(Player player, ClientLevel level, BlockHitResult hit);
+        ResultHolder<Location> fromBlock(Player player, ClientLevel level, BlockPos pos);
     }
 
     public interface FromItem {
@@ -62,6 +62,6 @@ public class GetLocation {
     }
 
     public interface FromEntity {
-        ResultHolder<Location> fromEntity(Player player, ClientLevel level, InteractionHand hand, EntityHitResult hit);
+        ResultHolder<Location> fromEntity(Player player, ClientLevel level, InteractionHand hand, Entity entity);
     }
 }

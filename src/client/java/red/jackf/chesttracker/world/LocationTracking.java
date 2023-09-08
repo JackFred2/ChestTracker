@@ -33,7 +33,7 @@ public class LocationTracking {
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
             if (hand == InteractionHand.MAIN_HAND && level instanceof ClientLevel clientLevel) {
                 setLocation(GetLocation.FROM_BLOCK.invoker()
-                        .fromBlock(player, clientLevel, hitResult)
+                        .fromBlock(player, clientLevel, hitResult.getBlockPos())
                         .getNullable());
             }
             return InteractionResult.PASS;
@@ -50,8 +50,10 @@ public class LocationTracking {
 
         UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
             if (level instanceof ClientLevel clientLevel) {
+                // never null re: fabric API docs
+                //noinspection DataFlowIssue
                 setLocation(GetLocation.FROM_ENTITY.invoker()
-                        .fromEntity(player, clientLevel, hand, hit)
+                        .fromEntity(player, clientLevel, hand, hit.getEntity())
                         .getNullable());
             }
             return InteractionResult.PASS;
@@ -87,9 +89,9 @@ public class LocationTracking {
     private static void setupDefaults() {
         // only track block entities which can be renamed, which lines up with vanilla storage options
         // get a consistent 'root' inventory; solves double-saving chests
-        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, hit) -> {
-            if (level.getBlockEntity(hit.getBlockPos()) instanceof MenuProvider) {
-                var connected = ConnectedBlocksGrabber.getConnected(level, level.getBlockState(hit.getBlockPos()), hit.getBlockPos().immutable());
+        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, pos) -> {
+            if (level.getBlockEntity(pos) instanceof MenuProvider) {
+                var connected = ConnectedBlocksGrabber.getConnected(level, level.getBlockState(pos), pos.immutable());
                 return ResultHolder.value(new Location(level.dimension().location(), connected.get(0)));
             } else {
                 return ResultHolder.pass();
@@ -97,8 +99,8 @@ public class LocationTracking {
         });
 
         // Ender Chest
-        GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, hit) -> {
-            if (level.getBlockState(hit.getBlockPos()).is(Blocks.ENDER_CHEST)) {
+        GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, pos) -> {
+            if (level.getBlockState(pos).is(Blocks.ENDER_CHEST)) {
                 return ResultHolder.value(new Location(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
             } else {
                 return ResultHolder.pass();
