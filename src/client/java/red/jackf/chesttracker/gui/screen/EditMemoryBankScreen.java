@@ -1,5 +1,7 @@
 package red.jackf.chesttracker.gui.screen;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -22,6 +24,7 @@ import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
+import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
@@ -31,10 +34,7 @@ import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -51,6 +51,8 @@ public class EditMemoryBankScreen extends Screen {
     private static final int ID_TOP = 30;
     private static final int NAME_TOP = 45;
     private static final int SETTINGS_TOP = 60;
+    private static final int SETTINGS_TAB_SELECTOR_WIDTH = 65;
+    private static final int SETTINGS_MAX_COLUMNS = 2;
     private int menuWidth = 0;
     private int menuHeight = 0;
     private int left = 0;
@@ -62,6 +64,9 @@ public class EditMemoryBankScreen extends Screen {
     private final String memoryBankId;
     private final Metadata metadata;
     private final boolean isCreatingNewBank;
+    @Nullable
+    private StringSelectorWidget<SettingsTab> settingsTabSelector;
+    private final Multimap<SettingsTab, AbstractWidget> settingsMap = LinkedListMultimap.create();
 
     protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, @Nullable String memoryBankId) {
         super(translatable("chesttracker.gui.editMemoryBank." + (memoryBankId == null ? "create" : "edit")));
@@ -140,7 +145,8 @@ public class EditMemoryBankScreen extends Screen {
                 TextColours.getLabelColour()));
 
         var bankIdText = Component.literal(memoryBankId);
-        if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
+        if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds)
+            bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
         this.addRenderableOnly(new TextWidget(this.left + MARGIN + font.width(idLabel) + 4,
                 this.top + ID_TOP,
                 bankIdText,
@@ -214,7 +220,8 @@ public class EditMemoryBankScreen extends Screen {
                     saveCreateLoadRow.add((x, y, width, height) -> {
                         if (connectionSettings.memoryBankIdOverride().orElse(ctx.connectionId()).equals(memoryBankId)) {
                             // disable if already the default for the current connection
-                            var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {})
+                            var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {
+                                    })
                                     .bounds(x, y, width, height)
                                     .build();
                             defaultButton.active = false;
@@ -237,7 +244,7 @@ public class EditMemoryBankScreen extends Screen {
         }
 
         // metadata settings
-        List<RenderableThingGetter<?>> integrity = new ArrayList<>();
+        /*List<RenderableThingGetter<?>> integrity = new ArrayList<>();
         integrity.add((x, y, width, height) -> {
             return CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
                     .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"));
@@ -257,23 +264,93 @@ public class EditMemoryBankScreen extends Screen {
                     .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"));
         });
 
-        addColumn(translatable("chesttracker.gui.editMemoryBank.integrity"), integrity, 0);
+        addColumn(translatable("chesttracker.gui.editMemoryBank.integrity"), integrity, 0);*/
 
         addBottomButtons(bottomButtons);
+
+        setupSettings(this.menuHeight - SETTINGS_TOP - 2 - (MARGIN + BUTTON_HEIGHT) * bottomButtons.size());
     }
 
-    private void addColumn(Component title, List<RenderableThingGetter<?>> elements, int columnIndex) {
-        final int maxColumns = 2;
-        final int workingWidth = this.menuWidth - 2 * MARGIN;
-        final int elementWidth = (workingWidth - BUTTON_MARGIN * (maxColumns - 1)) / maxColumns;
-        final int startX = this.left + MARGIN + columnIndex * (elementWidth + BUTTON_MARGIN);
-        final int startY = this.top + SETTINGS_TOP;
+    private void setupSettings(int height) {
+        settingsTabSelector = this.addRenderableWidget(new StringSelectorWidget<>(this.left + MARGIN,
+                this.top + SETTINGS_TOP,
+                SETTINGS_TAB_SELECTOR_WIDTH,
+                height,
+                CommonComponents.EMPTY,
+                this::setSettingsTab));
+        var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
+        selectorOptions.put(SettingsTab.INTEGRITY, Component.translatable("chesttracker.gui.editMemoryBank.integrity"));
+        selectorOptions.put(SettingsTab.EMPTY, Component.literal("Empty"));
 
-        this.addRenderableOnly(new TextWidget(startX, startY, elementWidth, title, TextColours.getLabelColour(), TextWidget.Alignment.CENTER));
-        for (int i = 0; i < elements.size(); i++) {
-            final int y = startY + font.lineHeight + 2 + (i * (BUTTON_HEIGHT + BUTTON_MARGIN));
-            this.addRenderableWidget(elements.get(i).get(startX, y, elementWidth, BUTTON_HEIGHT));
-        }
+        settingsTabSelector.setOptions(selectorOptions);
+        settingsTabSelector.setHighlight(SettingsTab.INTEGRITY);
+
+        addSetting(this.addRenderableWidget(CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
+                .create(getSettingsX(0),
+                        getSettingsY(1),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"),
+                        (cycleButton, newValue) -> metadata.getIntegritySettings().removeOnPlayerBlockBreak = newValue
+                )), SettingsTab.INTEGRITY);
+
+        addSetting(this.addRenderableWidget(CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
+                .create(getSettingsX(1),
+                        getSettingsY(1),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"),
+                        (cycleButton, newValue) -> metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks = newValue
+                )), SettingsTab.INTEGRITY);
+
+        addSetting(this.addRenderableWidget(CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
+                .withValues(Metadata.IntegritySettings.NameHandling.values())
+                .withInitialValue(metadata.getIntegritySettings().nameHandling)
+                .create(getSettingsX(0),
+                        getSettingsY(2),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling"),
+                        (cycleButton, newValue) -> metadata.getIntegritySettings().nameHandling = newValue
+                )), SettingsTab.INTEGRITY);
+
+        setSettingsTab(SettingsTab.INTEGRITY);
+    }
+
+    private void addSetting(AbstractWidget widget, SettingsTab tab) {
+        widget.visible = false;
+        settingsMap.put(tab, widget);
+    }
+
+    private void setSettingsTab(SettingsTab tab) {
+        if (settingsTabSelector != null)
+            settingsTabSelector.setHighlight(tab);
+        for (Map.Entry<SettingsTab, AbstractWidget> entry : settingsMap.entries())
+            entry.getValue().visible = entry.getKey() == tab;
+    }
+
+    private int getSingleSettingsColumnWidth() {
+        final int settingsAreaWidth = this.menuWidth - BUTTON_MARGIN - SETTINGS_TAB_SELECTOR_WIDTH - 2 * MARGIN;
+        //noinspection PointlessArithmeticExpression
+        return (settingsAreaWidth - BUTTON_MARGIN * (SETTINGS_MAX_COLUMNS - 1)) / SETTINGS_MAX_COLUMNS;
+    }
+
+    private int getSettingsX(int column) {
+        final int columnWidth = getSingleSettingsColumnWidth();
+
+        final int baseX = this.left + MARGIN + SETTINGS_TAB_SELECTOR_WIDTH + BUTTON_MARGIN;
+        return baseX + column * (columnWidth + BUTTON_MARGIN);
+    }
+
+    private int getSettingsY(int row) {
+        final int baseY = this.top + SETTINGS_TOP;
+        return baseY + row * (BUTTON_HEIGHT + BUTTON_MARGIN);
+    }
+
+    private int getSettingsWidth(int columnsTaken) {
+        final int columnWidth = getSingleSettingsColumnWidth();
+
+        return columnWidth * columnsTaken + MARGIN * (columnsTaken - 1);
     }
 
     //
@@ -288,7 +365,8 @@ public class EditMemoryBankScreen extends Screen {
             var row = buttons.get(i);
             int buttonWidth = (rowWidth - (BUTTON_MARGIN * (row.size() - 1))) / row.size();
             for (int buttonIndex = 0; buttonIndex < row.size(); buttonIndex++) {
-                this.addRenderableWidget(row.get(buttonIndex).get(startX + buttonIndex * (buttonWidth + BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
+                this.addRenderableWidget(row.get(buttonIndex)
+                        .get(startX + buttonIndex * (buttonWidth + BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
             }
         }
     }
@@ -393,5 +471,10 @@ public class EditMemoryBankScreen extends Screen {
     @FunctionalInterface
     private interface RenderableThingGetter<T extends GuiEventListener & Renderable & NarratableEntry> {
         T get(int x, int y, int width, int height);
+    }
+
+    private enum SettingsTab {
+        INTEGRITY,
+        EMPTY
     }
 }

@@ -22,7 +22,7 @@
   "chesttracker.gui.editMemoryBank.markDefault.tooltip": "Mark this Memory Bank as the default for the current connection/world.",
   "chesttracker.gui.editMemoryBank.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
 
-  "chesttracker.gui.editMemoryBank.integrity": "Memory Integrity",
+  "chesttracker.gui.editMemoryBank.integrity": "Integrity",
   "chesttracker.gui.editMemoryBank.integrity.blockBreak": "Block Break",
   "chesttracker.gui.editMemoryBank.integrity.nameHandling": "Names",
   "chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant": "Irrelevant",
