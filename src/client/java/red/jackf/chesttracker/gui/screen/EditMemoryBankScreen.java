@@ -42,14 +42,15 @@ import static net.minecraft.network.chat.Component.translatable;
  * Shows a UI for managing an individual memory bank. Possibly the currently loaded bank.
  */
 public class EditMemoryBankScreen extends Screen {
-    private static final int WIDTH = 264;
-    private static final int HEIGHT = 192;
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 220;
     private static final int MARGIN = 8;
     private static final int BUTTON_MARGIN = 5;
     private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
     private static final int NAME_TOP = 45;
+    private static final int SETTINGS_TOP = 60;
     private int menuWidth = 0;
     private int menuHeight = 0;
     private int left = 0;
@@ -123,12 +124,12 @@ public class EditMemoryBankScreen extends Screen {
 
         // details label
         if (!isCreatingNewBank) {
-            var label = StorageUtil.getStorage().getDescriptionLabel(memoryBankId);
-            var width = font.width(label);
-            this.addRenderableOnly(new TextWidget(this.left + menuWidth - BUTTON_MARGIN - CLOSE_BUTTON_SIZE - BUTTON_MARGIN - width,
+            this.addRenderableOnly(new TextWidget(this.left + MARGIN,
                     top + MARGIN,
-                    label,
-                    TextColours.getLabelColour()));
+                    this.menuWidth - MARGIN - 2 * BUTTON_MARGIN - CLOSE_BUTTON_SIZE,
+                    StorageUtil.getStorage().getDescriptionLabel(memoryBankId),
+                    TextColours.getLabelColour(),
+                    TextWidget.Alignment.RIGHT));
         }
 
         // ID
@@ -137,6 +138,7 @@ public class EditMemoryBankScreen extends Screen {
                 this.top + ID_TOP,
                 idLabel,
                 TextColours.getLabelColour()));
+
         var bankIdText = Component.literal(memoryBankId);
         if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
         this.addRenderableOnly(new TextWidget(this.left + MARGIN + font.width(idLabel) + 4,
@@ -169,10 +171,8 @@ public class EditMemoryBankScreen extends Screen {
         });
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : "");
 
-        // bottom buttons
+        // bottom buttonelement
         List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
-
-        //var markDefaultButton = this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.editMemoryBank.setAsDefault"), this::markDefault).build());
 
         // delete everything
         if (StorageUtil.getStorage().getAllIds().contains(memoryBankId)) {
@@ -236,9 +236,47 @@ public class EditMemoryBankScreen extends Screen {
                         .build()));
         }
 
+        // metadata settings
+        List<RenderableThingGetter<?>> integrity = new ArrayList<>();
+        integrity.add((x, y, width, height) -> {
+            return CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
+                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"));
+        });
+        integrity.add((x, y, width, height) -> {
+            return CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
+                    .withValues(Metadata.IntegritySettings.NameHandling.values())
+                    .withInitialValue(metadata.getIntegritySettings().nameHandling)
+                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling"));
+        });
+        integrity.add((x, y, width, height) -> {
+            return CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
+                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"));
+        });
+        integrity.add((x, y, width, height) -> {
+            return CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
+                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"));
+        });
+
+        addColumn(translatable("chesttracker.gui.editMemoryBank.integrity"), integrity, 0);
+
         addBottomButtons(bottomButtons);
     }
 
+    private void addColumn(Component title, List<RenderableThingGetter<?>> elements, int columnIndex) {
+        final int maxColumns = 2;
+        final int workingWidth = this.menuWidth - 2 * MARGIN;
+        final int elementWidth = (workingWidth - BUTTON_MARGIN * (maxColumns - 1)) / maxColumns;
+        final int startX = this.left + MARGIN + columnIndex * (elementWidth + BUTTON_MARGIN);
+        final int startY = this.top + SETTINGS_TOP;
+
+        this.addRenderableOnly(new TextWidget(startX, startY, elementWidth, title, TextColours.getLabelColour(), TextWidget.Alignment.CENTER));
+        for (int i = 0; i < elements.size(); i++) {
+            final int y = startY + font.lineHeight + 2 + (i * (BUTTON_HEIGHT + BUTTON_MARGIN));
+            this.addRenderableWidget(elements.get(i).get(startX, y, elementWidth, BUTTON_HEIGHT));
+        }
+    }
+
+    //
     private void addBottomButtons(List<List<RenderableThingGetter<?>>> buttons) {
         final int rowWidth = this.menuWidth - 2 * MARGIN;
         final int startX = this.left + MARGIN;

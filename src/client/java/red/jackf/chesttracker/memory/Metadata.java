@@ -3,6 +3,7 @@ package red.jackf.chesttracker.memory;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
@@ -64,26 +65,42 @@ public class Metadata {
                                 .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
                         Codec.either(ExtraCodecs.POSITIVE_INT, Codec.unit("never")).fieldOf("memoryExpiryTimeSeconds")
                                 .forGetter(settings -> settings.memoryExpiryTimeSeconds == null ? Either.right("never") : Either.left(settings.memoryExpiryTimeSeconds)),
-                        Codec.BOOL.fieldOf("alwaysRememberNamed")
-                                .forGetter(settings -> settings.alwaysRememberNamed)
+                        ModCodecs.ofEnum(NameHandling.class).fieldOf("nameHandling")
+                                .forGetter(settings -> settings.nameHandling)
                 ).apply(instance, IntegritySettings::new));
 
         public boolean removeOnPlayerBlockBreak = true;
         public boolean checkPeriodicallyForMissingBlocks = true;
         public @Nullable Integer memoryExpiryTimeSeconds = 60 * 60 * 12; // 12 IRL hours
-        public boolean alwaysRememberNamed = true;
+        public NameHandling nameHandling = NameHandling.ALWAYS_KEEP;
 
         public IntegritySettings() {}
 
         public IntegritySettings(boolean removeOnPlayerBlockBreak,
                                  boolean checkPeriodicallyForMissingBlocks,
                                  Either<Integer, String> memoryExpiryTimeSeconds,
-                                 boolean alwaysRememberNamed) {
+                                 NameHandling nameHandling) {
             this();
             this.removeOnPlayerBlockBreak = removeOnPlayerBlockBreak;
             this.checkPeriodicallyForMissingBlocks = checkPeriodicallyForMissingBlocks;
             this.memoryExpiryTimeSeconds = memoryExpiryTimeSeconds.map(Integer::intValue, s -> null);
-            this.alwaysRememberNamed = alwaysRememberNamed;
+            this.nameHandling = nameHandling;
+        }
+
+        public enum NameHandling {
+            IRRELEVANT(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant")),
+            ALWAYS_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep")),
+            ONLY_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep"));
+
+            private final Component label;
+
+            NameHandling(Component label) {
+                this.label = label;
+            }
+
+            public Component getLabel() {
+                return label;
+            }
         }
     }
 }

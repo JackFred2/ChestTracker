@@ -49,6 +49,16 @@ public class ModCodecs {
             }, DateTimeFormatter.ISO_INSTANT::format
     );
 
+    public static <E extends Enum<E>> Codec<E> ofEnum(Class<E> enumClass) {
+        return Codec.STRING.comapFlatMap(s -> {
+            try {
+                return DataResult.success(Enum.valueOf(enumClass, s));
+            } catch (IllegalArgumentException ex) {
+                return DataResult.error(() -> "Unknown enum constant for " + enumClass.getSimpleName() + ": " + s);
+            }
+        }, Enum::toString);
+    }
+
     /**
      * Makes a list codec return a mutable list instance of the default immutable one.
      * @param codec Codec that returns an immutable list

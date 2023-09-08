@@ -10,8 +10,9 @@
   "chesttracker.gui.memoryManager.search": "Search Memory Banks",
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",
   "chesttracker.gui.memoryManager.newMemoryBank": "Create new Memory Bank",
+
   "chesttracker.gui.editMemoryBank.create": "Creating new Memory Bank",
-  "chesttracker.gui.editMemoryBank.createDefault": "Create default for this connection",
+  "chesttracker.gui.editMemoryBank.createDefault": "Create and Load Connection Default",
   "chesttracker.gui.editMemoryBank.createAndLoad": "Create and Load",
   "chesttracker.gui.editMemoryBank.edit": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.id": "ID:",
@@ -20,6 +21,15 @@
   "chesttracker.gui.editMemoryBank.alreadyDefault": "Already Default",
   "chesttracker.gui.editMemoryBank.markDefault.tooltip": "Mark this Memory Bank as the default for the current connection/world.",
   "chesttracker.gui.editMemoryBank.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
+
+  "chesttracker.gui.editMemoryBank.integrity": "Memory Integrity",
+  "chesttracker.gui.editMemoryBank.integrity.blockBreak": "Block Break",
+  "chesttracker.gui.editMemoryBank.integrity.nameHandling": "Names",
+  "chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant": "Irrelevant",
+  "chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep": "Always Keep",
+  "chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep": "Only Keep",
+  "chesttracker.gui.editMemoryBank.integrity.periodicCheck": "Periodic Check",
+
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",
 
