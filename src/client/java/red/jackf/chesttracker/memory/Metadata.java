@@ -1,10 +1,8 @@
 package red.jackf.chesttracker.memory;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
 
@@ -63,43 +61,77 @@ public class Metadata {
                                 .forGetter(settings -> settings.removeOnPlayerBlockBreak),
                         Codec.BOOL.fieldOf("checkPeriodicallyForMissingBlocks")
                                 .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
-                        Codec.either(ExtraCodecs.POSITIVE_INT, Codec.unit("never")).fieldOf("memoryExpiryTimeSeconds")
-                                .forGetter(settings -> settings.memoryExpiryTimeSeconds == null ? Either.right("never") : Either.left(settings.memoryExpiryTimeSeconds)),
+                        ModCodecs.ofEnum(MemoryLifetime.class).fieldOf("memoryLifetime")
+                                .forGetter(settings -> settings.memoryLifetime),
                         ModCodecs.ofEnum(NameHandling.class).fieldOf("nameHandling")
                                 .forGetter(settings -> settings.nameHandling)
                 ).apply(instance, IntegritySettings::new));
 
         public boolean removeOnPlayerBlockBreak = true;
         public boolean checkPeriodicallyForMissingBlocks = true;
-        public @Nullable Integer memoryExpiryTimeSeconds = 60 * 60 * 12; // 12 IRL hours
+        public MemoryLifetime memoryLifetime = MemoryLifetime.TWELVE_HOURS;
         public NameHandling nameHandling = NameHandling.ALWAYS_KEEP;
 
         public IntegritySettings() {}
 
         public IntegritySettings(boolean removeOnPlayerBlockBreak,
                                  boolean checkPeriodicallyForMissingBlocks,
-                                 Either<Integer, String> memoryExpiryTimeSeconds,
+                                 MemoryLifetime memoryLifetime,
                                  NameHandling nameHandling) {
             this();
             this.removeOnPlayerBlockBreak = removeOnPlayerBlockBreak;
             this.checkPeriodicallyForMissingBlocks = checkPeriodicallyForMissingBlocks;
-            this.memoryExpiryTimeSeconds = memoryExpiryTimeSeconds.map(Integer::intValue, s -> null);
+            this.memoryLifetime = memoryLifetime;
             this.nameHandling = nameHandling;
         }
 
         public enum NameHandling {
-            IRRELEVANT(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant")),
-            ALWAYS_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep")),
-            ONLY_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep"));
+            IRRELEVANT(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant"),
+                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant.tooltip")),
+            ALWAYS_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep"),
+                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep.tooltip")),
+            ONLY_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep"),
+                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep.tooltip"));
 
             private final Component label;
+            private final Component tooltip;
 
-            NameHandling(Component label) {
+            NameHandling(Component label, Component tooltip) {
                 this.label = label;
+                this.tooltip = tooltip;
             }
 
             public Component getLabel() {
                 return label;
+            }
+
+            public Component getTooltip() {
+                return tooltip;
+            }
+        }
+
+        public enum MemoryLifetime {
+            NEVER(null, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never")),
+            TEN_SECONDS(10L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.seconds", 10)),
+            FIVE_MINUTES(60L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 5)),
+            TWENTY_MINUTES(60L * 15L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 20)),
+            FORTY_MINUTES(60L * 30L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 40)),
+            ONE_HOUR(60L * 60L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hour")),
+            TWO_HOURS(60L * 60L * 2L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 2)),
+            FOUR_HOURS(60L * 60L * 4L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 4)),
+            SIX_HOURS(60L * 60L * 6L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 6)),
+            TWELVE_HOURS(60L * 60L * 12L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 12)),
+            ONE_DAY(60L * 60L * 24L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day")),
+            TWO_DAYS(60L * 60L * 24L * 2L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 2)),
+            FIVE_DAYS(60L * 60L * 24L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 5)),
+            SEVEN_DAYS(60L * 60L * 24L * 7L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 7));
+
+            public final Long seconds;
+            public final Component label;
+
+            MemoryLifetime(@Nullable Long seconds, Component label) {
+                this.seconds = seconds;
+                this.label = label;
             }
         }
     }

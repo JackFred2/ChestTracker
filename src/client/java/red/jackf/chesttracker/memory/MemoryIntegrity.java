@@ -19,7 +19,7 @@ public class MemoryIntegrity {
     private static final Logger LOGGER = ChestTracker.getLogger("Integrity");
     private MemoryIntegrity() {}
 
-    private static final int TICKS_BETWEEN_ENTRY_REFILL = 600;
+    private static final int TICKS_BETWEEN_ENTRY_REFILL = 200;
     private static long lastEntryCheckCompleteTick = -1L;
 
     private static final List<Map.Entry<BlockPos, Memory>> currentEntryList = new ArrayList<>();
@@ -55,7 +55,7 @@ public class MemoryIntegrity {
 
             if (currentEntryList.isEmpty()) return;
 
-            if (currentEntryList.size() >= lastEntryListIndex) {
+            if (lastEntryListIndex >= currentEntryList.size()) {
                 lastEntryCheckCompleteTick = client.getGameTime();
                 currentEntryList.clear();
                 return;
@@ -64,7 +64,7 @@ public class MemoryIntegrity {
             var currentEntry = currentEntryList.get(lastEntryListIndex++);
 
             // check if time has expired
-            var expirySeconds = MemoryBank.INSTANCE.getMetadata().getIntegritySettings().memoryExpiryTimeSeconds;
+            var expirySeconds = MemoryBank.INSTANCE.getMetadata().getIntegritySettings().memoryLifetime.seconds;
             if (expirySeconds != null) {
                 if (currentEntry.getValue().getTimestamp().plusSeconds(expirySeconds).isBefore(Instant.now())) {
                     MemoryBank.INSTANCE.removeMemory(client.dimension().location(), currentEntry.getKey());

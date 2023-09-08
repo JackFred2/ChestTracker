@@ -22,10 +22,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
-import red.jackf.chesttracker.gui.widget.CustomEditBox;
-import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
-import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
-import red.jackf.chesttracker.gui.widget.TextWidget;
+import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
@@ -285,39 +282,61 @@ public class EditMemoryBankScreen extends Screen {
         settingsTabSelector.setOptions(selectorOptions);
         settingsTabSelector.setHighlight(SettingsTab.INTEGRITY);
 
-        addSetting(this.addRenderableWidget(CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
+        addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
+                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak.tooltip")))
                 .create(getSettingsX(0),
                         getSettingsY(1),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
                         translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"),
                         (cycleButton, newValue) -> metadata.getIntegritySettings().removeOnPlayerBlockBreak = newValue
-                )), SettingsTab.INTEGRITY);
+                ), SettingsTab.INTEGRITY);
 
-        addSetting(this.addRenderableWidget(CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
+        addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
+                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck.tooltip")))
                 .create(getSettingsX(1),
                         getSettingsY(1),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
                         translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"),
                         (cycleButton, newValue) -> metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks = newValue
-                )), SettingsTab.INTEGRITY);
+                ), SettingsTab.INTEGRITY);
 
-        addSetting(this.addRenderableWidget(CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
+        addSetting(CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
                 .withValues(Metadata.IntegritySettings.NameHandling.values())
                 .withInitialValue(metadata.getIntegritySettings().nameHandling)
+                .withTooltip(EditMemoryBankScreen::buildNameHandlingTooltip)
                 .create(getSettingsX(0),
                         getSettingsY(2),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
                         translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling"),
                         (cycleButton, newValue) -> metadata.getIntegritySettings().nameHandling = newValue
-                )), SettingsTab.INTEGRITY);
+                ), SettingsTab.INTEGRITY);
+
+        addSetting(new EnumSlider<>(getSettingsX(0),
+                getSettingsY(0),
+                getSettingsWidth(2),
+                BUTTON_HEIGHT,
+                Metadata.IntegritySettings.MemoryLifetime.class,
+                metadata.getIntegritySettings().memoryLifetime,
+                lifetime -> lifetime.label,
+                lifetime -> metadata.getIntegritySettings().memoryLifetime = lifetime), SettingsTab.INTEGRITY);
 
         setSettingsTab(SettingsTab.INTEGRITY);
     }
 
+    private static Tooltip buildNameHandlingTooltip(Metadata.IntegritySettings.NameHandling handling) {
+        return Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.tooltip")
+                .append(CommonComponents.NEW_LINE)
+                .append(CommonComponents.NEW_LINE)
+                .append(handling.getLabel().copy().withStyle(ChatFormatting.YELLOW))
+                .append(CommonComponents.NEW_LINE)
+                .append(handling.getTooltip()));
+    }
+
     private void addSetting(AbstractWidget widget, SettingsTab tab) {
+        this.addRenderableWidget(widget);
         widget.visible = false;
         settingsMap.put(tab, widget);
     }
@@ -350,7 +369,7 @@ public class EditMemoryBankScreen extends Screen {
     private int getSettingsWidth(int columnsTaken) {
         final int columnWidth = getSingleSettingsColumnWidth();
 
-        return columnWidth * columnsTaken + MARGIN * (columnsTaken - 1);
+        return columnWidth * columnsTaken + BUTTON_MARGIN * (columnsTaken - 1);
     }
 
     //
