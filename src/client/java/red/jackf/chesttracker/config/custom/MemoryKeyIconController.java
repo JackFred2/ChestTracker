@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -61,9 +62,14 @@ public record MemoryKeyIconController(Option<MemoryKeyIcon> option) implements C
     }
 
     public static class Widget extends AbstractWidget implements ContainerEventHandler {
-        private static final Map<Item, ItemStack> ITEMS = BuiltInRegistries.ITEM.stream()
-                .filter(item -> item != Items.AIR)
-                .map(item -> Pair.of(item, new ItemStack(item)))
+        private static final List<Item> PRIORITY = List.of(
+                Items.GRASS_BLOCK, Items.NETHERRACK, Items.END_STONE, Items.ENDER_CHEST, Items.CHEST, Items.OAK_SAPLING,
+                Items.GLOWSTONE, Items.NETHER_STAR, Items.CRAFTING_TABLE, Items.EMERALD
+        );
+        private static final Map<Item, ItemStack> ITEMS = Stream.concat(
+                        PRIORITY.stream(),
+                        BuiltInRegistries.ITEM.stream().filter(item -> item != Items.AIR && !PRIORITY.contains(item))
+                ).map(item -> Pair.of(item, new ItemStack(item)))
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
         private static final int PADDING = 2; // px
         private final EditBox editBox;
