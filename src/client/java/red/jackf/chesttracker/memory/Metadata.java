@@ -63,51 +63,26 @@ public class Metadata {
                                 .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
                         ModCodecs.ofEnum(MemoryLifetime.class).fieldOf("memoryLifetime")
                                 .forGetter(settings -> settings.memoryLifetime),
-                        ModCodecs.ofEnum(NameHandling.class).fieldOf("nameHandling")
-                                .forGetter(settings -> settings.nameHandling)
+                        Codec.BOOL.fieldOf("preserveNamed")
+                                .forGetter(settings -> settings.preserveNamed)
                 ).apply(instance, IntegritySettings::new));
 
         public boolean removeOnPlayerBlockBreak = true;
         public boolean checkPeriodicallyForMissingBlocks = true;
         public MemoryLifetime memoryLifetime = MemoryLifetime.TWELVE_HOURS;
-        public NameHandling nameHandling = NameHandling.ALWAYS_KEEP;
+        public boolean preserveNamed = true;
 
         public IntegritySettings() {}
 
         public IntegritySettings(boolean removeOnPlayerBlockBreak,
                                  boolean checkPeriodicallyForMissingBlocks,
                                  MemoryLifetime memoryLifetime,
-                                 NameHandling nameHandling) {
+                                 boolean preserveNamed) {
             this();
             this.removeOnPlayerBlockBreak = removeOnPlayerBlockBreak;
             this.checkPeriodicallyForMissingBlocks = checkPeriodicallyForMissingBlocks;
             this.memoryLifetime = memoryLifetime;
-            this.nameHandling = nameHandling;
-        }
-
-        public enum NameHandling {
-            IRRELEVANT(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant"),
-                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.irrelevant.tooltip")),
-            ALWAYS_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep"),
-                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.always_keep.tooltip")),
-            ONLY_KEEP(Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep"),
-                    Component.translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.only_keep.tooltip"));
-
-            private final Component label;
-            private final Component tooltip;
-
-            NameHandling(Component label, Component tooltip) {
-                this.label = label;
-                this.tooltip = tooltip;
-            }
-
-            public Component getLabel() {
-                return label;
-            }
-
-            public Component getTooltip() {
-                return tooltip;
-            }
+            this.preserveNamed = preserveNamed;
         }
 
         public enum MemoryLifetime {

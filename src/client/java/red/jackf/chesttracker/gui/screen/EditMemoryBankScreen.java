@@ -302,16 +302,14 @@ public class EditMemoryBankScreen extends Screen {
                         (cycleButton, newValue) -> metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks = newValue
                 ), SettingsTab.INTEGRITY);
 
-        addSetting(CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
-                .withValues(Metadata.IntegritySettings.NameHandling.values())
-                .withInitialValue(metadata.getIntegritySettings().nameHandling)
-                .withTooltip(EditMemoryBankScreen::buildNameHandlingTooltip)
+        addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().preserveNamed)
+                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed.tooltip")))
                 .create(getSettingsX(0),
                         getSettingsY(2),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
-                        translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling"),
-                        (cycleButton, newValue) -> metadata.getIntegritySettings().nameHandling = newValue
+                        translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed"),
+                        (cycleButton, newValue) -> metadata.getIntegritySettings().preserveNamed = newValue
                 ), SettingsTab.INTEGRITY);
 
         addSetting(new EnumSlider<>(getSettingsX(0),
@@ -324,15 +322,6 @@ public class EditMemoryBankScreen extends Screen {
                 lifetime -> metadata.getIntegritySettings().memoryLifetime = lifetime), SettingsTab.INTEGRITY);
 
         setSettingsTab(SettingsTab.INTEGRITY);
-    }
-
-    private static Tooltip buildNameHandlingTooltip(Metadata.IntegritySettings.NameHandling handling) {
-        return Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling.tooltip")
-                .append(CommonComponents.NEW_LINE)
-                .append(CommonComponents.NEW_LINE)
-                .append(handling.getLabel().copy().withStyle(ChatFormatting.YELLOW))
-                .append(CommonComponents.NEW_LINE)
-                .append(handling.getTooltip()));
     }
 
     private void addSetting(AbstractWidget widget, SettingsTab tab) {
@@ -444,7 +433,7 @@ public class EditMemoryBankScreen extends Screen {
 
     // Create and load a memory bank using the current load context, then run the load callback.
     private void createDefault(LoadContext ctx) {
-        MemoryBank.loadOrCreate(ctx.connectionId(), Metadata.from(ctx.name()));
+        MemoryBank.loadOrCreate(ctx.connectionId(), metadata);
         afterBankLoaded.run();
     }
 

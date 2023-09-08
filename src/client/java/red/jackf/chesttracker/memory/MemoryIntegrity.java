@@ -44,6 +44,8 @@ public class MemoryIntegrity {
                 return;
             }
 
+            var integrity = MemoryBank.INSTANCE.getMetadata().getIntegritySettings();
+
             if (currentEntryList.isEmpty() && client.getGameTime() >= lastEntryCheckCompleteTick + TICKS_BETWEEN_ENTRY_REFILL) {
                 var current = MemoryBank.INSTANCE.getMemories(client.dimension().location());
                 if (current != null && !current.isEmpty()) {
@@ -63,12 +65,15 @@ public class MemoryIntegrity {
 
             var currentEntry = currentEntryList.get(lastEntryListIndex++);
 
-            // check if time has expired
-            var expirySeconds = MemoryBank.INSTANCE.getMetadata().getIntegritySettings().memoryLifetime.seconds;
-            if (expirySeconds != null) {
-                if (currentEntry.getValue().getTimestamp().plusSeconds(expirySeconds).isBefore(Instant.now())) {
-                    MemoryBank.INSTANCE.removeMemory(client.dimension().location(), currentEntry.getKey());
-                    LOGGER.debug("Expiry: Removing {}@{}", currentEntry.getKey(), client.dimension().location());
+            // exempt named from the check
+            if (!integrity.preserveNamed || currentEntry.getValue().name() == null) {
+                // check if time has expired
+                var expirySeconds = integrity.memoryLifetime.seconds;
+                if (expirySeconds != null) {
+                    if (currentEntry.getValue().getTimestamp().plusSeconds(expirySeconds).isBefore(Instant.now())) {
+                        MemoryBank.INSTANCE.removeMemory(client.dimension().location(), currentEntry.getKey());
+                        LOGGER.debug("Expiry: Removing {}@{}", currentEntry.getKey(), client.dimension().location());
+                    }
                 }
             }
         });
