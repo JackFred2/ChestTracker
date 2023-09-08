@@ -72,7 +72,7 @@ public class EditMemoryBankScreen extends Screen {
         this.isCreatingNewBank = memoryBankId == null;
         if (isCreatingNewBank) {
             this.memoryBankId = getNextIdDefault();
-            this.metadata = Metadata.from(this.memoryBankId.substring("user/".length()));
+            this.metadata = Metadata.blankWithName(this.memoryBankId.substring("user/".length()));
         } else {
             this.memoryBankId = memoryBankId;
             var metadata = StorageUtil.getStorage().getMetadata(memoryBankId);
@@ -240,29 +240,6 @@ public class EditMemoryBankScreen extends Screen {
                         .build()));
         }
 
-        // metadata settings
-        /*List<RenderableThingGetter<?>> integrity = new ArrayList<>();
-        integrity.add((x, y, width, height) -> {
-            return CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
-                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"));
-        });
-        integrity.add((x, y, width, height) -> {
-            return CycleButton.builder(Metadata.IntegritySettings.NameHandling::getLabel)
-                    .withValues(Metadata.IntegritySettings.NameHandling.values())
-                    .withInitialValue(metadata.getIntegritySettings().nameHandling)
-                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.nameHandling"));
-        });
-        integrity.add((x, y, width, height) -> {
-            return CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
-                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"));
-        });
-        integrity.add((x, y, width, height) -> {
-            return CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
-                    .create(x, y, width, height, translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"));
-        });
-
-        addColumn(translatable("chesttracker.gui.editMemoryBank.integrity"), integrity, 0);*/
-
         addBottomButtons(bottomButtons);
 
         setupSettings(this.menuHeight - SETTINGS_TOP - 2 - (MARGIN + BUTTON_HEIGHT) * bottomButtons.size());
@@ -276,12 +253,31 @@ public class EditMemoryBankScreen extends Screen {
                 CommonComponents.EMPTY,
                 this::setSettingsTab));
         var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
+        selectorOptions.put(SettingsTab.FILTERING, Component.translatable("chesttracker.gui.editMemoryBank.filtering"));
         selectorOptions.put(SettingsTab.INTEGRITY, Component.translatable("chesttracker.gui.editMemoryBank.integrity"));
         selectorOptions.put(SettingsTab.EMPTY, Component.literal("Empty"));
 
         settingsTabSelector.setOptions(selectorOptions);
-        settingsTabSelector.setHighlight(SettingsTab.INTEGRITY);
 
+        setupFilteringSettings();
+        setupIntegritySettings();
+
+        setSettingsTab(SettingsTab.FILTERING);
+    }
+
+    private void setupFilteringSettings() {
+        addSetting(CycleButton.onOffBuilder(metadata.getFilteringSettings().onlyRememberNamed)
+                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed.tooltip")))
+                .create(getSettingsX(0),
+                        getSettingsY(0),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed"),
+                        (cycleButton, newValue) -> metadata.getFilteringSettings().onlyRememberNamed = newValue
+                ), SettingsTab.FILTERING);
+    }
+
+    private void setupIntegritySettings() {
         addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
                 .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak.tooltip")))
                 .create(getSettingsX(0),
@@ -320,8 +316,6 @@ public class EditMemoryBankScreen extends Screen {
                 metadata.getIntegritySettings().memoryLifetime,
                 lifetime -> lifetime.label,
                 lifetime -> metadata.getIntegritySettings().memoryLifetime = lifetime), SettingsTab.INTEGRITY);
-
-        setSettingsTab(SettingsTab.INTEGRITY);
     }
 
     private void addSetting(AbstractWidget widget, SettingsTab tab) {
@@ -482,6 +476,7 @@ public class EditMemoryBankScreen extends Screen {
     }
 
     private enum SettingsTab {
+        FILTERING,
         INTEGRITY,
         EMPTY
     }

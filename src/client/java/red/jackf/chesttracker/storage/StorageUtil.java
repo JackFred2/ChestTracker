@@ -62,7 +62,7 @@ public class StorageUtil {
             var settings = ConnectionSettings.getOrCreate(loadContext.connectionId());
             var id = settings.memoryBankIdOverride().orElse(loadContext.connectionId());
             ChestTracker.LOGGER.debug("Loading {} using {}", id, instance.getClass().getSimpleName());
-            MemoryBank.loadOrCreate(id, Metadata.from(loadContext.name()));
+            MemoryBank.loadOrCreate(id, Metadata.blankWithName(loadContext.name()));
         }
     }
 

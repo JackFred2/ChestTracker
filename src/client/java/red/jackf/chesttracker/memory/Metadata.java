@@ -14,27 +14,32 @@ public class Metadata {
             instance.group(
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
                     ModCodecs.INSTANT.fieldOf("lastModified").forGetter(meta -> meta.lastModified),
+                    FilteringSettings.CODEC.fieldOf("filtering").forGetter(meta -> meta.filteringSettings),
                     IntegritySettings.CODEC.fieldOf("integrity").forGetter(meta -> meta.integritySettings)
-            ).apply(instance, (name, modified, integrity) -> new Metadata(name.orElse(null), modified, integrity))
+            ).apply(instance, (name, modified, filtering, integrity) -> new Metadata(name.orElse(null), modified, filtering, integrity))
     );
 
     @Nullable
     private String name;
     private Instant lastModified;
+    private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
 
-    public Metadata(@Nullable String name, Instant lastModified, IntegritySettings integritySettings) {
+    public Metadata(@Nullable String name, Instant lastModified, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
         this.name = name;
         this.lastModified = lastModified;
+        this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), new IntegritySettings());
+        return new Metadata(null, Instant.now(), new FilteringSettings(), new IntegritySettings());
     }
 
-    public static Metadata from(String name) {
-        return new Metadata(name, Instant.now(), new IntegritySettings());
+    public static Metadata blankWithName(String name) {
+        var blank = blank();
+        blank.setName(name);
+        return blank;
     }
 
     @Nullable
@@ -50,8 +55,28 @@ public class Metadata {
         this.lastModified = Instant.now();
     }
 
+    public FilteringSettings getFilteringSettings() {
+        return filteringSettings;
+    }
+
     public IntegritySettings getIntegritySettings() {
         return integritySettings;
+    }
+
+    public static class FilteringSettings {
+        private static final Codec<FilteringSettings> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.BOOL.fieldOf("onlyRememberNamed")
+                            .forGetter(settings -> settings.onlyRememberNamed)
+            ).apply(instance, FilteringSettings::new));
+
+        public boolean onlyRememberNamed = false;
+
+        private FilteringSettings() {}
+
+        public FilteringSettings(boolean onlyRememberNamed) {
+            this.onlyRememberNamed = onlyRememberNamed;
+        }
     }
 
     public static class IntegritySettings {
@@ -72,7 +97,7 @@ public class Metadata {
         public MemoryLifetime memoryLifetime = MemoryLifetime.TWELVE_HOURS;
         public boolean preserveNamed = true;
 
-        public IntegritySettings() {}
+        private IntegritySettings() {}
 
         public IntegritySettings(boolean removeOnPlayerBlockBreak,
                                  boolean checkPeriodicallyForMissingBlocks,
