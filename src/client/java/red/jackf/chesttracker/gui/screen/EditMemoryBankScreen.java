@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
@@ -39,10 +40,6 @@ import static net.minecraft.network.chat.Component.translatable;
  * Shows a UI for managing an individual memory bank. Possibly the currently loaded bank.
  */
 public class EditMemoryBankScreen extends Screen {
-    private static final int WIDTH = 300;
-    private static final int HEIGHT = 220;
-    private static final int MARGIN = 8;
-    private static final int BUTTON_MARGIN = 5;
     private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
@@ -105,15 +102,16 @@ public class EditMemoryBankScreen extends Screen {
         var font = Minecraft.getInstance().font;
         var inGame = Minecraft.getInstance().level != null;
 
-        this.menuWidth = WIDTH;
-        this.menuHeight = HEIGHT;
+        this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.WIDTH);
+        this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.HEIGHT);
+
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
 
         // close button
         this.addRenderableWidget(new ImageButton(
-                left + menuWidth - (BUTTON_MARGIN + CLOSE_BUTTON_SIZE),
-                top + BUTTON_MARGIN,
+                left + menuWidth - (GuiConstants.BUTTON_MARGIN + CLOSE_BUTTON_SIZE),
+                top + GuiConstants.BUTTON_MARGIN,
                 CLOSE_BUTTON_SIZE,
                 CLOSE_BUTTON_SIZE,
                 0,
@@ -126,9 +124,9 @@ public class EditMemoryBankScreen extends Screen {
 
         // details label
         if (!isCreatingNewBank) {
-            this.addRenderableOnly(new TextWidget(this.left + MARGIN,
-                    top + MARGIN,
-                    this.menuWidth - MARGIN - 2 * BUTTON_MARGIN - CLOSE_BUTTON_SIZE,
+            this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
+                    top + GuiConstants.MARGIN,
+                    this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.BUTTON_MARGIN - CLOSE_BUTTON_SIZE,
                     StorageUtil.getStorage().getDescriptionLabel(memoryBankId),
                     TextColours.getLabelColour(),
                     TextWidget.Alignment.RIGHT));
@@ -136,7 +134,7 @@ public class EditMemoryBankScreen extends Screen {
 
         // ID
         var idLabel = translatable("chesttracker.gui.editMemoryBank.id");
-        this.addRenderableOnly(new TextWidget(this.left + MARGIN,
+        this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                 this.top + ID_TOP,
                 idLabel,
                 TextColours.getLabelColour()));
@@ -144,21 +142,21 @@ public class EditMemoryBankScreen extends Screen {
         var bankIdText = Component.literal(memoryBankId);
         if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds)
             bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
-        this.addRenderableOnly(new TextWidget(this.left + MARGIN + font.width(idLabel) + 4,
+        this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN + font.width(idLabel) + 4,
                 this.top + ID_TOP,
                 bankIdText,
                 TextColours.getLabelColour()));
 
         // Name
         var nameLabel = translatable("mco.backup.entry.name");
-        this.addRenderableOnly(new TextWidget(this.left + MARGIN,
+        this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                 this.top + NAME_TOP,
                 nameLabel,
                 TextColours.getLabelColour()));
         this.nameEditBox = this.addRenderableWidget(new CustomEditBox(font,
-                this.left + MARGIN + font.width(nameLabel) + 4,
+                this.left + GuiConstants.MARGIN + font.width(nameLabel) + 4,
                 this.top + NAME_TOP - 2,
-                menuWidth - 2 * MARGIN - font.width(nameLabel) - 4,
+                menuWidth - 2 * GuiConstants.MARGIN - font.width(nameLabel) - 4,
                 font.lineHeight + 3,
                 this.nameEditBox,
                 CommonComponents.EMPTY));
@@ -242,11 +240,11 @@ public class EditMemoryBankScreen extends Screen {
 
         addBottomButtons(bottomButtons);
 
-        setupSettings(this.menuHeight - SETTINGS_TOP - 2 - (MARGIN + BUTTON_HEIGHT) * bottomButtons.size());
+        setupSettings(this.menuHeight - SETTINGS_TOP - 2 - (GuiConstants.MARGIN + BUTTON_HEIGHT) * bottomButtons.size());
     }
 
     private void setupSettings(int height) {
-        settingsTabSelector = this.addRenderableWidget(new StringSelectorWidget<>(this.left + MARGIN,
+        settingsTabSelector = this.addRenderableWidget(new StringSelectorWidget<>(this.left + GuiConstants.MARGIN,
                 this.top + SETTINGS_TOP,
                 SETTINGS_TAB_SELECTOR_WIDTH,
                 height,
@@ -332,43 +330,43 @@ public class EditMemoryBankScreen extends Screen {
     }
 
     private int getSingleSettingsColumnWidth() {
-        final int settingsAreaWidth = this.menuWidth - BUTTON_MARGIN - SETTINGS_TAB_SELECTOR_WIDTH - 2 * MARGIN;
+        final int settingsAreaWidth = this.menuWidth - GuiConstants.BUTTON_MARGIN - SETTINGS_TAB_SELECTOR_WIDTH - 2 * GuiConstants.MARGIN;
         //noinspection PointlessArithmeticExpression
-        return (settingsAreaWidth - BUTTON_MARGIN * (SETTINGS_MAX_COLUMNS - 1)) / SETTINGS_MAX_COLUMNS;
+        return (settingsAreaWidth - GuiConstants.BUTTON_MARGIN * (SETTINGS_MAX_COLUMNS - 1)) / SETTINGS_MAX_COLUMNS;
     }
 
     private int getSettingsX(int column) {
         final int columnWidth = getSingleSettingsColumnWidth();
 
-        final int baseX = this.left + MARGIN + SETTINGS_TAB_SELECTOR_WIDTH + BUTTON_MARGIN;
-        return baseX + column * (columnWidth + BUTTON_MARGIN);
+        final int baseX = this.left + GuiConstants.MARGIN + SETTINGS_TAB_SELECTOR_WIDTH + GuiConstants.BUTTON_MARGIN;
+        return baseX + column * (columnWidth + GuiConstants.BUTTON_MARGIN);
     }
 
     private int getSettingsY(int row) {
         final int baseY = this.top + SETTINGS_TOP;
-        return baseY + row * (BUTTON_HEIGHT + BUTTON_MARGIN);
+        return baseY + row * (BUTTON_HEIGHT + GuiConstants.BUTTON_MARGIN);
     }
 
     private int getSettingsWidth(int columnsTaken) {
         final int columnWidth = getSingleSettingsColumnWidth();
 
-        return columnWidth * columnsTaken + BUTTON_MARGIN * (columnsTaken - 1);
+        return columnWidth * columnsTaken + GuiConstants.BUTTON_MARGIN * (columnsTaken - 1);
     }
 
     //
     private void addBottomButtons(List<List<RenderableThingGetter<?>>> buttons) {
-        final int rowWidth = this.menuWidth - 2 * MARGIN;
-        final int startX = this.left + MARGIN;
-        final int startY = this.top + this.menuHeight - MARGIN - BUTTON_HEIGHT;
-        final int yOffset = BUTTON_HEIGHT + BUTTON_MARGIN;
+        final int rowWidth = this.menuWidth - 2 * GuiConstants.MARGIN;
+        final int startX = this.left + GuiConstants.MARGIN;
+        final int startY = this.top + this.menuHeight - GuiConstants.MARGIN - BUTTON_HEIGHT;
+        final int yOffset = BUTTON_HEIGHT + GuiConstants.BUTTON_MARGIN;
 
         // bottom upwards
         for (int i = 0; i < buttons.size(); i++) {
             var row = buttons.get(i);
-            int buttonWidth = (rowWidth - (BUTTON_MARGIN * (row.size() - 1))) / row.size();
+            int buttonWidth = (rowWidth - (GuiConstants.BUTTON_MARGIN * (row.size() - 1))) / row.size();
             for (int buttonIndex = 0; buttonIndex < row.size(); buttonIndex++) {
                 this.addRenderableWidget(row.get(buttonIndex)
-                        .get(startX + buttonIndex * (buttonWidth + BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
+                        .get(startX + buttonIndex * (buttonWidth + GuiConstants.BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
             }
         }
     }
@@ -462,7 +460,7 @@ public class EditMemoryBankScreen extends Screen {
         this.renderBackground(graphics);
         NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(Minecraft.getInstance().font, this.title, left + MARGIN, this.top + MARGIN, TextColours.getLabelColour(), false);
+        graphics.drawString(Minecraft.getInstance().font, this.title, left + GuiConstants.MARGIN, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
     }
 
     @Override

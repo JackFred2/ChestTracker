@@ -20,6 +20,7 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
 import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.SearchablesUtil;
@@ -45,9 +46,6 @@ public class ChestTrackerScreen extends Screen {
     private static final int GRID_LEFT = 7;
     private static final int GRID_TOP = 41;
     private static final int BUTTON_SIZE = 14;
-    private static final int BUTTON_TOP = 7;
-    private static final int SETTINGS_RIGHT = 6;
-    private static final int CHANGE_MEMORY_RIGHT = 26;
     private static final int MEMORY_ICON_OFFSET = 24;
     private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
@@ -97,7 +95,7 @@ public class ChestTrackerScreen extends Screen {
             this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * Constants.SLOT_SIZE;
         while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
 
-        // resize so background ninepatcher looks nice
+        // shrink a bit more so background ninepatcher looks nice
         this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(this.menuWidth);
         this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(this.menuHeight);
 
@@ -163,8 +161,8 @@ public class ChestTrackerScreen extends Screen {
 
         // settings
         var settingsButton = this.addRenderableWidget(new ImageButton(
-                left + menuWidth - SETTINGS_RIGHT - BUTTON_SIZE,
-                top + BUTTON_TOP,
+                this.left + this.menuWidth - GuiConstants.BUTTON_MARGIN - BUTTON_SIZE,
+                this.top + GuiConstants.BUTTON_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
                 0,
@@ -178,8 +176,8 @@ public class ChestTrackerScreen extends Screen {
 
         // change memories
         this.addRenderableWidget(new ImageButton(
-                left + menuWidth - CHANGE_MEMORY_RIGHT - BUTTON_SIZE,
-                top + BUTTON_TOP,
+                this.left + this.menuWidth - 2 * (GuiConstants.BUTTON_MARGIN + BUTTON_SIZE),
+                this.top + GuiConstants.BUTTON_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
                 0,
