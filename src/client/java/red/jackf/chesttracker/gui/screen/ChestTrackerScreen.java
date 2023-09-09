@@ -95,10 +95,6 @@ public class ChestTrackerScreen extends Screen {
             this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * Constants.SLOT_SIZE;
         while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
 
-        // shrink a bit more so background ninepatcher looks nice
-        this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(this.menuWidth);
-        this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(this.menuHeight);
-
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
 

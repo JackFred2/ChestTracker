@@ -19,6 +19,7 @@ import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
+import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.StorageUtil;
@@ -81,11 +82,19 @@ public class MemoryBankManagerScreen extends Screen {
                 .filter(pair -> pair.getSecond() != null)
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
 
-        this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.WIDTH);
-        this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.HEIGHT);
+        this.menuWidth = GuiConstants.WIDTH;
+        this.menuHeight = GuiConstants.HEIGHT;
 
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
+
+        // backend label
+        this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
+                top + GuiConstants.MARGIN,
+                this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.BUTTON_MARGIN - BUTTON_SIZE,
+                Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.name()),
+                TextColours.getLabelColour(),
+                TextWidget.Alignment.RIGHT));
 
         // close button
         this.addRenderableWidget(new ImageButton(
@@ -181,9 +190,6 @@ public class MemoryBankManagerScreen extends Screen {
         NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(Minecraft.getInstance().font, this.title, left + GuiConstants.MARGIN, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
-        var backendText = Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.name());
-        var textWidth = Minecraft.getInstance().font.width(backendText);
-        graphics.drawString(Minecraft.getInstance().font, backendText, left + menuWidth - GuiConstants.MARGIN - textWidth - GuiConstants.BUTTON_MARGIN - BUTTON_SIZE, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
     }
 
     @Override

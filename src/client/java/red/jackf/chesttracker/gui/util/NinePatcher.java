@@ -25,13 +25,6 @@ public final class NinePatcher {
         this.diameter = 2 * outerSize + innerSize;
     }
 
-    /**
-     * Returns an integer that will tile nicely if applicable, decreasing the size if needed - used for various menus
-     */
-    public int fitsNicely(int size) {
-        return innerMode == InnerMode.TILE ? size - ((size - 2 * outerSize) % innerSize) : size;
-    }
-
     public void draw(GuiGraphics graphics, int x1, int y1, int width, int height) {
         if (width < outerSize * 2) return;
         if (height < outerSize * 2) return;

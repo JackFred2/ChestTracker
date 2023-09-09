@@ -102,8 +102,8 @@ public class EditMemoryBankScreen extends Screen {
         var font = Minecraft.getInstance().font;
         var inGame = Minecraft.getInstance().level != null;
 
-        this.menuWidth = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.WIDTH);
-        this.menuHeight = NinePatcher.BACKGROUND.fitsNicely(GuiConstants.HEIGHT);
+        this.menuWidth = GuiConstants.WIDTH;
+        this.menuHeight = GuiConstants.HEIGHT;
 
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
@@ -123,14 +123,13 @@ public class EditMemoryBankScreen extends Screen {
                 b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         // details label
-        if (!isCreatingNewBank) {
+        if (!isCreatingNewBank)
             this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                     top + GuiConstants.MARGIN,
                     this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.BUTTON_MARGIN - CLOSE_BUTTON_SIZE,
                     StorageUtil.getStorage().getDescriptionLabel(memoryBankId),
                     TextColours.getLabelColour(),
                     TextWidget.Alignment.RIGHT));
-        }
 
         // ID
         var idLabel = translatable("chesttracker.gui.editMemoryBank.id");
@@ -172,7 +171,7 @@ public class EditMemoryBankScreen extends Screen {
         });
         this.nameEditBox.setValue(metadata.getName() != null ? metadata.getName() : "");
 
-        // bottom buttonelement
+        // bottom button elements
         List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
 
         // delete everything
