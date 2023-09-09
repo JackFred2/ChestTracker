@@ -5,6 +5,7 @@ import com.blamejared.searchables.api.autcomplete.AutoComplete;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -28,7 +29,6 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.util.Constants;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -89,11 +89,11 @@ public class ChestTrackerScreen extends Screen {
 
         // shrink until fits on screen
         do
-            this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * Constants.SLOT_SIZE;
-        while (this.menuWidth > width && liveGridWidth > Constants.MIN_GRID_WIDTH);
+            this.menuWidth = SMALL_MENU_WIDTH + (--liveGridWidth - 9) * GuiConstants.GRID_SLOT_SIZE;
+        while (this.menuWidth > width && liveGridWidth > GuiConstants.MIN_GRID_COLUMNS);
         do
-            this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * Constants.SLOT_SIZE;
-        while (this.menuHeight > height && liveGridHeight > Constants.MIN_GRID_HEIGHT);
+            this.menuHeight = SMALL_MENU_HEIGHT + (--liveGridHeight - 6) * GuiConstants.GRID_SLOT_SIZE;
+        while (this.menuHeight > height && liveGridHeight > GuiConstants.MIN_GRID_ROWS);
 
         this.left = (this.width - menuWidth) / 2;
         this.top = (this.height - menuHeight) / 2;
@@ -157,8 +157,8 @@ public class ChestTrackerScreen extends Screen {
 
         // settings
         var settingsButton = this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - GuiConstants.BUTTON_MARGIN - BUTTON_SIZE,
-                this.top + GuiConstants.BUTTON_MARGIN,
+                this.left + this.menuWidth - GuiConstants.SMALL_MARGIN - BUTTON_SIZE,
+                this.top + GuiConstants.SMALL_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
                 0,
@@ -172,8 +172,8 @@ public class ChestTrackerScreen extends Screen {
 
         // change memories
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - 2 * (GuiConstants.BUTTON_MARGIN + BUTTON_SIZE),
-                this.top + GuiConstants.BUTTON_MARGIN,
+                this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                this.top + GuiConstants.SMALL_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
                 0,
@@ -182,16 +182,13 @@ public class ChestTrackerScreen extends Screen {
                 ChestTracker.guiTex("widgets/change_memory_bank_button"),
                 BUTTON_SIZE,
                 BUTTON_SIZE * 2,
-                b -> Minecraft.getInstance().setScreen(
-                        new MemoryBankManagerScreen(() -> MemoryBank.INSTANCE == null ? parent : this, () ->
-                                // return to this screen unless the memories have been unloaded, in which case the parent
-                                Minecraft.getInstance().setScreen(this))))).setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+                this::openMemoryManager)).setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
 
         // resize
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
-                    Constants.SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
-                    Constants.MIN_GRID_WIDTH, Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_WIDTH, Constants.MAX_GRID_HEIGHT, (w, h) -> {
+                    GuiConstants.GRID_SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
+                    GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_WIDTH, GuiConstants.MAX_GRID_HEIGHT, (w, h) -> {
                 ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
                 ChestTrackerConfig.INSTANCE.getConfig().gui.gridWidth = w;
                 ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight = h;
@@ -361,5 +358,13 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    private void openMemoryManager(Button ignored) {
+        Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(
+                () -> MemoryBank.INSTANCE == null ? parent : this,
+                // return to this screen unless the memories have been unloaded, in which case go to the parent
+                () -> Minecraft.getInstance().setScreen(this)
+        ));
     }
 }

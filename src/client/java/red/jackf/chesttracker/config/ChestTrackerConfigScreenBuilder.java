@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
@@ -156,7 +157,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 .image(ChestTracker.guiTex("config/grid_width"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                .range(Constants.MIN_GRID_WIDTH, Constants.MAX_GRID_HEIGHT)
+                                .range(GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_HEIGHT)
                                 .step(1)
                                 .valueFormatter(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
                         .binding(
@@ -170,7 +171,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 .image(ChestTracker.guiTex("config/grid_height"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                                .range(Constants.MIN_GRID_HEIGHT, Constants.MAX_GRID_HEIGHT)
+                                .range(GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT)
                                 .step(1)
                                 .valueFormatter(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
                         .binding(
@@ -247,7 +248,7 @@ public class ChestTrackerConfigScreenBuilder {
         var builder = OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
                 .option(ButtonOption.createBuilder()
-                        .name(translatable("chesttracker.gui.memoryManager.title"))
+                        .name(translatable("chesttracker.gui.memoryManager"))
                         .text(translatable("chesttracker.config.open"))
                         .action(((screen, option) -> {
                             Runnable lambda = () -> {

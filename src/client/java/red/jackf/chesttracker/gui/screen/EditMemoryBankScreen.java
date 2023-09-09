@@ -2,26 +2,18 @@ package red.jackf.chesttracker.gui.screen;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -29,7 +21,6 @@ import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
-import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 
 import java.util.*;
@@ -39,7 +30,7 @@ import static net.minecraft.network.chat.Component.translatable;
 /**
  * Shows a UI for managing an individual memory bank. Possibly the currently loaded bank.
  */
-public class EditMemoryBankScreen extends Screen {
+public class EditMemoryBankScreen extends BaseUtilScreen {
     private static final int CLOSE_BUTTON_SIZE = 12;
     private static final int BUTTON_HEIGHT = 20;
     private static final int ID_TOP = 30;
@@ -47,10 +38,6 @@ public class EditMemoryBankScreen extends Screen {
     private static final int SETTINGS_TOP = 60;
     private static final int SETTINGS_TAB_SELECTOR_WIDTH = 65;
     private static final int SETTINGS_MAX_COLUMNS = 2;
-    private int menuWidth = 0;
-    private int menuHeight = 0;
-    private int left = 0;
-    private int top = 0;
     @Nullable
     private EditBox nameEditBox = null;
     private final Screen parent;
@@ -102,16 +89,10 @@ public class EditMemoryBankScreen extends Screen {
         var font = Minecraft.getInstance().font;
         var inGame = Minecraft.getInstance().level != null;
 
-        this.menuWidth = GuiConstants.WIDTH;
-        this.menuHeight = GuiConstants.HEIGHT;
-
-        this.left = (this.width - menuWidth) / 2;
-        this.top = (this.height - menuHeight) / 2;
-
         // close button
         this.addRenderableWidget(new ImageButton(
-                left + menuWidth - (GuiConstants.BUTTON_MARGIN + CLOSE_BUTTON_SIZE),
-                top + GuiConstants.BUTTON_MARGIN,
+                left + menuWidth - (GuiConstants.SMALL_MARGIN + CLOSE_BUTTON_SIZE),
+                top + GuiConstants.SMALL_MARGIN,
                 CLOSE_BUTTON_SIZE,
                 CLOSE_BUTTON_SIZE,
                 0,
@@ -126,7 +107,7 @@ public class EditMemoryBankScreen extends Screen {
         if (!isCreatingNewBank)
             this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                     top + GuiConstants.MARGIN,
-                    this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.BUTTON_MARGIN - CLOSE_BUTTON_SIZE,
+                    this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - CLOSE_BUTTON_SIZE,
                     StorageUtil.getStorage().getDescriptionLabel(memoryBankId),
                     TextColours.getLabelColour(),
                     TextWidget.Alignment.RIGHT));
@@ -175,20 +156,11 @@ public class EditMemoryBankScreen extends Screen {
         List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
 
         // delete everything
-        if (StorageUtil.getStorage().getAllIds().contains(memoryBankId)) {
-            List<RenderableThingGetter<?>> deleteButtons = new ArrayList<>(2);
-
-            deleteButtons.add((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
+        if (StorageUtil.getStorage().exists(memoryBankId))
+            bottomButtons.add(List.of((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
                     translatable("selectServer.deleteButton"),
-                    Constants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
-                    this::delete));
-
-            deleteButtons.add(((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.manageKeys"), this::openDeleteKeys)
-                    .bounds(x, y, width, height)
-                    .build()));
-
-            bottomButtons.add(deleteButtons);
-        }
+                    GuiConstants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
+                    this::delete)));
 
         List<RenderableThingGetter<?>> saveCreateLoadRow = new ArrayList<>();
         bottomButtons.add(saveCreateLoadRow);
@@ -231,7 +203,7 @@ public class EditMemoryBankScreen extends Screen {
         } else {
             // add a button to create a bank for the default ID, if not existing
             var ctx = LoadContext.get();
-            if (ctx != null && !StorageUtil.getStorage().getAllIds().contains(ctx.connectionId()))
+            if (ctx != null && !StorageUtil.getStorage().exists(ctx.connectionId()))
                 bottomButtons.add(List.of((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.createDefault"), ignored -> createDefault(ctx))
                         .bounds(x, y, width, height)
                         .build()));
@@ -329,27 +301,27 @@ public class EditMemoryBankScreen extends Screen {
     }
 
     private int getSingleSettingsColumnWidth() {
-        final int settingsAreaWidth = this.menuWidth - GuiConstants.BUTTON_MARGIN - SETTINGS_TAB_SELECTOR_WIDTH - 2 * GuiConstants.MARGIN;
+        final int settingsAreaWidth = this.menuWidth - GuiConstants.SMALL_MARGIN - SETTINGS_TAB_SELECTOR_WIDTH - 2 * GuiConstants.MARGIN;
         //noinspection PointlessArithmeticExpression
-        return (settingsAreaWidth - GuiConstants.BUTTON_MARGIN * (SETTINGS_MAX_COLUMNS - 1)) / SETTINGS_MAX_COLUMNS;
+        return (settingsAreaWidth - GuiConstants.SMALL_MARGIN * (SETTINGS_MAX_COLUMNS - 1)) / SETTINGS_MAX_COLUMNS;
     }
 
     private int getSettingsX(int column) {
         final int columnWidth = getSingleSettingsColumnWidth();
 
-        final int baseX = this.left + GuiConstants.MARGIN + SETTINGS_TAB_SELECTOR_WIDTH + GuiConstants.BUTTON_MARGIN;
-        return baseX + column * (columnWidth + GuiConstants.BUTTON_MARGIN);
+        final int baseX = this.left + GuiConstants.MARGIN + SETTINGS_TAB_SELECTOR_WIDTH + GuiConstants.SMALL_MARGIN;
+        return baseX + column * (columnWidth + GuiConstants.SMALL_MARGIN);
     }
 
     private int getSettingsY(int row) {
         final int baseY = this.top + SETTINGS_TOP;
-        return baseY + row * (BUTTON_HEIGHT + GuiConstants.BUTTON_MARGIN);
+        return baseY + row * (BUTTON_HEIGHT + GuiConstants.SMALL_MARGIN);
     }
 
     private int getSettingsWidth(int columnsTaken) {
         final int columnWidth = getSingleSettingsColumnWidth();
 
-        return columnWidth * columnsTaken + GuiConstants.BUTTON_MARGIN * (columnsTaken - 1);
+        return columnWidth * columnsTaken + GuiConstants.SMALL_MARGIN * (columnsTaken - 1);
     }
 
     //
@@ -357,15 +329,15 @@ public class EditMemoryBankScreen extends Screen {
         final int rowWidth = this.menuWidth - 2 * GuiConstants.MARGIN;
         final int startX = this.left + GuiConstants.MARGIN;
         final int startY = this.top + this.menuHeight - GuiConstants.MARGIN - BUTTON_HEIGHT;
-        final int yOffset = BUTTON_HEIGHT + GuiConstants.BUTTON_MARGIN;
+        final int yOffset = BUTTON_HEIGHT + GuiConstants.SMALL_MARGIN;
 
         // bottom upwards
         for (int i = 0; i < buttons.size(); i++) {
             var row = buttons.get(i);
-            int buttonWidth = (rowWidth - (GuiConstants.BUTTON_MARGIN * (row.size() - 1))) / row.size();
+            int buttonWidth = (rowWidth - (GuiConstants.SMALL_MARGIN * (row.size() - 1))) / row.size();
             for (int buttonIndex = 0; buttonIndex < row.size(); buttonIndex++) {
                 this.addRenderableWidget(row.get(buttonIndex)
-                        .get(startX + buttonIndex * (buttonWidth + GuiConstants.BUTTON_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
+                        .get(startX + buttonIndex * (buttonWidth + GuiConstants.SMALL_MARGIN), startY - i * yOffset, buttonWidth, BUTTON_HEIGHT));
             }
         }
     }
@@ -377,43 +349,6 @@ public class EditMemoryBankScreen extends Screen {
                     .setOverride(memoryBankId.equals(ctx.connectionId()) ? Optional.empty() : Optional.of(memoryBankId)));
             button.active = false;
         }
-    }
-
-    // we use YACL here because I'm lazy
-    private void openDeleteKeys(Button button) {
-        MemoryBank bank = isCurrentIdLoaded() ? MemoryBank.INSTANCE : StorageUtil.getStorage().load(memoryBankId);
-        if (bank == null) return;
-
-        var category = ConfigCategory.createBuilder()
-                .name(translatable("chesttracker.gui.editMemoryBank.manageKeys"));
-
-        for (ResourceLocation key : bank.getKeys()) {
-            category.option(ButtonOption.createBuilder()
-                    .name(Component.literal(key.toString()))
-                    .text(translatable("selectServer.delete"))
-                    .description(OptionDescription.of(
-                            translatable("chesttracker.gui.editMemoryBank.deleteKey.description", key),
-                            CommonComponents.NEW_LINE,
-                            translatable("chesttracker.config.irreversable").withStyle(ChatFormatting.RED)
-                    )).action((screen, option) -> {
-                        bank.removeKey(key);
-                        option.setAvailable(false);
-                        if (isCurrentIdLoaded()) {
-                            MemoryBank.save();
-                        } else {
-                            bank.setId(memoryBankId);
-                            StorageUtil.getStorage().save(bank);
-                        }
-                    })
-                    .build());
-        }
-
-        Minecraft.getInstance().setScreen(YetAnotherConfigLib.createBuilder()
-                .title(translatable("chesttracker.gui.editMemoryBank.manageKeys"))
-                .category(category.build())
-                .build()
-                .generateScreen(this));
-
     }
 
     // Create and load a memory bank using the current load context, then run the load callback.
@@ -452,14 +387,6 @@ public class EditMemoryBankScreen extends Screen {
             StorageUtil.getStorage().save(memory);
         }
         this.onClose();
-    }
-
-    @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics);
-        NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(Minecraft.getInstance().font, this.title, left + GuiConstants.MARGIN, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
     }
 
     @Override

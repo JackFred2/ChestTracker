@@ -2,7 +2,6 @@ package red.jackf.chesttracker.gui.screen;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,12 +9,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
@@ -32,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Allows a user to select (if in game) and manage memory banks.
  */
-public class MemoryBankManagerScreen extends Screen {
+public class MemoryBankManagerScreen extends BaseUtilScreen {
     private static final int BUTTON_SIZE = 12;
     private static final int SEARCH_TOP = 19;
     private static final int SEARCH_HEIGHT = 12;
@@ -41,10 +38,6 @@ public class MemoryBankManagerScreen extends Screen {
 
     private final Runnable onRemoveScreen;
     private final Runnable afterBankLoaded;
-    private int menuWidth = 0;
-    private int menuHeight = 0;
-    private int left = 0;
-    private int top = 0;
 
     private EditBox search = null;
     private StringSelectorWidget<String> memoryBankList;
@@ -55,7 +48,7 @@ public class MemoryBankManagerScreen extends Screen {
      * @param afterBankLoaded - Runnable to run after selection of a new memory bank
      */
     public MemoryBankManagerScreen(Runnable onRemoveScreen, Runnable afterBankLoaded) {
-        super(Component.translatable("chesttracker.gui.memoryManager.title"));
+        super(Component.translatable("chesttracker.gui.memoryManager"));
         this.onRemoveScreen = onRemoveScreen;
         this.afterBankLoaded = afterBankLoaded;
     }
@@ -82,24 +75,18 @@ public class MemoryBankManagerScreen extends Screen {
                 .filter(pair -> pair.getSecond() != null)
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
 
-        this.menuWidth = GuiConstants.WIDTH;
-        this.menuHeight = GuiConstants.HEIGHT;
-
-        this.left = (this.width - menuWidth) / 2;
-        this.top = (this.height - menuHeight) / 2;
-
         // backend label
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                 top + GuiConstants.MARGIN,
-                this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.BUTTON_MARGIN - BUTTON_SIZE,
+                this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - BUTTON_SIZE,
                 Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.name()),
                 TextColours.getLabelColour(),
                 TextWidget.Alignment.RIGHT));
 
         // close button
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - BUTTON_SIZE - GuiConstants.BUTTON_MARGIN,
-                this.top + GuiConstants.BUTTON_MARGIN,
+                this.left + this.menuWidth - BUTTON_SIZE - GuiConstants.SMALL_MARGIN,
+                this.top + GuiConstants.SMALL_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
                 0,
@@ -115,7 +102,7 @@ public class MemoryBankManagerScreen extends Screen {
         if (inGame) {
             // button to create a new memory; not shown if not ingame
             this.addRenderableWidget(new ImageButton(
-                            this.left + menuWidth - BUTTON_SIZE - GuiConstants.BUTTON_MARGIN,
+                            this.left + menuWidth - BUTTON_SIZE - GuiConstants.SMALL_MARGIN,
                             this.top + SEARCH_TOP,
                             BUTTON_SIZE,
                             BUTTON_SIZE,
@@ -134,7 +121,7 @@ public class MemoryBankManagerScreen extends Screen {
                 Minecraft.getInstance().font,
                 this.left + GuiConstants.MARGIN,
                 this.top + SEARCH_TOP,
-                this.menuWidth - 2 * GuiConstants.BUTTON_MARGIN - (inGame ? (BUTTON_SIZE + 6) : 0),
+                this.menuWidth - 2 * GuiConstants.SMALL_MARGIN - (inGame ? (BUTTON_SIZE + 6) : 0),
                 SEARCH_HEIGHT,
                 this.search,
                 Component.translatable("chesttracker.gui.memoryManager.search")
@@ -182,14 +169,6 @@ public class MemoryBankManagerScreen extends Screen {
 
     private void openEditScreen(Runnable afterBankLoaded, @Nullable String idToOpen) {
         Minecraft.getInstance().setScreen(new EditMemoryBankScreen(this, afterBankLoaded, idToOpen));
-    }
-
-    @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics);
-        NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(Minecraft.getInstance().font, this.title, left + GuiConstants.MARGIN, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
     }
 
     @Override

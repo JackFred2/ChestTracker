@@ -12,7 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.SearchInvoker;
@@ -31,7 +31,7 @@ public class ItemListWidget extends AbstractWidget {
     private boolean hideTooltip;
 
     public ItemListWidget(int x, int y, int gridWidth, int gridHeight) {
-        super(x, y, gridWidth * Constants.SLOT_SIZE, gridHeight * Constants.SLOT_SIZE, Component.empty());
+        super(x, y, gridWidth * GuiConstants.GRID_SLOT_SIZE, gridHeight * GuiConstants.GRID_SLOT_SIZE, Component.empty());
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
     }
@@ -43,7 +43,7 @@ public class ItemListWidget extends AbstractWidget {
     }
 
     private List<ItemStack> getOffsetItems() {
-        if (this.items.size() == 0) return Collections.emptyList();
+        if (this.items.isEmpty()) return Collections.emptyList();
         int min = Mth.clamp(this.offset, 0, this.items.size() - 1);
         int max = Mth.clamp(this.offset + gridWidth * gridHeight, 0, this.items.size());
         return this.items.subList(min, max);
@@ -71,8 +71,8 @@ public class ItemListWidget extends AbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         var items = getOffsetItems();
-        int x = (int) ((mouseX - getX()) / Constants.SLOT_SIZE);
-        int y = (int) ((mouseY - getY()) / Constants.SLOT_SIZE);
+        int x = (int) ((mouseX - getX()) / GuiConstants.GRID_SLOT_SIZE);
+        int y = (int) ((mouseY - getY()) / GuiConstants.GRID_SLOT_SIZE);
         var index = (y * gridWidth) + x;
         if (index >= items.size()) return;
         var request = new SearchRequest();
@@ -93,8 +93,8 @@ public class ItemListWidget extends AbstractWidget {
         var items = getOffsetItems();
         for (int i = 0; i < items.size(); i++) {
             var item = items.get(i);
-            var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
-            var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
+            var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
+            var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);
             graphics.renderItemDecorations(Minecraft.getInstance().font, item, x + 1, y + 1, StringUtil.magnitude(item.getCount(), 0)); // Counts
         }
     }
@@ -102,14 +102,14 @@ public class ItemListWidget extends AbstractWidget {
     private void renderAdditional(GuiGraphics graphics, int mouseX, int mouseY) {
         var items = getOffsetItems();
         if (!this.isHovered()) return;
-        var x = (mouseX - getX()) / Constants.SLOT_SIZE;
-        var y = (mouseY - getY()) / Constants.SLOT_SIZE;
+        var x = (mouseX - getX()) / GuiConstants.GRID_SLOT_SIZE;
+        var y = (mouseY - getY()) / GuiConstants.GRID_SLOT_SIZE;
         if (x < 0 || x > gridWidth || y < 0 || y > gridHeight) return;
         var index = (y * gridWidth) + x;
         if (index >= items.size()) return;
-        var slotX = getX() + x * Constants.SLOT_SIZE;
-        var slotY = getY() + y * Constants.SLOT_SIZE;
-        graphics.fill(slotX + 1, slotY + 1, slotX + Constants.SLOT_SIZE - 1, slotY + Constants.SLOT_SIZE - 1, 0x80_FFFFFF);
+        var slotX = getX() + x * GuiConstants.GRID_SLOT_SIZE;
+        var slotY = getY() + y * GuiConstants.GRID_SLOT_SIZE;
+        graphics.fill(slotX + 1, slotY + 1, slotX + GuiConstants.GRID_SLOT_SIZE - 1, slotY + GuiConstants.GRID_SLOT_SIZE - 1, 0x80_FFFFFF);
         if (!this.hideTooltip) {
             var stack = items.get(index);
             var lines =  Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
@@ -127,8 +127,8 @@ public class ItemListWidget extends AbstractWidget {
         // background
         graphics.innerBlit(TEXTURE, getX(), getX() + getWidth(), getY(), getY() + getHeight(), 0, 0, gridWidth, 0, gridHeight);
         for (int i = 0; i < (gridWidth * gridHeight); i++) {
-            var x = this.getX() + Constants.SLOT_SIZE * (i % gridWidth);
-            var y = this.getY() + Constants.SLOT_SIZE * (i / gridWidth);
+            var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
+            var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);
             if (i < items.size()) {
                 var item = items.get(i);
                 graphics.renderItem(item, x + 1, y + 1); // Item

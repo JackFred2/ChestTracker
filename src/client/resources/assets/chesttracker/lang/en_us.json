@@ -6,7 +6,8 @@
   "chesttracker.gui.button.off": "Off",
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
-  "chesttracker.gui.memoryManager.title": "Manage Memory Banks",
+
+  "chesttracker.gui.memoryManager": "Manage Memory Banks",
   "chesttracker.gui.memoryManager.search": "Search Memory Banks",
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",
   "chesttracker.gui.memoryManager.newMemoryBank": "Create new Memory Bank",
@@ -16,7 +17,6 @@
   "chesttracker.gui.editMemoryBank.createAndLoad": "Create and Load",
   "chesttracker.gui.editMemoryBank.edit": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.id": "ID:",
-  "chesttracker.gui.editMemoryBank.manageKeys": "Manage keys",
   "chesttracker.gui.editMemoryBank.markDefault": "Make Default",
   "chesttracker.gui.editMemoryBank.alreadyDefault": "Already Default",
   "chesttracker.gui.editMemoryBank.markDefault.tooltip": "Mark this Memory Bank as the default for the current connection/world.",
@@ -41,6 +41,8 @@
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours": "Memory Lifetime: %d hours",
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day": "Memory Lifetime: 1 day",
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days": "Memory Lifetime: %d days",
+
+  "chesttracker.gui.memoryKeys": "Memory Keys",
 
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",

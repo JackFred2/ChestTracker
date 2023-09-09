@@ -52,6 +52,15 @@ public interface Storage {
     Collection<String> getAllIds();
 
     /**
+     * Check whether an ID exists for this storage.
+     * @param id ID to check existence for
+     * @return Whether a memory bank by this ID exists.
+     */
+    default boolean exists(String id) {
+        return getAllIds().contains(id);
+    }
+
+    /**
      * Returns just the metadata of a memory bank. If possible, load only the metadata instead of the whole file.
      * @param id ID of the memory bank to load
      * @return Metadata from the memory bank, or null if not.
