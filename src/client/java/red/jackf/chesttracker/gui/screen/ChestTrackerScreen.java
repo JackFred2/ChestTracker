@@ -53,6 +53,8 @@ public class ChestTrackerScreen extends Screen {
 
     private int left = 0;
     private int top = 0;
+    private int menuWidth;
+    private int menuHeight;
 
     // borrowed from creative screen, pressing `t` to focus search also triggers an input on charTyped
     private boolean ignoreTextInput = false;
@@ -62,17 +64,15 @@ public class ChestTrackerScreen extends Screen {
     @Nullable
     private ResizeWidget resize = null;
     private VerticalScrollWidget scroll;
-    private ResourceLocation memoryKey;
+    private ResourceLocation currentMemoryKey;
     private List<ItemStack> items = Collections.emptyList();
-    private int menuWidth;
-    private int menuHeight;
 
     public ChestTrackerScreen(@Nullable Screen parent) {
         super(TITLE);
         ChestTracker.LOGGER.debug("Open Screen");
         this.parent = parent;
         var level = Minecraft.getInstance().level;
-        this.memoryKey = level == null ? ChestTracker.id("unknown") : level.dimension().location();
+        this.currentMemoryKey = level == null ? ChestTracker.id("unknown") : level.dimension().location();
     }
 
     @Override
@@ -200,10 +200,10 @@ public class ChestTrackerScreen extends Screen {
         if (MemoryBank.INSTANCE != null) {
             var iconList = ChestTrackerConfig.INSTANCE.getConfig().gui.memoryKeyIcons;
             var todo = MemoryBank.INSTANCE.getKeys();
-            Map<ResourceLocation, ItemButton> buttons = new HashMap<>(); // used to manage highlights
+            Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 
-            for (int index = 0; index < todo.size(); index++) {
-                var resloc = todo.get(index);
+            for (int index = 1; index <= todo.size(); index++) {
+                var resloc = todo.get(index - 1);
                 var icon = iconList.stream()
                         .filter(memoryKeyIcon -> memoryKeyIcon.id().equals(resloc))
                         .findFirst()
@@ -214,21 +214,21 @@ public class ChestTrackerScreen extends Screen {
                         this.top + index * MEMORY_ICON_SPACING,
                         Component.literal(resloc.toString()), b -> {
                     // unhighlight old
-                    if (buttons.containsKey(this.memoryKey))
-                        buttons.get(this.memoryKey).setHighlighted(false);
+                    if (buttons.containsKey(this.currentMemoryKey))
+                        buttons.get(this.currentMemoryKey).setHighlighted(false);
 
                     // set item list
-                    this.memoryKey = resloc;
+                    this.currentMemoryKey = resloc;
                     updateItems();
 
                     // highlight new
                     buttons.get(resloc).setHighlighted(true);
-                }, true, 200, true));
+                }, ItemButton.Background.CUSTOM, 200));
 
                 buttons.put(resloc, button);
 
                 // inital button highlight
-                if (memoryKey.equals(resloc)) button.setHighlighted(true);
+                if (currentMemoryKey.equals(resloc)) button.setHighlighted(true);
             }
         }
 
@@ -252,7 +252,7 @@ public class ChestTrackerScreen extends Screen {
      */
     private void updateItems() {
         if (MemoryBank.INSTANCE == null) return;
-        var counts = MemoryBank.INSTANCE.getCounts(memoryKey);
+        var counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey);
         this.items = counts.entrySet().stream()
                 .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest
                 .map(e -> { // lightweight stack -> full stacks

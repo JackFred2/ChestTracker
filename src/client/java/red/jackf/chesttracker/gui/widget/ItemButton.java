@@ -15,19 +15,17 @@ public class ItemButton extends Button {
     public static final int SIZE = 20;
     private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/memory_key_background");
     private final ItemStack stack;
+    private final Background background;
     private final Component tooltip;
-    private final boolean shouldShowBackground;
     private final int tooltipZMod;
-    private final boolean useChestTrackerBackground;
     private boolean highlighted = false;
 
-    public ItemButton(ItemStack stack, int x, int y, Component tooltip, OnPress onPress, boolean shouldShowBackground, int tooltipZMod, boolean useChestTrackerBackground) {
+    public ItemButton(ItemStack stack, int x, int y, Component tooltip, OnPress onPress, Background background, int tooltipZMod) {
         super(x, y, SIZE, SIZE, CommonComponents.EMPTY, onPress, Button.DEFAULT_NARRATION);
         this.tooltip = tooltip;
         this.stack = stack;
-        this.shouldShowBackground = shouldShowBackground;
+        this.background = background;
         this.tooltipZMod = tooltipZMod;
-        this.useChestTrackerBackground = useChestTrackerBackground;
     }
 
     public void setHighlighted(boolean highlighted) {
@@ -36,12 +34,11 @@ public class ItemButton extends Button {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (this.shouldShowBackground) {
-            if (useChestTrackerBackground) {
+        switch (background) {
+            case VANILLA -> super.renderWidget(graphics, mouseX, mouseY, partialTick);
+            case CUSTOM -> {
                 var texY = (this.highlighted || this.isHovered()) ? SIZE : 0;
                 graphics.blit(TEXTURE, getX(), getY(), 0, texY, SIZE, SIZE, SIZE, SIZE * 2);
-            } else {
-                super.renderWidget(graphics, mouseX, mouseY, partialTick);
             }
         }
         graphics.renderItem(stack, this.getX() + 2, this.getY() + 2);
@@ -58,5 +55,11 @@ public class ItemButton extends Button {
     @Override
     public void renderString(@NotNull GuiGraphics graphics, @NotNull Font font, int color) {
         // noop
+    }
+
+    public enum Background {
+        NONE,
+        VANILLA,
+        CUSTOM
     }
 }

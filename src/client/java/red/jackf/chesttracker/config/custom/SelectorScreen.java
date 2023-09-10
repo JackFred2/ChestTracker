@@ -39,8 +39,8 @@ public class SelectorScreen<T> extends Screen {
     private int left = 0;
     private int top = 0;
 
-    protected SelectorScreen(Screen parent, Map<T, ItemStack> options, Consumer<@Nullable T> consumer) {
-        super(Component.translatable("chesttracker.config.selectorScreen"));
+    protected SelectorScreen(Component title, Screen parent, Map<T, ItemStack> options, Consumer<@Nullable T> consumer) {
+        super(title);
         this.parent = parent;
         this.consumer = consumer;
 
@@ -96,7 +96,7 @@ public class SelectorScreen<T> extends Screen {
                         option.getValue().getHoverName(), b -> {
                     SelectorScreen.this.consumer.accept(option.getKey());
                     this.onClose();
-                }, false, 0, false));
+                }, ItemButton.Background.NONE, 0));
             }
         }
     }

@@ -100,11 +100,11 @@ public record MemoryKeyIconController(Option<MemoryKeyIcon> option) implements C
 
             this.setItemButton = new ItemButton(option.pendingValue().icon()
                     .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.memoryKeyIcons.icon"),
-                    b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(screen, ITEMS, item -> {
+                    b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(Component.translatable("chesttracker.gui.selectIcon"), screen, ITEMS, item -> {
                         if (item != null)
                             option.requestSet(new MemoryKeyIcon(option.binding().getValue()
                                     .id(), new LightweightStack(item)));
-                    })), true, 0, false);
+                    })), ItemButton.Background.VANILLA, 0);
         }
 
         @Override

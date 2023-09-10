@@ -12,7 +12,7 @@ public class EditMemoryKeyScreen extends BaseUtilScreen {
     private final String memoryBankId;
 
     protected EditMemoryKeyScreen(Screen parent, String memoryBankId, boolean isCreating) {
-        super(translatable("chesttracker.gui.memoryKeys"));
+        super(translatable("chesttracker.gui.editMemoryKey"));
         this.parent = parent;
         this.memoryBankId = memoryBankId;
 

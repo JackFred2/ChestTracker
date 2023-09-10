@@ -42,13 +42,14 @@
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day": "Memory Lifetime: 1 day",
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days": "Memory Lifetime: %d days",
 
-  "chesttracker.gui.memoryKeys": "Memory Keys",
+  "chesttracker.gui.editMemoryKey": "Editing Memory Key",
+
+  "chesttracker.gui.selectIcon": "Choose an icon  ",
 
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",
 
   "chesttracker.config.open": "Open",
-  "chesttracker.config.selectorScreen": "Choose an option",
   "chesttracker.config.irreversable": "Warning: this action can not be undone.",
 
   "chesttracker.config.mainGui": "Main Gui",
