@@ -202,8 +202,8 @@ public class ChestTrackerScreen extends Screen {
             var todo = MemoryBank.INSTANCE.getKeys();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 
-            for (int index = 1; index <= todo.size(); index++) {
-                var resloc = todo.get(index - 1);
+            for (int index = 0; index < todo.size(); index++) {
+                var resloc = todo.get(index);
                 var icon = iconList.stream()
                         .filter(memoryKeyIcon -> memoryKeyIcon.id().equals(resloc))
                         .findFirst()

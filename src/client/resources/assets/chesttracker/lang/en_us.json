@@ -42,7 +42,7 @@
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day": "Memory Lifetime: 1 day",
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days": "Memory Lifetime: %d days",
 
-  "chesttracker.gui.editMemoryKey": "Editing Memory Key",
+  "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
 
   "chesttracker.gui.selectIcon": "Choose an icon  ",
 

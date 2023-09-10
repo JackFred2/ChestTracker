@@ -155,12 +155,20 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         // bottom button elements
         List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
 
-        // delete everything
-        if (StorageUtil.getStorage().exists(memoryBankId))
-            bottomButtons.add(List.of((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
+        if (StorageUtil.getStorage().exists(memoryBankId)) {
+            List<RenderableThingGetter<?>> managementButtons = new ArrayList<>();
+            // delete everything
+            managementButtons.add((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
                     translatable("selectServer.deleteButton"),
                     GuiConstants.ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME,
-                    this::delete)));
+                    this::delete));
+
+            managementButtons.add(((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryKeys"), this::openEditMemoryKeys)
+                    .bounds(x, y, width, height)
+                    .build()));
+
+            bottomButtons.add(managementButtons);
+        }
 
         List<RenderableThingGetter<?>> saveCreateLoadRow = new ArrayList<>();
         bottomButtons.add(saveCreateLoadRow);
@@ -212,6 +220,10 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         addBottomButtons(bottomButtons);
 
         setupSettings(this.menuHeight - SETTINGS_TOP - 2 - (GuiConstants.MARGIN + BUTTON_HEIGHT) * bottomButtons.size());
+    }
+
+    private void openEditMemoryKeys(Button ignored) {
+
     }
 
     private void setupSettings(int height) {
