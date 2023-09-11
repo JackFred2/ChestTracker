@@ -223,7 +223,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private void openEditMemoryKeys(Button ignored) {
-
+        Minecraft.getInstance().setScreen(new EditMemoryKeysScreen(this, memoryBankId));
     }
 
     private void setupSettings(int height) {

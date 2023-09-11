@@ -3,10 +3,11 @@
   "package": "red.jackf.chesttracker.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "MinecraftServerAccessor",
-    "RealmsConnectMixin",
+    "AbstractWidgetAccessor",
     "BlockMixin",
-    "AbstractWidgetAccessor"
+    "EditBoxAccessor",
+    "MinecraftServerAccessor",
+    "RealmsConnectMixin"
   ],
   "injectors": {
     "defaultRequire": 1

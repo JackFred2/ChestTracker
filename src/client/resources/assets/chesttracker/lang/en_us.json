@@ -43,6 +43,8 @@
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days": "Memory Lifetime: %d days",
 
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
+  "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
+  "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
 
   "chesttracker.gui.selectIcon": "Choose an icon  ",
 
@@ -64,8 +66,6 @@
 
   "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
   "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
-  "chesttracker.config.memoryKeyIcons.dimension": "Memory Key",
-  "chesttracker.config.memoryKeyIcons.icon": "Set Icon",
 
   "chesttracker.config.managementGui": "Management GUI",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",

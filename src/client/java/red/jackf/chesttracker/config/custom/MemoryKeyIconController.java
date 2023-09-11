@@ -99,7 +99,7 @@ public record MemoryKeyIconController(Option<MemoryKeyIcon> option) implements C
             this.editBox.setTooltip(Tooltip.create(translatable("chesttracker.config.memoryKeyIcons.dimension")));
 
             this.setItemButton = new ItemButton(option.pendingValue().icon()
-                    .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.config.memoryKeyIcons.icon"),
+                    .toStack(), dim.xLimit() - 20, dim.y(), translatable("chesttracker.gui.editMemoryKeys.setIcon"),
                     b -> Minecraft.getInstance().setScreen(new SelectorScreen<>(Component.translatable("chesttracker.gui.selectIcon"), screen, ITEMS, item -> {
                         if (item != null)
                             option.requestSet(new MemoryKeyIcon(option.binding().getValue()
