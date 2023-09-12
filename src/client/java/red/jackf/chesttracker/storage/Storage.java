@@ -1,94 +1,85 @@
 package red.jackf.chesttracker.storage;
 
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
+import org.apache.logging.log4j.Logger;
+import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
-import red.jackf.chesttracker.storage.impl.GameMemoryStorage;
-import red.jackf.chesttracker.storage.impl.JsonStorage;
-import red.jackf.chesttracker.storage.impl.NbtStorage;
+import red.jackf.chesttracker.storage.backend.Backend;
 
 import java.util.Collection;
-import java.util.function.Supplier;
+import java.util.Optional;
 
-/**
- * A handler for storing a memory bank in a black-box format
- */
-public interface Storage {
-    /**
-     * Load a memory bank if it exists, or return null if not.
-     * @param id ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
-     * @return Loaded Memory Bank, or null if not available.
-     */
-    @Nullable
-    MemoryBank load(String id);
+public class Storage {
 
-    /**
-     * Delete a memory from this storage. Not reversible.
-     * @param id ID of the memory bank to delete. If it does not exist, do nothing.
-     */
-    void delete(String id);
+    //////////////
+    // INTERNAL //
+    //////////////
 
-    /**
-     * Save this memory bank. The ID is contained within the memory bank; use {@link MemoryBank#getId()}.
-     * If an error occurs, an exception should be logged, but should not crash the game.
-     * @param memoryBank Memory bank to save to this storage.
-     */
-    void save(MemoryBank memoryBank);
+    private static final Logger LOGGER = ChestTracker.getLogger("Storage");
+    private static Backend backend;
 
-    /**
-     * Returns a small label to show at the top of the "edit memory bank" screen.
-     * @param memoryBankId ID of a memory bank to generate a label for.
-     * @return Component to show at the top of the edit memory bank screen.
-     */
-    default Component getDescriptionLabel(String memoryBankId) {
-        return Component.empty();
+    public static void setBackend(Backend backend) {
+        Storage.backend = backend;
     }
 
-    /**
-     * Return all IDs in this storage, such as all files, in no particular order.
-     * @return All memory bank IDs accessible by this storage.
-     */
-    Collection<String> getAllIds();
+    public static void setup() {
+        ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.load();
 
-    /**
-     * Check whether an ID exists for this storage.
-     * @param id ID to check existence for
-     * @return Whether a memory bank by this ID exists.
-     */
-    default boolean exists(String id) {
-        return getAllIds().contains(id);
+        // storage saving hooks
+
+        // on pause
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof PauseScreen) MemoryBank.save();
+        });
     }
 
-    /**
-     * Returns just the metadata of a memory bank. If possible, load only the metadata instead of the whole file.
-     * @param id ID of the memory bank to load
-     * @return Metadata from the memory bank, or null if not.
-     */
-    @Nullable
-    default Metadata getMetadata(String id) {
-        var loaded = load(id);
-        return loaded != null ? loaded.getMetadata() : null;
+    /////////
+    // API //
+    /////////
+
+    public static Optional<Metadata> loadMetadata(String id) {
+        if (MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(id))
+            return Optional.of(MemoryBank.INSTANCE.getMetadata().deepCopy());
+        LOGGER.debug("Loading {} metadata using {}", id, backend.getClass().getSimpleName());
+        return Optional.ofNullable(backend.getMetadata(id));
     }
 
+    public static Collection<String> getAllIds() {
+        return backend.getAllIds();
+    }
 
+    public static boolean exists(String id) {
+        return backend.exists(id);
+    }
 
-    enum Backend {
-        JSON(JsonStorage::new),
-        NBT(NbtStorage::new),
-        MEMORY(GameMemoryStorage::new);
+    public static void delete(String id) {
+        backend.delete(id);
+    }
 
-        private final Supplier<Storage> constructor;
+    public static Component getBackendLabel(String memoryBankId) {
+        return backend.getDescriptionLabel(memoryBankId);
+    }
 
-        Backend(Supplier<Storage> constructor) {
-            this.constructor = constructor;
+    public static Optional<MemoryBank> load(String id) {
+        if (MemoryBank.INSTANCE != null && id.equals(MemoryBank.INSTANCE.getId()))
+            return Optional.of(MemoryBank.INSTANCE);
+        LOGGER.debug("Loading {} using {}", id, backend.getClass().getSimpleName());
+        var loaded = backend.load(id);
+        if (loaded == null) return Optional.empty();
+        loaded.setId(id);
+        return Optional.of(loaded);
+    }
+
+    public static void save(MemoryBank bank) {
+        if (bank == null) {
+            LOGGER.warn("Tried to save null Memory Bank");
+            return;
         }
-
-        public void load() {
-            // var connectionId = MemoryBank.INSTANCE != null ? MemoryBank.INSTANCE.getId() : null;
-            MemoryBank.unload();
-            StorageUtil.setStorage(constructor.get());
-            // if (connectionId != null) MemoryBank.load(connectionId);
-        }
+        bank.getMetadata().updateModified();
+        backend.save(bank);
     }
 }

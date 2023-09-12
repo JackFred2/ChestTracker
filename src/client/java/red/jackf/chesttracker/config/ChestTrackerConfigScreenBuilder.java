@@ -21,7 +21,7 @@ import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.storage.backend.Backend;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
@@ -273,7 +273,7 @@ public class ChestTrackerConfigScreenBuilder {
                         .action((screen, button) -> Util.getPlatform().openUri(Constants.STORAGE_DIR.toUri()))
                         .text(literal(getDirectorySizeString()))
                         .build())
-                .option(Option.<Storage.Backend>createBuilder()
+                .option(Option.<Backend.Type>createBuilder()
                         .name(translatable("chesttracker.config.storage.storageBackend"))
                         .description(b -> {
                             var builder = OptionDescription.createBuilder()
@@ -282,13 +282,13 @@ public class ChestTrackerConfigScreenBuilder {
                                     .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
                                             .append(translatable("chesttracker.config.storage.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
                                                     .withStyle(ChatFormatting.WHITE)));
-                            if (b == Storage.Backend.MEMORY)
+                            if (b == Backend.Type.MEMORY)
                                 builder.text(CommonComponents.NEW_LINE)
                                         .text(translatable("chesttracker.config.storage.storageBackend.description.memoryLossOnReboot").withStyle(ChatFormatting.RED));
                             return builder.build();
                         })
                         .controller(opt -> EnumControllerBuilder.create(opt)
-                                .enumClass(Storage.Backend.class))
+                                .enumClass(Backend.Type.class))
                         .binding(
                                 instance.getDefaults().storage.storageBackend,
                                 () -> instance.getConfig().storage.storageBackend,

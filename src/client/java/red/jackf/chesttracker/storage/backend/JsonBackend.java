@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.storage.impl;
+package red.jackf.chesttracker.storage.backend;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class JsonStorage implements FileBasedStorage {
+public class JsonBackend implements FileBasedBackend {
     private static final Logger LOGGER = LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/JSON");
     private static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();

@@ -12,7 +12,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
-import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.whereisit.api.SearchRequest;
@@ -60,7 +60,7 @@ public class MemoryBank {
 
     public static void loadOrCreate(String id, @NotNull Metadata creationMetadata) {
         unload();
-        INSTANCE = StorageUtil.load(id).orElseGet(() -> {
+        INSTANCE = Storage.load(id).orElseGet(() -> {
             var bank = new MemoryBank(creationMetadata, new HashMap<>());
             bank.setId(id);
             return bank;
@@ -70,7 +70,7 @@ public class MemoryBank {
 
     public static void save() {
         if (INSTANCE == null) return;
-        StorageUtil.save(INSTANCE);
+        Storage.save(INSTANCE);
     }
 
     public static void unload() {

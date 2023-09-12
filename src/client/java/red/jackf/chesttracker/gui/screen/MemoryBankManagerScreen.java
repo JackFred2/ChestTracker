@@ -19,7 +19,7 @@ import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
-import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.storage.Storage;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,9 +69,9 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
     protected void init() {
         super.init();
 
-        this.memoryBanks = StorageUtil.getAllIds().stream()
+        this.memoryBanks = Storage.getAllIds().stream()
                 .sorted()
-                .map(id -> Pair.of(id, StorageUtil.loadMetadata(id)))
+                .map(id -> Pair.of(id, Storage.loadMetadata(id)))
                 .filter(pair -> pair.getSecond().isPresent())
                 .collect(Collectors.toMap(Pair::getFirst, p -> p.getSecond().get(), (a, b) -> a, LinkedHashMap::new));
 

@@ -1,14 +1,13 @@
-package red.jackf.chesttracker.storage.impl;
+package red.jackf.chesttracker.storage.backend;
 
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.Storage;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameMemoryStorage implements Storage {
+public class GameMemoryBackend implements Backend {
     private static final Map<String, MemoryBank> storage = new HashMap<>();
 
     @Nullable

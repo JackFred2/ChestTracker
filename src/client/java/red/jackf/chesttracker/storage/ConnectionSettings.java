@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.chesttracker.util.NbtSerialization;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -28,11 +29,11 @@ public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
     private static Map<String, ConnectionSettings> settings = new HashMap<>();
 
     public static void load() {
-        StorageUtil.loadFromNbt(FILE_CODEC, PATH).ifPresent(connectionSettingsMap -> settings = connectionSettingsMap);
+        NbtSerialization.loadFromNbt(FILE_CODEC, PATH).ifPresent(connectionSettingsMap -> settings = connectionSettingsMap);
     }
 
     public static void save() {
-        StorageUtil.saveToNbt(settings, FILE_CODEC, PATH);
+        NbtSerialization.saveToNbt(settings, FILE_CODEC, PATH);
     }
 
     public static ConnectionSettings getOrCreate(String connectionId) {

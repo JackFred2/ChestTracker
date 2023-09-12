@@ -10,7 +10,7 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.storage.Storage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     protected EditMemoryKeysScreen(Screen parent, String memoryBankId) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
         this.parent = parent;
-        this.bank = StorageUtil.load(memoryBankId).orElse(null);
+        this.bank = Storage.load(memoryBankId).orElse(null);
         if (this.bank == null) onClose();
     }
 
@@ -92,7 +92,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
                         this.bank.removeKey(key);
-                        StorageUtil.save(bank);
+                        Storage.save(bank);
                         // can't schedule rebuilt during rendering because CME, so do it on tick
                         this.scheduleRebuild = true;
                     }));

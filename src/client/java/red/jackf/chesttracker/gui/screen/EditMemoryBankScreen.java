@@ -20,7 +20,7 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
-import red.jackf.chesttracker.storage.StorageUtil;
+import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.StringUtil;
 
 import java.util.*;
@@ -59,7 +59,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
             this.metadata = Metadata.blankWithName(this.memoryBankId.substring("user/".length()));
         } else {
             this.memoryBankId = memoryBankId;
-            this.metadata = StorageUtil.loadMetadata(memoryBankId).orElseGet(Metadata::blank);
+            this.metadata = Storage.loadMetadata(memoryBankId).orElseGet(Metadata::blank);
         }
     }
 
@@ -72,7 +72,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private String getNextIdDefault() {
-        var keys = StorageUtil.getAllIds();
+        var keys = Storage.getAllIds();
         int index = 1;
         String id;
         do {
@@ -107,7 +107,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
             this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                     top + GuiConstants.MARGIN,
                     this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - CLOSE_BUTTON_SIZE,
-                    StorageUtil.getBackendLabel(memoryBankId),
+                    Storage.getBackendLabel(memoryBankId),
                     TextColours.getLabelColour(),
                     TextWidget.Alignment.RIGHT));
 
@@ -154,7 +154,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         // bottom button elements
         List<List<RenderableThingGetter<?>>> bottomButtons = new ArrayList<>();
 
-        if (StorageUtil.exists(memoryBankId)) {
+        if (Storage.exists(memoryBankId)) {
             List<RenderableThingGetter<?>> managementButtons = new ArrayList<>();
             // delete everything
             managementButtons.add((x, y, width, height) -> new HoldToConfirmButton(x, y, width, height,
@@ -210,7 +210,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         } else {
             // add a button to create a bank for the default ID, if not existing
             var ctx = LoadContext.get();
-            if (ctx != null && !StorageUtil.exists(ctx.connectionId()))
+            if (ctx != null && !Storage.exists(ctx.connectionId()))
                 bottomButtons.add(List.of((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.createDefault"), ignored -> createDefault(ctx))
                         .bounds(x, y, width, height)
                         .build()));
@@ -377,15 +377,15 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     // Delete the selected memory bank, and close the GUI.
     private void delete(HoldToConfirmButton button) {
         if (isCurrentIdLoaded()) MemoryBank.unload();
-        StorageUtil.delete(memoryBankId);
+        Storage.delete(memoryBankId);
         this.onClose();
     }
 
     // Save the selected memory bank, and close the GUI.
     private void save(Button button) {
-        var memory = StorageUtil.load(memoryBankId).orElseGet(() -> new MemoryBank(metadata, new HashMap<>()));
+        var memory = Storage.load(memoryBankId).orElseGet(() -> new MemoryBank(metadata, new HashMap<>()));
         memory.setMetadata(metadata);
-        StorageUtil.save(memory);
+        Storage.save(memory);
         this.onClose();
     }
 

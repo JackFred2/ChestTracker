@@ -11,7 +11,7 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.Storage.Backend;
+import red.jackf.chesttracker.storage.backend.Backend.Type;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,12 +89,12 @@ public class ChestTrackerConfig {
         public boolean readableJsonMemories = false;
 
         @ConfigEntry
-        public Backend storageBackend = Backend.NBT;
+        public Type storageBackend = Type.NBT;
     }
 
     public void validate() {
         this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_WIDTH);
         this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT);
-        if (this.storage.storageBackend == null) this.storage.storageBackend = Backend.NBT;
+        if (this.storage.storageBackend == null) this.storage.storageBackend = Type.NBT;
     }
 }
