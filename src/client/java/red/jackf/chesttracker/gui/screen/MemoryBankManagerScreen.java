@@ -127,7 +127,6 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                 Component.translatable("chesttracker.gui.memoryManager.search")
         ));
         this.search.setTextColor(TextColours.getSearchTextColour());
-        this.search.setBordered(false);
         this.search.setHint(Component.translatable("chesttracker.gui.memoryManager.search"));
         this.search.setResponder(term -> {
             // update string list options

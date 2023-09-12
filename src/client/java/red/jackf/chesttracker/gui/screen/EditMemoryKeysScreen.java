@@ -1,12 +1,12 @@
 package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -23,9 +23,10 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     private final Screen parent;
     private final String memoryBankId;
     private final MemoryBank bank;
-    private final Map<ResourceLocation, CustomEditBox> editBoxes = new HashMap<>();
+    private final Map<ResourceLocation, EditBox> editBoxes = new HashMap<>();
 
     private boolean firstLoad = false;
+    private boolean scheduleRebuild = false;
 
     protected EditMemoryKeysScreen(Screen parent, String memoryBankId) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
@@ -39,6 +40,14 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     }
 
     @Override
+    public void tick() {
+        if (this.scheduleRebuild) {
+            this.rebuildWidgets();
+            this.scheduleRebuild = false;
+        }
+    }
+
+    @Override
     public void onClose() {
         Minecraft.getInstance().setScreen(parent);
     }
@@ -46,6 +55,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     @Override
     protected void init() {
         super.init();
+
         var font = Minecraft.getInstance().font;
         int startX = this.left + GuiConstants.MARGIN;
         int workingArea = this.menuWidth - 2 * GuiConstants.MARGIN;
@@ -65,7 +75,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     0));
 
             // id label/edit box
-            var nameEditBox = this.addRenderableWidget(new CustomEditBox(
+            var nameEditBox = this.addRenderableWidget(new EditBox(
                     font,
                     startX + ItemButton.SIZE + GuiConstants.SMALL_MARGIN,
                     y,
@@ -85,13 +95,17 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     20,
                     translatable("selectServer.deleteButton"),
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
-                    button -> {}));
+                    button -> {
+                        this.bank.removeKey(key);
+                        if (isCurrentLoaded()) {
+                            MemoryBank.save();
+                        } else {
+                            StorageUtil.getStorage().save(bank);
+                        }
+                        // can't schedule rebuilt during rendering because CME, so do it on tick
+                        this.scheduleRebuild = true;
+                    }));
         }
-
-        // cleanup edit boxes
-        this.editBoxes.keySet().stream()
-                .filter(mapKey -> !this.bank.getKeys().contains(mapKey))
-                .forEach(this.editBoxes::remove);
         this.firstLoad = true;
     }
 }
