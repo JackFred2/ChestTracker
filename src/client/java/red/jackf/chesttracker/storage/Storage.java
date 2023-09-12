@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
- * Handles saving/loading for bank
+ * A handler for storing a memory bank in a black-box format
  */
 public interface Storage {
     /**

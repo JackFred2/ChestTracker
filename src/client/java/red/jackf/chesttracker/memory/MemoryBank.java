@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
+import red.jackf.chesttracker.storage.ConnectionSettings;
+import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.StorageUtil;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
@@ -40,19 +42,35 @@ public class MemoryBank {
     @Nullable
     public static MemoryBank INSTANCE = null;
 
+    /**
+     * Automatically get and load a default memory based on the current context and connection-specific settings
+     */
+    public static void loadDefault() {
+        var loadContext = LoadContext.get();
+
+        // not in-game; don't load
+        if (loadContext == null) {
+            unload();
+        } else {
+            var settings = ConnectionSettings.getOrCreate(loadContext.connectionId());
+            var id = settings.memoryBankIdOverride().orElse(loadContext.connectionId());
+            loadOrCreate(id, Metadata.blankWithName(loadContext.name()));
+        }
+    }
+
     public static void loadOrCreate(String id, @NotNull Metadata creationMetadata) {
         unload();
-        INSTANCE = StorageUtil.getStorage().load(id);
-        if (INSTANCE == null) {
-            INSTANCE = new MemoryBank(creationMetadata, new HashMap<>());
-        }
-        INSTANCE.setId(id);
+        INSTANCE = StorageUtil.load(id).orElseGet(() -> {
+            var bank = new MemoryBank(creationMetadata, new HashMap<>());
+            bank.setId(id);
+            return bank;
+        });
         save();
     }
 
     public static void save() {
         if (INSTANCE == null) return;
-        StorageUtil.getStorage().save(INSTANCE);
+        StorageUtil.save(INSTANCE);
     }
 
     public static void unload() {
@@ -66,6 +84,8 @@ public class MemoryBank {
     ////////////
 
     private final Map<ResourceLocation, Map<BlockPos, Memory>> memories;
+
+    // map of proxy positions to positions in the above map, changes lookup to O(1) i think
     private final Map<ResourceLocation, Map<BlockPos, BlockPos>> linkedPositions = new HashMap<>();
 
     // copy of memories with only named ones present for faster rendering iteration

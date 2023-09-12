@@ -69,11 +69,11 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
     protected void init() {
         super.init();
 
-        this.memoryBanks = StorageUtil.getStorage().getAllIds().stream()
+        this.memoryBanks = StorageUtil.getAllIds().stream()
                 .sorted()
-                .map(id -> Pair.of(id, StorageUtil.getStorage().getMetadata(id)))
-                .filter(pair -> pair.getSecond() != null)
-                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (a, b) -> a, LinkedHashMap::new));
+                .map(id -> Pair.of(id, StorageUtil.loadMetadata(id)))
+                .filter(pair -> pair.getSecond().isPresent())
+                .collect(Collectors.toMap(Pair::getFirst, p -> p.getSecond().get(), (a, b) -> a, LinkedHashMap::new));
 
         // backend label
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,

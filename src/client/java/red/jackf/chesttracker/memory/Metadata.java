@@ -63,6 +63,10 @@ public class Metadata {
         return integritySettings;
     }
 
+    public Metadata deepCopy() {
+        return new Metadata(name, lastModified, filteringSettings.copy(), integritySettings.copy());
+    }
+
     public static class FilteringSettings {
         private static final Codec<FilteringSettings> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -76,6 +80,10 @@ public class Metadata {
 
         public FilteringSettings(boolean onlyRememberNamed) {
             this.onlyRememberNamed = onlyRememberNamed;
+        }
+
+        public FilteringSettings copy() {
+            return new FilteringSettings(onlyRememberNamed);
         }
     }
 
@@ -108,6 +116,10 @@ public class Metadata {
             this.checkPeriodicallyForMissingBlocks = checkPeriodicallyForMissingBlocks;
             this.memoryLifetime = memoryLifetime;
             this.preserveNamed = preserveNamed;
+        }
+
+        public IntegritySettings copy() {
+            return new IntegritySettings(removeOnPlayerBlockBreak, checkPeriodicallyForMissingBlocks, memoryLifetime, preserveNamed);
         }
 
         public enum MemoryLifetime {

@@ -21,7 +21,6 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     private static final int CONTENT_TOP = 30;
     private static final int DELETE_BUTTON_SIZE = 100;
     private final Screen parent;
-    private final String memoryBankId;
     private final MemoryBank bank;
     private final Map<ResourceLocation, EditBox> editBoxes = new HashMap<>();
 
@@ -31,12 +30,8 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     protected EditMemoryKeysScreen(Screen parent, String memoryBankId) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
         this.parent = parent;
-        this.memoryBankId = memoryBankId;
-        this.bank = isCurrentLoaded() ? MemoryBank.INSTANCE : StorageUtil.getStorage().load(memoryBankId);
-    }
-
-    private boolean isCurrentLoaded() {
-        return MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId);
+        this.bank = StorageUtil.load(memoryBankId).orElse(null);
+        if (this.bank == null) onClose();
     }
 
     @Override
@@ -97,11 +92,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
                         this.bank.removeKey(key);
-                        if (isCurrentLoaded()) {
-                            MemoryBank.save();
-                        } else {
-                            StorageUtil.getStorage().save(bank);
-                        }
+                        StorageUtil.save(bank);
                         // can't schedule rebuilt during rendering because CME, so do it on tick
                         this.scheduleRebuild = true;
                     }));
