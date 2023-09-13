@@ -99,6 +99,6 @@ public class ResizeWidget extends AbstractWidget {
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
         super.onDrag(mouseX, mouseY, dragX, dragY);
-        updateTarget(mouseX, mouseY);
+        if (this.target != null) updateTarget(mouseX, mouseY);
     }
 }

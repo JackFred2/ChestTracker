@@ -78,6 +78,6 @@ public class DragHandleWidget extends AbstractWidget {
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
         super.onDrag(mouseX, mouseY, dragX, dragY);
-        this.updateTarget(mouseY);
+        if (this.target != null) this.updateTarget(mouseY);
     }
 }
