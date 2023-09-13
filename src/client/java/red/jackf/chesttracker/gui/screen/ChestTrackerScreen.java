@@ -211,8 +211,7 @@ public class ChestTrackerScreen extends Screen {
                         .orElse(new ItemStack(Items.CRAFTING_TABLE));
                 var button = this.addRenderableWidget(new ItemButton(icon,
                         this.left - MEMORY_ICON_OFFSET,
-                        this.top + index * MEMORY_ICON_SPACING,
-                        Component.literal(resloc.toString()), b -> {
+                        this.top + index * MEMORY_ICON_SPACING, b -> {
                     // unhighlight old
                     if (buttons.containsKey(this.currentMemoryKey))
                         buttons.get(this.currentMemoryKey).setHighlighted(false);
@@ -223,7 +222,9 @@ public class ChestTrackerScreen extends Screen {
 
                     // highlight new
                     buttons.get(resloc).setHighlighted(true);
-                }, ItemButton.Background.CUSTOM, 200));
+                }, ItemButton.Background.CUSTOM));
+
+                button.setTooltip(Tooltip.create(Component.literal(resloc.toString())));
 
                 buttons.put(resloc, button);
 

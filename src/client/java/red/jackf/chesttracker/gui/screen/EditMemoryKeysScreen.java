@@ -2,6 +2,7 @@ package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -89,10 +90,8 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     new ItemStack(Items.CRAFTING_TABLE),
                     x,
                     y,
-                    translatable("chesttracker.gui.editMemoryKeys.setIcon"),
                     button -> {},
-                    ItemButton.Background.VANILLA,
-                    0));
+                    ItemButton.Background.VANILLA)).setTooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryKeys.setIcon")));
 
             x += ItemButton.SIZE + spacing;
 

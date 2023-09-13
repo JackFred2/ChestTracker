@@ -12,14 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.config.custom.MemoryKeyIconController;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
 import red.jackf.chesttracker.util.Constants;
@@ -80,7 +76,6 @@ public class ChestTrackerConfigScreenBuilder {
         return ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.title"))
                 .group(makeMainGuiGroup(instance))
-                .group(makeMemoryKeyIconGroup(instance))
                 .group(makeManagementGuiGroup(instance))
                 .group(makeDevGuiGroup(instance))
                 .build();
@@ -179,27 +174,6 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.getConfig().gui.gridHeight,
                                 i -> instance.getConfig().gui.gridHeight = i).
                         build())
-                .build();
-    }
-
-    private static OptionGroup makeMemoryKeyIconGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
-        //don't close the level
-        //noinspection resource
-        return ListOption.<MemoryKeyIcon>createBuilder()
-                .name(translatable("chesttracker.config.memoryKeyIcons"))
-                .description(OptionDescription.createBuilder()
-                        .image(ChestTracker.guiTex("config/memory_key_icon_list"), 624, 285)
-                        .text(translatable("chesttracker.config.memoryKeyIcons.description"))
-                        .build())
-                .controller(MemoryKeyIconController.Builder::new)
-                .binding(
-                        instance.getDefaults().gui.memoryKeyIcons,
-                        () -> instance.getConfig().gui.memoryKeyIcons,
-                        l -> instance.getConfig().gui.memoryKeyIcons = l
-                )
-                .initial(new MemoryKeyIcon(Minecraft.getInstance().player != null ?
-                        Minecraft.getInstance().player.level().dimension().location() :
-                        new ResourceLocation("custom_dimension"), new LightweightStack(Items.CRAFTING_TABLE)))
                 .build();
     }
 

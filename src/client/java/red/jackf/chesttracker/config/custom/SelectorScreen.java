@@ -90,13 +90,14 @@ public class SelectorScreen<T> extends Screen {
             for (int column = 0; column < COLUMNS; column++) {
                 if (!iterator.hasNext()) return;
                 var option = iterator.next();
-                this.addRenderableWidget(new ItemButton(option.getValue(),
+                var button = this.addRenderableWidget(new ItemButton(option.getValue(),
                         this.left + xOffset + column * (ItemButton.SIZE + spacing),
-                        this.top + 40 + row * (ItemButton.SIZE + spacing),
-                        option.getValue().getHoverName(), b -> {
+                        this.top + 40 + row * (ItemButton.SIZE + spacing), b -> {
                     SelectorScreen.this.consumer.accept(option.getKey());
                     this.onClose();
-                }, ItemButton.Background.NONE, 0));
+                }, ItemButton.Background.NONE));
+
+                button.setTooltip(Tooltip.create(option.getValue().getHoverName()));
             }
         }
     }
