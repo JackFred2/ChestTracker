@@ -4,9 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import red.jackf.chesttracker.gui.GuiConstants;
+import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -18,11 +20,14 @@ import java.util.Map;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class EditMemoryKeysScreen extends BaseUtilScreen {
+    private static final int MAX_WIDTH = 480;
     private static final int CONTENT_TOP = 30;
-    private static final int DELETE_BUTTON_SIZE = 100;
+    private static final int DELETE_BUTTON_SIZE = 60;
+    private static final int NAME_BOX_MARGIN = 1;
     private final Screen parent;
     private final MemoryBank bank;
     private final Map<ResourceLocation, EditBox> editBoxes = new HashMap<>();
+    private final Map<ResourceLocation, DragHandleWidget> dragHandles = new HashMap<>();
 
     private boolean firstLoad = false;
     private boolean scheduleRebuild = false;
@@ -51,42 +56,66 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     protected void init() {
         super.init();
 
+        this.dragHandles.clear();
+
+        /*
+        this.menuWidth = Mth.clamp(this.width, GuiConstants.UTIL_GUI_WIDTH, MAX_WIDTH);
+        this.left = (this.width - this.menuWidth) / 2;*/
+
         var font = Minecraft.getInstance().font;
-        int startX = this.left + GuiConstants.MARGIN;
-        int workingArea = this.menuWidth - 2 * GuiConstants.MARGIN;
+        final int workingArea = this.menuWidth - 2 * GuiConstants.MARGIN;
+        final int spacing = GuiConstants.SMALL_MARGIN;
+        final int startY = this.top + CONTENT_TOP;
 
         for (var index = 0; index < bank.getKeys().size(); index++) {
             var key = bank.getKeys().get(index);
-            int y = this.top + CONTENT_TOP + index * (ItemButton.SIZE + GuiConstants.SMALL_MARGIN);
+            int x = this.left + GuiConstants.MARGIN;
+            int y = startY + index * (ItemButton.SIZE + spacing);
+
+            // drag handle
+            this.dragHandles.put(key, this.addRenderableWidget(new DragHandleWidget(x,
+                    y,
+                    x,
+                    startY - Mth.positiveCeilDiv(spacing, 2),
+                    workingArea,
+                    ItemButton.SIZE + spacing,
+                    0,
+                    bank.getKeys().size())));
+
+            x += DragHandleWidget.WIDTH + spacing;
 
             // icon
             this.addRenderableWidget(new ItemButton(
                     new ItemStack(Items.CRAFTING_TABLE),
-                    startX,
+                    x,
                     y,
                     translatable("chesttracker.gui.editMemoryKeys.setIcon"),
                     button -> {},
                     ItemButton.Background.VANILLA,
                     0));
 
+            x += ItemButton.SIZE + spacing;
+
             // id label/edit box
             var nameEditBox = this.addRenderableWidget(new EditBox(
                     font,
-                    startX + ItemButton.SIZE + GuiConstants.SMALL_MARGIN,
-                    y,
-                    workingArea - ItemButton.SIZE - 2 * GuiConstants.SMALL_MARGIN - DELETE_BUTTON_SIZE,
-                    ItemButton.SIZE,
+                    x,
+                    y + NAME_BOX_MARGIN,
+                    workingArea - ItemButton.SIZE - 3 * spacing - DELETE_BUTTON_SIZE - 2 * NAME_BOX_MARGIN - DragHandleWidget.WIDTH,
+                    ItemButton.SIZE - 2 * NAME_BOX_MARGIN,
                     this.editBoxes.get(key),
                     translatable("chesttracker.gui.editMemoryKeys.hint")));
             if (!firstLoad) nameEditBox.setValue(key.toString());
             nameEditBox.setHint(translatable("chesttracker.gui.editMemoryKeys.hint"));
             this.editBoxes.put(key, nameEditBox);
 
+            x += nameEditBox.getWidth() + spacing;
+
             // delete
             this.addRenderableWidget(new HoldToConfirmButton(
-                    startX + workingArea - DELETE_BUTTON_SIZE,
+                    x,
                     y,
-                    100,
+                    DELETE_BUTTON_SIZE,
                     20,
                     translatable("selectServer.deleteButton"),
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
@@ -98,5 +127,15 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     }));
         }
         this.firstLoad = true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean anyTrue = false;
+        for (DragHandleWidget widget : this.dragHandles.values()) {
+            anyTrue |= widget.mouseReleased(mouseX, mouseY, button);
+        }
+        if (anyTrue) return true;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 }

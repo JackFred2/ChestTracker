@@ -79,17 +79,8 @@ public class ResizeWidget extends AbstractWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        updateTarget(mouseX, mouseY);
         super.onClick(mouseX, mouseY);
-    }
-
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (this.isValidClickButton(button)) {
-            this.onDrag(mouseX, mouseY, dragX, dragY);
-            return true;
-        } else {
-            return false;
-        }
+        updateTarget(mouseX, mouseY);
     }
 
     @Override
