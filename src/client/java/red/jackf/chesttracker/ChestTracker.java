@@ -88,10 +88,12 @@ public class ChestTracker implements ClientModInitializer {
                     if (Minecraft.getInstance().level == null) return;
                     var loc = LocationTracking.popLocation();
                     if (loc == null) return;
-                    var memory = GetMemory.EVENT.invoker().createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
-                    if (memory.hasValue()) {
-                        if (MemoryBank.INSTANCE.getMetadata().getFilteringSettings().onlyRememberNamed && memory.get().name() == null) return;
-                        MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory.get());
+                    var builder = GetMemory.EVENT.invoker()
+                            .createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
+                    if (builder.hasValue()) {
+                        var memory = builder.get().build(Minecraft.getInstance().level.getGameTime());
+                        if (MemoryBank.INSTANCE.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
+                        MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory);
                     }
                 });
             }

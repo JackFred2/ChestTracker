@@ -87,7 +87,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                    new ItemStack(Items.CRAFTING_TABLE),
+                    bank.getMetadata().getIcon(key).toStack(),
                     x,
                     y,
                     button -> {},

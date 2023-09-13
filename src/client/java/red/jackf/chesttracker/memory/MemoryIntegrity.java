@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.memory;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -24,11 +25,12 @@ public class MemoryIntegrity {
     }
 
     private static final int TICKS_BETWEEN_ENTRY_REFILL = 600;
-    private static long lastEntryCheckCompleteTick = -1L;
+    private static final double PERIODIC_CHECK_RANGE_SQUARED = 32 * 32;
+    public static final long UNKNOWN_TIMESTAMP = -437821L;
 
     private static final List<Map.Entry<BlockPos, Memory>> currentEntryList = new ArrayList<>();
+    private static long lastEntryCheckCompleteTick = -1L;
     private static int lastEntryListIndex = 0;
-    private static final double PERIODIC_CHECK_RANGE_SQUARED = 32 * 32;
 
     public static void setup() {
         AfterPlayerDestroyBlock.EVENT.register((level, pos, state) -> {
@@ -75,11 +77,13 @@ public class MemoryIntegrity {
             // check if time has expired
             // exempt named from the check
             if (!integrity.preserveNamed || currentEntry.getValue().name() == null) {
-                var expirySeconds = integrity.memoryLifetime.seconds;
+                final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
-                    if (currentEntry.getValue().getTimestamp().plusSeconds(expirySeconds).isBefore(Instant.now())) {
+                    final long expiryTicks = expirySeconds * SharedConstants.TICKS_PER_SECOND;
+                    final long ticksPastExpiry = level.getGameTime() - currentEntry.getValue().getTimestamp() - expiryTicks;
+                    if (ticksPastExpiry > 0) {
                         MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentEntry.getKey());
-                        LOGGER.debug("Expiry: Removing {}@{}", currentEntry.getKey(), level.dimension().location());
+                        LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentEntry.getKey(), level.dimension().location(), String.format("%.2f", (float) ticksPastExpiry / SharedConstants.TICKS_PER_SECOND));
                         return;
                     }
                 }

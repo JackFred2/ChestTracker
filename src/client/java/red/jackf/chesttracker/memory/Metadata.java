@@ -3,7 +3,9 @@ package red.jackf.chesttracker.memory;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.util.ModCodecs;
 
@@ -23,7 +25,7 @@ public class Metadata {
             ).apply(instance, (name, modified, icons, filtering, integrity) -> new Metadata(
                     name.orElse(null),
                     modified.orElse(Instant.now()),
-                    icons.orElseGet(() -> new ArrayList<>(MemoryKeyIcon.DEFAULT_ORDER)),
+                    icons.orElseGet(() -> new ArrayList<>(GuiConstants.DEFAULT_ICONS)),
                     filtering.orElseGet(FilteringSettings::new),
                     integrity.orElseGet(IntegritySettings::new)
             ))
@@ -45,7 +47,7 @@ public class Metadata {
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), new ArrayList<>(MemoryKeyIcon.DEFAULT_ORDER), new FilteringSettings(), new IntegritySettings());
+        return new Metadata(null, Instant.now(), new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -67,8 +69,11 @@ public class Metadata {
         this.lastModified = Instant.now();
     }
 
-    public List<MemoryKeyIcon> getIcons() {
-        return icons;
+    public LightweightStack getIcon(ResourceLocation key) {
+        for (MemoryKeyIcon icon : icons) {
+            if (icon.id().equals(key)) return icon.icon();
+        }
+        return new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null);
     }
 
     public FilteringSettings getFilteringSettings() {

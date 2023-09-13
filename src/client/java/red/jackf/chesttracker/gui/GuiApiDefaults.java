@@ -46,8 +46,7 @@ public class GuiApiDefaults {
 
             return ResultHolder.value(Memory.builder(items)
                     .name(GetCustomName.EVENT.invoker().getName(location, screen).getNullable())
-                    .otherPositions(connected)
-                    .build());
+                    .otherPositions(connected));
         });
 
         GetCustomName.EVENT.register(EventPhases.FALLBACK_PHASE, ((location, screen) -> {
