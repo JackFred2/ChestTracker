@@ -4,36 +4,48 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Metadata {
     public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
-                    ModCodecs.INSTANT.fieldOf("lastModified").forGetter(meta -> meta.lastModified),
-                    FilteringSettings.CODEC.fieldOf("filtering").forGetter(meta -> meta.filteringSettings),
-                    IntegritySettings.CODEC.fieldOf("integrity").forGetter(meta -> meta.integritySettings)
-            ).apply(instance, (name, modified, filtering, integrity) -> new Metadata(name.orElse(null), modified, filtering, integrity))
+                    ModCodecs.INSTANT.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
+                    MemoryKeyIcon.CODEC.listOf().optionalFieldOf("icons").forGetter(meta -> Optional.of(meta.icons)),
+                    FilteringSettings.CODEC.optionalFieldOf("filtering").forGetter(meta -> Optional.of(meta.filteringSettings)),
+                    IntegritySettings.CODEC.optionalFieldOf("integrity").forGetter(meta -> Optional.of(meta.integritySettings))
+            ).apply(instance, (name, modified, icons, filtering, integrity) -> new Metadata(
+                    name.orElse(null),
+                    modified.orElse(Instant.now()),
+                    icons.orElseGet(() -> new ArrayList<>(MemoryKeyIcon.DEFAULT_ORDER)),
+                    filtering.orElseGet(FilteringSettings::new),
+                    integrity.orElseGet(IntegritySettings::new)
+            ))
     );
 
     @Nullable
     private String name;
     private Instant lastModified;
+    private final List<MemoryKeyIcon> icons;
     private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
 
-    public Metadata(@Nullable String name, Instant lastModified, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
+    public Metadata(@Nullable String name, Instant lastModified, List<MemoryKeyIcon> icons, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
         this.name = name;
         this.lastModified = lastModified;
+        this.icons = icons;
         this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), new FilteringSettings(), new IntegritySettings());
+        return new Metadata(null, Instant.now(), new ArrayList<>(MemoryKeyIcon.DEFAULT_ORDER), new FilteringSettings(), new IntegritySettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -55,6 +67,10 @@ public class Metadata {
         this.lastModified = Instant.now();
     }
 
+    public List<MemoryKeyIcon> getIcons() {
+        return icons;
+    }
+
     public FilteringSettings getFilteringSettings() {
         return filteringSettings;
     }
@@ -64,7 +80,7 @@ public class Metadata {
     }
 
     public Metadata deepCopy() {
-        return new Metadata(name, lastModified, filteringSettings.copy(), integritySettings.copy());
+        return new Metadata(name, lastModified, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy());
     }
 
     public static class FilteringSettings {
