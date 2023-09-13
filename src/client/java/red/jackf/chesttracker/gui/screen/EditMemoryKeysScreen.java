@@ -6,8 +6,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
@@ -59,9 +57,8 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
         this.dragHandles.clear();
 
-        /*
         this.menuWidth = Mth.clamp(this.width, GuiConstants.UTIL_GUI_WIDTH, MAX_WIDTH);
-        this.left = (this.width - this.menuWidth) / 2;*/
+        this.left = (this.width - this.menuWidth) / 2;
 
         var font = Minecraft.getInstance().font;
         final int workingArea = this.menuWidth - 2 * GuiConstants.MARGIN;
