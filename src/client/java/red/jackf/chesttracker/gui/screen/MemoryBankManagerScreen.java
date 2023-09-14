@@ -121,7 +121,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                 Minecraft.getInstance().font,
                 this.left + GuiConstants.MARGIN,
                 this.top + SEARCH_TOP,
-                this.menuWidth - 2 * GuiConstants.SMALL_MARGIN - (inGame ? (BUTTON_SIZE + 6) : 0),
+                this.menuWidth - 2 * GuiConstants.MARGIN - (inGame ? BUTTON_SIZE : 0),
                 SEARCH_HEIGHT,
                 this.search,
                 Component.translatable("chesttracker.gui.memoryManager.search")
