@@ -109,42 +109,59 @@ public class Metadata {
     }
 
     public static class IntegritySettings {
-        private static final Codec<IntegritySettings> CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(
-                        Codec.BOOL.fieldOf("removeOnPlayerBlockBreak")
-                                .forGetter(settings -> settings.removeOnPlayerBlockBreak),
-                        Codec.BOOL.fieldOf("checkPeriodicallyForMissingBlocks")
-                                .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
-                        ModCodecs.ofEnum(MemoryLifetime.class).fieldOf("memoryLifetime")
-                                .forGetter(settings -> settings.memoryLifetime),
-                        Codec.BOOL.fieldOf("preserveNamed")
-                                .forGetter(settings -> settings.preserveNamed)
-                ).apply(instance, IntegritySettings::new));
+        private static final Codec<IntegritySettings> CODEC = RecordCodecBuilder.create(instance -> {
+            final var def = new IntegritySettings();
+            return instance.group(
+                    Codec.BOOL.optionalFieldOf("removeOnPlayerBlockBreak", def.removeOnPlayerBlockBreak)
+                            .forGetter(settings -> settings.removeOnPlayerBlockBreak),
+                    Codec.BOOL.optionalFieldOf("checkPeriodicallyForMissingBlocks", def.checkPeriodicallyForMissingBlocks)
+                            .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
+                    ModCodecs.ofEnum(MemoryLifetime.class).optionalFieldOf("memoryLifetime", def.memoryLifetime)
+                            .forGetter(settings -> settings.memoryLifetime),
+                    Codec.BOOL.optionalFieldOf("preserveNamed", def.preserveNamed)
+                            .forGetter(settings -> settings.preserveNamed),
+                    ModCodecs.ofEnum(LifetimeCountMode.class).optionalFieldOf("lifetimeCountMode", def.lifetimeCountMode)
+                            .forGetter(settings -> settings.lifetimeCountMode)
+            ).apply(instance, IntegritySettings::new);
+        });
 
         public boolean removeOnPlayerBlockBreak = true;
         public boolean checkPeriodicallyForMissingBlocks = true;
         public MemoryLifetime memoryLifetime = MemoryLifetime.TWELVE_HOURS;
         public boolean preserveNamed = true;
+        public LifetimeCountMode lifetimeCountMode = LifetimeCountMode.IN_GAME;
 
         private IntegritySettings() {}
 
         public IntegritySettings(boolean removeOnPlayerBlockBreak,
                                  boolean checkPeriodicallyForMissingBlocks,
                                  MemoryLifetime memoryLifetime,
-                                 boolean preserveNamed) {
+                                 boolean preserveNamed,
+                                 LifetimeCountMode lifetimeCountMode) {
             this();
             this.removeOnPlayerBlockBreak = removeOnPlayerBlockBreak;
             this.checkPeriodicallyForMissingBlocks = checkPeriodicallyForMissingBlocks;
             this.memoryLifetime = memoryLifetime;
             this.preserveNamed = preserveNamed;
+            this.lifetimeCountMode = lifetimeCountMode;
         }
 
         public IntegritySettings copy() {
-            return new IntegritySettings(removeOnPlayerBlockBreak, checkPeriodicallyForMissingBlocks, memoryLifetime, preserveNamed);
+            return new IntegritySettings(removeOnPlayerBlockBreak, checkPeriodicallyForMissingBlocks, memoryLifetime, preserveNamed, lifetimeCountMode);
+        }
+
+        public enum LifetimeCountMode {
+            REAL_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time")),
+            IN_GAME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.in_game"));
+
+            public final Component label;
+
+            LifetimeCountMode(Component label) {
+                this.label = label;
+            }
         }
 
         public enum MemoryLifetime {
-            NEVER(null, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never")),
             TEN_SECONDS(10L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.seconds", 10)),
             FIVE_MINUTES(60L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 5)),
             TWENTY_MINUTES(60L * 15L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 20)),
@@ -157,7 +174,8 @@ public class Metadata {
             ONE_DAY(60L * 60L * 24L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day")),
             TWO_DAYS(60L * 60L * 24L * 2L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 2)),
             FIVE_DAYS(60L * 60L * 24L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 5)),
-            SEVEN_DAYS(60L * 60L * 24L * 7L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 7));
+            SEVEN_DAYS(60L * 60L * 24L * 7L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 7)),
+            NEVER(null, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never"));
 
             public final Long seconds;
             public final Component label;

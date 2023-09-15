@@ -184,9 +184,9 @@ public class MemoryBank {
     }
 
     private void addLinked(ResourceLocation key, BlockPos pos, Memory memory) {
-        if (!memory.getOtherPositions().isEmpty()) {
+        if (!memory.otherPositions().isEmpty()) {
             var keyMap = this.linkedPositions.computeIfAbsent(key, k -> new HashMap<>());
-            memory.getOtherPositions().forEach(linkedPos -> keyMap.put(linkedPos, pos));
+            memory.otherPositions().forEach(linkedPos -> keyMap.put(linkedPos, pos));
         }
     }
 
@@ -250,11 +250,11 @@ public class MemoryBank {
             for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
                 var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request)).findFirst();
                 if (matchedItem.isEmpty()) continue;
-                var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().getOtherPositions());
+                var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().otherPositions());
                 results.add(SearchResult.builder(entry.getKey())
                         .item(matchedItem.get())
                         .name(entry.getValue().name(), offset)
-                        .otherPositions(entry.getValue().getOtherPositions())
+                        .otherPositions(entry.getValue().otherPositions())
                         .build());
             }
             return results;

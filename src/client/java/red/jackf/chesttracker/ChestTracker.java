@@ -28,6 +28,8 @@ import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.world.LocationTracking;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
+import java.time.Instant;
+
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
 
@@ -91,7 +93,7 @@ public class ChestTracker implements ClientModInitializer {
                     var builder = GetMemory.EVENT.invoker()
                             .createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
                     if (builder.hasValue()) {
-                        var memory = builder.get().build(Minecraft.getInstance().level.getGameTime());
+                        var memory = builder.get().build(Minecraft.getInstance().level.getGameTime(), Instant.now());
                         if (MemoryBank.INSTANCE.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
                         MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory);
                     }

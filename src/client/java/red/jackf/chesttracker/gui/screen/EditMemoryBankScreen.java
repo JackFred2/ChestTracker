@@ -258,10 +258,41 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private void setupIntegritySettings() {
+        addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().preserveNamed)
+                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed.tooltip")))
+                .create(getSettingsX(0),
+                        getSettingsY(0),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed"),
+                        (cycleButton, newValue) -> metadata.getIntegritySettings().preserveNamed = newValue
+                ), SettingsTab.INTEGRITY);
+
+        addSetting(CycleButton.<Metadata.IntegritySettings.LifetimeCountMode>builder(mode -> mode.label)
+                .withValues(Metadata.IntegritySettings.LifetimeCountMode.values())
+                .withInitialValue(metadata.getIntegritySettings().lifetimeCountMode)
+                .create(
+                        getSettingsX(1),
+                        getSettingsY(0),
+                        getSettingsWidth(1),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode"),
+                        ((cycleButton, countMode) -> metadata.getIntegritySettings().lifetimeCountMode = countMode)
+                ), SettingsTab.INTEGRITY);
+
+        addSetting(new EnumSlider<>(getSettingsX(0),
+                getSettingsY(1),
+                getSettingsWidth(2),
+                BUTTON_HEIGHT,
+                Metadata.IntegritySettings.MemoryLifetime.class,
+                metadata.getIntegritySettings().memoryLifetime,
+                lifetime -> lifetime.label,
+                lifetime -> metadata.getIntegritySettings().memoryLifetime = lifetime), SettingsTab.INTEGRITY);
+
         addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().removeOnPlayerBlockBreak)
                 .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak.tooltip")))
                 .create(getSettingsX(0),
-                        getSettingsY(1),
+                        getSettingsY(2),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
                         translatable("chesttracker.gui.editMemoryBank.integrity.blockBreak"),
@@ -271,31 +302,12 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks)
                 .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck.tooltip")))
                 .create(getSettingsX(1),
-                        getSettingsY(1),
+                        getSettingsY(2),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
                         translatable("chesttracker.gui.editMemoryBank.integrity.periodicCheck"),
                         (cycleButton, newValue) -> metadata.getIntegritySettings().checkPeriodicallyForMissingBlocks = newValue
                 ), SettingsTab.INTEGRITY);
-
-        addSetting(CycleButton.onOffBuilder(metadata.getIntegritySettings().preserveNamed)
-                .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed.tooltip")))
-                .create(getSettingsX(0),
-                        getSettingsY(2),
-                        getSettingsWidth(1),
-                        BUTTON_HEIGHT,
-                        translatable("chesttracker.gui.editMemoryBank.integrity.preserveNamed"),
-                        (cycleButton, newValue) -> metadata.getIntegritySettings().preserveNamed = newValue
-                ), SettingsTab.INTEGRITY);
-
-        addSetting(new EnumSlider<>(getSettingsX(0),
-                getSettingsY(0),
-                getSettingsWidth(2),
-                BUTTON_HEIGHT,
-                Metadata.IntegritySettings.MemoryLifetime.class,
-                metadata.getIntegritySettings().memoryLifetime,
-                lifetime -> lifetime.label,
-                lifetime -> metadata.getIntegritySettings().memoryLifetime = lifetime), SettingsTab.INTEGRITY);
     }
 
     private void addSetting(AbstractWidget widget, SettingsTab tab) {

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -21,29 +22,34 @@ public final class Memory {
                     ItemStack.CODEC.listOf().fieldOf("items")
                             .forGetter(Memory::items),
                     ExtraCodecs.COMPONENT.optionalFieldOf("name")
-                            .forGetter(m -> Optional.ofNullable(m.name())),
-                    ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions")
-                            .forGetter(m -> Optional.ofNullable(m.otherPositions.isEmpty() ? null : m.otherPositions)),
-                    Codec.LONG.optionalFieldOf("timestamp")
-                            .forGetter(m -> Optional.ofNullable(m.timestamp))
-            ).apply(instance, (items, name, otherPositions, timestamp) -> new Memory(
+                            .forGetter(m -> Optional.ofNullable(m.name)),
+                    ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
+                            .forGetter(Memory::otherPositions),
+                    Codec.LONG.optionalFieldOf("inGameTimestamp", MemoryIntegrity.UNKNOWN_INGAME_TIMESTAMP)
+                            .forGetter(Memory::inGameTimestamp),
+                    ModCodecs.INSTANT.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
+                            .forGetter(Memory::realTimestamp)
+            ).apply(instance, (items, name, otherPositions, inGameTimestamp, realTimestamp) -> new Memory(
                     items,
                     name.orElse(null),
-                    timestamp.orElse(MemoryIntegrity.UNKNOWN_TIMESTAMP),
-                    otherPositions.orElse(new ArrayList<>())
+                    otherPositions,
+                    inGameTimestamp,
+                    realTimestamp
             )));
 
 
     private final List<ItemStack> items;
     private final @Nullable Component name;
     private final List<BlockPos> otherPositions;
-    private final Long timestamp;
+    private final Long inGameTimestamp;
+    private final Instant realTimestamp;
 
-    private Memory(List<ItemStack> items, @Nullable Component name, @Nullable Long timestamp, List<BlockPos> otherPositions) {
+    private Memory(List<ItemStack> items, @Nullable Component name, List<BlockPos> otherPositions, Long inGameTimestamp, Instant realTimestamp) {
         this.items = ImmutableList.copyOf(items);
         this.name = name;
-        this.timestamp = timestamp;
         this.otherPositions = ImmutableList.copyOf(otherPositions);
+        this.inGameTimestamp = inGameTimestamp;
+        this.realTimestamp = realTimestamp;
     }
 
     public boolean isEmpty() {
@@ -58,12 +64,16 @@ public final class Memory {
         return name;
     }
 
-    public List<BlockPos> getOtherPositions() {
+    public List<BlockPos> otherPositions() {
         return otherPositions;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public Long inGameTimestamp() {
+        return inGameTimestamp;
+    }
+
+    public Instant realTimestamp() {
+        return realTimestamp;
     }
 
     public static Builder builder(List<ItemStack> items) {
@@ -92,8 +102,8 @@ public final class Memory {
             return this;
         }
 
-        public Memory build(long timestamp) {
-            return new Memory(items, name, timestamp, otherPositions);
+        public Memory build(long inGameTimestamp, Instant realTimestamp) {
+            return new Memory(items, name, otherPositions, inGameTimestamp, realTimestamp);
         }
     }
 }

@@ -10,6 +10,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
 import red.jackf.chesttracker.api.location.GetLocation;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,8 @@ public class MemoryIntegrity {
 
     private static final int TICKS_BETWEEN_ENTRY_REFILL = 600;
     private static final double PERIODIC_CHECK_RANGE_SQUARED = 32 * 32;
-    public static final long UNKNOWN_TIMESTAMP = -437821L;
+    public static final long UNKNOWN_INGAME_TIMESTAMP = -437821L;
+    public static final Instant UNKNOWN_REAL_TIMESTAMP = Instant.EPOCH;
 
     private static final List<Map.Entry<BlockPos, Memory>> currentEntryList = new ArrayList<>();
     private static long lastEntryCheckCompleteTick = -1L;
@@ -79,7 +81,7 @@ public class MemoryIntegrity {
                 final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
                     final long expiryTicks = expirySeconds * SharedConstants.TICKS_PER_SECOND;
-                    final long ticksPastExpiry = level.getGameTime() - currentEntry.getValue().getTimestamp() - expiryTicks;
+                    final long ticksPastExpiry = level.getGameTime() - currentEntry.getValue().inGameTimestamp() - expiryTicks;
                     if (ticksPastExpiry > 0) {
                         MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentEntry.getKey());
                         LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentEntry.getKey(), level.dimension().location(), String.format("%.2f", (float) ticksPastExpiry / SharedConstants.TICKS_PER_SECOND));
