@@ -69,6 +69,10 @@ public class ChestTracker implements ClientModInitializer {
                 }
         });
 
+        ClientTickEvents.START_WORLD_TICK.register(ignored -> {
+            if (MemoryBank.INSTANCE != null) MemoryBank.INSTANCE.getMetadata().incrementLoadedTime();
+        });
+
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (Minecraft.getInstance().level == null) return;
             if (screen instanceof AbstractContainerScreen<?>) {
@@ -93,7 +97,7 @@ public class ChestTracker implements ClientModInitializer {
                     var builder = GetMemory.EVENT.invoker()
                             .createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
                     if (builder.hasValue()) {
-                        var memory = builder.get().build(Minecraft.getInstance().level.getGameTime(), Instant.now());
+                        var memory = builder.get().build(MemoryBank.INSTANCE.getMetadata().getLoadedTime(), Minecraft.getInstance().level.getGameTime(), Instant.now());
                         if (MemoryBank.INSTANCE.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
                         MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory);
                     }

@@ -19,12 +19,14 @@ public class Metadata {
             instance.group(
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
                     ModCodecs.INSTANT.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
+                    Codec.LONG.fieldOf("loadedTime").forGetter(meta -> meta.loadedTime),
                     MemoryKeyIcon.CODEC.listOf().optionalFieldOf("icons").forGetter(meta -> Optional.of(meta.icons)),
                     FilteringSettings.CODEC.optionalFieldOf("filtering").forGetter(meta -> Optional.of(meta.filteringSettings)),
                     IntegritySettings.CODEC.optionalFieldOf("integrity").forGetter(meta -> Optional.of(meta.integritySettings))
-            ).apply(instance, (name, modified, icons, filtering, integrity) -> new Metadata(
+            ).apply(instance, (name, lastModified, loadedTime, icons, filtering, integrity) -> new Metadata(
                     name.orElse(null),
-                    modified.orElse(Instant.now()),
+                    lastModified.orElse(Instant.now()),
+                    loadedTime,
                     icons.orElseGet(() -> new ArrayList<>(GuiConstants.DEFAULT_ICONS)),
                     filtering.orElseGet(FilteringSettings::new),
                     integrity.orElseGet(IntegritySettings::new)
@@ -34,20 +36,22 @@ public class Metadata {
     @Nullable
     private String name;
     private Instant lastModified;
+    private long loadedTime;
     private final List<MemoryKeyIcon> icons;
     private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
 
-    public Metadata(@Nullable String name, Instant lastModified, List<MemoryKeyIcon> icons, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
+    public Metadata(@Nullable String name, Instant lastModified, long loadedTime, List<MemoryKeyIcon> icons, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
         this.name = name;
         this.lastModified = lastModified;
         this.icons = icons;
+        this.loadedTime = loadedTime;
         this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings());
+        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -76,6 +80,10 @@ public class Metadata {
         return new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null);
     }
 
+    public long getLoadedTime() {
+        return loadedTime;
+    }
+
     public FilteringSettings getFilteringSettings() {
         return filteringSettings;
     }
@@ -85,7 +93,11 @@ public class Metadata {
     }
 
     public Metadata deepCopy() {
-        return new Metadata(name, lastModified, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy());
+        return new Metadata(name, lastModified, loadedTime, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy());
+    }
+
+    public void incrementLoadedTime() {
+        this.loadedTime++;
     }
 
     public static class FilteringSettings {
@@ -129,7 +141,7 @@ public class Metadata {
         public boolean checkPeriodicallyForMissingBlocks = true;
         public MemoryLifetime memoryLifetime = MemoryLifetime.TWELVE_HOURS;
         public boolean preserveNamed = true;
-        public LifetimeCountMode lifetimeCountMode = LifetimeCountMode.IN_GAME;
+        public LifetimeCountMode lifetimeCountMode = LifetimeCountMode.LOADED_TIME;
 
         private IntegritySettings() {}
 
@@ -152,7 +164,8 @@ public class Metadata {
 
         public enum LifetimeCountMode {
             REAL_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time")),
-            IN_GAME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.in_game"));
+            WORLD_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time")),
+            LOADED_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time"));
 
             public final Component label;
 

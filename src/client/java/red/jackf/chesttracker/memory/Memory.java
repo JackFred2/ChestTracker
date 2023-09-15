@@ -25,15 +25,18 @@ public final class Memory {
                             .forGetter(m -> Optional.ofNullable(m.name)),
                     ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
                             .forGetter(Memory::otherPositions),
-                    Codec.LONG.optionalFieldOf("inGameTimestamp", MemoryIntegrity.UNKNOWN_INGAME_TIMESTAMP)
+                    Codec.LONG.optionalFieldOf("loadedTimestamp", MemoryIntegrity.UNKNOWN_LOADED_TIMESTAMP)
+                            .forGetter(Memory::loadedTimestamp),
+                    Codec.LONG.optionalFieldOf("worldTimestamp", MemoryIntegrity.UNKNOWN_WORLD_TIMESTAMP)
                             .forGetter(Memory::inGameTimestamp),
                     ModCodecs.INSTANT.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
                             .forGetter(Memory::realTimestamp)
-            ).apply(instance, (items, name, otherPositions, inGameTimestamp, realTimestamp) -> new Memory(
+            ).apply(instance, (items, name, otherPositions, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(
                     items,
                     name.orElse(null),
                     otherPositions,
-                    inGameTimestamp,
+                    loadedTimestamp,
+                    worldTimestamp,
                     realTimestamp
             )));
 
@@ -41,13 +44,15 @@ public final class Memory {
     private final List<ItemStack> items;
     private final @Nullable Component name;
     private final List<BlockPos> otherPositions;
+    private final Long loadedTimestamp;
     private final Long inGameTimestamp;
     private final Instant realTimestamp;
 
-    private Memory(List<ItemStack> items, @Nullable Component name, List<BlockPos> otherPositions, Long inGameTimestamp, Instant realTimestamp) {
+    private Memory(List<ItemStack> items, @Nullable Component name, List<BlockPos> otherPositions, long loadedTimestamp, long inGameTimestamp, Instant realTimestamp) {
         this.items = ImmutableList.copyOf(items);
         this.name = name;
         this.otherPositions = ImmutableList.copyOf(otherPositions);
+        this.loadedTimestamp = loadedTimestamp;
         this.inGameTimestamp = inGameTimestamp;
         this.realTimestamp = realTimestamp;
     }
@@ -66,6 +71,10 @@ public final class Memory {
 
     public List<BlockPos> otherPositions() {
         return otherPositions;
+    }
+
+    public Long loadedTimestamp() {
+        return loadedTimestamp;
     }
 
     public Long inGameTimestamp() {
@@ -102,8 +111,8 @@ public final class Memory {
             return this;
         }
 
-        public Memory build(long inGameTimestamp, Instant realTimestamp) {
-            return new Memory(items, name, otherPositions, inGameTimestamp, realTimestamp);
+        public Memory build(long loadedTimestamp, long inGameTimestamp, Instant realTimestamp) {
+            return new Memory(items, name, otherPositions, loadedTimestamp, inGameTimestamp, realTimestamp);
         }
     }
 }

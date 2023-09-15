@@ -271,6 +271,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         addSetting(CycleButton.<Metadata.IntegritySettings.LifetimeCountMode>builder(mode -> mode.label)
                 .withValues(Metadata.IntegritySettings.LifetimeCountMode.values())
                 .withInitialValue(metadata.getIntegritySettings().lifetimeCountMode)
+                .displayOnlyValue()
                 .create(
                         getSettingsX(1),
                         getSettingsY(0),

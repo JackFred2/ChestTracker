@@ -43,8 +43,9 @@
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day": "Memory Lifetime: 1 day",
   "chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days": "Memory Lifetime: %d days",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode": "Lifetime Count Mode",
-  "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time": "Count Real Time",
-  "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.in_game": "Count In-Game Time",
+  "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time": "Use Real Time",
+  "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time": "Use World Time",
+  "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time": "Use Bank Loaded Time",
 
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
