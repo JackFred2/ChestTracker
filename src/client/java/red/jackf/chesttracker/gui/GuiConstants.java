@@ -1,12 +1,18 @@
 package red.jackf.chesttracker.gui;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public interface GuiConstants {
     // GUI Positioning
@@ -32,4 +38,17 @@ public interface GuiConstants {
             new MemoryKeyIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
             new MemoryKeyIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
     );
+
+    Map<Item, ItemStack> DEFAULT_ICON_ORDER = makeItemListOrder();
+
+    private static Map<Item, ItemStack> makeItemListOrder() {
+        final var list = new ArrayList<Item>(BuiltInRegistries.ITEM.size());
+        list.addAll(List.of(
+                Items.CRAFTING_TABLE, Items.GRASS_BLOCK, Items.NETHERRACK, Items.END_STONE,
+                Items.CHEST, Items.ENDER_CHEST, Items.OAK_SAPLING, Items.RED_BED,
+                Items.DIAMOND_ORE, Items.GLOWSTONE, Items.NETHER_STAR, Items.STONE, Items.GOLD_BLOCK
+        ));
+        list.addAll(BuiltInRegistries.ITEM.stream().filter(item -> !list.contains(item) && item != Items.AIR).toList());
+        return list.stream().collect(Collectors.toMap(item -> item, ItemStack::new, (a, b) -> a, LinkedHashMap::new));
+    }
 }

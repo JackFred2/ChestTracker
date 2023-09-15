@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,6 +11,7 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
+import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.Storage;
 
@@ -57,11 +59,11 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
         this.dragHandles.clear();
 
-        this.menuWidth = Mth.clamp(this.width, GuiConstants.UTIL_GUI_WIDTH, MAX_WIDTH);
+        //this.menuWidth = Mth.clamp(this.width, GuiConstants.UTIL_GUI_WIDTH, MAX_WIDTH);
         this.left = (this.width - this.menuWidth) / 2;
 
         var font = Minecraft.getInstance().font;
-        final int workingArea = this.menuWidth - 2 * GuiConstants.MARGIN;
+        final int workingWidth = this.menuWidth - 2 * GuiConstants.MARGIN;
         final int spacing = GuiConstants.SMALL_MARGIN;
         final int startY = this.top + CONTENT_TOP;
 
@@ -75,7 +77,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     y,
                     x,
                     startY - Mth.positiveCeilDiv(spacing, 2),
-                    workingArea,
+                    workingWidth,
                     ItemButton.SIZE + spacing,
                     0,
                     bank.getKeys().size())));
@@ -87,7 +89,17 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     bank.getMetadata().getIcon(key).toStack(),
                     x,
                     y,
-                    button -> {},
+                    button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
+                            translatable("chesttracker.gui.editMemoryKeys.setIcon"),
+                            this,
+                            GuiConstants.DEFAULT_ICON_ORDER,
+                            i -> {
+                                if (i != null) {
+                                    this.bank.getMetadata().setIcon(key, new LightweightStack(i));
+                                    scheduleRebuild = true;
+                                }
+                            }
+                    )),
                     ItemButton.Background.VANILLA)).setTooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryKeys.setIcon")));
 
             x += ItemButton.SIZE + spacing;
@@ -97,7 +109,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     font,
                     x,
                     y + NAME_BOX_MARGIN,
-                    workingArea - ItemButton.SIZE - 3 * spacing - DELETE_BUTTON_SIZE - 2 * NAME_BOX_MARGIN - DragHandleWidget.WIDTH,
+                    workingWidth - ItemButton.SIZE - 3 * spacing - DELETE_BUTTON_SIZE - 2 * NAME_BOX_MARGIN - DragHandleWidget.WIDTH,
                     ItemButton.SIZE - 2 * NAME_BOX_MARGIN,
                     this.editBoxes.get(key),
                     translatable("chesttracker.gui.editMemoryKeys.hint")));
@@ -117,11 +129,23 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
                         this.bank.removeKey(key);
-                        Storage.save(bank);
+                        Storage.save(this.bank);
                         // can't schedule rebuilt during rendering because CME, so do it on tick
                         this.scheduleRebuild = true;
                     }));
         }
+
+        // save
+        this.addRenderableWidget(Button.builder(translatable("selectWorld.edit.save"), b -> {
+            Storage.save(this.bank);
+            onClose();
+        }).bounds(
+                this.left + GuiConstants.MARGIN,
+                this.top + this.menuHeight - GuiConstants.MARGIN - 20,
+                        workingWidth,
+                20)
+        .build());
+
         this.firstLoad = true;
     }
 

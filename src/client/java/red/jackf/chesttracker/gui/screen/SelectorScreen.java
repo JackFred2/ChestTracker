@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.config.custom;
+package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,6 +33,7 @@ public class SelectorScreen<T> extends Screen {
     private static final int ROWS = 8;
     private final Screen parent;
     private final Consumer<@Nullable T> consumer;
+    private @Nullable T answer = null;
     private final Map<T, ItemStack> options;
     private Map<T, ItemStack> filteredOptions;
     private EditBox search;
@@ -93,7 +94,7 @@ public class SelectorScreen<T> extends Screen {
                 var button = this.addRenderableWidget(new ItemButton(option.getValue(),
                         this.left + xOffset + column * (ItemButton.SIZE + spacing),
                         this.top + 40 + row * (ItemButton.SIZE + spacing), b -> {
-                    SelectorScreen.this.consumer.accept(option.getKey());
+                    this.answer = option.getKey();
                     this.onClose();
                 }, ItemButton.Background.NONE));
 
@@ -111,7 +112,7 @@ public class SelectorScreen<T> extends Screen {
 
     @Override
     public void onClose() {
-        consumer.accept(null);
+        consumer.accept(this.answer);
         Minecraft.getInstance().setScreen(parent);
     }
 }

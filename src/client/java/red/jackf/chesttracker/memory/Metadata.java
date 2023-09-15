@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class Metadata {
     public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
@@ -20,7 +21,7 @@ public class Metadata {
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
                     ModCodecs.INSTANT.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
                     Codec.LONG.fieldOf("loadedTime").forGetter(meta -> meta.loadedTime),
-                    MemoryKeyIcon.CODEC.listOf().optionalFieldOf("icons").forGetter(meta -> Optional.of(meta.icons)),
+                    ModCodecs.makeMutableList(MemoryKeyIcon.CODEC.listOf()).optionalFieldOf("icons").forGetter(meta -> Optional.of(meta.icons)),
                     FilteringSettings.CODEC.optionalFieldOf("filtering").forGetter(meta -> Optional.of(meta.filteringSettings)),
                     IntegritySettings.CODEC.optionalFieldOf("integrity").forGetter(meta -> Optional.of(meta.integritySettings))
             ).apply(instance, (name, lastModified, loadedTime, icons, filtering, integrity) -> new Metadata(
@@ -78,6 +79,18 @@ public class Metadata {
             if (icon.id().equals(key)) return icon.icon();
         }
         return new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null);
+    }
+
+    public void setIcon(ResourceLocation key, LightweightStack icon) {
+        var existingIndex = IntStream.range(0, icons.size())
+                .filter(index -> icons.get(index).id().equals(key))
+                .findFirst();
+        var keyIcon = new MemoryKeyIcon(key, icon);
+        if (existingIndex.isPresent()) {
+            icons.set(existingIndex.getAsInt(), keyIcon);
+        } else {
+            icons.add(keyIcon);
+        }
     }
 
     public long getLoadedTime() {
