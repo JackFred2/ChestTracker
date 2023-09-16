@@ -114,11 +114,16 @@ public class Metadata {
     }
 
     public static class FilteringSettings {
-        private static final Codec<FilteringSettings> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    Codec.BOOL.fieldOf("onlyRememberNamed")
-                            .forGetter(settings -> settings.onlyRememberNamed)
-            ).apply(instance, FilteringSettings::new));
+        private static final Codec<FilteringSettings> CODEC = RecordCodecBuilder.create(instance -> {
+            final var def = new FilteringSettings();
+            return instance.group(
+                    Codec.BOOL.optionalFieldOf("onlyRememberNamed")
+                            .forGetter(settings -> Optional.of(settings.onlyRememberNamed))
+            ).apply(instance, (onlyRememberNamed) ->
+                    new FilteringSettings(
+                            onlyRememberNamed.orElse(def.onlyRememberNamed)
+                    ));
+        });
 
         public boolean onlyRememberNamed = false;
 
@@ -137,17 +142,24 @@ public class Metadata {
         private static final Codec<IntegritySettings> CODEC = RecordCodecBuilder.create(instance -> {
             final var def = new IntegritySettings();
             return instance.group(
-                    Codec.BOOL.optionalFieldOf("removeOnPlayerBlockBreak", def.removeOnPlayerBlockBreak)
-                            .forGetter(settings -> settings.removeOnPlayerBlockBreak),
-                    Codec.BOOL.optionalFieldOf("checkPeriodicallyForMissingBlocks", def.checkPeriodicallyForMissingBlocks)
-                            .forGetter(settings -> settings.checkPeriodicallyForMissingBlocks),
-                    ModCodecs.ofEnum(MemoryLifetime.class).optionalFieldOf("memoryLifetime", def.memoryLifetime)
-                            .forGetter(settings -> settings.memoryLifetime),
-                    Codec.BOOL.optionalFieldOf("preserveNamed", def.preserveNamed)
-                            .forGetter(settings -> settings.preserveNamed),
-                    ModCodecs.ofEnum(LifetimeCountMode.class).optionalFieldOf("lifetimeCountMode", def.lifetimeCountMode)
-                            .forGetter(settings -> settings.lifetimeCountMode)
-            ).apply(instance, IntegritySettings::new);
+                    Codec.BOOL.optionalFieldOf("removeOnPlayerBlockBreak")
+                            .forGetter(settings -> Optional.of(settings.removeOnPlayerBlockBreak)),
+                    Codec.BOOL.optionalFieldOf("checkPeriodicallyForMissingBlocks")
+                            .forGetter(settings -> Optional.of(settings.checkPeriodicallyForMissingBlocks)),
+                    ModCodecs.ofEnum(MemoryLifetime.class).optionalFieldOf("memoryLifetime")
+                            .forGetter(settings -> Optional.of(settings.memoryLifetime)),
+                    Codec.BOOL.optionalFieldOf("preserveNamed")
+                            .forGetter(settings -> Optional.of(settings.preserveNamed)),
+                    ModCodecs.ofEnum(LifetimeCountMode.class).optionalFieldOf("lifetimeCountMode")
+                            .forGetter(settings -> Optional.of(settings.lifetimeCountMode))
+            ).apply(instance, (removeOnPlayerBlockBreak, checkPeriodicallyForMissingBlocks, memoryLifetime, preserveNamed, lifetimeCountMode) ->
+                    new IntegritySettings(
+                            removeOnPlayerBlockBreak.orElse(def.removeOnPlayerBlockBreak),
+                            checkPeriodicallyForMissingBlocks.orElse(def.checkPeriodicallyForMissingBlocks),
+                            memoryLifetime.orElse(def.memoryLifetime),
+                            preserveNamed.orElse(def.preserveNamed),
+                            lifetimeCountMode.orElse(def.lifetimeCountMode)
+                    ));
         });
 
         public boolean removeOnPlayerBlockBreak = true;
