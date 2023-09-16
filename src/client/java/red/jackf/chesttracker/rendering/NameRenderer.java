@@ -1,0 +1,36 @@
+package red.jackf.chesttracker.rendering;
+
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.whereisit.client.api.RenderUtils;
+
+import java.util.List;
+
+public class NameRenderer {
+
+    public static void setup() {
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+            if (MemoryBank.INSTANCE == null) return true;
+            //noinspection resource
+            var named = MemoryBank.INSTANCE.getNamedMemories(context.world().dimension().location());
+            if (named == null) return true;
+            var alreadyRendering = RenderUtils.getCurrentlyRenderedWithNames();
+            for (var entry : named.entrySet()) {
+                if (alreadyRendering.contains(entry.getKey())) continue;
+                var pos = getRenderPos(entry.getKey(), entry.getValue().otherPositions());
+                RenderUtils.scheduleLabelRender(pos, entry.getValue().name());
+            }
+            return true;
+        });
+    }
+
+    private static Vec3 getRenderPos(BlockPos pos, List<BlockPos> otherPos) {
+        var renderPos = pos.getCenter();
+        for (BlockPos other : otherPos) {
+            renderPos = renderPos.add(other.getCenter());
+        }
+        return renderPos.scale( 1.0 / (1 + otherPos.size())).add(0, 1, 0);
+    }
+}
