@@ -75,9 +75,13 @@
   "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
   "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
 
-  "chesttracker.config.managementGui": "Management GUI",
+  "chesttracker.config.managementGui": "Management GUIs",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
-  "chesttracker.config.managementGui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, in case you're streaming and want to hide an IP or similar.",
+  "chesttracker.config.managementGui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.",
+
+  "chesttracker.config.rendering": "Rendering",
+  "chesttracker.config.rendering.nameRenderRange": "Name Render Range",
+  "chesttracker.config.rendering.nameRenderRange.slider": "%s blocks",
 
   "chesttracker.config.devGui": "Developer Utils",
   "chesttracker.config.devGui.showDevHud": "Show Developer Hud",

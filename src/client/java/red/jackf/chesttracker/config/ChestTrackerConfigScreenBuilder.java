@@ -76,7 +76,8 @@ public class ChestTrackerConfigScreenBuilder {
         return ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.title"))
                 .group(makeMainGuiGroup(instance))
-                .group(makeManagementGuiGroup(instance))
+                .group(makeManagementGuisGroup(instance))
+                .group(makeRenderingGroup(instance))
                 .group(makeDevGuiGroup(instance))
                 .build();
     }
@@ -177,7 +178,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .build();
     }
 
-    private static OptionGroup makeManagementGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeManagementGuisGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.managementGui"))
                 .option(Option.<Boolean>createBuilder()
@@ -194,6 +195,23 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.getConfig().gui.hideMemoryIds,
                                 b -> instance.getConfig().gui.hideMemoryIds = b)
                         .build())
+                .build();
+    }
+
+    private static OptionGroup makeRenderingGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+        return OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.rendering"))
+                .option(Option.<Integer>createBuilder()
+                        .name(translatable("chesttracker.config.rendering.nameRenderRange"))
+                        .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                .range(4, 24)
+                                .step(1)
+                                .valueFormatter(i -> translatable("chesttracker.config.rendering.nameRenderRange.slider", i)))
+                        .binding(
+                                instance.getDefaults().rendering.nameRange,
+                                () -> instance.getConfig().rendering.nameRange,
+                                i -> instance.getConfig().rendering.nameRange = i
+                        ).build())
                 .build();
     }
 

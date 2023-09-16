@@ -3,6 +3,7 @@ package red.jackf.chesttracker.rendering;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.whereisit.client.api.RenderUtils;
 
@@ -16,11 +17,14 @@ public class NameRenderer {
             //noinspection resource
             var named = MemoryBank.INSTANCE.getNamedMemories(context.world().dimension().location());
             if (named == null) return true;
+            final int maxRangeSq = ChestTrackerConfig.INSTANCE.getConfig().rendering.nameRange * ChestTrackerConfig.INSTANCE.getConfig().rendering.nameRange;
             var alreadyRendering = RenderUtils.getCurrentlyRenderedWithNames();
             for (var entry : named.entrySet()) {
                 if (alreadyRendering.contains(entry.getKey())) continue;
-                var pos = getRenderPos(entry.getKey(), entry.getValue().otherPositions());
-                RenderUtils.scheduleLabelRender(pos, entry.getValue().name());
+                if (entry.getKey().distToCenterSqr(context.camera().getPosition()) < maxRangeSq) {
+                    var pos = getRenderPos(entry.getKey(), entry.getValue().otherPositions());
+                    RenderUtils.scheduleLabelRender(pos, entry.getValue().name());
+                }
             }
             return true;
         });

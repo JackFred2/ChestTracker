@@ -38,6 +38,9 @@ public class ChestTrackerConfig {
     public Gui gui = new Gui();
 
     @ConfigEntry
+    public Rendering rendering = new Rendering();
+
+    @ConfigEntry
     public Storage storage = new Storage();
 
     public static class Gui {
@@ -67,6 +70,11 @@ public class ChestTrackerConfig {
         public boolean showDevHud = false;
     }
 
+    public static class Rendering {
+        @ConfigEntry
+        public int nameRange = 12;
+    }
+
     public static class Storage {
         @ConfigEntry
         public boolean readableJsonMemories = false;
@@ -78,6 +86,7 @@ public class ChestTrackerConfig {
     public void validate() {
         this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_WIDTH);
         this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT);
+        this.rendering.nameRange = Mth.clamp(this.rendering.nameRange, 4, 24);
         if (this.storage.storageBackend == null) this.storage.storageBackend = Type.NBT;
     }
 }
