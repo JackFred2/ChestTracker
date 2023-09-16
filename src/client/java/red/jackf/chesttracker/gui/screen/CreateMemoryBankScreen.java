@@ -203,7 +203,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
             this.idEditBox.setTextColor(TextColours.getErrorColour());
             this.loadButton.setMessage(translatable("chesttracker.gui.createMemoryBank.alreadyExists"));
             this.loadButton.active = false;
-        } else if (this.id.isEmpty()) {
+        } else if (this.id.isBlank()) {
             this.idEditBox.setTextColor(TextColours.getErrorColour());
             this.loadButton.setMessage(translatable("chesttracker.gui.createMemoryBank.emptyId"));
             this.loadButton.active = false;
