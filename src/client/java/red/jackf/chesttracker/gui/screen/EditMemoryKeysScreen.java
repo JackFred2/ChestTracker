@@ -33,11 +33,10 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     private boolean firstLoad = false;
     private boolean scheduleRebuild = false;
 
-    protected EditMemoryKeysScreen(Screen parent, String memoryBankId) {
+    protected EditMemoryKeysScreen(Screen parent, MemoryBank memoryBank) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
         this.parent = parent;
-        this.bank = Storage.load(memoryBankId).orElse(null);
-        if (this.bank == null) onClose();
+        this.bank = memoryBank;
     }
 
     @Override

@@ -184,13 +184,13 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
         this.nameEditBox.setValue(ctx.name());
     }
 
-    private String getNameFromId() {
-        return translatable("options.generic_value", translatable("generator.custom"), literal(this.id)).getString();
+    protected static String getNameFromId(String id) {
+        return translatable("options.generic_value", translatable("generator.custom"), literal(id)).getString();
     }
 
     private void refreshName() {
         if (this.name.isEmpty()) {
-            this.nameEditBox.setHint(literal(getNameFromId()));
+            this.nameEditBox.setHint(literal(getNameFromId(this.id)));
             this.nameEditBox.setTextColor(TextColours.getHintColour());
         } else {
             this.nameEditBox.setHint(CommonComponents.EMPTY);
@@ -216,7 +216,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
 
     private void createAndLoad(Button button) {
         this.id = sanitize(this.id);
-        MemoryBank.loadOrCreate(this.id, Metadata.blankWithName(this.name.isEmpty() ? getNameFromId() : this.name));
+        MemoryBank.loadOrCreate(this.id, Metadata.blankWithName(this.name.isEmpty() ? getNameFromId(this.id) : this.name));
         this.afterBankLoaded.run();
     }
 
