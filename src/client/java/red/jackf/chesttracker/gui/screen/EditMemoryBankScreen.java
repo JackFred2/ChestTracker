@@ -21,7 +21,6 @@ import red.jackf.chesttracker.memory.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
-import red.jackf.chesttracker.util.StringUtil;
 
 import java.util.*;
 
@@ -44,41 +43,20 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     private final Runnable afterBankLoaded;
     private final String memoryBankId;
     private final Metadata metadata;
-    private final boolean isCreatingNewBank;
     @Nullable
     private StringSelectorWidget<SettingsTab> settingsTabSelector;
     private final Multimap<SettingsTab, AbstractWidget> settingsMap = LinkedListMultimap.create();
 
-    protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, @Nullable String memoryBankId) {
-        super(translatable("chesttracker.gui.editMemoryBank." + (memoryBankId == null ? "create" : "edit")));
+    protected EditMemoryBankScreen(@Nullable Screen parent, Runnable afterBankLoaded, String memoryBankId) {
+        super(translatable("chesttracker.gui.editMemoryBank"));
         this.parent = parent;
         this.afterBankLoaded = afterBankLoaded;
-        this.isCreatingNewBank = memoryBankId == null;
-        if (isCreatingNewBank) {
-            this.memoryBankId = getNextIdDefault();
-            this.metadata = Metadata.blankWithName(this.memoryBankId.substring("user/".length()));
-        } else {
-            this.memoryBankId = memoryBankId;
-            this.metadata = Storage.loadMetadata(memoryBankId).orElseGet(Metadata::blank);
-        }
-    }
-
-    private String makeUserId(String id) {
-        return "user/" + StringUtil.sanitizeForPath(id);
+        this.memoryBankId = memoryBankId;
+        this.metadata = Storage.loadMetadata(memoryBankId).orElseGet(Metadata::blank);
     }
 
     private boolean isCurrentIdLoaded() {
         return MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(memoryBankId);
-    }
-
-    private String getNextIdDefault() {
-        var keys = Storage.getAllIds();
-        int index = 1;
-        String id;
-        do {
-            id = makeUserId("custom" + index++);
-        } while (keys.contains(id));
-        return id;
     }
 
     @Override
@@ -103,16 +81,15 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         // details label
-        if (!isCreatingNewBank)
-            this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
-                    top + GuiConstants.MARGIN,
-                    this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - CLOSE_BUTTON_SIZE,
-                    Storage.getBackendLabel(memoryBankId),
-                    TextColours.getLabelColour(),
-                    TextWidget.Alignment.RIGHT));
+        this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
+                top + GuiConstants.MARGIN,
+                this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - CLOSE_BUTTON_SIZE,
+                Storage.getBackendLabel(memoryBankId),
+                TextColours.getLabelColour(),
+                TextWidget.Alignment.RIGHT));
 
         // ID
-        var idLabel = translatable("chesttracker.gui.editMemoryBank.id");
+        var idLabel = translatable("chesttracker.gui.id");
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                 this.top + ID_TOP,
                 idLabel,
@@ -133,19 +110,19 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 nameLabel,
                 TextColours.getLabelColour()));
         this.nameEditBox = this.addRenderableWidget(new CustomEditBox(font,
-                this.left + GuiConstants.MARGIN + font.width(nameLabel) + 4,
+                this.left + GuiConstants.MARGIN + font.width(nameLabel) + GuiConstants.SMALL_MARGIN,
                 this.top + NAME_TOP - 2,
-                menuWidth - 2 * GuiConstants.MARGIN - font.width(nameLabel) - 4,
+                menuWidth - 2 * GuiConstants.MARGIN - font.width(nameLabel) - GuiConstants.SMALL_MARGIN,
                 font.lineHeight + 3,
                 this.nameEditBox,
                 CommonComponents.EMPTY));
         this.nameEditBox.setResponder(s -> {
             if (s.isEmpty() && !ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) {
                 this.nameEditBox.setHint(Component.literal(memoryBankId));
-                this.nameEditBox.setTextColor(TextColours.getSearchHintColour());
+                this.nameEditBox.setTextColor(TextColours.getHintColour());
             } else {
                 this.nameEditBox.setHint(CommonComponents.EMPTY);
-                this.nameEditBox.setTextColor(TextColours.getSearchTextColour());
+                this.nameEditBox.setTextColor(TextColours.getTextColour());
             }
             this.metadata.setName(s.isEmpty() ? null : s);
         });
@@ -172,48 +149,39 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         List<RenderableThingGetter<?>> saveCreateLoadRow = new ArrayList<>();
         bottomButtons.add(saveCreateLoadRow);
         if (inGame && !isCurrentIdLoaded()) {
-            // [create and] load
-            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable(isCreatingNewBank ? "chesttracker.gui.editMemoryBank.createAndLoad" : "structure_block.mode.load"), this::loadOrCreate)
+            // load
+            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable("structure_block.mode.load"), this::loadOrCreate)
                     .bounds(x, y, width, height)
                     .build());
         }
 
-        if (!isCreatingNewBank) {
-            // save
-            saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable("selectWorld.edit.save"), this::save)
-                    .bounds(x, y, width, height)
-                    .build());
+        // save
+        saveCreateLoadRow.add((x, y, width, height) -> Button.builder(translatable("selectWorld.edit.save"), this::save)
+                .bounds(x, y, width, height)
+                .build());
 
-            // mark default if ingame
-            if (inGame) {
-                var ctx = LoadContext.get();
-                var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.connectionId()) : null;
-
-                if (connectionSettings != null)
-                    saveCreateLoadRow.add((x, y, width, height) -> {
-                        if (connectionSettings.memoryBankIdOverride().orElse(ctx.connectionId()).equals(memoryBankId)) {
-                            // disable if already the default for the current connection
-                            var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {
-                                    })
-                                    .bounds(x, y, width, height)
-                                    .build();
-                            defaultButton.active = false;
-                            return defaultButton;
-                        } else {
-                            return Button.builder(translatable("chesttracker.gui.editMemoryBank.markDefault"), this::markDefault)
-                                    .tooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.markDefault.tooltip")))
-                                    .bounds(x, y, width, height)
-                                    .build();
-                        }
-                    });
-            }
-        } else {
-            // add a button to create a bank for the default ID, if not existing
+        // mark default if ingame
+        if (inGame) {
             var ctx = LoadContext.get();
-            if (ctx != null && !Storage.exists(ctx.connectionId()))
-                bottomButtons.add(List.of((x, y, width, height) -> Button.builder(translatable("chesttracker.gui.editMemoryBank.createDefault"), ignored -> createDefault(ctx))
-                        .bounds(x, y, width, height)
-                        .build()));
+            var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.connectionId()) : null;
+
+            if (connectionSettings != null)
+                saveCreateLoadRow.add((x, y, width, height) -> {
+                    if (connectionSettings.memoryBankIdOverride().orElse(ctx.connectionId()).equals(memoryBankId)) {
+                        // disable if already the default for the current connection
+                        var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {
+                                })
+                                .bounds(x, y, width, height)
+                                .build();
+                        defaultButton.active = false;
+                        return defaultButton;
+                    } else {
+                        return Button.builder(translatable("chesttracker.gui.editMemoryBank.markDefault"), this::markDefault)
+                                .tooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.markDefault.tooltip")))
+                                .bounds(x, y, width, height)
+                                .build();
+                    }
+                });
         }
 
         addBottomButtons(bottomButtons);

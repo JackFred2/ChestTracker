@@ -64,7 +64,7 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
 
         Style style = context.style();
         if(!context.valid() || context.isKey() && !type.components().containsKey(expr.value())) {
-            style = Style.EMPTY.withColor(TextColours.getSearchErrorColour()).withUnderlined(true);
+            style = Style.EMPTY.withColor(TextColours.getErrorColour()).withUnderlined(true);
         }
         TokenRange range = getAndPushRange(expr.displayValue().length());
         tokens.add(Pair.of(range, style));

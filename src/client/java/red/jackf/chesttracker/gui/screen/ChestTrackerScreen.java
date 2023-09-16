@@ -145,7 +145,7 @@ public class ChestTrackerScreen extends Screen {
                 this.filter(s);
             });
         }
-        this.search.setTextColor(TextColours.getSearchTextColour());
+        this.search.setTextColor(TextColours.getTextColour());
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
         if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)

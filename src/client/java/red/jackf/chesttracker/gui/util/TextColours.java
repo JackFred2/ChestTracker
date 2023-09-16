@@ -7,11 +7,11 @@ public class TextColours {
     private TextColours() {}
 
     private static int labelColour = 0x404040;
-    private static int searchTextColour = 0xFFFFFF;
-    private static int searchHintColour = 0x808080;
+    private static int textColour = 0xFFFFFF;
+    private static int hintColour = 0x808080;
     private static int searchKeyColour = 0x669BBC;
     private static int searchTermColour = 0xEECC77;
-    private static int searchErrorColour = 0xFF0000;
+    private static int errorColour = 0xFF0000;
 
     public static int getLabelColour() {
         return labelColour;
@@ -21,12 +21,12 @@ public class TextColours {
         TextColours.labelColour = labelColour;
     }
 
-    public static int getSearchTextColour() {
-        return searchTextColour;
+    public static int getTextColour() {
+        return textColour;
     }
 
-    static void setSearchTextColour(int searchTextColour) {
-        TextColours.searchTextColour = searchTextColour;
+    static void setTextColour(int textColour) {
+        TextColours.textColour = textColour;
     }
 
     public static int getSearchKeyColour() {
@@ -45,19 +45,19 @@ public class TextColours {
         TextColours.searchTermColour = searchTermColour;
     }
 
-    public static int getSearchErrorColour() {
-        return searchErrorColour;
+    public static int getErrorColour() {
+        return errorColour;
     }
 
-    static void setSearchErrorColour(int searchErrorColour) {
-        TextColours.searchErrorColour = searchErrorColour;
+    static void setErrorColour(int errorColour) {
+        TextColours.errorColour = errorColour;
     }
 
-    public static void setSearchHintColour(int searchHintColour) {
-        TextColours.searchHintColour = searchHintColour;
+    public static void setHintColour(int hintColour) {
+        TextColours.hintColour = hintColour;
     }
 
-    public static int getSearchHintColour() {
-        return searchHintColour;
+    public static int getHintColour() {
+        return hintColour;
     }
 }

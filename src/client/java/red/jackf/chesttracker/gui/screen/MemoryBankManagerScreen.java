@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
@@ -112,7 +113,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                             ChestTracker.guiTex("widgets/new_memory_bank_button"),
                             BUTTON_SIZE,
                             BUTTON_SIZE * 3,
-                            b -> openEditScreen(afterBankLoaded, null)))
+                            b -> openCreateScreen(afterBankLoaded)))
                     .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.newMemoryBank")));
         }
 
@@ -126,7 +127,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                 this.search,
                 Component.translatable("chesttracker.gui.memoryManager.search")
         ));
-        this.search.setTextColor(TextColours.getSearchTextColour());
+        this.search.setTextColor(TextColours.getTextColour());
         this.search.setHint(Component.translatable("chesttracker.gui.memoryManager.search"));
         this.search.setResponder(term -> {
             // update string list options
@@ -166,8 +167,12 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
         this.search.setValue("");
     }
 
-    private void openEditScreen(Runnable afterBankLoaded, @Nullable String idToOpen) {
-        Minecraft.getInstance().setScreen(new EditMemoryBankScreen(this, afterBankLoaded, idToOpen));
+    private void openCreateScreen(Runnable afterBankLoaded) {
+        Minecraft.getInstance().setScreen(new CreateMemoryBankScreen(this, afterBankLoaded));
+    }
+
+    private void openEditScreen(Runnable afterBankLoaded, @NotNull String bankId) {
+        Minecraft.getInstance().setScreen(new EditMemoryBankScreen(this, afterBankLoaded, bankId));
     }
 
     @Override

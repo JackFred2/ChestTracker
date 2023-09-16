@@ -49,7 +49,7 @@ public class StringUtil {
     }
 
     /**
-     * Makes a string of text safe to be used as a windows file.
+     * Makes a string of text safe to be used as a windows file (and thus a *nix file).
      * Adjusted from net.minecraft.FileUtil
      */
     public static String sanitizeForPath(String text) {
