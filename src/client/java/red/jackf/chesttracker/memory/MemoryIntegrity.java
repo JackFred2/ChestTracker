@@ -83,14 +83,18 @@ public class MemoryIntegrity {
                 final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
                     final long secondsPastExpiry = switch (integrity.lifetimeCountMode) {
-                        case REAL_TIME -> Duration.between(currentEntry.getValue().realTimestamp(), Instant.now()).toSeconds();
-                        case WORLD_TIME -> (level.getGameTime() - currentEntry.getValue().inGameTimestamp()) / SharedConstants.TICKS_PER_SECOND;
-                        case LOADED_TIME -> (MemoryBank.INSTANCE.getMetadata().getLoadedTime() - currentEntry.getValue().loadedTimestamp()) / SharedConstants.TICKS_PER_SECOND;
+                        case REAL_TIME ->
+                                Duration.between(currentEntry.getValue().realTimestamp(), Instant.now()).toSeconds();
+                        case WORLD_TIME -> (level.getGameTime() - currentEntry.getValue()
+                                .inGameTimestamp()) / SharedConstants.TICKS_PER_SECOND;
+                        case LOADED_TIME -> (MemoryBank.INSTANCE.getMetadata().getLoadedTime() - currentEntry.getValue()
+                                .loadedTimestamp()) / SharedConstants.TICKS_PER_SECOND;
                     } - expirySeconds;
 
                     if (secondsPastExpiry > 0) {
                         MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentEntry.getKey());
-                        LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentEntry.getKey(), level.dimension().location(), secondsPastExpiry);
+                        LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentEntry.getKey(), level.dimension()
+                                .location(), secondsPastExpiry);
                         return;
                     }
                 }

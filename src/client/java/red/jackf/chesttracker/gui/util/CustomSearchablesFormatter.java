@@ -52,9 +52,11 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
     public TokenRange visitComponent(final ComponentExpression expr, final FormattingContext context) {
 
         boolean valid = context.valid() && expr.left() instanceof LiteralExpression && expr.right() instanceof LiteralExpression;
-        TokenRange leftRange = expr.left().accept(this, FormattingContext.key(Style.EMPTY.withColor(TextColours.getSearchKeyColour()), valid));
+        TokenRange leftRange = expr.left()
+                .accept(this, FormattingContext.key(Style.EMPTY.withColor(TextColours.getSearchKeyColour()), valid));
         tokens.add(Pair.of(getAndPushRange(), context.style(valid)));
-        TokenRange rightRange = expr.right().accept(this, FormattingContext.literal(Style.EMPTY.withColor(TextColours.getSearchTermColour()), valid));
+        TokenRange rightRange = expr.right()
+                .accept(this, FormattingContext.literal(Style.EMPTY.withColor(TextColours.getSearchTermColour()), valid));
         return TokenRange.encompassing(leftRange, rightRange);
     }
 
@@ -63,7 +65,7 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
     public TokenRange visitLiteral(final @NotNull LiteralExpression expr, final FormattingContext context) {
 
         Style style = context.style();
-        if(!context.valid() || context.isKey() && !type.components().containsKey(expr.value())) {
+        if (!context.valid() || context.isKey() && !type.components().containsKey(expr.value())) {
             style = Style.EMPTY.withColor(TextColours.getErrorColour()).withUnderlined(true);
         }
         TokenRange range = getAndPushRange(expr.displayValue().length());
@@ -104,15 +106,15 @@ public class CustomSearchablesFormatter implements ContextAwareVisitor<TokenRang
 
         List<FormattedCharSequence> sequences = new ArrayList<>();
         int index = 0;
-        for(Pair<TokenRange, Style> token : tokens) {
+        for (Pair<TokenRange, Style> token : tokens) {
             TokenRange range = token.getFirst();
             int subEnd = Math.max(range.start() - offset, 0);
-            if(subEnd >= currentString.length()) {
+            if (subEnd >= currentString.length()) {
                 break;
             }
 
             int subStart = Math.min(range.end() - offset, currentString.length());
-            if(subStart > 0) {
+            if (subStart > 0) {
                 sequences.add(FormattedCharSequence.forward(currentString.substring(index, subEnd), token.getSecond()));
                 sequences.add(FormattedCharSequence.forward(currentString.substring(subEnd, subStart), token.getSecond()));
                 index = subStart;

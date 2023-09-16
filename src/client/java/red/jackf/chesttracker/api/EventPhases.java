@@ -15,5 +15,6 @@ public class EventPhases {
      */
     public static final ResourceLocation FALLBACK_PHASE = ChestTracker.id("fallback");
 
-    private EventPhases() {}
+    private EventPhases() {
+    }
 }

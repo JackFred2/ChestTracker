@@ -14,6 +14,7 @@ import java.util.Collection;
 public interface Backend {
     /**
      * Load a memory bank if it exists, or return null if not.
+     *
      * @param id ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
      * @return Loaded Memory Bank, or null if not available.
      */
@@ -22,6 +23,7 @@ public interface Backend {
 
     /**
      * Delete a memory from this storage. Not reversible.
+     *
      * @param id ID of the memory bank to delete. If it does not exist, do nothing.
      */
     void delete(String id);
@@ -29,12 +31,14 @@ public interface Backend {
     /**
      * Save this memory bank. The ID is contained within the memory bank; use {@link MemoryBank#getId()}.
      * If an error occurs, an exception should be logged, but should not crash the game.
+     *
      * @param memoryBank Memory bank to save to this storage.
      */
     void save(MemoryBank memoryBank);
 
     /**
      * Returns a small label to show at the top of the "edit memory bank" screen.
+     *
      * @param memoryBankId ID of a memory bank to generate a label for.
      * @return Component to show at the top of the edit memory bank screen.
      */
@@ -44,12 +48,14 @@ public interface Backend {
 
     /**
      * Return all IDs in this storage, such as all files, in no particular order.
+     *
      * @return All memory bank IDs accessible by this storage.
      */
     Collection<String> getAllIds();
 
     /**
      * Check whether an ID exists for this storage.
+     *
      * @param id ID to check existence for
      * @return Whether a memory bank by this ID exists.
      */
@@ -59,6 +65,7 @@ public interface Backend {
 
     /**
      * Returns just the metadata of a memory bank. If possible, load only the metadata instead of the whole file.
+     *
      * @param id ID of the memory bank to load
      * @return Metadata from the memory bank, or null if not.
      */
@@ -67,7 +74,6 @@ public interface Backend {
         var loaded = load(id);
         return loaded != null ? loaded.getMetadata() : null;
     }
-
 
 
     enum Type {

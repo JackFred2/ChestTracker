@@ -1,46 +1,46 @@
 {
-	"schemaVersion": 1,
-	"id": "chesttracker",
-	"version": "${version}",
-	"name": "Chest Tracker",
-	"description": "Remember items on the client; addon for Where Is It.",
-	"authors": [
-		"JackFred"
-	],
-	"contact": {
-		"homepage": "https://modrinth.com/mod/chest-tracker",
-		"sources": "https://github.com/JackFred2/ChestTracker",
-		"issues": "https://github.com/JackFred2/ChestTracker/issues"
-	},
-	"license": "LGPL-3.0-only",
-	"icon": "assets/chesttracker/icon.png",
-	"environment": "client",
-	"entrypoints": {
-		"client": [
-			"red.jackf.chesttracker.ChestTracker"
-		],
-		"modmenu": [
-			"red.jackf.chesttracker.compat.ChestTrackerModMenu"
-		],
-		"whereisit_client": [
-			"red.jackf.chesttracker.compat.ChestTrackerWhereIsItPlugin"
-		]
-	},
-	"mixins": [
-		{
-			"config": "chesttracker.mixins.json",
-			"environment": "client"
-		}
-	],
-	"accessWidener": "chesttracker.accesswidener",
-	"depends": {
-		"fabricloader": ">=0.14.21",
-		"minecraft": "~1.20",
-		"java": ">=17",
-		"fabric-api": "*",
-		"yet_another_config_lib_v3": "*",
-		"whereisit": ">=2.0.19"
-	},
-	"suggests": {
-	}
+  "schemaVersion": 1,
+  "id": "chesttracker",
+  "version": "${version}",
+  "name": "Chest Tracker",
+  "description": "Remember items on the client; addon for Where Is It.",
+  "authors": [
+    "JackFred"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/chest-tracker",
+    "sources": "https://github.com/JackFred2/ChestTracker",
+    "issues": "https://github.com/JackFred2/ChestTracker/issues"
+  },
+  "license": "LGPL-3.0-only",
+  "icon": "assets/chesttracker/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "red.jackf.chesttracker.ChestTracker"
+    ],
+    "modmenu": [
+      "red.jackf.chesttracker.compat.ChestTrackerModMenu"
+    ],
+    "whereisit_client": [
+      "red.jackf.chesttracker.compat.ChestTrackerWhereIsItPlugin"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "chesttracker.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "chesttracker.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "~1.20",
+    "java": ">=17",
+    "fabric-api": "*",
+    "yet_another_config_lib_v3": "*",
+    "whereisit": ">=2.0.19"
+  },
+  "suggests": {
+  }
 }

@@ -20,7 +20,8 @@ import java.util.List;
  * Default handlers for the Gui API events
  */
 public class GuiApiDefaults {
-    private GuiApiDefaults() {}
+    private GuiApiDefaults() {
+    }
 
     public static void setup() {
         // default, "grab everything from the slots that's not from the player's inventory"

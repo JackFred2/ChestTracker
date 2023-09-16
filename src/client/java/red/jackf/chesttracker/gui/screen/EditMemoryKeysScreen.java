@@ -95,21 +95,22 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                    bank.getMetadata().getOrCreateIcon(key).toStack(),
-                    x,
-                    y,
-                    button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
-                            translatable("chesttracker.gui.editMemoryKeys.setIcon"),
-                            this,
-                            GuiConstants.DEFAULT_ICON_ORDER,
-                            i -> {
-                                if (i != null) {
-                                    this.bank.getMetadata().setIcon(key, new LightweightStack(i));
-                                    scheduleRebuild = true;
-                                }
-                            }
-                    )),
-                    ItemButton.Background.VANILLA)).setTooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryKeys.setIcon")));
+                            bank.getMetadata().getOrCreateIcon(key).toStack(),
+                            x,
+                            y,
+                            button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
+                                    translatable("chesttracker.gui.editMemoryKeys.setIcon"),
+                                    this,
+                                    GuiConstants.DEFAULT_ICON_ORDER,
+                                    i -> {
+                                        if (i != null) {
+                                            this.bank.getMetadata().setIcon(key, new LightweightStack(i));
+                                            scheduleRebuild = true;
+                                        }
+                                    }
+                            )),
+                            ItemButton.Background.VANILLA))
+                    .setTooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryKeys.setIcon")));
 
             x += ItemButton.SIZE + spacing;
 
@@ -146,14 +147,14 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
         // save
         this.addRenderableWidget(Button.builder(translatable("selectWorld.edit.save"), b -> {
-            Storage.save(this.bank);
-            onClose();
-        }).bounds(
-                this.left + GuiConstants.MARGIN,
-                this.top + this.menuHeight - GuiConstants.MARGIN - 20,
+                    Storage.save(this.bank);
+                    onClose();
+                }).bounds(
+                        this.left + GuiConstants.MARGIN,
+                        this.top + this.menuHeight - GuiConstants.MARGIN - 20,
                         workingWidth,
-                20)
-        .build());
+                        20)
+                .build());
 
         this.firstLoad = true;
     }

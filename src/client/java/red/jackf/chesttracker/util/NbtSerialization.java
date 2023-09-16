@@ -20,11 +20,12 @@ public class NbtSerialization {
 
     /**
      * Save an object to a path with a given codec as an NBT file
+     *
      * @param object Object to serialize
-     * @param codec Codec to serialize said object with
-     * @param path Path to save the object to
+     * @param codec  Codec to serialize said object with
+     * @param path   Path to save the object to
+     * @param <T>    Type of the serialized object
      * @return Whether the save was successful
-     * @param <T> Type of the serialized object
      */
     public static <T> boolean saveToNbt(T object, Codec<T> codec, Path path) {
         try {
@@ -40,7 +41,7 @@ public class NbtSerialization {
             } else { //noinspection OptionalGetWithoutIsPresent
                 throw new IOException("Error encoding to NBT: not a compound tag: %s".formatted(result.get()));
             }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             LOGGER.error("Error saving object", ex);
             return false;
         }
@@ -48,10 +49,11 @@ public class NbtSerialization {
 
     /**
      * Load an NBT file to an object using a given codec
+     *
      * @param codec Codec to deserialize with
-     * @param path Path to read from
+     * @param path  Path to read from
+     * @param <T>   Type of deserialized object
      * @return An optional containing the deserialized object, or an empty optional if errored
-     * @param <T> Type of deserialized object
      */
     public static <T> Optional<T> loadFromNbt(Codec<T> codec, Path path) {
         if (Files.isRegularFile(path)) {

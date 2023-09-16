@@ -22,11 +22,12 @@ public interface FileBasedBackend extends Backend {
 
     /**
      * Returns a list of relative file paths for files with a given extension in Chest Tracker's storage location
+     *
      * @param extension Extension to filter by e.g. '.json'
      * @return List of strings matching the file extension
      */
     static List<String> getMemoryIdsFilteringFileExtension(String extension) {
-        try(var stream = Files.walk(Constants.STORAGE_DIR)) {
+        try (var stream = Files.walk(Constants.STORAGE_DIR)) {
             return stream.filter(path -> path.getFileName().toString().endsWith(extension))
                     .map(path -> StringUtil.formatPath(Constants.STORAGE_DIR.relativize(path)))
                     .map(s -> s.substring(0, s.length() - extension.length()))

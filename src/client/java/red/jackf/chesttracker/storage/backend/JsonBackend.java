@@ -113,7 +113,7 @@ public class JsonBackend implements FileBasedBackend {
                 //noinspection OptionalGetWithoutIsPresent
                 FileUtils.writeStringToFile(path.toFile(), gson().toJson(jsonParsed.left().get()), CHARSET);
             }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             LOGGER.error("Error saving memories", ex);
         }
     }

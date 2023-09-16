@@ -1,6 +1,5 @@
 {
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
-
   "chesttracker.title": "Chest Tracker",
   "chesttracker.gui.button.on": "On",
   "chesttracker.gui.button.off": "Off",
@@ -8,28 +7,23 @@
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.reorder": "Reorder Key",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
-
   "chesttracker.gui.memoryManager": "Manage Memory Banks",
   "chesttracker.gui.memoryManager.search": "Search Memory Banks",
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",
   "chesttracker.gui.memoryManager.newMemoryBank": "Create new Memory Bank",
-
   "chesttracker.gui.createMemoryBank": "Creating new Memory Bank",
   "chesttracker.gui.createMemoryBank.loadDefault": "Load World Default",
   "chesttracker.gui.createMemoryBank.createAndLoad": "Create and Load",
   "chesttracker.gui.createMemoryBank.alreadyExists": "Memory Bank already exists with this ID",
   "chesttracker.gui.createMemoryBank.emptyId": "Can't have empty ID",
-
   "chesttracker.gui.editMemoryBank": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.markDefault": "Make Default",
   "chesttracker.gui.editMemoryBank.alreadyDefault": "Already Default",
   "chesttracker.gui.editMemoryBank.markDefault.tooltip": "Mark this Memory Bank as the default for the current connection/world.",
   "chesttracker.gui.editMemoryBank.deleteKey.description": "Delete the key %s from the selected Memory Bank.",
-
   "chesttracker.gui.editMemoryBank.filtering": "Filtering",
   "chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed": "Only Named",
   "chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed.tooltip": "Whether to only remember named memories.",
-
   "chesttracker.gui.editMemoryBank.integrity": "Integrity",
   "chesttracker.gui.editMemoryBank.integrity.blockBreak": "Block Break",
   "chesttracker.gui.editMemoryBank.integrity.blockBreak.tooltip": "Whether to remove memories when the block at that position is broken.",
@@ -49,19 +43,14 @@
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time": "Use Real Time",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time": "Use World Time",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time": "Use Bank Loaded Time",
-
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
-
   "chesttracker.gui.selectIcon": "Choose an icon",
-
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",
-
   "chesttracker.config.open": "Open",
   "chesttracker.config.irreversable": "Warning: this action can not be undone.",
-
   "chesttracker.config.mainGui": "Main Gui",
   "chesttracker.config.mainGui.autofocusSearchBar": "Auto-focus Search Bar",
   "chesttracker.config.mainGui.autofocusSearchBar.description": "Whether to automatically focus the search bar when the GUI is opened.",
@@ -71,25 +60,19 @@
   "chesttracker.config.mainGui.gridWidth": "Grid Width",
   "chesttracker.config.mainGui.gridHeight": "Grid Height",
   "chesttracker.config.mainGui.gridSizeSlider": "%d slots",
-
   "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
   "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
-
   "chesttracker.config.managementGui": "Management GUIs",
   "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
   "chesttracker.config.managementGui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.",
-
   "chesttracker.config.rendering": "Rendering",
   "chesttracker.config.rendering.nameRenderRange": "Name Render Range",
   "chesttracker.config.rendering.nameRenderRange.slider": "%s blocks",
-
   "chesttracker.config.devGui": "Developer Utils",
   "chesttracker.config.devGui.showDevHud": "Show Developer Hud",
-
   "chesttracker.config.memoryAndStorage": "Memory & Storage",
   "chesttracker.config.memory": "Memory Settings",
   "chesttracker.config.memory.noMemoryBankLoaded": "No Memory Bank currently loaded.",
-
   "chesttracker.config.storage": "Storage Settings ",
   "chesttracker.config.storage.openFolder": "Open Memory Folder",
   "chesttracker.config.storage.storageBackend": "Storage Backend",
@@ -98,9 +81,7 @@
   "chesttracker.config.storage.storageBackend.description.nbt": "Stores all Memory Banks as NBT files in your game's 'chesttracker' directory. More compact, but not readable without an external viewer. Recommended option.",
   "chesttracker.config.storage.storageBackend.description.memory": "Stores Memory Banks in game memory.",
   "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
-
   "chesttracker.config.storage.json.readableJsonMemories": "Readable JSON Files",
   "chesttracker.config.storage.json.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
-
   "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
 }

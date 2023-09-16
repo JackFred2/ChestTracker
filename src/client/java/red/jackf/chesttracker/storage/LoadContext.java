@@ -10,6 +10,7 @@ import red.jackf.chesttracker.util.StringUtil;
 
 /**
  * Reusable data for a game 'connection' - this connection being a world, LAN server, multiplayer server or realm.
+ *
  * @param connectionId
  * @param name
  */

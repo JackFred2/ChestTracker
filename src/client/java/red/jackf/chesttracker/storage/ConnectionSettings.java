@@ -29,7 +29,8 @@ public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
     private static Map<String, ConnectionSettings> settings = new HashMap<>();
 
     public static void load() {
-        NbtSerialization.loadFromNbt(FILE_CODEC, PATH).ifPresent(connectionSettingsMap -> settings = connectionSettingsMap);
+        NbtSerialization.loadFromNbt(FILE_CODEC, PATH)
+                .ifPresent(connectionSettingsMap -> settings = connectionSettingsMap);
     }
 
     public static void save() {

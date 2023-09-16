@@ -35,6 +35,6 @@ public class NameRenderer {
         for (BlockPos other : otherPos) {
             renderPos = renderPos.add(other.getCenter());
         }
-        return renderPos.scale( 1.0 / (1 + otherPos.size())).add(0, 1, 0);
+        return renderPos.scale(1.0 / (1 + otherPos.size())).add(0, 1, 0);
     }
 }

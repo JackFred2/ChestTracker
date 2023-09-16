@@ -112,8 +112,9 @@ public class ItemListWidget extends AbstractWidget {
         graphics.fill(slotX + 1, slotY + 1, slotX + GuiConstants.GRID_SLOT_SIZE - 1, slotY + GuiConstants.GRID_SLOT_SIZE - 1, 0x80_FFFFFF);
         if (!this.hideTooltip) {
             var stack = items.get(index);
-            var lines =  Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
-            if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount())).withStyle(ChatFormatting.GREEN));
+            var lines = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+            if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount()))
+                    .withStyle(ChatFormatting.GREEN));
             var image = stack.getTooltipImage();
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 250f);

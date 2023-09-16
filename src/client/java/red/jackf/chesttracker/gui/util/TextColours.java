@@ -4,7 +4,8 @@ package red.jackf.chesttracker.gui.util;
  * List of text colours used in the mod; sourced from assets/chesttracker/textures/gui/text_colours.png
  */
 public class TextColours {
-    private TextColours() {}
+    private TextColours() {
+    }
 
     private static int labelColour = 0x404040;
     private static int textColour = 0xFFFFFF;

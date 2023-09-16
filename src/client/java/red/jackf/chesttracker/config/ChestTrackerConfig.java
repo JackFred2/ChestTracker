@@ -18,6 +18,7 @@ public class ChestTrackerConfig {
             .setPath(FabricLoader.getInstance().getConfigDir().resolve("chesttracker.json"))
             .overrideGsonBuilder(ChestTrackerGSON.get())
             .build();
+
     public static void init() {
         try {
             INSTANCE.load();
@@ -26,7 +27,8 @@ public class ChestTrackerConfig {
             ChestTracker.LOGGER.error("Error loading Chest Tracker config, backing it up and restoring default", ex);
             var path = INSTANCE.getPath();
             try {
-                Files.move(path, path.resolveSibling(path.getFileName().toString() + ".errored"), StandardCopyOption.REPLACE_EXISTING);
+                Files.move(path, path.resolveSibling(path.getFileName()
+                        .toString() + ".errored"), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 ChestTracker.LOGGER.fatal("Error backing up errored config", e);
             }

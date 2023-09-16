@@ -6,7 +6,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.KeyMapping;
@@ -18,9 +17,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.api.gui.GetMemory;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
+import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
@@ -28,7 +27,6 @@ import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.world.LocationTracking;
-import red.jackf.whereisit.client.api.RenderUtils;
 import red.jackf.whereisit.client.api.ShouldIgnoreKey;
 
 import java.time.Instant;
@@ -39,10 +37,13 @@ public class ChestTracker implements ClientModInitializer {
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);
     }
+
     public static ResourceLocation guiTex(String path) {
         return new ResourceLocation(ID, "textures/gui/" + path + ".png");
     }
+
     public static final Logger LOGGER = LogManager.getLogger();
+
     public static Logger getLogger(String suffix) {
         return LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/" + suffix);
     }
@@ -100,8 +101,10 @@ public class ChestTracker implements ClientModInitializer {
                     var builder = GetMemory.EVENT.invoker()
                             .createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
                     if (builder.hasValue()) {
-                        var memory = builder.get().build(MemoryBank.INSTANCE.getMetadata().getLoadedTime(), Minecraft.getInstance().level.getGameTime(), Instant.now());
-                        if (MemoryBank.INSTANCE.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
+                        var memory = builder.get().build(MemoryBank.INSTANCE.getMetadata()
+                                .getLoadedTime(), Minecraft.getInstance().level.getGameTime(), Instant.now());
+                        if (MemoryBank.INSTANCE.getMetadata()
+                                .getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
                         MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory);
                     }
                 });

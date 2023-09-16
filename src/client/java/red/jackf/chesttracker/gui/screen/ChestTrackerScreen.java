@@ -78,7 +78,8 @@ public class ChestTrackerScreen extends Screen {
     protected void init() {
         // ask for a memory to be loaded if not available
         if (MemoryBank.INSTANCE == null) {
-            Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(parent, () -> Minecraft.getInstance().setScreen(this)));
+            Minecraft.getInstance()
+                    .setScreen(new MemoryBankManagerScreen(parent, () -> Minecraft.getInstance().setScreen(this)));
             return;
         }
 
@@ -171,17 +172,18 @@ public class ChestTrackerScreen extends Screen {
 
         // change memories
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
-                this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                0,
-                0,
-                BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/change_memory_bank_button"),
-                BUTTON_SIZE,
-                BUTTON_SIZE * 2,
-                this::openMemoryManager)).setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+                        this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                        this.top + GuiConstants.SMALL_MARGIN,
+                        BUTTON_SIZE,
+                        BUTTON_SIZE,
+                        0,
+                        0,
+                        BUTTON_SIZE,
+                        ChestTracker.guiTex("widgets/change_memory_bank_button"),
+                        BUTTON_SIZE,
+                        BUTTON_SIZE * 2,
+                        this::openMemoryManager))
+                .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
 
         // resize
         if (config.gui.showResizeWidget)
@@ -251,7 +253,8 @@ public class ChestTrackerScreen extends Screen {
         if (MemoryBank.INSTANCE == null) return;
         var counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey);
         this.items = counts.entrySet().stream()
-                .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()) // sort highest to lowest
+                .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue)
+                        .reversed()) // sort highest to lowest
                 .map(e -> { // lightweight stack -> full stacks
                     var stack = new ItemStack(e.getKey().item());
                     stack.setTag(e.getKey().tag());

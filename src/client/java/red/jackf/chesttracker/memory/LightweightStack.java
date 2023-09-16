@@ -17,7 +17,7 @@ public record LightweightStack(Item item, @Nullable CompoundTag tag) {
     public static final Codec<LightweightStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("id").forGetter(LightweightStack::item),
             CompoundTag.CODEC.optionalFieldOf("tag").forGetter(stack -> Optional.ofNullable(stack.tag()))
-        ).apply(instance, LightweightStack::new));
+    ).apply(instance, LightweightStack::new));
 
     public LightweightStack(Item item) {
         this(item, (CompoundTag) null);

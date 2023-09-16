@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 public class MemoryBank {
     private static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORY_CODEC = ModCodecs.makeMutableMap(
             Codec.unboundedMap(
-                ResourceLocation.CODEC,
-                ModCodecs.makeMutableMap(Codec.unboundedMap(
-                        ModCodecs.BLOCK_POS_STRING,
-                        Memory.CODEC
-                ))
+                    ResourceLocation.CODEC,
+                    ModCodecs.makeMutableMap(Codec.unboundedMap(
+                            ModCodecs.BLOCK_POS_STRING,
+                            Memory.CODEC
+                    ))
             ));
 
     public static final Codec<MemoryBank> CODEC = RecordCodecBuilder.create(instance ->
@@ -137,6 +137,7 @@ public class MemoryBank {
 
     /**
      * Returns a specific memory key from this bank, or null if non-existent
+     *
      * @param key Memory key to lookup
      * @return Memories for the given key, or null if non-existent
      */
@@ -147,6 +148,7 @@ public class MemoryBank {
 
     /**
      * Returns a specific memory key from this bank, or null if non-existent. Only returns memories with names
+     *
      * @param key Memory key to lookup
      * @return Memories with names for the given key, or null if non-existent
      */
@@ -157,8 +159,9 @@ public class MemoryBank {
 
     /**
      * Add a memory to a specific key and position
-     * @param key Key to add the memory to; usually a dimension ID, or a custom location
-     * @param pos Position to add the memory to
+     *
+     * @param key    Key to add the memory to; usually a dimension ID, or a custom location
+     * @param pos    Position to add the memory to
      * @param memory Memory to add
      */
     public void addMemory(ResourceLocation key, BlockPos pos, Memory memory) {
@@ -190,6 +193,7 @@ public class MemoryBank {
 
     /**
      * Remove a memory from a given position and memory key, if one exists.
+     *
      * @param key Memory key to check and remove
      * @param pos Position to remove in said key
      */
@@ -199,7 +203,7 @@ public class MemoryBank {
         _removeMemory(memories, key, pos);
         _removeMemory(namedMemories, key, pos);
         //noinspection StatementWithEmptyBody
-        while (linkedPositions.getOrDefault(key, Collections.emptyMap()).values().remove(pos));
+        while (linkedPositions.getOrDefault(key, Collections.emptyMap()).values().remove(pos)) ;
     }
 
     private static void _removeMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos) {
@@ -213,6 +217,7 @@ public class MemoryBank {
 
     /**
      * Remove an entire key from the current memory bank
+     *
      * @param key Key to remove
      */
     public void removeKey(ResourceLocation key) {
@@ -223,6 +228,7 @@ public class MemoryBank {
 
     /**
      * Returns a list of counts of items in a given key; used in the main screen. Not sorted in any particular order.
+     *
      * @param key Memory Key to count and return
      * @return Arbitrary order list of all items in a given memory key.
      */
@@ -238,7 +244,8 @@ public class MemoryBank {
 
     /**
      * Parse a Where Is It search-request and runs it through a given dimension's memories.
-     * @param key Memory key to run the request through
+     *
+     * @param key     Memory key to run the request through
      * @param request Search request to run on all memories
      * @return A list of search requests consisting of matching memories in this key.
      */
@@ -246,7 +253,8 @@ public class MemoryBank {
         if (memories.containsKey(key)) {
             var results = new ArrayList<SearchResult>();
             for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
-                var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request)).findFirst();
+                var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request))
+                        .findFirst();
                 if (matchedItem.isEmpty()) continue;
                 var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().otherPositions());
                 results.add(SearchResult.builder(entry.getKey())

@@ -11,7 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * List of information for a location.
@@ -19,26 +21,27 @@ import java.util.*;
 public final class Memory {
     public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    ItemStack.CODEC.listOf().fieldOf("items")
-                            .forGetter(Memory::items),
-                    ExtraCodecs.COMPONENT.optionalFieldOf("name")
-                            .forGetter(m -> Optional.ofNullable(m.name)),
-                    ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
-                            .forGetter(Memory::otherPositions),
-                    Codec.LONG.optionalFieldOf("loadedTimestamp", MemoryIntegrity.UNKNOWN_LOADED_TIMESTAMP)
-                            .forGetter(Memory::loadedTimestamp),
-                    Codec.LONG.optionalFieldOf("worldTimestamp", MemoryIntegrity.UNKNOWN_WORLD_TIMESTAMP)
-                            .forGetter(Memory::inGameTimestamp),
-                    ModCodecs.INSTANT.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
-                            .forGetter(Memory::realTimestamp)
-            ).apply(instance, (items, name, otherPositions, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(
-                    items,
-                    name.orElse(null),
-                    otherPositions,
-                    loadedTimestamp,
-                    worldTimestamp,
-                    realTimestamp
-            )));
+                            ItemStack.CODEC.listOf().fieldOf("items")
+                                    .forGetter(Memory::items),
+                            ExtraCodecs.COMPONENT.optionalFieldOf("name")
+                                    .forGetter(m -> Optional.ofNullable(m.name)),
+                            ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
+                                    .forGetter(Memory::otherPositions),
+                            Codec.LONG.optionalFieldOf("loadedTimestamp", MemoryIntegrity.UNKNOWN_LOADED_TIMESTAMP)
+                                    .forGetter(Memory::loadedTimestamp),
+                            Codec.LONG.optionalFieldOf("worldTimestamp", MemoryIntegrity.UNKNOWN_WORLD_TIMESTAMP)
+                                    .forGetter(Memory::inGameTimestamp),
+                            ModCodecs.INSTANT.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
+                                    .forGetter(Memory::realTimestamp)
+                    )
+                    .apply(instance, (items, name, otherPositions, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(
+                            items,
+                            name.orElse(null),
+                            otherPositions,
+                            loadedTimestamp,
+                            worldTimestamp,
+                            realTimestamp
+                    )));
 
 
     private final List<ItemStack> items;

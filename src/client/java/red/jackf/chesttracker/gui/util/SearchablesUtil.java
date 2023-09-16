@@ -27,9 +27,11 @@ public class SearchablesUtil {
                 .defaultComponent(SearchableComponent.create("text", SearchablesUtil::anyTextFilter))
                 .component(SearchableComponent.create("name", SearchablesUtil::stackNameSuggestions, SearchablesUtil::stackNameFilter))
                 .component(SearchableComponent.create("tooltip", SearchablesUtil::stackTooltipFilter))
-                .component(SearchableComponent.create("id", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath())))
+                .component(SearchableComponent.create("id", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem())
+                        .getPath())))
                 .component(SearchableComponent.create("tag", SearchablesUtil::stackTagFilter))
-                .component(SearchableComponent.create("mod", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem())).map(ResourceLocation::getNamespace)))
+                .component(SearchableComponent.create("mod", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem()))
+                        .map(ResourceLocation::getNamespace)))
                 .component(SearchableComponent.create("enchantment", SearchablesUtil::stackEnchantmentFilter))
                 .component(SearchableComponent.create("potion", SearchablesUtil::stackPotionFilter))
                 .build();
@@ -60,7 +62,8 @@ public class SearchablesUtil {
                 return stack.getCount() < Integer.parseInt(filter.substring(1));
             else if (filter.startsWith("="))
                 return stack.getCount() == Integer.parseInt(filter.substring(1));
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
 
         return false;
     }

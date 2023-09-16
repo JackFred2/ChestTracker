@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Allows the user to select from a list of options, using ItemStacks as icons.
  * Recommended to pass in a linked map structure such as {@link java.util.LinkedHashMap} for display ordering.
+ *
  * @param <T> Type to be selected from
  */
 public class SelectorScreen<T> extends Screen {

@@ -60,7 +60,8 @@ public class StringSelectorWidget<T> extends AbstractWidget {
             if (i >= this.getHeight() / ROW_HEIGHT) break;
             boolean hovered = Objects.equals(i, hoveredIndex);
             if (hovered) lastHovered = entry.getKey();
-            var textColour = hovered ? TextColours.getSearchTermColour() : entry.getKey().equals(highlight) ? TextColours.getSearchKeyColour() : TextColours.getTextColour();
+            var textColour = hovered ? TextColours.getSearchTermColour() : entry.getKey()
+                    .equals(highlight) ? TextColours.getSearchKeyColour() : TextColours.getTextColour();
             graphics.drawString(Minecraft.getInstance().font,
                     entry.getValue(),
                     this.getX() + 2 + (hovered ? 6 : 0),

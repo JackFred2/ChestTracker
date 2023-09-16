@@ -24,7 +24,9 @@ import java.util.function.Function;
  */
 public class ImagePixelReader {
     private static final ResourceLocation TEXTURE = ChestTracker.guiTex("text_colours");
-    private ImagePixelReader() {}
+
+    private ImagePixelReader() {
+    }
 
     private static final List<Consumer<Integer>> results = new ArrayList<>();
     private static final List<Function<NativeImage, Integer>> hooks = new ArrayList<>();
@@ -83,7 +85,8 @@ public class ImagePixelReader {
     }
 
     public static void setup() {
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ImagePixelReader.TitleListener());
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
+                .registerReloadListener(new ImagePixelReader.TitleListener());
 
         addPixelColourListener(2, 5, 0x404040, TextColours::setLabelColour);
         addPixelColourListener(2, 14, 0xFFFFFF, TextColours::setTextColour);

@@ -34,8 +34,10 @@ public class ResizeWidget extends AbstractWidget {
         super(x, y, SIZE, SIZE, Component.empty());
         this.left = screenLeft;
         this.top = screenTop;
-        if (currentWidth < minWidth || currentWidth > maxWidth) throw new IllegalArgumentException("Resize width out of bounds: %d".formatted(currentWidth));
-        if (currentHeight < minHeight || currentHeight > maxHeight) throw new IllegalArgumentException("Resize height out of bounds: %d".formatted(currentHeight));
+        if (currentWidth < minWidth || currentWidth > maxWidth)
+            throw new IllegalArgumentException("Resize width out of bounds: %d".formatted(currentWidth));
+        if (currentHeight < minHeight || currentHeight > maxHeight)
+            throw new IllegalArgumentException("Resize height out of bounds: %d".formatted(currentHeight));
         this.stepSize = stepSize;
         this.currentWidth = currentWidth;
         this.currentHeight = currentHeight;

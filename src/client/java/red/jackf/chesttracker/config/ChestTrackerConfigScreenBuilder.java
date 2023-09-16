@@ -228,8 +228,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.getDefaults().gui.showDevHud,
                                 () -> instance.getConfig().gui.showDevHud,
                                 b -> instance.getConfig().gui.showDevHud = b
-                        )
-                        .build())
+                        ).build())
                 .build();
     }
 
@@ -272,7 +271,8 @@ public class ChestTrackerConfigScreenBuilder {
                                     .text(translatable("chesttracker.config.storage.storageBackend.description"))
                                     .text(CommonComponents.NEW_LINE)
                                     .text(literal(b.name() + ": ").withStyle(ChatFormatting.GOLD)
-                                            .append(translatable("chesttracker.config.storage.storageBackend.description." + b.name().toLowerCase(Locale.ROOT))
+                                            .append(translatable("chesttracker.config.storage.storageBackend.description." + b.name()
+                                                    .toLowerCase(Locale.ROOT))
                                                     .withStyle(ChatFormatting.WHITE)));
                             if (b == Backend.Type.MEMORY)
                                 builder.text(CommonComponents.NEW_LINE)

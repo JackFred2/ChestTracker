@@ -18,7 +18,8 @@ import red.jackf.jackfredlib.api.ResultHolder;
  * as Hypixel's loot box ender chest.</p>
  */
 public class GetLocation {
-    private GetLocation() {}
+    private GetLocation() {
+    }
 
     /**
      * Called when a block is right-clicked in the world.

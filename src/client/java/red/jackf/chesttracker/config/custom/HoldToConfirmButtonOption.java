@@ -104,10 +104,12 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
     }
 
     @Override
-    public void forgetPendingValue() {}
+    public void forgetPendingValue() {
+    }
 
     @Override
-    public void requestSetDefault() {}
+    public void requestSetDefault() {
+    }
 
     @Override
     public boolean isPendingValueDefault() {
@@ -115,7 +117,8 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
     }
 
     @Override
-    public void addListener(BiConsumer<Option<BiConsumer<YACLScreen, HoldToConfirmButtonOption>>, BiConsumer<YACLScreen, HoldToConfirmButtonOption>> changedListener) {}
+    public void addListener(BiConsumer<Option<BiConsumer<YACLScreen, HoldToConfirmButtonOption>>, BiConsumer<YACLScreen, HoldToConfirmButtonOption>> changedListener) {
+    }
 
     public long holdTime() {
         return holdTimeTicks;

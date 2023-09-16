@@ -61,9 +61,10 @@ public class ModCodecs {
 
     /**
      * Makes a list codec return a mutable list instance of the default immutable one.
+     *
      * @param codec Codec that returns an immutable list
+     * @param <T>   Type contained in lists in said codecs
      * @return Codec that provides a mutable list on deserialization ({@link ArrayList})
-     * @param <T> Type contained in lists in said codecs
      */
     public static <T> Codec<List<T>> makeMutableList(Codec<List<T>> codec) {
         return codec.xmap(ArrayList::new, Function.identity());
@@ -71,10 +72,11 @@ public class ModCodecs {
 
     /**
      * Makes a map codec return a mutable map instead of the default immutable one.
+     *
      * @param codec Codec that returns an immutable map
+     * @param <K>   Type of key in said maps
+     * @param <V>   Type of value in said maps
      * @return Codec that provides a mutable map on deserialization ({@link HashMap})
-     * @param <K> Type of key in said maps
-     * @param <V> Type of value in said maps
      */
     public static <K, V> Codec<Map<K, V>> makeMutableMap(Codec<Map<K, V>> codec) {
         return codec.xmap(HashMap::new, Function.identity());

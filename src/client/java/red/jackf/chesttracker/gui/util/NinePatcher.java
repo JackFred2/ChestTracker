@@ -17,6 +17,7 @@ public final class NinePatcher {
     private final int innerSize;
     private final InnerMode innerMode;
     private final int diameter;
+
     public NinePatcher(ResourceLocation texture, int outerSize, int innerSize, InnerMode innerMode) {
         this.texture = texture;
         this.outerSize = outerSize;

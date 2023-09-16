@@ -40,7 +40,8 @@ public class ChestTrackerGSON {
         }
     }
 
-    private interface JsonSerializerDeserializer<T> extends JsonSerializer<T>, JsonDeserializer<T> {}
+    private interface JsonSerializerDeserializer<T> extends JsonSerializer<T>, JsonDeserializer<T> {
+    }
 
     @SuppressWarnings("SameParameterValue")
     private static <T> JsonSerializerDeserializer<T> adapterFor(Codec<T> codec) {
@@ -50,8 +51,8 @@ public class ChestTrackerGSON {
                 return codec.decode(JsonOps.INSTANCE, json)
                         .get()
                         .map(Pair::getFirst, part -> {
-                                throw new JsonParseException("Couldn't deserialize %s: %s".formatted(typeOfT.getTypeName(), part));
-                            });
+                            throw new JsonParseException("Couldn't deserialize %s: %s".formatted(typeOfT.getTypeName(), part));
+                        });
             }
 
             @Override
