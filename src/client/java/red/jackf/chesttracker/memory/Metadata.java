@@ -74,11 +74,22 @@ public class Metadata {
         this.lastModified = Instant.now();
     }
 
-    public LightweightStack getIcon(ResourceLocation key) {
+    public List<ResourceLocation> getKeyOrder() {
+        return icons.stream().map(MemoryKeyIcon::id).toList();
+    }
+
+    public void moveIcon(int from, int to) {
+        icons.add(to, icons.remove(from));
+    }
+
+    public LightweightStack getOrCreateIcon(ResourceLocation key) {
         for (MemoryKeyIcon icon : icons) {
             if (icon.id().equals(key)) return icon.icon();
         }
-        return new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null);
+        // doesn't exist, populate
+        var newIcon = new MemoryKeyIcon(key, new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null));
+        icons.add(newIcon);
+        return newIcon.icon();
     }
 
     public void setIcon(ResourceLocation key, LightweightStack icon) {

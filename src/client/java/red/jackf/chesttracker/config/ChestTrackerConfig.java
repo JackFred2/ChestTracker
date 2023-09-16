@@ -4,20 +4,13 @@ import dev.isxander.yacl3.config.ConfigEntry;
 import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.memory.LightweightStack;
-import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend.Type;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChestTrackerConfig {
     public static final GsonConfigInstance<ChestTrackerConfig> INSTANCE
@@ -66,16 +59,6 @@ public class ChestTrackerConfig {
 
         @ConfigEntry
         public int gridHeight = GuiConstants.MIN_GRID_ROWS;
-
-        @ConfigEntry
-        public List<MemoryKeyIcon> memoryKeyIcons = new ArrayList<>(ICON_DEFAULTS);
-
-        private static final List<MemoryKeyIcon> ICON_DEFAULTS = List.of(
-                new MemoryKeyIcon(MemoryBank.ENDER_CHEST_KEY, new LightweightStack(Items.ENDER_CHEST)),
-                new MemoryKeyIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
-                new MemoryKeyIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
-                new MemoryKeyIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
-        );
 
         @ConfigEntry
         public boolean hideMemoryIds = false;

@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.config.ChestTrackerConfig;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
@@ -264,17 +262,9 @@ public class MemoryBank {
     }
 
     /**
-     * Returns a list of all memory keys in this bank, in order of the list in the config, then an arbitrary order.
+     * Returns a list of all memory keys in this bank, in order of the metadata.
      */
     public List<ResourceLocation> getKeys() {
-        var keys = memories.keySet();
-        List<ResourceLocation> sorted = new ArrayList<>(keys.size());
-        for (MemoryKeyIcon icon : ChestTrackerConfig.INSTANCE.getConfig().gui.memoryKeyIcons)
-            if (keys.contains(icon.id()))
-                sorted.add(icon.id());
-        for (var key : keys)
-            if (!sorted.contains(key))
-                sorted.add(key);
-        return sorted;
+        return metadata.getKeyOrder().stream().filter(memories::containsKey).toList();
     }
 }

@@ -6,7 +6,7 @@
   "chesttracker.gui.button.off": "Off",
   "chesttracker.gui.id": "ID",
   "chesttracker.gui.resize": "Resize GUI",
-  "chesttracker.gui.reorder": "Reorder Keys",
+  "chesttracker.gui.reorder": "Reorder Key",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
 
   "chesttracker.gui.memoryManager": "Manage Memory Banks",

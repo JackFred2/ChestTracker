@@ -72,6 +72,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
             int y = startY + index * (ItemButton.SIZE + spacing);
 
             // drag handle
+            int currentIndex = index;
             this.dragHandles.put(key, this.addRenderableWidget(new DragHandleWidget(x,
                     y,
                     x,
@@ -79,13 +80,22 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     workingWidth,
                     ItemButton.SIZE + spacing,
                     0,
-                    bank.getKeys().size())));
+                    bank.getKeys().size(),
+                    newIndex -> {
+                        if (newIndex < currentIndex) {
+                            this.bank.getMetadata().moveIcon(currentIndex, newIndex);
+                            scheduleRebuild = true;
+                        } else if (newIndex > currentIndex + 1) {
+                            this.bank.getMetadata().moveIcon(currentIndex, newIndex - 1);
+                            scheduleRebuild = true;
+                        }
+                    })));
 
             x += DragHandleWidget.WIDTH + spacing;
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                    bank.getMetadata().getIcon(key).toStack(),
+                    bank.getMetadata().getOrCreateIcon(key).toStack(),
                     x,
                     y,
                     button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(

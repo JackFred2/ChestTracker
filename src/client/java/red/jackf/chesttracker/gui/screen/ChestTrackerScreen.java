@@ -204,7 +204,7 @@ public class ChestTrackerScreen extends Screen {
                 var resloc = todo.get(index);
 
                 // get the relevant icon
-                var icon = MemoryBank.INSTANCE.getMetadata().getIcon(resloc);
+                var icon = MemoryBank.INSTANCE.getMetadata().getOrCreateIcon(resloc);
                 var button = this.addRenderableWidget(new ItemButton(icon.toStack(),
                         this.left - MEMORY_ICON_OFFSET,
                         this.top + index * MEMORY_ICON_SPACING, b -> {

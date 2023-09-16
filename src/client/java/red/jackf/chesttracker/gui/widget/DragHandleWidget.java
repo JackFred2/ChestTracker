@@ -11,6 +11,8 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 
+import java.util.function.Consumer;
+
 /**
  * Handle for reordering memory key icons in the edit keys screen.
  */
@@ -25,10 +27,11 @@ public class DragHandleWidget extends AbstractWidget {
     private final int yHeight;
     private final int minIndex;
     private final int maxIndex;
+    private final Consumer<@Nullable Integer> callback;
 
     private @Nullable Integer target = null;
 
-    public DragHandleWidget(int x, int y, int highlightStartX, int highlightStartY, int highlightWidth, int yHeight, int minIndex, int maxIndex) {
+    public DragHandleWidget(int x, int y, int highlightStartX, int highlightStartY, int highlightWidth, int yHeight, int minIndex, int maxIndex, Consumer<Integer> callback) {
         super(x, y, WIDTH, HEIGHT, Component.empty());
         this.highlightStartX = highlightStartX;
         this.highlightStartY = highlightStartY;
@@ -36,6 +39,7 @@ public class DragHandleWidget extends AbstractWidget {
         this.yHeight = yHeight;
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
+        this.callback = callback;
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.reorder")));
     }
@@ -69,6 +73,7 @@ public class DragHandleWidget extends AbstractWidget {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (this.target != null) {
+            this.callback.accept(this.target);
             this.target = null;
             return true;
         }
