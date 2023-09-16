@@ -207,12 +207,21 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
         selectorOptions.put(SettingsTab.FILTERING, Component.translatable("chesttracker.gui.editMemoryBank.filtering"));
         selectorOptions.put(SettingsTab.INTEGRITY, Component.translatable("chesttracker.gui.editMemoryBank.integrity"));
-        selectorOptions.put(SettingsTab.EMPTY, Component.literal("Empty"));
+        selectorOptions.put(SettingsTab.SEARCH, translatable("chesttracker.gui.editMemoryBank.search"));
+        selectorOptions.put(SettingsTab.EMPTY, CommonComponents.EMPTY);
 
         settingsTabSelector.setOptions(selectorOptions);
 
         setupFilteringSettings();
         setupIntegritySettings();
+        setupSearchSettings();
+
+        addSetting(new StringWidget(getSettingsX(0),
+                getSettingsY(0),
+                getSettingsWidth(1),
+                BUTTON_HEIGHT,
+                literal("^_^").withStyle(ChatFormatting.BOLD),
+                font).setColor(0x4040FF), SettingsTab.EMPTY);
 
         setSettingsTab(SettingsTab.FILTERING);
     }
@@ -289,6 +298,10 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         (cycleButton, newValue) -> this.memoryBank.getMetadata()
                                 .getIntegritySettings().checkPeriodicallyForMissingBlocks = newValue
                 ), SettingsTab.INTEGRITY);
+    }
+
+    private void setupSearchSettings() {
+
     }
 
     private void addSetting(AbstractWidget widget, SettingsTab tab) {
@@ -391,6 +404,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     private enum SettingsTab {
         FILTERING,
         INTEGRITY,
+        SEARCH,
         EMPTY
     }
 }

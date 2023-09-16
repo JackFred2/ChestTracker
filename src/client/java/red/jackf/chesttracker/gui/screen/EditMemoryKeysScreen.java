@@ -125,6 +125,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     translatable("chesttracker.gui.editMemoryKeys.hint")));
             if (!firstLoad) nameEditBox.setValue(key.toString());
             nameEditBox.setHint(translatable("chesttracker.gui.editMemoryKeys.hint"));
+            nameEditBox.setEditable(false);
             this.editBoxes.put(key, nameEditBox);
 
             x += nameEditBox.getWidth() + spacing;

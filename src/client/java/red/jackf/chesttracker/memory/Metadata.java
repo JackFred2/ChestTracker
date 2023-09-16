@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
+import red.jackf.chesttracker.util.I18nUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
@@ -216,21 +217,25 @@ public class Metadata {
             }
         }
 
+        private static Component lifetimePrefix() {
+            return Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime");
+        }
+
         public enum MemoryLifetime {
-            TEN_SECONDS(10L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.seconds", 10)),
-            FIVE_MINUTES(60L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 5)),
-            TWENTY_MINUTES(60L * 15L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 20)),
-            FORTY_MINUTES(60L * 30L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.minutes", 40)),
-            ONE_HOUR(60L * 60L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hour")),
-            TWO_HOURS(60L * 60L * 2L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 2)),
-            FOUR_HOURS(60L * 60L * 4L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 4)),
-            SIX_HOURS(60L * 60L * 6L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 6)),
-            TWELVE_HOURS(60L * 60L * 12L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.hours", 12)),
-            ONE_DAY(60L * 60L * 24L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.day")),
-            TWO_DAYS(60L * 60L * 24L * 2L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 2)),
-            FIVE_DAYS(60L * 60L * 24L * 5L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 5)),
-            SEVEN_DAYS(60L * 60L * 24L * 7L, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.days", 7)),
-            NEVER(null, Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never"));
+            TEN_SECONDS(10L, I18nUtil.colon(lifetimePrefix(), I18nUtil.seconds(10))),
+            FIVE_MINUTES(60L * 5L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(5))),
+            TWENTY_MINUTES(60L * 15L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(15))),
+            FORTY_MINUTES(60L * 30L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(30))),
+            ONE_HOUR(60L * 60L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(1))),
+            TWO_HOURS(60L * 60L * 2L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(2))),
+            FOUR_HOURS(60L * 60L * 4L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(4))),
+            SIX_HOURS(60L * 60L * 6L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(6))),
+            TWELVE_HOURS(60L * 60L * 12L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(12))),
+            ONE_DAY(60L * 60L * 24L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(1))),
+            TWO_DAYS(60L * 60L * 24L * 2L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(2))),
+            FIVE_DAYS(60L * 60L * 24L * 5L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(5))),
+            SEVEN_DAYS(60L * 60L * 24L * 7L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(7))),
+            NEVER(null, I18nUtil.colon(lifetimePrefix(), Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never")));
 
             public final Long seconds;
             public final Component label;

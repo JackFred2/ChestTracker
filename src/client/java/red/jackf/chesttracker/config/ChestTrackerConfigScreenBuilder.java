@@ -206,7 +206,7 @@ public class ChestTrackerConfigScreenBuilder {
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(4, 24)
                                 .step(1)
-                                .valueFormatter(i -> translatable("chesttracker.config.rendering.nameRenderRange.slider", i)))
+                                .valueFormatter(i -> translatable("chesttracker.generic.blocks", i)))
                         .binding(
                                 instance.getDefaults().rendering.nameRange,
                                 () -> instance.getConfig().rendering.nameRange,
