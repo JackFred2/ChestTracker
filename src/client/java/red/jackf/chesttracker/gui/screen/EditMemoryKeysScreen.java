@@ -12,8 +12,7 @@ import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.LightweightStack;
-import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.memory.MemoryBankView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,14 +25,14 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     private static final int DELETE_BUTTON_SIZE = 60;
     private static final int NAME_BOX_MARGIN = 1;
     private final Screen parent;
-    private final MemoryBank bank;
+    private final MemoryBankView bank;
     private final Map<ResourceLocation, EditBox> editBoxes = new HashMap<>();
     private final Map<ResourceLocation, DragHandleWidget> dragHandles = new HashMap<>();
 
     private boolean firstLoad = false;
     private boolean scheduleRebuild = false;
 
-    protected EditMemoryKeysScreen(Screen parent, MemoryBank memoryBank) {
+    protected EditMemoryKeysScreen(Screen parent, MemoryBankView memoryBank) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
         this.parent = parent;
         this.bank = memoryBank;
@@ -66,8 +65,8 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
         final int spacing = GuiConstants.SMALL_MARGIN;
         final int startY = this.top + CONTENT_TOP;
 
-        for (var index = 0; index < bank.getKeys().size(); index++) {
-            var key = bank.getKeys().get(index);
+        for (var index = 0; index < bank.keys().size(); index++) {
+            var key = bank.keys().get(index);
             int x = this.left + GuiConstants.MARGIN;
             int y = startY + index * (ItemButton.SIZE + spacing);
 
@@ -80,13 +79,13 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     workingWidth,
                     ItemButton.SIZE + spacing,
                     0,
-                    bank.getKeys().size(),
+                    bank.keys().size(),
                     newIndex -> {
                         if (newIndex < currentIndex) {
-                            this.bank.getMetadata().moveIcon(currentIndex, newIndex);
+                            this.bank.metadata().moveIcon(currentIndex, newIndex);
                             scheduleRebuild = true;
                         } else if (newIndex > currentIndex + 1) {
-                            this.bank.getMetadata().moveIcon(currentIndex, newIndex - 1);
+                            this.bank.metadata().moveIcon(currentIndex, newIndex - 1);
                             scheduleRebuild = true;
                         }
                     })));
@@ -95,7 +94,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                            bank.getMetadata().getOrCreateIcon(key).toStack(),
+                            bank.metadata().getOrCreateIcon(key).toStack(),
                             x,
                             y,
                             button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
@@ -104,7 +103,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                                     GuiConstants.DEFAULT_ICON_ORDER,
                                     i -> {
                                         if (i != null) {
-                                            this.bank.getMetadata().setIcon(key, new LightweightStack(i));
+                                            this.bank.metadata().setIcon(key, new LightweightStack(i));
                                             scheduleRebuild = true;
                                         }
                                     }
@@ -140,15 +139,14 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
                         this.bank.removeKey(key);
-                        Storage.save(this.bank);
                         // can't schedule rebuilt during rendering because CME, so do it on tick
                         this.scheduleRebuild = true;
                     }));
         }
 
         // save
-        this.addRenderableWidget(Button.builder(translatable("selectWorld.edit.save"), b -> {
-                    Storage.save(this.bank);
+        this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.editMemoryKeys.return"), b -> {
+                    //this.bank.apply();
                     onClose();
                 }).bounds(
                         this.left + GuiConstants.MARGIN,
