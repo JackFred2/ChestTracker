@@ -270,9 +270,9 @@ public class MemoryBank {
     }
 
     /**
-     * Returns a list of all memory keys in this bank, in order of the metadata.
+     * Returns a list of all memory keys in this bank.
      */
-    public List<ResourceLocation> getKeys() {
-        return metadata.getKeyOrder().stream().filter(memories::containsKey).toList();
+    public Set<ResourceLocation> getKeys() {
+        return memories.keySet();
     }
 }

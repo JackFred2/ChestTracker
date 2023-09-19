@@ -28,6 +28,7 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.util.StreamUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -199,7 +200,7 @@ public class ChestTrackerScreen extends Screen {
 
         // key buttons
         if (MemoryBank.INSTANCE != null) {
-            var todo = MemoryBank.INSTANCE.getKeys();
+            var todo = MemoryBank.INSTANCE.getKeys().stream().sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata().getKeyOrder())).toList();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 
             for (int index = 0; index < todo.size(); index++) {

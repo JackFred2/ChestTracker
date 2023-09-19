@@ -2,6 +2,7 @@ package red.jackf.chesttracker.memory;
 
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.util.StreamUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ public interface MemoryBankView {
 
             @Override
             public List<ResourceLocation> keys() {
-                return bank.getKeys();
+                return bank.getKeys().stream().sorted(StreamUtil.bringToFront(copy.getKeyOrder())).toList();
             }
 
             @Override
