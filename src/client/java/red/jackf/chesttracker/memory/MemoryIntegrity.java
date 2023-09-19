@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
 import red.jackf.chesttracker.api.location.GetLocation;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -105,7 +106,7 @@ public class MemoryIntegrity {
                 var player = Minecraft.getInstance().player;
                 if (player != null && level.isLoaded(currentEntry.getKey()) && currentEntry.getKey()
                         .distSqr(player.blockPosition()) < PERIODIC_CHECK_RANGE_SQUARED) {
-                    var copyLocation = GetLocation.FROM_BLOCK.invoker().fromBlock(player, level, currentEntry.getKey());
+                    var copyLocation = GetLocation.FROM_BLOCK.invoker().fromBlock(player, new CachedClientBlockSource(level, currentEntry.getKey()));
                     if (!copyLocation.hasValue()
                             || !copyLocation.get().key().equals(level.dimension().location())
                             || !copyLocation.get().pos().equals(currentEntry.getKey())) {

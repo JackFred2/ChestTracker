@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.backend.Backend;
 
 import java.util.Collection;

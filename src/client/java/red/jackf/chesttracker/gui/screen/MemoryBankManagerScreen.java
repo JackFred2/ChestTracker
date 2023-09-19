@@ -19,7 +19,7 @@ import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 
 import java.util.LinkedHashMap;

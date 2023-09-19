@@ -18,8 +18,12 @@ import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.metadata.FilteringSettings;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.jackfredlib.api.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
+
+import java.util.Optional;
 
 /**
  * Since we technically don't immediately know what container is open, we try to smartly track it here.
@@ -33,7 +37,7 @@ public class LocationTracking {
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
             if (hand == InteractionHand.MAIN_HAND && level instanceof ClientLevel clientLevel) {
                 setLocation(GetLocation.FROM_BLOCK.invoker()
-                        .fromBlock(player, clientLevel, hitResult.getBlockPos())
+                        .fromBlock(player, new CachedClientBlockSource(clientLevel, hitResult.getBlockPos()))
                         .getNullable());
             }
             return InteractionResult.PASS;
@@ -86,21 +90,29 @@ public class LocationTracking {
         last = location;
     }
 
+    private static Optional<FilteringSettings> getStockFiltering() {
+        return Optional.ofNullable(MemoryBank.INSTANCE).map(bank -> bank.getMetadata().getFilteringSettings());
+    }
+
     private static void setupDefaults() {
         // only track block entities which can be renamed, which lines up with vanilla storage options
-        // get a consistent 'root' inventory; solves double-saving chests
-        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, level, pos) -> {
-            if (level.getBlockEntity(pos) instanceof MenuProvider) {
-                var connected = ConnectedBlocksGrabber.getConnected(level, level.getBlockState(pos), pos.immutable());
-                return ResultHolder.value(new Location(level.dimension().location(), connected.get(0)));
+        GetLocation.FROM_BLOCK.register(EventPhases.FALLBACK_PHASE, (player, source) -> {
+            var filtering = getStockFiltering();
+            if (filtering.isPresent() && !filtering.get().rememberedContainers.predicate.test(source.blockState())) return ResultHolder.pass();
+            if (source.blockEntity() instanceof MenuProvider) {
+                // get a consistent 'root' inventory; solves double-saving chests
+                var connected = ConnectedBlocksGrabber.getConnected(source.level(), source.blockState(), source.pos());
+                return ResultHolder.value(new Location(source.level().dimension().location(), connected.get(0)));
             } else {
                 return ResultHolder.pass();
             }
         });
 
         // Ender Chest
-        GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, level, pos) -> {
-            if (level.getBlockState(pos).is(Blocks.ENDER_CHEST)) {
+        GetLocation.FROM_BLOCK.register(Event.DEFAULT_PHASE, ((player, source) -> {
+            var filtering = getStockFiltering();
+            if (filtering.isPresent() && !filtering.get().rememberEnderChests) return ResultHolder.pass();
+            if (source.blockState().is(Blocks.ENDER_CHEST)) {
                 return ResultHolder.value(new Location(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
             } else {
                 return ResultHolder.pass();

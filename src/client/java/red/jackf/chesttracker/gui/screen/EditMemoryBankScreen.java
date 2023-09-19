@@ -18,7 +18,8 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryBankView;
-import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.memory.metadata.FilteringSettings;
+import red.jackf.chesttracker.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
@@ -241,6 +242,31 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         (cycleButton, newValue) -> this.memoryBank.metadata()
                                 .getFilteringSettings().onlyRememberNamed = newValue
                 ), SettingsTab.FILTERING);
+
+        addSetting(CycleButton.<FilteringSettings.RememberedContainers>builder(remembered -> remembered.label)
+               .displayOnlyValue()
+               .withTooltip(remembered -> Tooltip.create(remembered.tooltip))
+               .withValues(FilteringSettings.RememberedContainers.values())
+               .withInitialValue(this.memoryBank.metadata().getFilteringSettings().rememberedContainers)
+               .create(getSettingsX(1),
+                       getSettingsY(0),
+                       getSettingsWidth(1),
+                       BUTTON_HEIGHT,
+                       CommonComponents.EMPTY,
+                       (cycleButton, remembered) -> this.memoryBank.metadata()
+                               .getFilteringSettings().rememberedContainers = remembered
+               ), SettingsTab.FILTERING);
+
+        addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getFilteringSettings().rememberEnderChests)
+                           .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.filtering.rememberEnderChests.tooltip")))
+                           .create(getSettingsX(0),
+                                   getSettingsY(1),
+                                   getSettingsWidth(1),
+                                   BUTTON_HEIGHT,
+                                   translatable("chesttracker.gui.editMemoryBank.filtering.rememberEnderChests"),
+                                   (cycleButton, newValue) -> this.memoryBank.metadata()
+                                           .getFilteringSettings().rememberEnderChests = newValue
+                           ), SettingsTab.FILTERING);
     }
 
     private void setupIntegritySettings() {
@@ -255,12 +281,11 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                 .getIntegritySettings().preserveNamed = newValue
                 ), SettingsTab.INTEGRITY);
 
-        addSetting(CycleButton.<Metadata.IntegritySettings.LifetimeCountMode>builder(mode -> mode.label)
-                .withValues(Metadata.IntegritySettings.LifetimeCountMode.values())
+        addSetting(CycleButton.<IntegritySettings.LifetimeCountMode>builder(mode -> mode.label)
+                .withValues(IntegritySettings.LifetimeCountMode.values())
                 .withInitialValue(this.memoryBank.metadata().getIntegritySettings().lifetimeCountMode)
                 .displayOnlyValue()
-                .create(
-                        getSettingsX(1),
+                .create(getSettingsX(1),
                         getSettingsY(0),
                         getSettingsWidth(1),
                         BUTTON_HEIGHT,
@@ -273,7 +298,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 getSettingsY(1),
                 getSettingsWidth(2),
                 BUTTON_HEIGHT,
-                Metadata.IntegritySettings.MemoryLifetime.class,
+                IntegritySettings.MemoryLifetime.class,
                 this.memoryBank.metadata().getIntegritySettings().memoryLifetime,
                 lifetime -> lifetime.label) {
             @Override

@@ -94,18 +94,19 @@ public class ChestTracker implements ClientModInitializer {
 
                 // counting items after screen close
                 ScreenEvents.remove(screen).register(screen1 -> {
-                    if (MemoryBank.INSTANCE == null) return;
+                    var bank = MemoryBank.INSTANCE;
+                    if (bank == null) return;
                     if (Minecraft.getInstance().level == null) return;
                     var loc = LocationTracking.popLocation();
                     if (loc == null) return;
-                    var builder = GetMemory.EVENT.invoker()
-                            .createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
+
+                    var builder = GetMemory.EVENT.invoker().createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
                     if (builder.hasValue()) {
-                        var memory = builder.get().build(MemoryBank.INSTANCE.getMetadata()
+                        var memory = builder.get().build(bank.getMetadata()
                                 .getLoadedTime(), Minecraft.getInstance().level.getGameTime(), Instant.now());
-                        if (MemoryBank.INSTANCE.getMetadata()
+                        if (bank.getMetadata()
                                 .getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
-                        MemoryBank.INSTANCE.addMemory(loc.key(), loc.pos(), memory);
+                        bank.addMemory(loc.key(), loc.pos(), memory);
                     }
                 });
             }

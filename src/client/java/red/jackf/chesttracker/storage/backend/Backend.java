@@ -3,7 +3,7 @@ package red.jackf.chesttracker.storage.backend;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 
 import java.util.Collection;

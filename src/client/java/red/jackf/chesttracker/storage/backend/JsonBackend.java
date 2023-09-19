@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.Metadata;
+import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.Timer;
 
