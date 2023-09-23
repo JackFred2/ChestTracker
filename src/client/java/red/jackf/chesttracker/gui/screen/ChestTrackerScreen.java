@@ -5,10 +5,7 @@ import com.blamejared.searchables.api.autcomplete.AutoComplete;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -22,17 +19,19 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
-import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.SearchablesUtil;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.StreamUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static red.jackf.chesttracker.util.GuiUtil.sprite;
 
 /**
  * The main screen
@@ -162,12 +161,7 @@ public class ChestTrackerScreen extends Screen {
                 this.top + GuiConstants.SMALL_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
-                0,
-                0,
-                BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/settings_button"),
-                BUTTON_SIZE,
-                BUTTON_SIZE * 2,
+                GuiUtil.twoSprite("settings/button"),
                 button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))));
         settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
 
@@ -177,12 +171,7 @@ public class ChestTrackerScreen extends Screen {
                         this.top + GuiConstants.SMALL_MARGIN,
                         BUTTON_SIZE,
                         BUTTON_SIZE,
-                        0,
-                        0,
-                        BUTTON_SIZE,
-                        ChestTracker.guiTex("widgets/change_memory_bank_button"),
-                        BUTTON_SIZE,
-                        BUTTON_SIZE * 2,
+                        new WidgetSprites(sprite("widgets/change_memory_bank/button"), sprite("widgets/change_memory_bank/button_highlighted")),
                         this::openMemoryManager))
                 .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
 
@@ -288,20 +277,17 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
-        this.renderBackground(graphics); // background darken
-        NinePatcher.BACKGROUND.draw(graphics, left, top, menuWidth, menuHeight);
-        if (this.search instanceof AutoCompletingEditBox<?>)
-            NinePatcher.SEARCH.draw(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
         this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, TextColours.getLabelColour(), false); // title
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        // Searchables Edit Box Support
-        this.search.tick();
+    public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
+        super.renderBackground(graphics, i, j, f);
+        graphics.blitSprite(GuiUtil.BACKGROUND_SPRITE, left, top, menuWidth, menuHeight);
+        if (this.search instanceof AutoCompletingEditBox<?>)
+            graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
     }
 
     @Override
@@ -331,16 +317,16 @@ public class ChestTrackerScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         // Searchables Edit Box Support
-        double finalDelta = delta;
-        if (search.isFocused() && ifAutocomplete(a -> a.mouseScrolled(mouseX, mouseY, finalDelta))) {
+        double finalDelta = deltaY;
+        if (search.isFocused() && ifAutocomplete(a -> a.mouseScrolled(mouseX, mouseY, deltaX, finalDelta))) {
             return true;
         } else if (itemList.isMouseOver(mouseX, mouseY) || scroll.isMouseOver(mouseX, mouseY)) {
-            delta /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight);
-            return scroll.mouseScrolled(mouseX, mouseY, delta);
+            deltaY /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight);
+            return scroll.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     @Override

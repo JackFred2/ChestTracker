@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
@@ -21,6 +20,7 @@ import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -85,17 +85,9 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                 TextWidget.Alignment.RIGHT));
 
         // close button
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(GuiUtil.close(
                 this.left + this.menuWidth - BUTTON_SIZE - GuiConstants.SMALL_MARGIN,
                 this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                0,
-                0,
-                BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/return_button"),
-                BUTTON_SIZE,
-                BUTTON_SIZE * 3,
                 b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
 
         var inGame = Minecraft.getInstance().level != null;
@@ -107,12 +99,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                             this.top + SEARCH_TOP,
                             BUTTON_SIZE,
                             BUTTON_SIZE,
-                            0,
-                            0,
-                            BUTTON_SIZE,
-                            ChestTracker.guiTex("widgets/new_memory_bank_button"),
-                            BUTTON_SIZE,
-                            BUTTON_SIZE * 3,
+                            GuiUtil.threeSprite("new_memory_bank/button"),
                             b -> openCreateScreen(afterBankLoaded)))
                     .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.newMemoryBank")));
         }

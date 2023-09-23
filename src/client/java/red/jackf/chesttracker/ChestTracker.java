@@ -27,7 +27,7 @@ import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.world.LocationTracking;
-import red.jackf.whereisit.client.api.ShouldIgnoreKey;
+import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
 import java.time.Instant;
 
@@ -36,10 +36,6 @@ public class ChestTracker implements ClientModInitializer {
 
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);
-    }
-
-    public static ResourceLocation guiTex(String path) {
-        return new ResourceLocation(ID, "textures/gui/" + path + ".png");
     }
 
     public static final Logger LOGGER = LogManager.getLogger();

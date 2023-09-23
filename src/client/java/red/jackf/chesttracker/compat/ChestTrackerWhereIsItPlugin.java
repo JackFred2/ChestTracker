@@ -2,11 +2,12 @@ package red.jackf.chesttracker.compat;
 
 import net.minecraft.client.Minecraft;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.whereisit.client.api.SearchInvoker;
+import red.jackf.whereisit.client.api.WhereIsItClientPlugin;
+import red.jackf.whereisit.client.api.events.SearchInvoker;
 
-public class ChestTrackerWhereIsItPlugin implements Runnable {
+public class ChestTrackerWhereIsItPlugin implements WhereIsItClientPlugin {
     @Override
-    public void run() {
+    public void load() {
         // add our memories as a handler for where is it
         SearchInvoker.EVENT.register((request, resultConsumer) -> {
             if (MemoryBank.INSTANCE == null) return false;

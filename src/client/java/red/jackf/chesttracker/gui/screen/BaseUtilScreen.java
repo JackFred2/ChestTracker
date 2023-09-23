@@ -6,8 +6,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
+import red.jackf.chesttracker.util.GuiUtil;
 
 public abstract class BaseUtilScreen extends Screen {
     protected int menuWidth;
@@ -31,9 +31,13 @@ public abstract class BaseUtilScreen extends Screen {
     }
 
     @Override
+    public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
+        super.renderBackground(graphics, i, j, f);
+        graphics.blitSprite(GuiUtil.BACKGROUND_SPRITE, this.left, this.top, this.menuWidth, this.menuHeight);
+    }
+
+    @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics);
-        NinePatcher.BACKGROUND.draw(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(Minecraft.getInstance().font, this.title, left + GuiConstants.MARGIN, this.top + GuiConstants.MARGIN, TextColours.getLabelColour(), false);
     }

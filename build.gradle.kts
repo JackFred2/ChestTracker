@@ -119,22 +119,28 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
-	modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
-	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}")
-	include("red.jackf:whereisit:${properties["where-is-it_version"]}")
+	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}") {
+		exclude(group = "com.terraformersmc", module = "modmenu")
+	}
+	include("red.jackf:whereisit:${properties["where-is-it_version"]}") {
+		exclude(group = "com.terraformersmc", module = "modmenu")
+	}
 
 	// Config
-	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}")
+	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}") {
+		exclude(group = "com.terraformersmc", module = "modmenu")
+	}
 	implementation("blue.endless:jankson:${properties["jankson_version"]}")
 
 	// Gui
-	modImplementation("com.blamejared.searchables:Searchables-fabric-1.20.1:${properties["searchables_version"]}")
-	include("com.blamejared.searchables:Searchables-fabric-1.20.1:${properties["searchables_version"]}")
+	modImplementation("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
 
 	// dev util
 	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
-	modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
+	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 }
 

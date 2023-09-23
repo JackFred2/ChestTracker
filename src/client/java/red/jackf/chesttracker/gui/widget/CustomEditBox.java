@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import red.jackf.chesttracker.gui.util.NinePatcher;
+import red.jackf.chesttracker.util.GuiUtil;
 
 public class CustomEditBox extends EditBox {
     public CustomEditBox(Font font, int x, int y, int width, int height, @Nullable EditBox editBox, Component component) {
@@ -16,11 +16,11 @@ public class CustomEditBox extends EditBox {
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        NinePatcher.SEARCH.draw(guiGraphics, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        guiGraphics.pose().translate(2, 2, 0);
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.pose().translate(-2, -2, 0);
+    public void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        graphics.pose().translate(2, 2, 0);
+        super.renderWidget(graphics, mouseX, mouseY, partialTick);
+        graphics.pose().translate(-2, -2, 0);
     }
 
     @Override

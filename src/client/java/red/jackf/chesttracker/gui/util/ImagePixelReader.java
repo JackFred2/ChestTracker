@@ -23,7 +23,7 @@ import java.util.function.Function;
  * Reads colours from an image every reload. Used to get text colours .
  */
 public class ImagePixelReader {
-    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("text_colours");
+    private static final ResourceLocation TEXTURE = ChestTracker.id("textures/gui/text_colours.png");
 
     private ImagePixelReader() {
     }

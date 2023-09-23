@@ -2,20 +2,23 @@ package red.jackf.chesttracker.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.util.NinePatcher;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.function.Consumer;
 
 public class VerticalScrollWidget extends AbstractWidget {
-    private static final NinePatcher BACKGROUND = new NinePatcher(ChestTracker.guiTex("9patch/scroll_bar"), 2, 5, NinePatcher.InnerMode.STRETCH);
-    private static final ResourceLocation HANDLE_TEXTURE = ChestTracker.guiTex("widgets/scroll_bar_handle");
+    private static final ResourceLocation BACKGROUND = GuiUtil.sprite("nine_patch/scroll_bar");
+    private static final WidgetSprites HANDLE_TEXTURE = new WidgetSprites(GuiUtil.sprite("widgets/scroll_bar/handle"),
+                                                                          GuiUtil.sprite("widgets/scroll_bar/handle_disabled"),
+                                                                          GuiUtil.sprite("widgets/scroll_bar/handle"),
+                                                                          GuiUtil.sprite("widgets/scroll_bar/handle_disabled"));
     private static final int HANDLE_WIDTH = 10;
     private static final int HANDLE_HEIGHT = 11;
     private static final int INSET = 1;
@@ -45,18 +48,14 @@ public class VerticalScrollWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        BACKGROUND.draw(graphics, getX(), getY(), width, height);
+        graphics.blitSprite(BACKGROUND, getX(), getY(), width, height);
 
         int handleY = (int) ((this.height - HANDLE_HEIGHT - 2 * INSET) * progress);
-        graphics.blit(HANDLE_TEXTURE,
+        graphics.blitSprite(disabled ? HANDLE_TEXTURE.disabled() : HANDLE_TEXTURE.enabled(),
                 this.getX() + INSET,
                 this.getY() + INSET + handleY,
-                0,
-                disabled ? HANDLE_HEIGHT : 0,
                 HANDLE_WIDTH,
-                HANDLE_HEIGHT,
-                HANDLE_WIDTH,
-                HANDLE_HEIGHT * 2);
+                HANDLE_HEIGHT);
     }
 
     private boolean isWithinBounds(double x, double y) {
@@ -74,12 +73,12 @@ public class VerticalScrollWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         if (this.visible && !this.disabled) {
-            setProgress((float) (this.progress - delta));
+            setProgress((float) (this.progress - deltaY));
             return true;
         } else {
-            return super.mouseScrolled(mouseX, mouseY, delta);
+            return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
         }
     }
 

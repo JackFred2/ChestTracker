@@ -10,12 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.function.BiConsumer;
 
 public class ResizeWidget extends AbstractWidget {
-    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/resize");
+    private static final ResourceLocation TEXTURE = GuiUtil.png("widgets/resize");
     private static final int SIZE = 10; // px
     private final int stepSize;
     private final int currentWidth;

@@ -1,9 +1,6 @@
 package red.jackf.chesttracker.storage.backend;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -16,6 +13,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.util.Constants;
+import red.jackf.chesttracker.util.FileUtil;
 import red.jackf.chesttracker.util.Timer;
 
 import java.io.FileInputStream;
@@ -24,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class JsonBackend implements FileBasedBackend {
     private static final Logger LOGGER = LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/JSON");
@@ -56,8 +55,9 @@ public class JsonBackend implements FileBasedBackend {
                         //noinspection OptionalGetWithoutIsPresent
                         return loaded.left().get().getFirst();
                     }
-                } catch (IOException ex) {
+                } catch (JsonParseException | IOException ex) {
                     LOGGER.error("Error loading %s".formatted(path), ex);
+                    FileUtil.tryMove(path, path.resolveSibling(path.getFileName() + ".corrupt"), StandardCopyOption.REPLACE_EXISTING);
                 }
             }
             return null;
@@ -81,8 +81,9 @@ public class JsonBackend implements FileBasedBackend {
                             reader.skipValue();
                         }
                     }
-                } catch (IOException e) {
+                } catch (JsonParseException | IOException e) {
                     LOGGER.error("Error loading metadata for %s".formatted(id), e);
+                    FileUtil.tryMove(path, path.resolveSibling(path.getFileName() + ".corrupt"), StandardCopyOption.REPLACE_EXISTING);
                 }
             }
             return null;

@@ -7,8 +7,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.util.NinePatcher;
 import red.jackf.chesttracker.gui.util.TextColours;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -52,7 +52,7 @@ public class StringSelectorWidget<T> extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        NinePatcher.SEARCH.draw(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
         int i = 0;
         var hoveredIndex = getHoveredIndex(mouseX, mouseY);
         lastHovered = null;

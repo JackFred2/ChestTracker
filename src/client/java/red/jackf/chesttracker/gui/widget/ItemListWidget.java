@@ -11,18 +11,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.whereisit.api.SearchRequest;
-import red.jackf.whereisit.client.api.SearchInvoker;
-import red.jackf.whereisit.client.api.SearchRequestPopulator;
+import red.jackf.whereisit.client.api.events.SearchInvoker;
+import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
 
 import java.util.Collections;
 import java.util.List;
 
 public class ItemListWidget extends AbstractWidget {
-    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/slot_background");
+    private static final ResourceLocation BACKGROUND_SPRITE = GuiUtil.sprite("widgets/slot_background");
 
     private final int gridWidth;
     private final int gridHeight;
@@ -60,12 +60,6 @@ public class ItemListWidget extends AbstractWidget {
         int range = rows - gridHeight;
         int rowOffset = (int) (progress * (range + 0.5f));
         this.offset = rowOffset * gridWidth;
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        ChestTracker.LOGGER.debug(delta);
-        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
@@ -126,7 +120,7 @@ public class ItemListWidget extends AbstractWidget {
     private void renderItems(GuiGraphics graphics) {
         var items = getOffsetItems();
         // background
-        graphics.innerBlit(TEXTURE, getX(), getX() + getWidth(), getY(), getY() + getHeight(), 0, 0, gridWidth, 0, gridHeight);
+        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
         for (int i = 0; i < (gridWidth * gridHeight); i++) {
             var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
             var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);

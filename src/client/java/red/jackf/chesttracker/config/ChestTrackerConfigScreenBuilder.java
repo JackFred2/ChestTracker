@@ -13,13 +13,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import java.nio.file.Files;
@@ -50,7 +50,7 @@ public class ChestTrackerConfigScreenBuilder {
     // UTILS //
     ///////////
     private static ResourceLocation getDescriptionImage(String basePath, boolean value) {
-        return ChestTracker.guiTex("config/%s_%s".formatted(basePath, value ? "enabled" : "disabled"));
+        return GuiUtil.sprite("config/%s_%s".formatted(basePath, value ? "enabled" : "disabled"));
     }
 
     private static void refreshConfigScreen(Screen parent) {
@@ -150,7 +150,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridWidth"))
                         .description(OptionDescription.createBuilder()
-                                .image(ChestTracker.guiTex("config/grid_width"), 135, 102)
+                                .image(GuiUtil.sprite("config/grid_width"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_HEIGHT)
@@ -164,7 +164,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridHeight"))
                         .description(OptionDescription.createBuilder()
-                                .image(ChestTracker.guiTex("config/grid_height"), 135, 102)
+                                .image(GuiUtil.sprite("config/grid_height"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT)

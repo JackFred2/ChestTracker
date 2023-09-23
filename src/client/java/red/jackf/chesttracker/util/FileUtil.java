@@ -8,15 +8,17 @@ import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 /**
- * Utilities for [de]serializing objects to NBT files.
+ * Utilities for working with files.
  */
-public class NbtSerialization {
-    public static final Logger LOGGER = ChestTracker.getLogger("NBT");
+public class FileUtil {
+    public static final Logger LOGGER = ChestTracker.getLogger("FileUtil");
 
     /**
      * Save an object to a path with a given codec as an NBT file
@@ -68,8 +70,17 @@ public class NbtSerialization {
                 }
             } catch (IOException ex) {
                 LOGGER.error("Error loading object at {}", path, ex);
+                FileUtil.tryMove(path, path.resolveSibling(path.getFileName() + ".corrupt"), StandardCopyOption.REPLACE_EXISTING);
             }
         }
         return Optional.empty();
+    }
+
+    public static void tryMove(Path from, Path to, CopyOption... options) {
+        try {
+            Files.move(from, to, options);
+        } catch (IOException e) {
+            LOGGER.error("Error moving %s to %s".formatted(from, to), e);
+        }
     }
 }

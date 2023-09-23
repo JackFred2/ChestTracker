@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
@@ -23,6 +22,7 @@ import red.jackf.chesttracker.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.*;
 
@@ -75,17 +75,9 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         var inGame = Minecraft.getInstance().level != null;
 
         // close button
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(GuiUtil.close(
                 left + menuWidth - (GuiConstants.SMALL_MARGIN + CLOSE_BUTTON_SIZE),
                 top + GuiConstants.SMALL_MARGIN,
-                CLOSE_BUTTON_SIZE,
-                CLOSE_BUTTON_SIZE,
-                0,
-                0,
-                CLOSE_BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/return_button"),
-                CLOSE_BUTTON_SIZE,
-                CLOSE_BUTTON_SIZE * 3,
                 b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         // details label

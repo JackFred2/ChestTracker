@@ -1,3 +1,0 @@
-background: 30px by 30px; corner size 6px; edge size 18px
-search_bar: 12px by 12px; corner size 2px; edge size 8px
-scroll_bar: 9px by 9px; corner size 2px; edge size 5px

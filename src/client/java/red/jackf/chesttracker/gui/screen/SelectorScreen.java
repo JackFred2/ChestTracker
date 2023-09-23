@@ -106,7 +106,7 @@ public class SelectorScreen<T> extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics); // background darken
+        this.renderBackground(graphics, mouseX, mouseY, partialTick); // background darken
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(this.font, this.title, this.left + PADDING, this.top + PADDING, 0xFF_FFFFFF, true); // title
     }

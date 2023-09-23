@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.function.Consumer;
 
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Handle for reordering memory key icons in the edit keys screen.
  */
 public class DragHandleWidget extends AbstractWidget {
-    private static final ResourceLocation TEXTURE = ChestTracker.guiTex("widgets/drag_handle");
+    private static final ResourceLocation TEXTURE = GuiUtil.sprite("widgets/drag_handle");
     private static final int HIGHLIGHT_COLOUR = 0xFF_FF0000;
     public static final int WIDTH = 8;
     public static final int HEIGHT = 20;
@@ -46,7 +46,7 @@ public class DragHandleWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blit(TEXTURE, this.getX(), this.getY(), 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
+        graphics.blitSprite(TEXTURE, this.getX(), this.getY(), WIDTH, HEIGHT);
 
         if (this.target != null) {
             int y = this.highlightStartY + yHeight * this.target;

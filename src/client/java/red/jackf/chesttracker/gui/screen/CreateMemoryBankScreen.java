@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
@@ -18,6 +18,7 @@ import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.GuiUtil;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -72,12 +73,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
                 top + GuiConstants.SMALL_MARGIN,
                 CLOSE_BUTTON_SIZE,
                 CLOSE_BUTTON_SIZE,
-                0,
-                0,
-                CLOSE_BUTTON_SIZE,
-                ChestTracker.guiTex("widgets/return_button"),
-                CLOSE_BUTTON_SIZE,
-                CLOSE_BUTTON_SIZE * 3,
+                new WidgetSprites(GuiUtil.sprite("widgets/return/button"), GuiUtil.sprite("widgets/return/button_highlighted")),
                 b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         int y = this.top + CONTENT_TOP;

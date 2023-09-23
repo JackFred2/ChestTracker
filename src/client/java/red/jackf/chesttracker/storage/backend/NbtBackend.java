@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
-import red.jackf.chesttracker.util.NbtSerialization;
+import red.jackf.chesttracker.util.FileUtil;
 import red.jackf.chesttracker.util.Timer;
 
 public class NbtBackend implements FileBasedBackend {
@@ -15,7 +15,7 @@ public class NbtBackend implements FileBasedBackend {
     @Override
     public @Nullable MemoryBank load(String id) {
         var path = Constants.STORAGE_DIR.resolve(id + extension());
-        var result = Timer.time(() -> NbtSerialization.loadFromNbt(MemoryBank.CODEC, path));
+        var result = Timer.time(() -> FileUtil.loadFromNbt(MemoryBank.CODEC, path));
         LOGGER.debug("Loaded {} in {}ns", path, result.getSecond());
         return result.getFirst().orElse(null);
     }
@@ -24,7 +24,7 @@ public class NbtBackend implements FileBasedBackend {
     public void save(MemoryBank memoryBank) {
         LOGGER.debug("Saving {}", memoryBank.getId());
         memoryBank.getMetadata().updateModified();
-        NbtSerialization.saveToNbt(memoryBank, MemoryBank.CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()));
+        FileUtil.saveToNbt(memoryBank, MemoryBank.CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()));
     }
 
     @Override
