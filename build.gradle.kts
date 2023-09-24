@@ -62,12 +62,20 @@ repositories {
 		}
 	}
 
+	maven {
+		name = "QuiltMC"
+		url = uri("https://maven.quiltmc.org/repository/release")
+		content {
+			includeGroupAndSubgroups("org.quiltmc")
+		}
+	}
+
 	// Searchables
 	maven {
 		name = "BlameJared"
 		url = URI("https://maven.blamejared.com")
 		content {
-			includeGroupByRegex("com.blamejared.searchables.*")
+			includeGroupAndSubgroups("com.blamejared.searchables")
 		}
 	}
 
@@ -85,7 +93,7 @@ repositories {
 		name = "JackFredMaven"
 		url = URI("https://maven.jackf.red/releases/")
 		content {
-			includeGroupByRegex("red.jackf.*")
+			includeGroupAndSubgroups("red.jackf")
 		}
 	}
 }

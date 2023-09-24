@@ -11,6 +11,7 @@
   "chesttracker.gui.button.on": "On",
   "chesttracker.gui.button.off": "Off",
   "chesttracker.gui.id": "ID",
+  "chesttracker.gui.open": "Open",
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.reorder": "Reorder Key",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
@@ -94,5 +95,6 @@
   "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
   "chesttracker.config.storage.json.readableJsonMemories": "Readable JSON Files",
   "chesttracker.config.storage.json.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
-  "chesttracker.config.whereisit.tooltip": "Open Where Is It's config; go here to change highlight rendering."
+  "chesttracker.config.whereisit": "Where Is It config",
+  "chesttracker.config.whereisit.description": "Open the config for Where Is It; here you'll find settings for rendering."
 }

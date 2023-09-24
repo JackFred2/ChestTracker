@@ -40,7 +40,6 @@ public class ChestTrackerConfigScreenBuilder {
                 .title(translatable("chesttracker.title"))
                 .category(makeMainCategory(instance))
                 .category(makeMemoryAndStorageCategory(instance, parent))
-                .category(makeWhereIsItLink())
                 .save(instance::save)
                 .build()
                 .generateScreen(parent);
@@ -50,7 +49,11 @@ public class ChestTrackerConfigScreenBuilder {
     // UTILS //
     ///////////
     private static ResourceLocation getDescriptionImage(String basePath, boolean value) {
-        return GuiUtil.sprite("config/%s_%s".formatted(basePath, value ? "enabled" : "disabled"));
+        return GuiUtil.sprite("textures/gui/config/%s_%s.png".formatted(basePath, value ? "enabled" : "disabled"));
+    }
+
+    private static ResourceLocation getDescriptionImage(String basePath) {
+        return GuiUtil.sprite("textures/gui/config/%s.png".formatted(basePath));
     }
 
     private static void refreshConfigScreen(Screen parent) {
@@ -150,7 +153,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridWidth"))
                         .description(OptionDescription.createBuilder()
-                                .image(GuiUtil.sprite("config/grid_width"), 135, 102)
+                                .image(getDescriptionImage("grid_width"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_HEIGHT)
@@ -164,7 +167,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridHeight"))
                         .description(OptionDescription.createBuilder()
-                                .image(GuiUtil.sprite("config/grid_height"), 135, 102)
+                                .image(getDescriptionImage("grid_height"), 135, 102)
                                 .build())
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT)
@@ -212,6 +215,11 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.getConfig().rendering.nameRange,
                                 i -> instance.getConfig().rendering.nameRange = i
                         ).build())
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("chesttracker.config.whereisit"))
+                        .description(OptionDescription.of(translatable("chesttracker.config.whereisit.description")))
+                        .text(translatable("chesttracker.gui.open"))
+                        .action((yaclScreen, button) -> Minecraft.getInstance().setScreen(WhereIsItConfigScreenBuilder.build(yaclScreen))).build())
                 .build();
     }
 
@@ -310,16 +318,5 @@ public class ChestTrackerConfigScreenBuilder {
                         .build());
 
         return rootBuilder.build();
-    }
-
-    /////////////////
-    // WHERE IS IT //
-    /////////////////
-    private static ConfigCategory makeWhereIsItLink() {
-        return PlaceholderCategory.createBuilder()
-                .name(translatable("whereisit.config.title"))
-                .tooltip(translatable("chesttracker.config.whereisit.tooltip"))
-                .screen((mc, parent) -> WhereIsItConfigScreenBuilder.build(parent))
-                .build();
     }
 }
