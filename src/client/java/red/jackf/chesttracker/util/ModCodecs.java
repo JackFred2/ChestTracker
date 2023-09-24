@@ -7,10 +7,7 @@ import net.minecraft.core.BlockPos;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -57,6 +54,21 @@ public class ModCodecs {
                 return DataResult.error(() -> "Unknown enum constant for " + enumClass.getSimpleName() + ": " + s);
             }
         }, Enum::toString);
+    }
+
+    public static <T> Codec<T> oneOf(Codec<T> baseCodec, Collection<T> values) {
+        var finalValues = Set.copyOf(values);
+        return baseCodec.comapFlatMap(t -> {
+            if (finalValues.contains(t)) {
+                return DataResult.success(t);
+            } else {
+                return DataResult.error(() -> "Unknown element: %s".formatted(t));
+            }
+        }, Function.identity());
+    }
+
+    public static <T> Codec<T> singular(Codec<T> typeCodec, T value) {
+        return oneOf(typeCodec, Collections.singleton(value));
     }
 
     /**

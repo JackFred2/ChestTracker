@@ -52,6 +52,7 @@
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time": "Use World Time",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time": "Use Bank Loaded Time",
   "chesttracker.gui.editMemoryBank.search": "Search",
+  "chesttracker.gui.editMemoryBank.search.searchRange": "Search Range: %s",
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
   "chesttracker.gui.editMemoryKeys.return": "Return",

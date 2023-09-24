@@ -2,9 +2,11 @@ package red.jackf.chesttracker.memory;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
@@ -253,7 +255,12 @@ public class MemoryBank {
     public List<SearchResult> getPositions(ResourceLocation key, SearchRequest request) {
         if (memories.containsKey(key)) {
             var results = new ArrayList<SearchResult>();
+            final Vec3 startPos = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.position() : null;
+            if (startPos == null) return Collections.emptyList();
+            final int range = metadata.getSearchSettings().searchRange;
+            final double rangeSquared = range == Integer.MAX_VALUE ? Integer.MAX_VALUE : range * range;
             for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
+                if (entry.getKey().distToCenterSqr(startPos) > rangeSquared) continue;
                 var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request))
                         .findFirst();
                 if (matchedItem.isEmpty()) continue;

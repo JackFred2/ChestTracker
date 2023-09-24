@@ -6,6 +6,8 @@ Client-sided addon for Where Is It to remember where items were on the client
 
 Implement ID changing in memory key screen
 
+Split metadata into separate .json file alongside data
+
 Multiverse mode - manual selection of dimension every change
 
 Possibly move IO to a separate thread?

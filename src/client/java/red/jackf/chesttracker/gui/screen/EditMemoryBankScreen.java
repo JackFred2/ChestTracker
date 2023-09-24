@@ -19,10 +19,12 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryBankView;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.memory.metadata.IntegritySettings;
+import red.jackf.chesttracker.memory.metadata.SearchSettings;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.I18nUtil;
 
 import java.util.*;
 
@@ -325,7 +327,19 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private void setupSearchSettings() {
-
+        addSetting(new SteppedSlider<>(getSettingsX(0),
+               getSettingsY(0),
+               getSettingsWidth(2),
+               BUTTON_HEIGHT,
+               SearchSettings.SEARCH_RANGES,
+               this.memoryBank.metadata().getSearchSettings().searchRange,
+               range -> translatable("chesttracker.gui.editMemoryBank.search.searchRange",
+                                     I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+            @Override
+            protected void applyValue() {
+                EditMemoryBankScreen.this.memoryBank.metadata().getSearchSettings().searchRange = getSelected();
+            }
+        }, SettingsTab.SEARCH);
     }
 
     private void addSetting(AbstractWidget widget, SettingsTab tab) {

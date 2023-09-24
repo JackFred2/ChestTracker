@@ -26,14 +26,17 @@ public class Metadata {
                     FilteringSettings.CODEC.optionalFieldOf("filtering")
                             .forGetter(meta -> Optional.of(meta.filteringSettings)),
                     IntegritySettings.CODEC.optionalFieldOf("integrity")
-                            .forGetter(meta -> Optional.of(meta.integritySettings))
-            ).apply(instance, (name, lastModified, loadedTime, icons, filtering, integrity) -> new Metadata(
+                            .forGetter(meta -> Optional.of(meta.integritySettings)),
+                    SearchSettings.CODEC.optionalFieldOf("search")
+                            .forGetter(meta -> Optional.of(meta.searchSettings))
+            ).apply(instance, (name, lastModified, loadedTime, icons, filtering, integrity, search) -> new Metadata(
                     name.orElse(null),
                     lastModified.orElse(Instant.now()),
                     loadedTime,
                     icons.orElseGet(() -> new ArrayList<>(GuiConstants.DEFAULT_ICONS)),
                     filtering.orElseGet(FilteringSettings::new),
-                    integrity.orElseGet(IntegritySettings::new)
+                    integrity.orElseGet(IntegritySettings::new),
+                    search.orElseGet(SearchSettings::new)
             ))
     );
 
@@ -44,18 +47,27 @@ public class Metadata {
     private final List<MemoryKeyIcon> icons;
     private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
+    private final SearchSettings searchSettings;
 
-    public Metadata(@Nullable String name, Instant lastModified, long loadedTime, List<MemoryKeyIcon> icons, FilteringSettings filteringSettings, IntegritySettings integritySettings) {
+    public Metadata(
+            @Nullable String name,
+            Instant lastModified,
+            long loadedTime,
+            List<MemoryKeyIcon> icons,
+            FilteringSettings filteringSettings,
+            IntegritySettings integritySettings,
+            SearchSettings searchSettings) {
         this.name = name;
         this.lastModified = lastModified;
         this.icons = icons;
         this.loadedTime = loadedTime;
         this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
+        this.searchSettings = searchSettings;
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings());
+        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings(), new SearchSettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -119,8 +131,12 @@ public class Metadata {
         return integritySettings;
     }
 
+    public SearchSettings getSearchSettings() {
+        return searchSettings;
+    }
+
     public Metadata deepCopy() {
-        return new Metadata(name, lastModified, loadedTime, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy());
+        return new Metadata(name, lastModified, loadedTime, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy(), searchSettings.copy());
     }
 
     public void incrementLoadedTime() {

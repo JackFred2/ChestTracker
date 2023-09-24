@@ -27,7 +27,7 @@ public class I18nUtil {
         return translatable("chesttracker.generic.days", days);
     }
 
-    public static MutableComponent blocks(int blocks) {
-        return translatable("chesttracker.generic.blocks", blocks);
+    public static MutableComponent blocks(Object value) {
+        return translatable("chesttracker.generic.blocks", value);
     }
 }
