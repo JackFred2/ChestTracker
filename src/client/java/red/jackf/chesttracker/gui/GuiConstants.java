@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.gui;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,12 +32,12 @@ public interface GuiConstants {
     long ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME = 30L;
 
     // Icon Buttons
-    Item DEFAULT_ICON_ITEM = Items.CRAFTING_TABLE;
-    List<MemoryKeyIcon> DEFAULT_ICONS = List.of(
-            new MemoryKeyIcon(MemoryBank.ENDER_CHEST_KEY, new LightweightStack(Items.ENDER_CHEST)),
-            new MemoryKeyIcon(Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK)),
-            new MemoryKeyIcon(Level.NETHER.location(), new LightweightStack(Items.NETHERRACK)),
-            new MemoryKeyIcon(Level.END.location(), new LightweightStack(Items.END_STONE))
+    LightweightStack DEFAULT_ICON = new LightweightStack(Items.CRAFTING_TABLE);
+    Map<ResourceLocation, LightweightStack> DEFAULT_ICONS = Map.of(
+            MemoryBank.ENDER_CHEST_KEY, new LightweightStack(Items.ENDER_CHEST),
+            Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK),
+            Level.NETHER.location(), new LightweightStack(Items.NETHERRACK),
+            Level.END.location(), new LightweightStack(Items.END_STONE)
     );
 
     Map<Item, ItemStack> DEFAULT_ICON_ORDER = makeItemListOrder();

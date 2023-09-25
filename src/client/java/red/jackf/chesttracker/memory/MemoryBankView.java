@@ -3,8 +3,8 @@ package red.jackf.chesttracker.memory;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
-import red.jackf.chesttracker.util.StreamUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,13 +19,12 @@ public interface MemoryBankView {
     List<ResourceLocation> keys();
 
     void removeKey(ResourceLocation id);
-
-    void apply();
     void save();
 
     static MemoryBankView of(MemoryBank bank) {
         return new MemoryBankView() {
             private final Metadata copy = bank.getMetadata().deepCopy();
+            private final List<ResourceLocation> toRemove = new ArrayList<>();
 
             @Override
             public String id() {
@@ -39,20 +38,19 @@ public interface MemoryBankView {
 
             @Override
             public List<ResourceLocation> keys() {
-                return bank.getKeys().stream().sorted(StreamUtil.bringToFront(copy.getKeyOrder())).toList();
+                return copy.getKeyOrder();
             }
 
             @Override
             public void removeKey(ResourceLocation id) {
-                bank.removeKey(id);
-            }
-
-            @Override
-            public void apply() {
-                bank.setMetadata(copy);
+                toRemove.add(id);
+                copy.removeIcon(id);
             }
 
             public void save() {
+                for (ResourceLocation key : toRemove)
+                    bank.removeKey(key);
+                bank.setMetadata(copy);
                 Storage.save(bank);
             }
         };
@@ -77,9 +75,6 @@ public interface MemoryBankView {
 
             @Override
             public void removeKey(ResourceLocation id) {}
-
-            @Override
-            public void apply() {}
 
             public void save() {}
         };

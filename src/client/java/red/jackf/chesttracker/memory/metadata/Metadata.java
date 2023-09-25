@@ -33,7 +33,7 @@ public class Metadata {
                     name.orElse(null),
                     lastModified.orElse(Instant.now()),
                     loadedTime,
-                    icons.orElseGet(() -> new ArrayList<>(GuiConstants.DEFAULT_ICONS)),
+                    icons.orElseGet(ArrayList::new),
                     filtering.orElseGet(FilteringSettings::new),
                     integrity.orElseGet(IntegritySettings::new),
                     search.orElseGet(SearchSettings::new)
@@ -67,7 +67,7 @@ public class Metadata {
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(GuiConstants.DEFAULT_ICONS), new FilteringSettings(), new IntegritySettings(), new SearchSettings());
+        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(), new FilteringSettings(), new IntegritySettings(), new SearchSettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -102,7 +102,7 @@ public class Metadata {
             if (icon.id().equals(key)) return icon.icon();
         }
         // doesn't exist, populate
-        var newIcon = new MemoryKeyIcon(key, new LightweightStack(GuiConstants.DEFAULT_ICON_ITEM, null));
+        var newIcon = new MemoryKeyIcon(key, GuiConstants.DEFAULT_ICONS.getOrDefault(key, GuiConstants.DEFAULT_ICON));
         icons.add(newIcon);
         return newIcon.icon();
     }
@@ -116,6 +116,16 @@ public class Metadata {
             icons.set(existingIndex.getAsInt(), keyIcon);
         } else {
             icons.add(keyIcon);
+        }
+    }
+
+    public void removeIcon(ResourceLocation key) {
+        var iter = icons.iterator();
+        while (iter.hasNext()) {
+            if (iter.next().id().equals(key)) {
+                iter.remove();
+                return;
+            }
         }
     }
 
@@ -142,5 +152,4 @@ public class Metadata {
     public void incrementLoadedTime() {
         this.loadedTime++;
     }
-
 }

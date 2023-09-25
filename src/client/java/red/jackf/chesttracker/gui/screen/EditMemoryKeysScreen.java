@@ -15,6 +15,7 @@ import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBankView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -25,7 +26,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     private static final int DELETE_BUTTON_SIZE = 60;
     private static final int NAME_BOX_MARGIN = 1;
     private final Screen parent;
-    private final MemoryBankView bank;
+    private final MemoryBankView bankView;
     private final Map<ResourceLocation, EditBox> editBoxes = new HashMap<>();
     private final Map<ResourceLocation, DragHandleWidget> dragHandles = new HashMap<>();
 
@@ -35,7 +36,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
     protected EditMemoryKeysScreen(Screen parent, MemoryBankView memoryBank) {
         super(translatable("chesttracker.gui.editMemoryKeys"));
         this.parent = parent;
-        this.bank = memoryBank;
+        this.bankView = memoryBank;
     }
 
     @Override
@@ -64,9 +65,10 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
         final int workingWidth = this.menuWidth - 2 * GuiConstants.MARGIN;
         final int spacing = GuiConstants.SMALL_MARGIN;
         final int startY = this.top + CONTENT_TOP;
+        final List<ResourceLocation> keys = bankView.keys();
 
-        for (var index = 0; index < bank.keys().size(); index++) {
-            var key = bank.keys().get(index);
+        for (var index = 0; index < keys.size(); index++) {
+            var key = keys.get(index);
             int x = this.left + GuiConstants.MARGIN;
             int y = startY + index * (ItemButton.SIZE + spacing);
 
@@ -79,13 +81,13 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     workingWidth,
                     ItemButton.SIZE + spacing,
                     0,
-                    bank.keys().size(),
+                    keys.size(),
                     newIndex -> {
                         if (newIndex < currentIndex) {
-                            this.bank.metadata().moveIcon(currentIndex, newIndex);
+                            this.bankView.metadata().moveIcon(currentIndex, newIndex);
                             scheduleRebuild = true;
                         } else if (newIndex > currentIndex + 1) {
-                            this.bank.metadata().moveIcon(currentIndex, newIndex - 1);
+                            this.bankView.metadata().moveIcon(currentIndex, newIndex - 1);
                             scheduleRebuild = true;
                         }
                     })));
@@ -94,7 +96,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                            bank.metadata().getOrCreateIcon(key).toStack(),
+                            bankView.metadata().getOrCreateIcon(key).toStack(),
                             x,
                             y,
                             button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
@@ -103,7 +105,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                                     GuiConstants.DEFAULT_ICON_ORDER,
                                     i -> {
                                         if (i != null) {
-                                            this.bank.metadata().setIcon(key, new LightweightStack(i));
+                                            this.bankView.metadata().setIcon(key, new LightweightStack(i));
                                             scheduleRebuild = true;
                                         }
                                     }
@@ -138,7 +140,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     translatable("selectServer.deleteButton"),
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
-                        this.bank.removeKey(key);
+                        this.bankView.removeKey(key);
                         // can't schedule rebuilt during rendering because CME, so do it on tick
                         this.scheduleRebuild = true;
                     }));

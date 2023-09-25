@@ -422,7 +422,6 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
     // Save the selected memory bank, and close the GUI.
     private void save(Button button) {
-        this.memoryBank.apply();
         this.memoryBank.save();
         this.onClose();
     }
