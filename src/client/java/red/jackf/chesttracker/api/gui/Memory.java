@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.memory;
+package red.jackf.chesttracker.api.gui;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.memory.MemoryIntegrity;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;

@@ -6,9 +6,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.location.Location;
-import red.jackf.chesttracker.memory.Memory;
 import red.jackf.jackfredlib.api.ResultHolder;
 
+/**
+ * Constructs a Memory out of a given screen, location and world.
+ */
 public interface GetMemory {
     Event<GetMemory> EVENT = EventFactory.createWithPhases(GetMemory.class, invokers -> (location, screen, level) -> {
         for (var invoker : invokers) {

@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.api.gui.Memory;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;

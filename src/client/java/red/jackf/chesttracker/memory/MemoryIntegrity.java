@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
+import red.jackf.chesttracker.api.gui.Memory;
 import red.jackf.chesttracker.api.location.GetLocation;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
 

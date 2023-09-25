@@ -13,6 +13,7 @@ plugins {
 	id("com.github.breadmoirai.github-release") version "2.4.1"
 	id("org.ajoberstar.grgit") version "5.0.+"
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
+	id("io.github.juuxel.loom-vineflower") version "1.11.0"
 }
 
 group = properties["maven_group"]!!
