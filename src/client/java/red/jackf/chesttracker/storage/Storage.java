@@ -45,7 +45,7 @@ public class Storage {
         if (MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getId().equals(id))
             return Optional.of(MemoryBank.INSTANCE.getMetadata().deepCopy());
         LOGGER.debug("Loading {} metadata using {}", id, backend.getClass().getSimpleName());
-        return Optional.ofNullable(backend.getMetadata(id));
+        return backend.loadMetadata(id);
     }
 
     public static Collection<String> getAllIds() {

@@ -1,11 +1,14 @@
 package red.jackf.chesttracker.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 
 import java.io.IOException;
 import java.nio.file.CopyOption;
@@ -19,6 +22,8 @@ import java.util.Optional;
  */
 public class FileUtil {
     public static final Logger LOGGER = ChestTracker.getLogger("FileUtil");
+    private static final Gson GSON_COMPACT = new GsonBuilder().create();
+    private static final Gson GSON = GSON_COMPACT.newBuilder().setPrettyPrinting().create();
 
     /**
      * Save an object to a path with a given codec as an NBT file
@@ -82,5 +87,9 @@ public class FileUtil {
         } catch (IOException e) {
             LOGGER.error("Error moving %s to %s".formatted(from, to), e);
         }
+    }
+
+    public static Gson gson() {
+        return ChestTrackerConfig.INSTANCE.getConfig().storage.readableJsonMemories ? GSON : GSON_COMPACT;
     }
 }

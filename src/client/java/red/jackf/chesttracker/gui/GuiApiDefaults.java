@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.gui.GetMemory;
-import red.jackf.chesttracker.api.gui.Memory;
+import red.jackf.chesttracker.memory.Memory;
 import red.jackf.jackfredlib.api.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 

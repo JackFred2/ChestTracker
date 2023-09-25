@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.api.gui;
+package red.jackf.chesttracker.memory;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.memory.MemoryIntegrity;
+import red.jackf.chesttracker.api.gui.MemoryBuilder;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
@@ -52,7 +52,13 @@ public final class Memory {
     private final Long inGameTimestamp;
     private final Instant realTimestamp;
 
-    private Memory(List<ItemStack> items, @Nullable Component name, List<BlockPos> otherPositions, long loadedTimestamp, long inGameTimestamp, Instant realTimestamp) {
+    public Memory(
+            List<ItemStack> items,
+            @Nullable Component name,
+            List<BlockPos> otherPositions,
+            long loadedTimestamp,
+            long inGameTimestamp,
+            Instant realTimestamp) {
         this.items = ImmutableList.copyOf(items);
         this.name = name;
         this.otherPositions = ImmutableList.copyOf(otherPositions);
@@ -89,34 +95,8 @@ public final class Memory {
         return realTimestamp;
     }
 
-    public static Builder builder(List<ItemStack> items) {
-        return new Builder(items);
+    public static MemoryBuilder builder(List<ItemStack> items) {
+        return new MemoryBuilder(items);
     }
 
-    public static class Builder {
-
-        private final List<ItemStack> items;
-        @Nullable
-        private Component name = null;
-
-        private List<BlockPos> otherPositions = Collections.emptyList();
-
-        public Builder(List<ItemStack> items) {
-            this.items = items;
-        }
-
-        public Builder name(@Nullable Component name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder otherPositions(List<BlockPos> otherPositions) {
-            this.otherPositions = otherPositions;
-            return this;
-        }
-
-        public Memory build(long loadedTimestamp, long inGameTimestamp, Instant realTimestamp) {
-            return new Memory(items, name, otherPositions, loadedTimestamp, inGameTimestamp, realTimestamp);
-        }
-    }
 }

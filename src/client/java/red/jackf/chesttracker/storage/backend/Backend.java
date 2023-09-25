@@ -7,6 +7,7 @@ import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A handler for storing a memory bank in a black-box format
@@ -29,12 +30,12 @@ public interface Backend {
     void delete(String id);
 
     /**
-     * Save this memory bank. The ID is contained within the memory bank; use {@link MemoryBank#getId()}.
+     * Save this memory bank and metadata. The ID is contained within the memory bank; use {@link MemoryBank#getId()}.
      * If an error occurs, an exception should be logged, but should not crash the game.
      *
      * @param memoryBank Memory bank to save to this storage.
      */
-    void save(MemoryBank memoryBank);
+    boolean save(MemoryBank memoryBank);
 
     /**
      * Returns a small label to show at the top of the "edit memory bank" screen.
@@ -69,11 +70,16 @@ public interface Backend {
      * @param id ID of the memory bank to load
      * @return Metadata from the memory bank, or null if not.
      */
-    @Nullable
-    default Metadata getMetadata(String id) {
-        var loaded = load(id);
-        return loaded != null ? loaded.getMetadata() : null;
-    }
+    Optional<Metadata> loadMetadata(String id);
+
+    /**
+     * Save just the metadata of a memory bank. If the memory bank does not exist, a new memory bank should be created.
+     *
+     * @param id ID of the memory bank to save
+     * @param metadata Metadata object to save.
+     * @return Whether the save was successful
+     */
+    boolean saveMetadata(String id, Metadata metadata);
 
 
     enum Type {

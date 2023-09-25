@@ -1,7 +1,6 @@
 package red.jackf.chesttracker.memory;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +9,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.api.gui.Memory;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.LoadContext;
@@ -24,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MemoryBank {
-    private static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORY_CODEC = ModCodecs.makeMutableMap(
+    public static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORIES_CODEC = ModCodecs.makeMutableMap(
             Codec.unboundedMap(
                     ResourceLocation.CODEC,
                     ModCodecs.makeMutableMap(Codec.unboundedMap(
@@ -32,12 +30,6 @@ public class MemoryBank {
                             Memory.CODEC
                     ))
             ));
-
-    public static final Codec<MemoryBank> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    Metadata.CODEC.fieldOf("metadata").forGetter(MemoryBank::getMetadata),
-                    MEMORY_CODEC.fieldOf("memories").forGetter(MemoryBank::getMemories)
-            ).apply(instance, MemoryBank::new));
 
     public static final ResourceLocation ENDER_CHEST_KEY = ChestTracker.id("ender_chest");
 
@@ -135,7 +127,7 @@ public class MemoryBank {
     /**
      * @return All memories in every key of this bank
      */
-    private Map<ResourceLocation, Map<BlockPos, Memory>> getMemories() {
+    public Map<ResourceLocation, Map<BlockPos, Memory>> getMemories() {
         return memories;
     }
 

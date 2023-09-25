@@ -20,5 +20,5 @@ public interface GetMemory {
         return ResultHolder.empty();
     }, EventPhases.PRIORITY_PHASE, Event.DEFAULT_PHASE, EventPhases.FALLBACK_PHASE);
 
-    ResultHolder<Memory.Builder> createMemory(Location location, AbstractContainerScreen<?> screen, ClientLevel level);
+    ResultHolder<MemoryBuilder> createMemory(Location location, AbstractContainerScreen<?> screen, ClientLevel level);
 }
