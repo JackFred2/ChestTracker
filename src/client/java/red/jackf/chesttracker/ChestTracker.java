@@ -26,7 +26,7 @@ import red.jackf.chesttracker.memory.MemoryIntegrity;
 import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
-import red.jackf.chesttracker.world.LocationTracking;
+import red.jackf.chesttracker.location.LocationTracking;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
 import java.time.Instant;

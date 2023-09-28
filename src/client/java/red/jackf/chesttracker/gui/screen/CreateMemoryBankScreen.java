@@ -15,10 +15,10 @@ import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
-import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -174,10 +174,10 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
     }
 
     private void loadDefault(Button button) {
-        var ctx = LoadContext.get();
-        if (ctx == null) return;
-        this.idEditBox.setValue(ctx.connectionId());
-        this.nameEditBox.setValue(ctx.name());
+        var coord = Coordinate.getCurrent();
+        if (coord.isEmpty()) return;
+        this.idEditBox.setValue(coord.get().id());
+        this.nameEditBox.setValue(coord.get().userFriendlyName());
     }
 
     protected static String getNameFromId(String id) {

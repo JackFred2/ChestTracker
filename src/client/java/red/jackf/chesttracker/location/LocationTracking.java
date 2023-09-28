@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.world;
+package red.jackf.chesttracker.location;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -20,7 +20,7 @@ import red.jackf.chesttracker.api.location.Location;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
-import red.jackf.jackfredlib.api.ResultHolder;
+import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class LocationTracking {
 
         UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
             if (level instanceof ClientLevel clientLevel) {
-                // never null re: fabric API docs
+                // hit never null re: fabric API docs
                 //noinspection DataFlowIssue
                 setLocation(GetLocation.FROM_ENTITY.invoker()
                         .fromEntity(player, clientLevel, hand, hit.getEntity())

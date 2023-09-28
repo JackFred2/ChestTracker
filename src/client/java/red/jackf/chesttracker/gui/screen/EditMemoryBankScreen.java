@@ -21,10 +21,10 @@ import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.memory.metadata.SearchSettings;
 import red.jackf.chesttracker.storage.ConnectionSettings;
-import red.jackf.chesttracker.storage.LoadContext;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.I18nUtil;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.*;
 
@@ -164,27 +164,26 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
         // mark default if ingame
         if (inGame) {
-            var ctx = LoadContext.get();
-            var connectionSettings = ctx != null ? ConnectionSettings.get(ctx.connectionId()) : null;
+            Optional<Coordinate> coord = Coordinate.getCurrent();
+            coord.map(coordinate -> ConnectionSettings.get(coordinate.id()))
+                    .ifPresent(connectionSettings -> saveCreateLoadRow.add((x, y, width, height) -> {
+                        if (connectionSettings.memoryBankIdOverride().orElse(coord.get().id())
+                                .equals(this.memoryBank.id())) {
+                            // disable if already the default for the current connection
+                            var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {
+                                    })
+                                    .bounds(x, y, width, height)
+                                    .build();
+                            defaultButton.active = false;
+                            return defaultButton;
+                        } else {
+                            return Button.builder(translatable("chesttracker.gui.editMemoryBank.markDefault"), this::markDefault)
+                                    .tooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.markDefault.tooltip")))
+                                    .bounds(x, y, width, height)
+                                    .build();
+                        }
+                    }));
 
-            if (connectionSettings != null)
-                saveCreateLoadRow.add((x, y, width, height) -> {
-                    if (connectionSettings.memoryBankIdOverride().orElse(ctx.connectionId())
-                            .equals(this.memoryBank.id())) {
-                        // disable if already the default for the current connection
-                        var defaultButton = Button.builder(translatable("chesttracker.gui.editMemoryBank.alreadyDefault"), b -> {
-                                })
-                                .bounds(x, y, width, height)
-                                .build();
-                        defaultButton.active = false;
-                        return defaultButton;
-                    } else {
-                        return Button.builder(translatable("chesttracker.gui.editMemoryBank.markDefault"), this::markDefault)
-                                .tooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.markDefault.tooltip")))
-                                .bounds(x, y, width, height)
-                                .build();
-                    }
-                });
         }
 
         addBottomButtons(bottomButtons);
@@ -398,11 +397,11 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private void markDefault(Button button) {
-        var ctx = LoadContext.get();
-        if (ctx != null) {
-            ConnectionSettings.put(ctx.connectionId(), ConnectionSettings.getOrCreate(ctx.connectionId())
+        var ctx = Coordinate.getCurrent();
+        if (ctx.isPresent()) {
+            ConnectionSettings.put(ctx.get().id(), ConnectionSettings.getOrCreate(ctx.get().id())
                     .setOverride(this.memoryBank.id()
-                            .equals(ctx.connectionId()) ? Optional.empty() : Optional.of(this.memoryBank.id())));
+                            .equals(ctx.get().id()) ? Optional.empty() : Optional.of(this.memoryBank.id())));
             button.active = false;
         }
     }

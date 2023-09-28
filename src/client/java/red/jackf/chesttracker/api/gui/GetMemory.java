@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.location.Location;
-import red.jackf.jackfredlib.api.ResultHolder;
+import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
  * Constructs a Memory out of a given screen, location and world.

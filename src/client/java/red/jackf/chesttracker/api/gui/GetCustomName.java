@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.location.Location;
-import red.jackf.jackfredlib.api.ResultHolder;
+import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
  * Gets the custom name of a container from a given location, block entity and screen.

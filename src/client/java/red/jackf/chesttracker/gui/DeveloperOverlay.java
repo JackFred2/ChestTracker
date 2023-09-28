@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.world.LocationTracking;
+import red.jackf.chesttracker.location.LocationTracking;
 
 import java.util.ArrayList;
 import java.util.List;

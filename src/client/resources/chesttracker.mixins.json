@@ -5,9 +5,7 @@
   "client": [
     "AbstractWidgetAccessor",
     "BlockMixin",
-    "EditBoxAccessor",
-    "MinecraftServerAccessor",
-    "RealmsConnectMixin"
+    "EditBoxAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

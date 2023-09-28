@@ -7,7 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import red.jackf.chesttracker.api.EventPhases;
-import red.jackf.jackfredlib.api.ResultHolder;
+import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
  * <p>Handles obtaining locations from specific events. These run through until the first non-empty Optional is produced;

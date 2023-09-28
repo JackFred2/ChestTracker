@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
 import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A map of {@link LoadContext} ids to memory bank ids to various connection-specific settings; currently this allows a
+ * A map of {@link Coordinate} ids to memory bank ids to various connection-specific settings; currently this allows a
  * user to override which file gets loaded.
  */
 public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
