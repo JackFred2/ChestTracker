@@ -3,7 +3,9 @@ package red.jackf.chesttracker.provider;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.provider.memory.MemoryBuilder;
@@ -21,6 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class DefaultProvider implements Provider {
+    @Override
+    public ResourceLocation name() {
+        return ChestTracker.id("default");
+    }
+
     @Override
     public boolean applies(Coordinate coordinate) {
         return true;

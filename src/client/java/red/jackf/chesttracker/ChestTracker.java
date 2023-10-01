@@ -31,6 +31,7 @@ import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
 import java.time.Instant;
@@ -63,8 +64,20 @@ public class ChestTracker implements ClientModInitializer {
         LOGGER.debug("Loading ChestTracker");
 
         // load and unload memory storage
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(MemoryBank::loadDefault));
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> MemoryBank.unload());
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> {
+            var coord = Coordinate.getCurrent();
+            if (coord.isPresent()) {
+                ProviderHandler.load(coord.get());
+                MemoryBank.loadDefault(coord.get());
+            } else {
+                ProviderHandler.unload();
+                MemoryBank.unload();
+            }
+        }));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            MemoryBank.unload();
+            ProviderHandler.unload();
+        });
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // opening Chest Tracker GUI with no screen open
@@ -96,6 +109,7 @@ public class ChestTracker implements ClientModInitializer {
                 // counting items after screen close
                 if (!ScreenBlacklist.isBlacklisted(screen.getClass()))
                     ScreenEvents.remove(screen).register(screen1 -> {
+                        if (ProviderHandler.INSTANCE == null) return;
                         var bank = MemoryBank.INSTANCE;
                         if (bank == null) return;
                         if (Minecraft.getInstance().level == null) return;

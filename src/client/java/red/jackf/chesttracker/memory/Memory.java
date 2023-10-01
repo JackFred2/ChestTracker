@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.api.provider.memory.MemoryBuilder;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
@@ -94,9 +93,4 @@ public final class Memory {
     public Instant realTimestamp() {
         return realTimestamp;
     }
-
-    public static MemoryBuilder builder(List<ItemStack> items) {
-        return new MemoryBuilder(items);
-    }
-
 }

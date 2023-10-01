@@ -39,17 +39,11 @@ public class MemoryBank {
     /**
      * Automatically get and load a default memory based on the current context and connection-specific settings
      */
-    public static void loadDefault() {
-        var coord = Coordinate.getCurrent();
-
+    public static void loadDefault(Coordinate coordinate) {
         // not in-game; don't load
-        if (coord.isEmpty()) {
-            unload();
-        } else {
-            var settings = ConnectionSettings.getOrCreate(coord.get().id());
-            var id = settings.memoryBankIdOverride().orElse(coord.get().id());
-            loadOrCreate(id, Metadata.blankWithName(coord.get().userFriendlyName()));
-        }
+        var settings = ConnectionSettings.getOrCreate(coordinate.id());
+        var id = settings.memoryBankIdOverride().orElse(coordinate.id());
+        loadOrCreate(id, Metadata.blankWithName(coordinate.userFriendlyName()));
     }
 
     public static void loadOrCreate(String id, @NotNull Metadata creationMetadata) {

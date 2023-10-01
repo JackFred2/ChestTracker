@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import red.jackf.chesttracker.api.provider.InteractionTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.provider.ProviderHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ public class DeveloperOverlay {
             if (!ChestTrackerConfig.INSTANCE.getConfig().gui.showDevHud) return;
             List<String> lines = new ArrayList<>();
             lines.add("Chest Tracker Debug");
+            lines.add("");
+            lines.add("Provider: " + (ProviderHandler.INSTANCE != null ? String.valueOf(ProviderHandler.INSTANCE.name()) : "<none>"));
             lines.add("");
             if (MemoryBank.INSTANCE != null) {
                 lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.toString());
