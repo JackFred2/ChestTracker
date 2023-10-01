@@ -107,6 +107,7 @@ public class ChestTracker implements ClientModInitializer {
                                 Instant.now());
                         if (bank.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
                         bank.addMemory(entry.get().key(), entry.get().position(), memory);
+                        InteractionTrackerImpl.INSTANCE.clear();
                     }
                 });
             }
