@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.api.location;
+package red.jackf.chesttracker.api;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

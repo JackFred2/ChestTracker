@@ -4,7 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import red.jackf.chesttracker.api.location.ClientBlockSource;
+import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.jackfredlib.api.base.Memoizer;
 
 public class CachedClientBlockSource implements ClientBlockSource {

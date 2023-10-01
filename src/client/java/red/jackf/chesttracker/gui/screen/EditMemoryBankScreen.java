@@ -16,7 +16,6 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.memory.MemoryBankView;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.memory.metadata.SearchSettings;

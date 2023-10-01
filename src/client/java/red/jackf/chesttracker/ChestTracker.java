@@ -15,21 +15,25 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import red.jackf.chesttracker.api.gui.GetMemory;
+import red.jackf.chesttracker.api.provider.MemoryEntry;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
+import red.jackf.chesttracker.provider.InteractionTrackerImpl;
+import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
+import red.jackf.chesttracker.provider.DefaultProvider;
+import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
-import red.jackf.chesttracker.location.LocationTracking;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
@@ -93,28 +97,29 @@ public class ChestTracker implements ClientModInitializer {
                     var bank = MemoryBank.INSTANCE;
                     if (bank == null) return;
                     if (Minecraft.getInstance().level == null) return;
-                    var loc = LocationTracking.popLocation();
-                    if (loc == null) return;
 
-                    var builder = GetMemory.EVENT.invoker().createMemory(loc, ((AbstractContainerScreen<?>) screen1), Minecraft.getInstance().level);
-                    if (builder.hasValue()) {
-                        var memory = builder.get().build(bank.getMetadata()
-                                .getLoadedTime(), Minecraft.getInstance().level.getGameTime(), Instant.now());
-                        if (bank.getMetadata()
-                                .getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
-                        bank.addMemory(loc.key(), loc.pos(), memory);
+                    Optional<MemoryEntry> entry = ProviderHandler.INSTANCE.createMemory((AbstractContainerScreen<?>) screen1);
+
+                    if (entry.isPresent()) {
+                        Memory memory = entry.get().memory().build(
+                                bank.getMetadata().getLoadedTime(),
+                                Minecraft.getInstance().level.getGameTime(),
+                                Instant.now());
+                        if (bank.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
+                        bank.addMemory(entry.get().key(), entry.get().position(), memory);
                     }
                 });
             }
         });
 
         NameRenderer.setup();
-        LocationTracking.setup();
+        InteractionTrackerImpl.setup();
         MemoryIntegrity.setup();
         ImagePixelReader.setup();
         Storage.setup();
         DeveloperOverlay.setup();
         GuiApiDefaults.setup();
+        DefaultProvider.setup();
 
         ConnectionSettings.load();
     }

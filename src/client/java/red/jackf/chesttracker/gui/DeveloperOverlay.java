@@ -2,9 +2,9 @@ package red.jackf.chesttracker.gui;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import red.jackf.chesttracker.api.provider.InteractionTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.location.LocationTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,10 @@ public class DeveloperOverlay {
                         lines.add("No memories in current dimension");
                 }
                 lines.add("");
-                var loc = LocationTracking.peekLocation();
-                var locStr = loc == null ? "<none>" : loc.pos().toShortString() + "@" + loc.key();
-                lines.add("Location: " + locStr);
+                var source = InteractionTracker.INSTANCE.getLastBlockSource();
+                var sourceStr = source.map(blockSource -> blockSource.pos().toShortString() + "@" + blockSource.level()
+                        .dimension().location()).orElse("<none>");
+                lines.add("Location: " + sourceStr);
             } else {
                 lines.add("No memory bank loaded");
             }

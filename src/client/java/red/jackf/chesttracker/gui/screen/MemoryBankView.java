@@ -1,6 +1,7 @@
-package red.jackf.chesttracker.memory;
+package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.resources.ResourceLocation;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 

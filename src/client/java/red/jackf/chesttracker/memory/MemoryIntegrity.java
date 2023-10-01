@@ -2,14 +2,11 @@ package red.jackf.chesttracker.memory;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
-import red.jackf.chesttracker.api.location.GetLocation;
-import red.jackf.chesttracker.util.CachedClientBlockSource;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -100,7 +97,7 @@ public class MemoryIntegrity {
                     }
                 }
             }
-
+/*
             // check if block is valid
             if (integrity.checkPeriodicallyForMissingBlocks) {
                 var player = Minecraft.getInstance().player;
@@ -115,7 +112,7 @@ public class MemoryIntegrity {
                                 .location());
                     }
                 }
-            }
+            }*/
         });
     }
 }

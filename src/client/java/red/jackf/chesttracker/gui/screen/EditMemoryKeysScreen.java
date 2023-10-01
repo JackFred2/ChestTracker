@@ -12,7 +12,6 @@ import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
 import red.jackf.chesttracker.memory.LightweightStack;
-import red.jackf.chesttracker.memory.MemoryBankView;
 
 import java.util.HashMap;
 import java.util.List;
