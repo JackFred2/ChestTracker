@@ -1,8 +1,10 @@
 package red.jackf.chesttracker.gui;
 
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.network.chat.contents.LiteralContents;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
+import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
@@ -21,5 +23,9 @@ public class GuiApiDefaults {
                 return ResultHolder.pass();
             }
         }));
+
+        ScreenBlacklist.add(
+            EffectRenderingInventoryScreen.class
+        );
     }
 }

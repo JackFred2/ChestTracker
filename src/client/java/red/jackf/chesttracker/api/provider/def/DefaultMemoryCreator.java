@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import red.jackf.chesttracker.api.EventPhases;
-import red.jackf.chesttracker.api.provider.MemoryEntry;
+import red.jackf.chesttracker.api.provider.memory.MemoryEntry;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 
 public interface DefaultMemoryCreator {

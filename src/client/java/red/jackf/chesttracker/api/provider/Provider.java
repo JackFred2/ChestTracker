@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.api.provider;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import red.jackf.chesttracker.api.provider.memory.MemoryEntry;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.Optional;

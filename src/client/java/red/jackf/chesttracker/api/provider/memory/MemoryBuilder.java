@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.api.gui;
+package red.jackf.chesttracker.api.provider.memory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
