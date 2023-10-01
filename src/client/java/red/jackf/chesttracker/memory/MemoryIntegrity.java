@@ -2,8 +2,10 @@ package red.jackf.chesttracker.memory;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.MenuProvider;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
@@ -73,46 +75,46 @@ public class MemoryIntegrity {
                 return;
             }
 
-            var currentEntry = currentEntryList.get(lastEntryListIndex++);
+            Map.Entry<BlockPos, Memory> currentEntry = currentEntryList.get(lastEntryListIndex++);
+            BlockPos currentPos = currentEntry.getKey();
+            Memory currentMemory = currentEntry.getValue();
 
             // check if time has expired
             // exempt named from the check
-            if (!integrity.preserveNamed || currentEntry.getValue().name() == null) {
+            if (!integrity.preserveNamed || currentMemory.name() == null) {
                 final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
                     final long secondsPastExpiry = switch (integrity.lifetimeCountMode) {
                         case REAL_TIME ->
-                                Duration.between(currentEntry.getValue().realTimestamp(), Instant.now()).toSeconds();
-                        case WORLD_TIME -> (level.getGameTime() - currentEntry.getValue()
+                                Duration.between(currentMemory.realTimestamp(), Instant.now()).toSeconds();
+                        case WORLD_TIME -> (level.getGameTime() - currentMemory
                                 .inGameTimestamp()) / SharedConstants.TICKS_PER_SECOND;
-                        case LOADED_TIME -> (MemoryBank.INSTANCE.getMetadata().getLoadedTime() - currentEntry.getValue()
+                        case LOADED_TIME -> (MemoryBank.INSTANCE.getMetadata().getLoadedTime() - currentMemory
                                 .loadedTimestamp()) / SharedConstants.TICKS_PER_SECOND;
                     } - expirySeconds;
 
                     if (secondsPastExpiry > 0) {
-                        MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentEntry.getKey());
-                        LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentEntry.getKey(), level.dimension()
+                        MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentPos);
+                        LOGGER.debug("Expiry: Removing {}@{}, {} seconds out of date", currentPos, level.dimension()
                                 .location(), secondsPastExpiry);
                         return;
                     }
                 }
             }
-/*
+
             // check if block is valid
             if (integrity.checkPeriodicallyForMissingBlocks) {
                 var player = Minecraft.getInstance().player;
-                if (player != null && level.isLoaded(currentEntry.getKey()) && currentEntry.getKey()
-                        .distSqr(player.blockPosition()) < PERIODIC_CHECK_RANGE_SQUARED) {
-                    var copyLocation = GetLocation.FROM_BLOCK.invoker().fromBlock(player, new CachedClientBlockSource(level, currentEntry.getKey()));
-                    if (!copyLocation.hasValue()
-                            || !copyLocation.get().key().equals(level.dimension().location())
-                            || !copyLocation.get().pos().equals(currentEntry.getKey())) {
-                        MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentEntry.getKey());
-                        LOGGER.debug("Periodic Check: Removing {}@{}", currentEntry.getKey(), level.dimension()
+                if (player != null
+                        && level.isLoaded(currentPos)
+                        && currentPos.distSqr(player.blockPosition()) < PERIODIC_CHECK_RANGE_SQUARED) {
+                    if (!(level.getBlockEntity(currentPos) instanceof MenuProvider)) {
+                        MemoryBank.INSTANCE.removeMemory(level.dimension().location(), currentPos);
+                        LOGGER.debug("Periodic Check: Removing {}@{}", currentPos, level.dimension()
                                 .location());
                     }
                 }
-            }*/
+            }
         });
     }
 }
