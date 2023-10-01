@@ -88,7 +88,7 @@
   "chesttracker.config.storage": "Storage Settings ",
   "chesttracker.config.storage.openFolder": "Open Memory Folder",
   "chesttracker.config.storage.storageBackend": "Storage Backend",
-  "chesttracker.config.storage.storageBackend.description": "Defines how Memory Banks are stored between worlds/sessions.",
+  "chesttracker.config.storage.storageBackend.description": "Defines the format that Memory Banks are stored between worlds/sessions.",
   "chesttracker.config.storage.storageBackend.description.json": "Stores all Memory Banks as JSON files in your game's 'chesttracker' directory. Readable, but takes up more disk space.",
   "chesttracker.config.storage.storageBackend.description.nbt": "Stores all Memory Banks as NBT files in your game's 'chesttracker' directory. More compact, but not readable without an external viewer. Recommended option.",
   "chesttracker.config.storage.storageBackend.description.memory": "Stores Memory Banks in game memory.",

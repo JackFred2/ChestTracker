@@ -14,7 +14,6 @@ public class NameRenderer {
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
             if (MemoryBank.INSTANCE == null) return true;
-            //noinspection resource
             var named = MemoryBank.INSTANCE.getNamedMemories(context.world().dimension().location());
             if (named == null) return true;
             final int maxRangeSq = ChestTrackerConfig.INSTANCE.instance().rendering.nameRange * ChestTrackerConfig.INSTANCE.instance().rendering.nameRange;

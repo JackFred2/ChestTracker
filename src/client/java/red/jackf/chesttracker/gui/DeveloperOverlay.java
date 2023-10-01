@@ -13,7 +13,7 @@ import java.util.List;
 public class DeveloperOverlay {
     public static void setup() {
         HudRenderCallback.EVENT.register((graphics, delta) -> {
-            if (!ChestTrackerConfig.INSTANCE.instance().gui.showDevHud) return;
+            if (!ChestTrackerConfig.INSTANCE.instance().debug.showDevHud) return;
             List<String> lines = new ArrayList<>();
             lines.add("Chest Tracker Debug");
             lines.add("");

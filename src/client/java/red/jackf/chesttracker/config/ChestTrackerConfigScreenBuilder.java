@@ -233,9 +233,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.defaults().gui.showDevHud,
-                                () -> instance.instance().gui.showDevHud,
-                                b -> instance.instance().gui.showDevHud = b
+                                instance.defaults().debug.showDevHud,
+                                () -> instance.instance().debug.showDevHud,
+                                b -> instance.instance().debug.showDevHud = b
                         ).build())
                 .build();
     }

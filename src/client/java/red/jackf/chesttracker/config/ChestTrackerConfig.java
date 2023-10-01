@@ -1,7 +1,7 @@
 package red.jackf.chesttracker.config;
 
-import dev.isxander.yacl3.config.ConfigEntry;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
@@ -16,7 +16,8 @@ import java.nio.file.StandardCopyOption;
 
 public class ChestTrackerConfig {
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("chesttracker.json5");
-    public static final ConfigClassHandler<ChestTrackerConfig> INSTANCE = ConfigClassHandler.createBuilder(ChestTrackerConfig.class)
+    public static final ConfigClassHandler<ChestTrackerConfig> INSTANCE
+            = ConfigClassHandler.createBuilder(ChestTrackerConfig.class)
             .id(ChestTracker.id("config"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(PATH)
@@ -39,54 +40,55 @@ public class ChestTrackerConfig {
         }
         INSTANCE.save();
     }
-
-    @ConfigEntry
+    @SerialEntry
     public Gui gui = new Gui();
-
-    @ConfigEntry
+    @SerialEntry
     public Rendering rendering = new Rendering();
-
-    @ConfigEntry
+    @SerialEntry
     public Storage storage = new Storage();
+    @SerialEntry
+    public Debug debug = new Debug();
 
     public static class Gui {
 
-        @ConfigEntry
+        @SerialEntry(comment = "Whether to automatically focus the search bar when the GUI is opened.")
         public boolean autofocusSearchBar = true;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Show Autocomplete for Search Bar.")
         public boolean showAutocomplete = true;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Show Unnamed Items in Autocomplete.")
         public boolean autocompleteShowsRegularNames = true;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Show Resize Widget.")
         public boolean showResizeWidget = true;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Grid Width. Range: [9, 18] slots")
         public int gridWidth = GuiConstants.MIN_GRID_COLUMNS;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Grid Height. Range: [6, 12] slots")
         public int gridHeight = GuiConstants.MIN_GRID_ROWS;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.")
         public boolean hideMemoryIds = false;
-
-        @ConfigEntry
-        public boolean showDevHud = false;
     }
 
     public static class Rendering {
-        @ConfigEntry
+        @SerialEntry(comment = "Name Render Range. Range: [4, 24] blocks")
         public int nameRange = 12;
     }
 
     public static class Storage {
-        @ConfigEntry
+        @SerialEntry(comment = "Whether the JSON files in the memory directory should be readable, or compacted.")
         public boolean readableJsonMemories = false;
 
-        @ConfigEntry
+        @SerialEntry(comment = "Defines the format that Memory Banks are stored between worlds/sessions. Valid values: NBT, JSON, MEMORY")
         public Type storageBackend = Type.NBT;
+    }
+
+    public static class Debug {
+        @SerialEntry(comment = "DEBUG: Show Developer Hud")
+        public boolean showDevHud = false;
     }
 
     public void validate() {
