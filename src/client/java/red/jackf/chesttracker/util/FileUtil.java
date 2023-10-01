@@ -90,6 +90,6 @@ public class FileUtil {
     }
 
     public static Gson gson() {
-        return ChestTrackerConfig.INSTANCE.getConfig().storage.readableJsonMemories ? GSON : GSON_COMPACT;
+        return ChestTrackerConfig.INSTANCE.instance().storage.readableJsonMemories ? GSON : GSON_COMPACT;
     }
 }

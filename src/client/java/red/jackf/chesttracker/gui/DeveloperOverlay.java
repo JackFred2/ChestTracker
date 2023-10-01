@@ -13,14 +13,14 @@ import java.util.List;
 public class DeveloperOverlay {
     public static void setup() {
         HudRenderCallback.EVENT.register((graphics, delta) -> {
-            if (!ChestTrackerConfig.INSTANCE.getConfig().gui.showDevHud) return;
+            if (!ChestTrackerConfig.INSTANCE.instance().gui.showDevHud) return;
             List<String> lines = new ArrayList<>();
             lines.add("Chest Tracker Debug");
             lines.add("");
             lines.add("Provider: " + (ProviderHandler.INSTANCE != null ? String.valueOf(ProviderHandler.INSTANCE.name()) : "<none>"));
             lines.add("");
             if (MemoryBank.INSTANCE != null) {
-                lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.toString());
+                lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
                 var loadedStr = "Loaded: " + MemoryBank.INSTANCE.getId();
                 if (MemoryBank.INSTANCE.getMetadata().getName() != null)
                     loadedStr += " (" + MemoryBank.INSTANCE.getMetadata().getName() + ")";

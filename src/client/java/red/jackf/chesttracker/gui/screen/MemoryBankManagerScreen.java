@@ -80,7 +80,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,
                 top + GuiConstants.MARGIN,
                 this.menuWidth - GuiConstants.MARGIN - 2 * GuiConstants.SMALL_MARGIN - BUTTON_SIZE,
-                Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.getConfig().storage.storageBackend.name()),
+                Component.translatable("chesttracker.gui.memoryManager.selectedBackend", ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.name()),
                 TextColours.getLabelColour(),
                 TextWidget.Alignment.RIGHT));
 
@@ -130,7 +130,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                                     return Component.literal(e.getValue().getName()); // custom user-defined name
                                 } else {
                                     var id = Component.literal(e.getKey());
-                                    if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds)
+                                    if (ChestTrackerConfig.INSTANCE.instance().gui.hideMemoryIds)
                                         id.setStyle(Style.EMPTY.withObfuscated(true));
                                     return id;
                                 }

@@ -83,7 +83,7 @@ public class ChestTrackerScreen extends Screen {
             return;
         }
 
-        var config = ChestTrackerConfig.INSTANCE.getConfig();
+        var config = ChestTrackerConfig.INSTANCE.instance();
         var liveGridWidth = config.gui.gridWidth + 1;
         var liveGridHeight = config.gui.gridHeight + 1;
 
@@ -181,8 +181,8 @@ public class ChestTrackerScreen extends Screen {
                     GuiConstants.GRID_SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
                     GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_WIDTH, GuiConstants.MAX_GRID_HEIGHT, (w, h) -> {
                 ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
-                ChestTrackerConfig.INSTANCE.getConfig().gui.gridWidth = w;
-                ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight = h;
+                ChestTrackerConfig.INSTANCE.instance().gui.gridWidth = w;
+                ChestTrackerConfig.INSTANCE.instance().gui.gridHeight = h;
                 ChestTrackerConfig.INSTANCE.save();
                 rebuildWidgets();
             }));
@@ -260,7 +260,7 @@ public class ChestTrackerScreen extends Screen {
     private void filter(String filter) {
         var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
         this.itemList.setItems(filtered);
-        var guiConfig = ChestTrackerConfig.INSTANCE.getConfig().gui;
+        var guiConfig = ChestTrackerConfig.INSTANCE.instance().gui;
         this.scroll.setDisabled(filtered.size() <= (guiConfig.gridWidth * guiConfig.gridHeight));
     }
 
@@ -323,7 +323,7 @@ public class ChestTrackerScreen extends Screen {
         if (search.isFocused() && ifAutocomplete(a -> a.mouseScrolled(mouseX, mouseY, deltaX, finalDelta))) {
             return true;
         } else if (itemList.isMouseOver(mouseX, mouseY) || scroll.isMouseOver(mouseX, mouseY)) {
-            deltaY /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.getConfig().gui.gridHeight);
+            deltaY /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.instance().gui.gridHeight);
             return scroll.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
         }
         return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);

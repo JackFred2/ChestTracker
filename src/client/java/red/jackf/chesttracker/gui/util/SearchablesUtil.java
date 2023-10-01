@@ -136,7 +136,7 @@ public class SearchablesUtil {
     }
 
     private static Optional<String> stackNameSuggestions(ItemStack stack) {
-        if (stack.hasCustomHoverName() || ChestTrackerConfig.INSTANCE.getConfig().gui.autocompleteShowsRegularNames)
+        if (stack.hasCustomHoverName() || ChestTrackerConfig.INSTANCE.instance().gui.autocompleteShowsRegularNames)
             return Optional.of(stack.getHoverName().getString());
         return Optional.empty();
     }

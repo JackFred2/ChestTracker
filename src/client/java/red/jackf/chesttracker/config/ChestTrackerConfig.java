@@ -1,7 +1,8 @@
 package red.jackf.chesttracker.config;
 
 import dev.isxander.yacl3.config.ConfigEntry;
-import dev.isxander.yacl3.config.GsonConfigInstance;
+import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
 import red.jackf.chesttracker.ChestTracker;
@@ -10,25 +11,28 @@ import red.jackf.chesttracker.storage.backend.Backend.Type;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class ChestTrackerConfig {
-    public static final GsonConfigInstance<ChestTrackerConfig> INSTANCE
-            = GsonConfigInstance.createBuilder(ChestTrackerConfig.class)
-            .setPath(FabricLoader.getInstance().getConfigDir().resolve("chesttracker.json"))
-            .overrideGsonBuilder(ChestTrackerGSON.get())
+    private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("chesttracker.json5");
+    public static final ConfigClassHandler<ChestTrackerConfig> INSTANCE = ConfigClassHandler.createBuilder(ChestTrackerConfig.class)
+            .id(ChestTracker.id("config"))
+            .serializer(config -> GsonConfigSerializerBuilder.create(config)
+                    .setPath(PATH)
+                    .setJson5(true)
+                    .build())
             .build();
 
     public static void init() {
         try {
             INSTANCE.load();
-            INSTANCE.getConfig().validate();
+            INSTANCE.instance().validate();
         } catch (Exception ex) {
             ChestTracker.LOGGER.error("Error loading Chest Tracker config, backing it up and restoring default", ex);
-            var path = INSTANCE.getPath();
             try {
-                Files.move(path, path.resolveSibling(path.getFileName()
-                        .toString() + ".errored"), StandardCopyOption.REPLACE_EXISTING);
+                Files.move(PATH, PATH.resolveSibling(PATH.getFileName().toString() + ".errored"),
+                           StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 ChestTracker.LOGGER.fatal("Error backing up errored config", e);
             }

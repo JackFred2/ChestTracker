@@ -97,7 +97,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 TextColours.getLabelColour()));
 
         var bankIdText = Component.literal(this.memoryBank.id());
-        if (ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds)
+        if (ChestTrackerConfig.INSTANCE.instance().gui.hideMemoryIds)
             bankIdText = bankIdText.withStyle(ChatFormatting.OBFUSCATED);
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN + font.width(idLabel) + 4,
                 this.top + ID_TOP,
@@ -118,7 +118,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 this.nameEditBox,
                 CommonComponents.EMPTY));
         this.nameEditBox.setResponder(s -> {
-            if (s.isEmpty() && !ChestTrackerConfig.INSTANCE.getConfig().gui.hideMemoryIds) {
+            if (s.isEmpty() && !ChestTrackerConfig.INSTANCE.instance().gui.hideMemoryIds) {
                 this.nameEditBox.setHint(literal(CreateMemoryBankScreen.getNameFromId(this.memoryBank.id())));
                 this.nameEditBox.setTextColor(TextColours.getHintColour());
             } else {

@@ -4,7 +4,7 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import dev.isxander.yacl3.config.GsonConfigInstance;
+import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -75,7 +75,7 @@ public class ChestTrackerConfigScreenBuilder {
     ////////////////
     // CATEGORIES //
     ////////////////
-    private static ConfigCategory makeMainCategory(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static ConfigCategory makeMainCategory(ConfigClassHandler<ChestTrackerConfig> instance) {
         return ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.title"))
                 .group(makeMainGuiGroup(instance))
@@ -85,7 +85,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .build();
     }
 
-    private static ConfigCategory makeMemoryAndStorageCategory(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+    private static ConfigCategory makeMemoryAndStorageCategory(ConfigClassHandler<ChestTrackerConfig> instance, Screen parent) {
         var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memoryAndStorage"))
                 .group(makeMemoryGroup(instance, parent))
@@ -97,7 +97,7 @@ public class ChestTrackerConfigScreenBuilder {
     // GUI //
     /////////
 
-    private static OptionGroup makeMainGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeMainGuiGroup(ConfigClassHandler<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.mainGui"))
                 .option(Option.<Boolean>createBuilder()
@@ -107,9 +107,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.autofocusSearchBar,
-                                () -> instance.getConfig().gui.autofocusSearchBar,
-                                b -> instance.getConfig().gui.autofocusSearchBar = b)
+                                instance.defaults().gui.autofocusSearchBar,
+                                () -> instance.instance().gui.autofocusSearchBar,
+                                b -> instance.instance().gui.autofocusSearchBar = b)
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.showAutocomplete"))
@@ -120,9 +120,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.showAutocomplete,
-                                () -> instance.getConfig().gui.showAutocomplete,
-                                b -> instance.getConfig().gui.showAutocomplete = b)
+                                instance.defaults().gui.showAutocomplete,
+                                () -> instance.instance().gui.showAutocomplete,
+                                b -> instance.instance().gui.showAutocomplete = b)
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.autocompleteShowsRegularNames"))
@@ -133,9 +133,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.autocompleteShowsRegularNames,
-                                () -> instance.getConfig().gui.autocompleteShowsRegularNames,
-                                b -> instance.getConfig().gui.autocompleteShowsRegularNames = b)
+                                instance.defaults().gui.autocompleteShowsRegularNames,
+                                () -> instance.instance().gui.autocompleteShowsRegularNames,
+                                b -> instance.instance().gui.autocompleteShowsRegularNames = b)
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.showResizeWidget"))
@@ -146,9 +146,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.showResizeWidget,
-                                () -> instance.getConfig().gui.showResizeWidget,
-                                b -> instance.getConfig().gui.showResizeWidget = b)
+                                instance.defaults().gui.showResizeWidget,
+                                () -> instance.instance().gui.showResizeWidget,
+                                b -> instance.instance().gui.showResizeWidget = b)
                         .build())
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridWidth"))
@@ -158,11 +158,11 @@ public class ChestTrackerConfigScreenBuilder {
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_HEIGHT)
                                 .step(1)
-                                .valueFormatter(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
+                                .formatValue(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
                         .binding(
-                                instance.getDefaults().gui.gridWidth,
-                                () -> instance.getConfig().gui.gridWidth,
-                                i -> instance.getConfig().gui.gridWidth = i).
+                                instance.defaults().gui.gridWidth,
+                                () -> instance.instance().gui.gridWidth,
+                                i -> instance.instance().gui.gridWidth = i).
                         build())
                 .option(Option.<Integer>createBuilder()
                         .name(translatable("chesttracker.config.mainGui.gridHeight"))
@@ -172,16 +172,16 @@ public class ChestTrackerConfigScreenBuilder {
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT)
                                 .step(1)
-                                .valueFormatter(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
+                                .formatValue(i -> translatable("chesttracker.config.mainGui.gridSizeSlider", i)))
                         .binding(
-                                instance.getDefaults().gui.gridHeight,
-                                () -> instance.getConfig().gui.gridHeight,
-                                i -> instance.getConfig().gui.gridHeight = i).
+                                instance.defaults().gui.gridHeight,
+                                () -> instance.instance().gui.gridHeight,
+                                i -> instance.instance().gui.gridHeight = i).
                         build())
                 .build();
     }
 
-    private static OptionGroup makeManagementGuisGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeManagementGuisGroup(ConfigClassHandler<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.managementGui"))
                 .option(Option.<Boolean>createBuilder()
@@ -194,14 +194,14 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.hideMemoryIds,
-                                () -> instance.getConfig().gui.hideMemoryIds,
-                                b -> instance.getConfig().gui.hideMemoryIds = b)
+                                instance.defaults().gui.hideMemoryIds,
+                                () -> instance.instance().gui.hideMemoryIds,
+                                b -> instance.instance().gui.hideMemoryIds = b)
                         .build())
                 .build();
     }
 
-    private static OptionGroup makeRenderingGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeRenderingGroup(ConfigClassHandler<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.rendering"))
                 .option(Option.<Integer>createBuilder()
@@ -209,11 +209,11 @@ public class ChestTrackerConfigScreenBuilder {
                         .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                                 .range(4, 24)
                                 .step(1)
-                                .valueFormatter(i -> translatable("chesttracker.generic.blocks", i)))
+                                .formatValue(i -> translatable("chesttracker.generic.blocks", i)))
                         .binding(
-                                instance.getDefaults().rendering.nameRange,
-                                () -> instance.getConfig().rendering.nameRange,
-                                i -> instance.getConfig().rendering.nameRange = i
+                                instance.defaults().rendering.nameRange,
+                                () -> instance.instance().rendering.nameRange,
+                                i -> instance.instance().rendering.nameRange = i
                         ).build())
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.config.whereisit"))
@@ -223,7 +223,7 @@ public class ChestTrackerConfigScreenBuilder {
                 .build();
     }
 
-    private static OptionGroup makeDevGuiGroup(GsonConfigInstance<ChestTrackerConfig> instance) {
+    private static OptionGroup makeDevGuiGroup(ConfigClassHandler<ChestTrackerConfig> instance) {
         return OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.devGui"))
                 .collapsed(true)
@@ -233,9 +233,9 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().gui.showDevHud,
-                                () -> instance.getConfig().gui.showDevHud,
-                                b -> instance.getConfig().gui.showDevHud = b
+                                instance.defaults().gui.showDevHud,
+                                () -> instance.instance().gui.showDevHud,
+                                b -> instance.instance().gui.showDevHud = b
                         ).build())
                 .build();
     }
@@ -243,7 +243,7 @@ public class ChestTrackerConfigScreenBuilder {
     ////////////
     // STORAGE //
     ////////////
-    private static OptionGroup makeMemoryGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+    private static OptionGroup makeMemoryGroup(@SuppressWarnings("unused") ConfigClassHandler<ChestTrackerConfig> instance, Screen parent) {
         var builder = OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.memory"))
                 .option(ButtonOption.createBuilder()
@@ -264,7 +264,7 @@ public class ChestTrackerConfigScreenBuilder {
         return builder.build();
     }
 
-    private static OptionGroup makeStorageGroup(GsonConfigInstance<ChestTrackerConfig> instance, Screen parent) {
+    private static OptionGroup makeStorageGroup(ConfigClassHandler<ChestTrackerConfig> instance, Screen parent) {
         var rootBuilder = OptionGroup.createBuilder()
                 .name(translatable("chesttracker.config.storage"))
                 .option(ButtonOption.createBuilder()
@@ -290,10 +290,10 @@ public class ChestTrackerConfigScreenBuilder {
                         .controller(opt -> EnumControllerBuilder.create(opt)
                                 .enumClass(Backend.Type.class))
                         .binding(
-                                instance.getDefaults().storage.storageBackend,
-                                () -> instance.getConfig().storage.storageBackend,
+                                instance.defaults().storage.storageBackend,
+                                () -> instance.instance().storage.storageBackend,
                                 e -> {
-                                    instance.getConfig().storage.storageBackend = e;
+                                    instance.instance().storage.storageBackend = e;
                                     e.load();
                                     refreshConfigScreen(parent);
                                 })
@@ -308,10 +308,10 @@ public class ChestTrackerConfigScreenBuilder {
                                 .yesNoFormatter()
                                 .coloured(true))
                         .binding(
-                                instance.getDefaults().storage.readableJsonMemories,
-                                () -> instance.getConfig().storage.readableJsonMemories,
+                                instance.defaults().storage.readableJsonMemories,
+                                () -> instance.instance().storage.readableJsonMemories,
                                 b -> {
-                                    instance.getConfig().storage.readableJsonMemories = b;
+                                    instance.instance().storage.readableJsonMemories = b;
                                     MemoryBank.save();
                                     refreshConfigScreen(parent);
                                 })

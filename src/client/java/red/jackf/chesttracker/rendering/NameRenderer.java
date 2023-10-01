@@ -17,7 +17,7 @@ public class NameRenderer {
             //noinspection resource
             var named = MemoryBank.INSTANCE.getNamedMemories(context.world().dimension().location());
             if (named == null) return true;
-            final int maxRangeSq = ChestTrackerConfig.INSTANCE.getConfig().rendering.nameRange * ChestTrackerConfig.INSTANCE.getConfig().rendering.nameRange;
+            final int maxRangeSq = ChestTrackerConfig.INSTANCE.instance().rendering.nameRange * ChestTrackerConfig.INSTANCE.instance().rendering.nameRange;
             var alreadyRendering = RenderUtils.getCurrentlyRenderedWithNames();
             for (var entry : named.entrySet()) {
                 if (alreadyRendering.contains(entry.getKey())) continue;
