@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui;
 
+import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.network.chat.contents.LiteralContents;
 import red.jackf.chesttracker.api.EventPhases;
@@ -25,7 +26,8 @@ public class GuiApiDefaults {
         }));
 
         ScreenBlacklist.add(
-            EffectRenderingInventoryScreen.class
+            EffectRenderingInventoryScreen.class,
+            BeaconScreen.class
         );
     }
 }
