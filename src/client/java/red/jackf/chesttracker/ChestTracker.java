@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
-import red.jackf.chesttracker.api.provider.memory.MemoryEntry;
+import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
@@ -114,7 +114,7 @@ public class ChestTracker implements ClientModInitializer {
                         if (bank == null) return;
                         if (Minecraft.getInstance().level == null) return;
 
-                        Optional<MemoryEntry> entry = ProviderHandler.INSTANCE.createMemory((AbstractContainerScreen<?>) screen1);
+                        Optional<MemoryBuilder.Entry> entry = ProviderHandler.INSTANCE.createMemory((AbstractContainerScreen<?>) screen1);
 
                         if (entry.isPresent()) {
                             Memory memory = entry.get().memory().build(

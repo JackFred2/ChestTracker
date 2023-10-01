@@ -11,7 +11,7 @@ public class ProviderHandler {
     public static @Nullable Provider INSTANCE = null;
 
     private static final List<Provider> PROVIDERS = new ArrayList<>();
-    private static final Provider DEFAULT = new DefaultProvider();
+    public static final Provider DEFAULT = new DefaultProvider();
 
     public static void register(Provider provider) {
         PROVIDERS.add(provider);

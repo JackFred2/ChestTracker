@@ -1,35 +1,39 @@
-package red.jackf.chesttracker.api.provider.memory;
+package red.jackf.chesttracker.provider;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.memory.Memory;
 
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-public class MemoryBuilder {
-
+public class MemoryBuilderImpl implements MemoryBuilder {
     private final List<ItemStack> items;
-    @Nullable
-    private Component name = null;
-
+    private @Nullable Component name;
     private List<BlockPos> otherPositions = Collections.emptyList();
 
-    public MemoryBuilder(List<ItemStack> items) {
+    public MemoryBuilderImpl(List<ItemStack> items) {
         this.items = items;
     }
 
-    public MemoryBuilder name(@Nullable Component name) {
+    public MemoryBuilderImpl withCustomName(@Nullable Component name) {
         this.name = name;
         return this;
     }
 
-    public MemoryBuilder otherPositions(List<BlockPos> otherPositions) {
+    public MemoryBuilderImpl otherPositions(List<BlockPos> otherPositions) {
         this.otherPositions = otherPositions;
         return this;
+    }
+
+    @Override
+    public Entry toEntry(ResourceLocation key, BlockPos position) {
+        return new Entry(key, position, this);
     }
 
     public Memory build(long loadedTimestamp, long inGameTimestamp, Instant realTimestamp) {

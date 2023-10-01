@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.mixins;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -9,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 
 @Mixin(Block.class)
 public class BlockMixin {
@@ -18,6 +20,11 @@ public class BlockMixin {
      */
     @Inject(method = "destroy", at = @At("TAIL"))
     private void afterPlayerDestroy(LevelAccessor level, BlockPos pos, BlockState state, CallbackInfo ci) {
-        AfterPlayerDestroyBlock.EVENT.invoker().afterPlayerDestroyBlock(level, pos, state);
+        if (level instanceof ClientLevel clientLevel)
+            AfterPlayerDestroyBlock.EVENT.invoker().afterPlayerDestroyBlock(new CachedClientBlockSource(
+                clientLevel,
+                pos,
+                state
+            ));
     }
 }

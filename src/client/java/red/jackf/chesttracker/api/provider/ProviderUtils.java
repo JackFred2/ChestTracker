@@ -13,9 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Utilities for creating a custom {@link Provider} instance.
+ *
+ * @see InteractionTracker#INSTANCE
+ * @see red.jackf.whereisit.api.search.ConnectedBlocksGrabber
+ */
 public class ProviderUtils {
     private ProviderUtils() {}
 
+    /**
+     * Pulls a list of all item stacks from a container screen, and filters out any from the player's inventory.
+     *
+     * @param screen Screen to pull items from.
+     * @return A list of all item stacks not in a player's inventory.
+     */
     public static List<ItemStack> getNonPlayerStacks(AbstractContainerScreen<?> screen) {
         List<ItemStack> items = new ArrayList<>();
 
@@ -31,6 +43,13 @@ public class ProviderUtils {
         return items;
     }
 
+    /**
+     * Checks whether a given ClientBlockSource should be remembered, based on the current memory bank's filtering
+     * rules.
+     *
+     * @param source Source to test against.
+     * @return Whether, according to default provider rules, this block source should be remembered.
+     */
     public static boolean defaultShouldRemember(ClientBlockSource source) {
         FilteringSettings settings = Optional.ofNullable(MemoryBank.INSTANCE).map(bank -> bank.getMetadata().getFilteringSettings()).orElse(null);
         if (settings == null) return false;
@@ -38,6 +57,12 @@ public class ProviderUtils {
         return source.blockEntity() instanceof MenuProvider;
     }
 
+    /**
+     * Tests whether a given Slot from a container screen is part of a player's inventory.
+     *
+     * @param slot Slot to test.
+     * @return Whether the given slot is part of a player's inventory.
+     */
     public static boolean isSlotPlayerInventory(Slot slot) {
         return slot.container instanceof Inventory;
     }

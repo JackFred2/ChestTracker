@@ -20,6 +20,13 @@ public class CachedClientBlockSource implements ClientBlockSource {
         this.blockEntity = Memoizer.of(() -> level.getBlockEntity(pos));
     }
 
+    public CachedClientBlockSource(ClientLevel level, BlockPos pos, BlockState state) {
+        this.level = level;
+        this.pos = pos.immutable();
+        this.state = Memoizer.of(() -> state);
+        this.blockEntity = Memoizer.of(() -> level.getBlockEntity(pos));
+    }
+
     @Override
     public int x() {
         return pos.getX();

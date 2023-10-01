@@ -3,7 +3,6 @@ package red.jackf.chesttracker.memory;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.MenuProvider;
 import org.apache.logging.log4j.Logger;
@@ -36,16 +35,14 @@ public class MemoryIntegrity {
     private static int lastEntryListIndex = 0;
 
     public static void setup() {
-        AfterPlayerDestroyBlock.EVENT.register((level, pos, state) -> {
+        AfterPlayerDestroyBlock.EVENT.register(cbs -> {
 
             // Called when a player breaks a block, to remove memories that would be contained there
             if (MemoryBank.INSTANCE != null && MemoryBank.INSTANCE.getMetadata()
                     .getIntegritySettings().removeOnPlayerBlockBreak) {
-                if (level instanceof ClientLevel clientLevel) {
-                    MemoryBank.INSTANCE.removeMemory(clientLevel.dimension().location(), pos);
-                    LOGGER.debug("Player Destroy Block: Removing {}@{}", pos.toShortString(), clientLevel.dimension()
-                            .location());
-                }
+            MemoryBank.INSTANCE.removeMemory(cbs.level().dimension().location(), cbs.pos());
+                LOGGER.debug("Player Destroy Block: Removing {}@{}", cbs.pos().toShortString(), cbs.level().dimension()
+                        .location());
             }
         });
 
