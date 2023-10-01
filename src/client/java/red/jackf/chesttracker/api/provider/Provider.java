@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.api.provider;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.provider.ProviderHandler;
@@ -31,13 +32,28 @@ public interface Provider {
 
     /**
      * <p>Create a new {@link MemoryBuilder.Entry} from a given screen.</p>
-     * <p>Use {@link InteractionTracker#INSTANCE}</p>
+     * <p>Use {@link MemoryBuilder#create(List)} to create an entry and populate it with the given details.</p>
      *
      * @see MemoryBuilder#create(List)
+     * @see InteractionTracker#INSTANCE
+     * @see ProviderUtils
      * @param screen Screen to create a memory from/
      * @return An optional containing a memory entry, or an empty optional if not present.
      */
     Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen);
+
+    /**
+     * Get the Memory Key that the player is currently in. By default, this is the key representing current level's
+     * dimension (minecraft:overworld / minecraft:the_nether / minecraft_the_end). Used to determine which keys to look
+     * in for highlights, and for integrity checking.
+     *
+     * @return An optional containing the player's current location, or an empty optional if not applicable (out of game).
+     */
+    default Optional<ResourceLocation> getPlayersCurrentKey() {
+        var level = Minecraft.getInstance().level;
+        if (level == null) return Optional.empty();
+        return Optional.of(level.dimension().location());
+    }
 
     static void register(Provider provider) {
         ProviderHandler.register(provider);

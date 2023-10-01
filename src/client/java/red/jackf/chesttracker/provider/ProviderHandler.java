@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.provider;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.provider.Provider;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
@@ -12,6 +13,10 @@ public class ProviderHandler {
 
     private static final List<Provider> PROVIDERS = new ArrayList<>();
     public static final Provider DEFAULT = new DefaultProvider();
+
+    public static @Nullable ResourceLocation getCurrentKey() {
+        return INSTANCE != null ? INSTANCE.getPlayersCurrentKey().orElse(null) : null;
+    }
 
     public static void register(Provider provider) {
         PROVIDERS.add(provider);

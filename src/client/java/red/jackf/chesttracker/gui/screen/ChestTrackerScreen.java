@@ -24,6 +24,7 @@ import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.StreamUtil;
 
@@ -70,8 +71,8 @@ public class ChestTrackerScreen extends Screen {
         super(TITLE);
         ChestTracker.LOGGER.debug("Open Screen");
         this.parent = parent;
-        var level = Minecraft.getInstance().level;
-        this.currentMemoryKey = level == null ? ChestTracker.id("unknown") : level.dimension().location();
+        var currentKey = ProviderHandler.getCurrentKey();
+        this.currentMemoryKey = currentKey == null ? ChestTracker.id("unknown") : currentKey;
     }
 
     @Override

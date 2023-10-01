@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
@@ -38,7 +39,7 @@ public class DefaultProvider implements Provider {
         if (tracker.getPlayerLevel().isPresent() && tracker.getLastBlockSource().isPresent()) {
             ClientLevel level = tracker.getPlayerLevel().get();
 
-            ResultHolder<MemoryBuilder.Entry> result = DefaultMemoryCreator.EVENT.invoker().get(screen, level);
+            ResultHolder<MemoryBuilder.Entry> result = DefaultMemoryCreator.EVENT.invoker().get(this, screen, level);
             if (result.hasValue()) return Optional.of(result.get());
         }
         return Optional.empty();
@@ -46,9 +47,12 @@ public class DefaultProvider implements Provider {
 
     public static void setup() {
         // regular block tracking
-        DefaultMemoryCreator.EVENT.register(EventPhases.FALLBACK_PHASE, (screen, level) -> {
+        DefaultMemoryCreator.EVENT.register(EventPhases.FALLBACK_PHASE, (provider, screen, level) -> {
             if (InteractionTracker.INSTANCE.getLastBlockSource().isEmpty()) return ResultHolder.pass();
             ClientBlockSource source = InteractionTracker.INSTANCE.getLastBlockSource().get();
+
+            @Nullable ResourceLocation currentKey = ProviderHandler.getCurrentKey();
+            if (currentKey == null) return ResultHolder.pass();
 
             if (!ProviderUtils.defaultShouldRemember(source)) return ResultHolder.pass();
 
@@ -61,7 +65,7 @@ public class DefaultProvider implements Provider {
             return ResultHolder.value(MemoryBuilder.create(items)
                             .withCustomName(GetCustomName.EVENT.invoker().getName(source, screen).getNullable())
                             .otherPositions(connected.stream().filter(pos -> !pos.equals(rootPos)).toList())
-                            .toEntry(level.dimension().location(), rootPos)
+                            .toEntry(currentKey, rootPos)
             );
         });
     }

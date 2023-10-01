@@ -28,7 +28,7 @@ public class DeveloperOverlay {
                 lines.add("Keys: " + MemoryBank.INSTANCE.getKeys().size());
                 var level = Minecraft.getInstance().level;
                 if (level != null) {
-                    lines.add("Current dimension: " + level.dimension().location());
+                    lines.add("Current key: " + ProviderHandler.getCurrentKey());
                     var currentLevelMemories = MemoryBank.INSTANCE.getMemories(level.dimension().location());
                     if (currentLevelMemories != null)
                         lines.add("Memories in current dimension: " + currentLevelMemories.size());
