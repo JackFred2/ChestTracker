@@ -31,7 +31,7 @@ public final class Memory {
                                     .forGetter(Memory::loadedTimestamp),
                             Codec.LONG.optionalFieldOf("worldTimestamp", MemoryIntegrity.UNKNOWN_WORLD_TIMESTAMP)
                                     .forGetter(Memory::inGameTimestamp),
-                            ModCodecs.INSTANT.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
+                            ExtraCodecs.INSTANT_ISO8601.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
                                     .forGetter(Memory::realTimestamp)
                     )
                     .apply(instance, (items, name, otherPositions, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(

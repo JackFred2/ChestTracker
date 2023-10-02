@@ -6,7 +6,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.MemoryBank;
 
 import java.util.ArrayList;
@@ -32,12 +31,12 @@ public interface GuiConstants {
     long ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME = 30L;
 
     // Icon Buttons
-    LightweightStack DEFAULT_ICON = new LightweightStack(Items.CRAFTING_TABLE);
-    Map<ResourceLocation, LightweightStack> DEFAULT_ICONS = Map.of(
-            MemoryBank.ENDER_CHEST_KEY, new LightweightStack(Items.ENDER_CHEST),
-            Level.OVERWORLD.location(), new LightweightStack(Items.GRASS_BLOCK),
-            Level.NETHER.location(), new LightweightStack(Items.NETHERRACK),
-            Level.END.location(), new LightweightStack(Items.END_STONE)
+    ItemStack DEFAULT_ICON = new ItemStack(Items.CRAFTING_TABLE);
+    Map<ResourceLocation, ItemStack> DEFAULT_ICONS = Map.of(
+            MemoryBank.ENDER_CHEST_KEY, new ItemStack(Items.ENDER_CHEST),
+            Level.OVERWORLD.location(), new ItemStack(Items.GRASS_BLOCK),
+            Level.NETHER.location(), new ItemStack(Items.NETHERRACK),
+            Level.END.location(), new ItemStack(Items.END_STONE)
     );
 
     Map<Item, ItemStack> DEFAULT_ICON_ORDER = makeItemListOrder();

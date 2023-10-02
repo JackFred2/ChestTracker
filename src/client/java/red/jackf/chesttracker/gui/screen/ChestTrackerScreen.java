@@ -198,7 +198,7 @@ public class ChestTrackerScreen extends Screen {
 
                 // get the relevant icon
                 var icon = MemoryBank.INSTANCE.getMetadata().getOrCreateIcon(resloc);
-                var button = this.addRenderableWidget(new ItemButton(icon.toStack(),
+                var button = this.addRenderableWidget(new ItemButton(icon,
                         this.left - MEMORY_ICON_OFFSET,
                         this.top + index * MEMORY_ICON_SPACING, b -> {
                     // unhighlight old

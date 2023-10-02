@@ -7,11 +7,11 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.widget.DragHandleWidget;
 import red.jackf.chesttracker.gui.widget.HoldToConfirmButton;
 import red.jackf.chesttracker.gui.widget.ItemButton;
-import red.jackf.chesttracker.memory.LightweightStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -95,16 +95,16 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                            bankView.metadata().getOrCreateIcon(key).toStack(),
+                            bankView.metadata().getOrCreateIcon(key),
                             x,
                             y,
                             button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
                                     translatable("chesttracker.gui.editMemoryKeys.setIcon"),
                                     this,
                                     GuiConstants.DEFAULT_ICON_ORDER,
-                                    i -> {
-                                        if (i != null) {
-                                            this.bankView.metadata().setIcon(key, new LightweightStack(i));
+                                    item -> {
+                                        if (item != null) {
+                                            this.bankView.metadata().setIcon(key, new ItemStack(item));
                                             scheduleRebuild = true;
                                         }
                                     }

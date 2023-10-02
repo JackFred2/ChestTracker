@@ -3,10 +3,11 @@ package red.jackf.chesttracker.memory.metadata;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
@@ -19,7 +20,7 @@ public class Metadata {
     public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
-                    ModCodecs.INSTANT.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
+                    ExtraCodecs.INSTANT_ISO8601.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
                     Codec.LONG.fieldOf("loadedTime").forGetter(meta -> meta.loadedTime),
                     ModCodecs.makeMutableList(MemoryKeyIcon.CODEC.listOf()).optionalFieldOf("icons")
                             .forGetter(meta -> Optional.of(meta.icons)),
@@ -97,7 +98,7 @@ public class Metadata {
         icons.add(to, icons.remove(from));
     }
 
-    public LightweightStack getOrCreateIcon(ResourceLocation key) {
+    public ItemStack getOrCreateIcon(ResourceLocation key) {
         for (MemoryKeyIcon icon : icons) {
             if (icon.id().equals(key)) return icon.icon();
         }
@@ -107,7 +108,7 @@ public class Metadata {
         return newIcon.icon();
     }
 
-    public void setIcon(ResourceLocation key, LightweightStack icon) {
+    public void setIcon(ResourceLocation key, ItemStack icon) {
         var existingIndex = IntStream.range(0, icons.size())
                 .filter(index -> icons.get(index).id().equals(key))
                 .findFirst();

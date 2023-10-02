@@ -4,9 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.BlockPos;
 
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -36,16 +33,13 @@ public class ModCodecs {
             }, pos -> "%d,%d,%d".formatted(pos.getX(), pos.getY(), pos.getZ())
     );
 
-    public static final Codec<Instant> INSTANT = Codec.STRING.comapFlatMap(
-            str -> {
-                try {
-                    return DataResult.success(Instant.parse(str));
-                } catch (DateTimeParseException ex) {
-                    return DataResult.error(() -> "Could not parse timestamp");
-                }
-            }, DateTimeFormatter.ISO_INSTANT::format
-    );
-
+    /**
+     * Creates a codec for a given enum class.
+     *
+     * @param enumClass Class of the enum to decode/encode.
+     * @return Codec representing the given enum class
+     * @param <E> Type of enum being decoded/encoded.
+     */
     public static <E extends Enum<E>> Codec<E> ofEnum(Class<E> enumClass) {
         return Codec.STRING.comapFlatMap(s -> {
             try {
@@ -56,6 +50,14 @@ public class ModCodecs {
         }, Enum::toString);
     }
 
+    /**
+     * Returns a codec for a type, while filtering for certain values during decoding.
+     *
+     * @param baseCodec Base codec to use
+     * @param values Value whitelist to check against when decoding.
+     * @return A codec which filters for specific values on decoding.
+     * @param <T> Type of value being encoded/decoded
+     */
     public static <T> Codec<T> oneOf(Codec<T> baseCodec, Collection<T> values) {
         var finalValues = Set.copyOf(values);
         return baseCodec.comapFlatMap(t -> {
@@ -65,10 +67,6 @@ public class ModCodecs {
                 return DataResult.error(() -> "Unknown element: %s".formatted(t));
             }
         }, Function.identity());
-    }
-
-    public static <T> Codec<T> singular(Codec<T> typeCodec, T value) {
-        return oneOf(typeCodec, Collections.singleton(value));
     }
 
     /**
