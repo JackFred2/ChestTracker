@@ -61,7 +61,7 @@ public class DefaultProvider implements Provider {
             List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(level, source.blockState(), source.pos());
             BlockPos rootPos = connected.get(0);
 
-            List<ItemStack> items = ProviderUtils.getNonPlayerStacks(screen);
+            List<ItemStack> items = ProviderUtils.getNonPlayerStacksAsList(screen);
 
             // get connected, minus the original pos
             return ResultHolder.value(MemoryBuilder.create(items)
@@ -77,7 +77,7 @@ public class DefaultProvider implements Provider {
 
             if (!source.blockState().is(Blocks.ENDER_CHEST)) return ResultHolder.pass();
 
-            List<ItemStack> items = ProviderUtils.getNonPlayerStacks(screen);
+            List<ItemStack> items = ProviderUtils.getNonPlayerStacksAsList(screen);
 
             return ResultHolder.value(MemoryBuilder.create(items)
                               .toEntry(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO)

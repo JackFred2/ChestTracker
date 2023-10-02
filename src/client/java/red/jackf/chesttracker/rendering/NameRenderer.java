@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.whereisit.client.api.RenderUtils;
 
 import java.util.List;
@@ -14,7 +15,9 @@ public class NameRenderer {
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
             if (MemoryBank.INSTANCE == null) return true;
-            var named = MemoryBank.INSTANCE.getNamedMemories(context.world().dimension().location());
+            var currentKey = ProviderHandler.getCurrentKey();
+            if (currentKey == null) return true;
+            var named = MemoryBank.INSTANCE.getNamedMemories(currentKey);
             if (named == null) return true;
             final int maxRangeSq = ChestTrackerConfig.INSTANCE.instance().rendering.nameRange * ChestTrackerConfig.INSTANCE.instance().rendering.nameRange;
             var alreadyRendering = RenderUtils.getCurrentlyRenderedWithNames();

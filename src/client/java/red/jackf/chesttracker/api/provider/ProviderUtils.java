@@ -9,9 +9,9 @@ import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Utilities for creating a custom {@link Provider} instance.
@@ -26,21 +26,22 @@ public class ProviderUtils {
      * Pulls a list of all item stacks from a container screen, and filters out any from the player's inventory.
      *
      * @param screen Screen to pull items from.
-     * @return A list of all item stacks not in a player's inventory.
+     * @return A list of all item stacks not part of a player's inventory.
      */
-    public static List<ItemStack> getNonPlayerStacks(AbstractContainerScreen<?> screen) {
-        List<ItemStack> items = new ArrayList<>();
+    public static List<ItemStack> getNonPlayerStacksAsList(AbstractContainerScreen<?> screen) {
+        return getNonPlayerStacksAsStream(screen).toList();
+    }
 
-        for (Slot slot : screen.getMenu().slots) {
-            if (!isSlotPlayerInventory(slot)) {
-                ItemStack item = slot.getItem();
-                if (!item.isEmpty()) {
-                    items.add(item);
-                }
-            }
-        }
-
-        return items;
+    /**
+     * Pulls a stream of all item stacks from a container screen, and filters out any from the player's inventory.
+     *
+     * @param screen Screen to pull items from.
+     * @return A stream of all item stacks not part of a player's inventory.
+     */
+    public static Stream<ItemStack> getNonPlayerStacksAsStream(AbstractContainerScreen<?> screen) {
+        return screen.getMenu().slots.stream()
+                .filter(slot -> !isSlotPlayerInventory(slot) && !slot.getItem().isEmpty())
+                .map(Slot::getItem);
     }
 
     /**
