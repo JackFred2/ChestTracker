@@ -190,6 +190,9 @@ public class ChestTrackerScreen extends Screen {
 
         // key buttons
         if (MemoryBank.INSTANCE != null) {
+            // fix bad order on first open of screen, kind of hacky
+            MemoryBank.INSTANCE.getKeys().forEach(loc -> MemoryBank.INSTANCE.getMetadata().getVisualSettings().getOrCreateIcon(loc));
+
             var todo = MemoryBank.INSTANCE.getKeys().stream().sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata().getVisualSettings().getKeyOrder())).toList();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 

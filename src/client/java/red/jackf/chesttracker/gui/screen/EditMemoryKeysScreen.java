@@ -2,6 +2,7 @@ package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -135,7 +136,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     x,
                     y,
                     DELETE_BUTTON_SIZE,
-                    20,
+                    Button.DEFAULT_HEIGHT,
                     translatable("selectServer.deleteButton"),
                     GuiConstants.ARE_YOU_SURE_BUTTON_HOLD_TIME,
                     button -> {
@@ -145,15 +146,28 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     }));
         }
 
-        // save
+        // default order toggle
+        this.addRenderableWidget(CycleButton.onOffBuilder(this.bankView.metadata().getVisualSettings().useDefaultIconOrder)
+                 .create(
+                         this.left + GuiConstants.MARGIN,
+                         this.top + this.menuHeight - GuiConstants.MARGIN - Button.DEFAULT_HEIGHT - (Button.DEFAULT_HEIGHT + GuiConstants.SMALL_MARGIN),
+                         workingWidth,
+                         Button.DEFAULT_HEIGHT,
+                         translatable("chesttracker.gui.editMemoryKeys.useDefaultIconOrdering"), (cycleButton, newValue) -> {
+                                 this.bankView.metadata().getVisualSettings().useDefaultIconOrder = newValue;
+                                 this.bankView.metadata().getVisualSettings().reorderIfNecessary();
+                                 this.scheduleRebuild = true;
+                         }));
+
+        // return
         this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.editMemoryKeys.return"), b -> {
                     //this.bank.apply();
                     onClose();
                 }).bounds(
                         this.left + GuiConstants.MARGIN,
-                        this.top + this.menuHeight - GuiConstants.MARGIN - 20,
+                        this.top + this.menuHeight - GuiConstants.MARGIN - Button.DEFAULT_HEIGHT,
                         workingWidth,
-                        20)
+                        Button.DEFAULT_HEIGHT)
                 .build());
 
         this.firstLoad = true;

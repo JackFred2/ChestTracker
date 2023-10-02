@@ -58,6 +58,7 @@
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
   "chesttracker.gui.editMemoryKeys.return": "Return",
   "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
+  "chesttracker.gui.editMemoryKeys.useDefaultIconOrdering": "Use Default Icon Ordering",
   "chesttracker.gui.selectIcon": "Choose an icon",
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",
