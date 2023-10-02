@@ -45,14 +45,15 @@ public class ChestTrackerConfig {
     @SerialEntry
     public Rendering rendering = new Rendering();
     @SerialEntry
+    public Debug debug = new Debug();
+    @SerialEntry
     public Storage storage = new Storage();
     @SerialEntry
-    public Debug debug = new Debug();
+    public Compatibility compatibility = new Compatibility();
 
     public static class Gui {
-
         @SerialEntry(comment = "Whether to automatically focus the search bar when the GUI is opened.")
-        public boolean autofocusSearchBar = true;
+        public boolean autofocusSearchBar = false;
 
         @SerialEntry(comment = "Show Autocomplete for Search Bar.")
         public boolean showAutocomplete = true;
@@ -78,6 +79,11 @@ public class ChestTrackerConfig {
         public int nameRange = 12;
     }
 
+    public static class Debug {
+        @SerialEntry(comment = "DEBUG: Show Developer Hud")
+        public boolean showDevHud = false;
+    }
+
     public static class Storage {
         @SerialEntry(comment = "Whether the JSON files in the memory directory should be readable, or compacted.")
         public boolean readableJsonMemories = false;
@@ -86,9 +92,9 @@ public class ChestTrackerConfig {
         public Type storageBackend = Type.NBT;
     }
 
-    public static class Debug {
-        @SerialEntry(comment = "DEBUG: Show Developer Hud")
-        public boolean showDevHud = false;
+    public static class Compatibility {
+        @SerialEntry
+        public boolean shulkerBoxTooltipIntegration = true;
     }
 
     public void validate() {

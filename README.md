@@ -12,6 +12,7 @@ Possibly move IO to a separate thread?
 
 Bring inventory icon back? maybe stretch goal
 
+Shulker Box (or any items with item NBT) auto-add
 
 ### Compat
 

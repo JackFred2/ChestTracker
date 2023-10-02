@@ -97,6 +97,24 @@ repositories {
 			includeGroupAndSubgroups("red.jackf")
 		}
 	}
+
+	// Shulker Box Tooltip
+	maven {
+		name = "MisterPeModder"
+		url = uri("https://maven.misterpemodder.com/libs-release/")
+		content {
+			includeGroupAndSubgroups("com.misterpemodder")
+		}
+	}
+
+	// Cloth Config
+	maven {
+		name = "Shedaniel"
+		url = uri("https://maven.shedaniel.me")
+		content {
+			includeGroupAndSubgroups("me.shedaniel")
+		}
+	}
 }
 
 loom {
@@ -151,6 +169,9 @@ dependencies {
 	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
+
+	// mod compat
+	modImplementation("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {

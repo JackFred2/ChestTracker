@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.compat;
+package red.jackf.chesttracker.compat.mods;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;

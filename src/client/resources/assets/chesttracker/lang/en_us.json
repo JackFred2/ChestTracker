@@ -1,6 +1,9 @@
 {
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
   "chesttracker.title": "Chest Tracker",
+
+  "chesttracker.compat.shulkerboxtooltip.tooltip": "Integration from ",
+
   "chesttracker.generic.seconds": "%d seconds",
   "chesttracker.generic.minutes": "%d minutes",
   "chesttracker.generic.hour": "1 hour",
@@ -62,27 +65,29 @@
   "chesttracker.gui.selectIcon": "Choose an icon",
   "chesttracker.gui.narration.drag": "Click and drag",
   "chesttracker.storage.json.fileSize": "File Size: %s",
+
   "chesttracker.config.open": "Open",
-  "chesttracker.config.irreversable": "Warning: this action can not be undone.",
-  "chesttracker.config.mainGui": "Main Gui",
-  "chesttracker.config.mainGui.autofocusSearchBar": "Auto-focus Search Bar",
-  "chesttracker.config.mainGui.autofocusSearchBar.description": "Whether to automatically focus the search bar when the GUI is opened.",
-  "chesttracker.config.mainGui.showAutocomplete": "Show Autocomplete for Search Bar",
-  "chesttracker.config.mainGui.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
-  "chesttracker.config.mainGui.showResizeWidget": "Show Resize Widget",
-  "chesttracker.config.mainGui.gridWidth": "Grid Width",
-  "chesttracker.config.mainGui.gridHeight": "Grid Height",
-  "chesttracker.config.mainGui.gridSizeSlider": "%d slots",
-  "chesttracker.config.memoryKeyIcons": "Memory Key Icons",
-  "chesttracker.config.memoryKeyIcons.description": "Defines how the buttons for the Memory Keys are labelled. Supports NBT (through the config file). The order of this list defines in what order they show up in.",
-  "chesttracker.config.managementGui": "Management GUIs",
-  "chesttracker.config.managementGui.hideMemoryBankIds": "Hide Memory Bank IDs",
-  "chesttracker.config.managementGui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.",
+  "chesttracker.config.requiresRestart": "Requires the game to restart!",
+
+  "chesttracker.config.gui": "Gui",
+  "chesttracker.config.gui.autofocusSearchBar": "Auto-focus Search Bar",
+  "chesttracker.config.gui.autofocusSearchBar.description": "Whether to automatically focus the search bar when the GUI is opened.",
+  "chesttracker.config.gui.showAutocomplete": "Show Autocomplete for Search Bar",
+  "chesttracker.config.gui.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
+  "chesttracker.config.gui.showResizeWidget": "Show Resize Widget",
+  "chesttracker.config.gui.gridWidth": "Grid Width",
+  "chesttracker.config.gui.gridHeight": "Grid Height",
+  "chesttracker.config.gui.gridSizeSlider": "%d slots",
+  "chesttracker.config.gui.hideMemoryBankIds": "Hide Memory Bank IDs",
+  "chesttracker.config.gui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.",
+  "chesttracker.config.dev": "Developer Utils",
+  "chesttracker.config.dev.showDevHud": "Show Developer Hud",
+  "chesttracker.config.dev.showDevHud.description": "Show Developer Hud",
   "chesttracker.config.rendering": "Rendering",
   "chesttracker.config.rendering.nameRenderRange": "Name Render Range",
-  "chesttracker.config.rendering.nameRenderRange.slider": "%s blocks",
-  "chesttracker.config.devGui": "Developer Utils",
-  "chesttracker.config.devGui.showDevHud": "Show Developer Hud",
+  "chesttracker.config.whereisit": "Where Is It config",
+  "chesttracker.config.whereisit.description": "Open the config for Where Is It; here you'll find settings for rendering.",
+
   "chesttracker.config.memoryAndStorage": "Memory & Storage",
   "chesttracker.config.memory": "Memory Settings",
   "chesttracker.config.memory.noMemoryBankLoaded": "No Memory Bank currently loaded.",
@@ -96,6 +101,7 @@
   "chesttracker.config.storage.storageBackend.description.memoryLossOnReboot": "Warning: all Memory Banks stored this way are lost when the game closes.",
   "chesttracker.config.storage.json.readableJsonMemories": "Readable JSON Files",
   "chesttracker.config.storage.json.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
-  "chesttracker.config.whereisit": "Where Is It config",
-  "chesttracker.config.whereisit.description": "Open the config for Where Is It; here you'll find settings for rendering."
+
+  "chesttracker.config.compatibility.shulkerboxtooltip": "Shulker Box Tooltip Integration",
+  "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker overwrites Shulker Box Tooltip's server-side preview for ender chests with it's own client-side one, reading from the current Memory Bank. This functions on Realms and servers without Shulker Box Tooltip installed."
 }

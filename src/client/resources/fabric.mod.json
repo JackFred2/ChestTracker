@@ -20,10 +20,13 @@
       "red.jackf.chesttracker.ChestTracker"
     ],
     "modmenu": [
-      "red.jackf.chesttracker.compat.ChestTrackerModMenu"
+      "red.jackf.chesttracker.compat.mods.ChestTrackerModMenu"
     ],
     "whereisit_client": [
-      "red.jackf.chesttracker.compat.ChestTrackerWhereIsItPlugin"
+      "red.jackf.chesttracker.compat.mods.ChestTrackerWhereIsItPlugin"
+    ],
+    "shulkerboxtooltip": [
+      "red.jackf.chesttracker.compat.mods.shulkerboxtooltip.ChestTrackerShulkerBoxTooltip"
     ]
   },
   "mixins": [

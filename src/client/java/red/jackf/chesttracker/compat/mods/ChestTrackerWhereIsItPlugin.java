@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.compat;
+package red.jackf.chesttracker.compat.mods;
 
 import net.minecraft.client.Minecraft;
 import red.jackf.chesttracker.memory.MemoryBank;
