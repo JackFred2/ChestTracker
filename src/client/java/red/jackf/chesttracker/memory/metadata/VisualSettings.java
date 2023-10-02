@@ -91,7 +91,6 @@ public class VisualSettings {
         this.icons = this.icons.stream()
                 .sorted(Comparator.comparing(MemoryKeyIcon::id, StreamUtil.bringToFront(iconKeys)))
                 .collect(Collectors.toCollection(ArrayList::new));
-        System.out.println(this.icons);
     }
 
     VisualSettings() {}
