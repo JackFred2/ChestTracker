@@ -20,6 +20,11 @@ public class DeveloperOverlay {
             lines.add("Provider: " + (ProviderHandler.INSTANCE != null ? String.valueOf(ProviderHandler.INSTANCE.name()) : "<none>"));
             lines.add("");
             if (MemoryBank.INSTANCE != null) {
+                var currentKey = ProviderHandler.getCurrentKey();
+                if (currentKey == null) {
+                    lines.add("Provider error");
+                    return;
+                }
                 lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
                 var loadedStr = "Loaded: " + MemoryBank.INSTANCE.getId();
                 if (MemoryBank.INSTANCE.getMetadata().getName() != null)
@@ -28,8 +33,8 @@ public class DeveloperOverlay {
                 lines.add("Keys: " + MemoryBank.INSTANCE.getKeys().size());
                 var level = Minecraft.getInstance().level;
                 if (level != null) {
-                    lines.add("Current key: " + ProviderHandler.getCurrentKey());
-                    var currentLevelMemories = MemoryBank.INSTANCE.getMemories(level.dimension().location());
+                    lines.add("Current key: " + currentKey);
+                    var currentLevelMemories = MemoryBank.INSTANCE.getMemories(currentKey);
                     if (currentLevelMemories != null)
                         lines.add("Memories in current dimension: " + currentLevelMemories.size());
                     else
