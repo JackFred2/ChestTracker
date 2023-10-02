@@ -3,6 +3,8 @@ package red.jackf.chesttracker.api.provider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
+import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
+import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
@@ -41,6 +43,10 @@ public interface Provider {
      * @return An optional containing a memory entry, or an empty optional if not present.
      */
     Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen);
+
+    default List<MemoryKeyIcon> getDefaultIcons() {
+        return GuiConstants.DEFAULT_ICONS;
+    }
 
     /**
      * Get the Memory Key that the player is currently in. By default, this is the key representing current level's

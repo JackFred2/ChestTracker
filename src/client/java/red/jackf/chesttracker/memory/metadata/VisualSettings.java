@@ -4,8 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
+import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.util.ModCodecs;
 
 import java.util.ArrayList;
@@ -45,7 +46,12 @@ public class VisualSettings {
             if (icon.id().equals(key)) return icon.icon();
         }
         // doesn't exist, populate
-        var newIcon = new MemoryKeyIcon(key, GuiConstants.DEFAULT_ICONS.getOrDefault(key, GuiConstants.DEFAULT_ICON));
+
+        var newIcon = ProviderHandler.INSTANCE != null ? ProviderHandler.INSTANCE.getDefaultIcons().stream()
+                        .filter(icon -> icon.id().equals(key))
+                        .findFirst()
+                        .orElse(null) : null;
+        if (newIcon == null) newIcon = new MemoryKeyIcon(key, GuiConstants.UNKNOWN_ICON);
         icons.add(newIcon);
         return newIcon.icon();
     }

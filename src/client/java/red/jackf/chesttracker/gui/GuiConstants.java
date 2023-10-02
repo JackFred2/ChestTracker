@@ -5,8 +5,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.jackfredlib.api.base.Memoizer;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,13 +35,18 @@ public interface GuiConstants {
     long ARE_YOU_REALLY_SURE_BUTTON_HOLD_TIME = 30L;
 
     // Icon Buttons
-    ItemStack DEFAULT_ICON = new ItemStack(Items.CRAFTING_TABLE);
-    Map<ResourceLocation, ItemStack> DEFAULT_ICONS = Map.of(
-            MemoryBank.ENDER_CHEST_KEY, new ItemStack(Items.ENDER_CHEST),
-            Level.OVERWORLD.location(), new ItemStack(Items.GRASS_BLOCK),
-            Level.NETHER.location(), new ItemStack(Items.NETHERRACK),
-            Level.END.location(), new ItemStack(Items.END_STONE)
-    );
+    ItemStack UNKNOWN_ICON = new ItemStack(Items.CRAFTING_TABLE);
+    List<MemoryKeyIcon> DEFAULT_ICONS = Memoizer.of(() -> {
+        var enderStack = new ItemStack(Items.ENDER_CHEST);
+        EnchantmentHelper.setEnchantments(Map.of(Enchantments.BLOCK_EFFICIENCY, 1), enderStack);
+        return List.of(
+                new MemoryKeyIcon(MemoryBank.ENDER_CHEST_KEY, enderStack),
+                new MemoryKeyIcon(Level.OVERWORLD.location(), new ItemStack(Items.GRASS_BLOCK)),
+                new MemoryKeyIcon(new ResourceLocation("the_bumblezone", "the_bumblezone"), new ItemStack(Items.BEE_NEST)),
+                new MemoryKeyIcon(Level.NETHER.location(), new ItemStack(Items.NETHERRACK)),
+                new MemoryKeyIcon(Level.END.location(), new ItemStack(Items.END_STONE))
+        );
+    }).get();
 
     Map<Item, ItemStack> DEFAULT_ICON_ORDER = makeItemListOrder();
 

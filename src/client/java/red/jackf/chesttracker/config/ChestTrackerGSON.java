@@ -9,7 +9,7 @@ import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
+import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 
 import java.awt.*;
 import java.lang.reflect.Type;
