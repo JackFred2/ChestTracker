@@ -2,19 +2,11 @@ package red.jackf.chesttracker.memory.metadata;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.util.ModCodecs;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 public class Metadata {
     public static final Codec<Metadata> CODEC = RecordCodecBuilder.create(instance ->
@@ -22,22 +14,22 @@ public class Metadata {
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
                     ExtraCodecs.INSTANT_ISO8601.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
                     Codec.LONG.fieldOf("loadedTime").forGetter(meta -> meta.loadedTime),
-                    ModCodecs.makeMutableList(MemoryKeyIcon.CODEC.listOf()).optionalFieldOf("icons")
-                            .forGetter(meta -> Optional.of(meta.icons)),
                     FilteringSettings.CODEC.optionalFieldOf("filtering")
                             .forGetter(meta -> Optional.of(meta.filteringSettings)),
                     IntegritySettings.CODEC.optionalFieldOf("integrity")
                             .forGetter(meta -> Optional.of(meta.integritySettings)),
                     SearchSettings.CODEC.optionalFieldOf("search")
-                            .forGetter(meta -> Optional.of(meta.searchSettings))
-            ).apply(instance, (name, lastModified, loadedTime, icons, filtering, integrity, search) -> new Metadata(
+                            .forGetter(meta -> Optional.of(meta.searchSettings)),
+                    VisualSettings.CODEC.optionalFieldOf("visual")
+                            .forGetter(meta -> Optional.of(meta.visualSettings))
+            ).apply(instance, (name, lastModified, loadedTime, filtering, integrity, search, visual) -> new Metadata(
                     name.orElse(null),
                     lastModified.orElse(Instant.now()),
                     loadedTime,
-                    icons.orElseGet(ArrayList::new),
                     filtering.orElseGet(FilteringSettings::new),
                     integrity.orElseGet(IntegritySettings::new),
-                    search.orElseGet(SearchSettings::new)
+                    search.orElseGet(SearchSettings::new),
+                    visual.orElseGet(VisualSettings::new)
             ))
     );
 
@@ -45,30 +37,30 @@ public class Metadata {
     private String name;
     private Instant lastModified;
     private long loadedTime;
-    private final List<MemoryKeyIcon> icons;
     private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
     private final SearchSettings searchSettings;
+    private final VisualSettings visualSettings;
 
     public Metadata(
             @Nullable String name,
             Instant lastModified,
             long loadedTime,
-            List<MemoryKeyIcon> icons,
             FilteringSettings filteringSettings,
             IntegritySettings integritySettings,
-            SearchSettings searchSettings) {
+            SearchSettings searchSettings,
+            VisualSettings visualSettings) {
         this.name = name;
         this.lastModified = lastModified;
-        this.icons = icons;
         this.loadedTime = loadedTime;
         this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
         this.searchSettings = searchSettings;
+        this.visualSettings = visualSettings;
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), 0L, new ArrayList<>(), new FilteringSettings(), new IntegritySettings(), new SearchSettings());
+        return new Metadata(null, Instant.now(), 0L, new FilteringSettings(), new IntegritySettings(), new SearchSettings(), new VisualSettings());
     }
 
     public static Metadata blankWithName(String name) {
@@ -90,46 +82,6 @@ public class Metadata {
         this.lastModified = Instant.now();
     }
 
-    public List<ResourceLocation> getKeyOrder() {
-        return icons.stream().map(MemoryKeyIcon::id).toList();
-    }
-
-    public void moveIcon(int from, int to) {
-        icons.add(to, icons.remove(from));
-    }
-
-    public ItemStack getOrCreateIcon(ResourceLocation key) {
-        for (MemoryKeyIcon icon : icons) {
-            if (icon.id().equals(key)) return icon.icon();
-        }
-        // doesn't exist, populate
-        var newIcon = new MemoryKeyIcon(key, GuiConstants.DEFAULT_ICONS.getOrDefault(key, GuiConstants.DEFAULT_ICON));
-        icons.add(newIcon);
-        return newIcon.icon();
-    }
-
-    public void setIcon(ResourceLocation key, ItemStack icon) {
-        var existingIndex = IntStream.range(0, icons.size())
-                .filter(index -> icons.get(index).id().equals(key))
-                .findFirst();
-        var keyIcon = new MemoryKeyIcon(key, icon);
-        if (existingIndex.isPresent()) {
-            icons.set(existingIndex.getAsInt(), keyIcon);
-        } else {
-            icons.add(keyIcon);
-        }
-    }
-
-    public void removeIcon(ResourceLocation key) {
-        var iter = icons.iterator();
-        while (iter.hasNext()) {
-            if (iter.next().id().equals(key)) {
-                iter.remove();
-                return;
-            }
-        }
-    }
-
     public long getLoadedTime() {
         return loadedTime;
     }
@@ -146,8 +98,12 @@ public class Metadata {
         return searchSettings;
     }
 
+    public VisualSettings getVisualSettings() {
+        return visualSettings;
+    }
+
     public Metadata deepCopy() {
-        return new Metadata(name, lastModified, loadedTime, new ArrayList<>(icons), filteringSettings.copy(), integritySettings.copy(), searchSettings.copy());
+        return new Metadata(name, lastModified, loadedTime, filteringSettings.copy(), integritySettings.copy(), searchSettings.copy(), visualSettings.copy());
     }
 
     public void incrementLoadedTime() {

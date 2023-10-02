@@ -190,14 +190,14 @@ public class ChestTrackerScreen extends Screen {
 
         // key buttons
         if (MemoryBank.INSTANCE != null) {
-            var todo = MemoryBank.INSTANCE.getKeys().stream().sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata().getKeyOrder())).toList();
+            var todo = MemoryBank.INSTANCE.getKeys().stream().sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata().getVisualSettings().getKeyOrder())).toList();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 
             for (int index = 0; index < todo.size(); index++) {
                 var resloc = todo.get(index);
 
                 // get the relevant icon
-                var icon = MemoryBank.INSTANCE.getMetadata().getOrCreateIcon(resloc);
+                var icon = MemoryBank.INSTANCE.getMetadata().getVisualSettings().getOrCreateIcon(resloc);
                 var button = this.addRenderableWidget(new ItemButton(icon,
                         this.left - MEMORY_ICON_OFFSET,
                         this.top + index * MEMORY_ICON_SPACING, b -> {

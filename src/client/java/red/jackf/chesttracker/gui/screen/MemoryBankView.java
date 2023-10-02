@@ -39,13 +39,13 @@ public interface MemoryBankView {
 
             @Override
             public List<ResourceLocation> keys() {
-                return copy.getKeyOrder();
+                return copy.getVisualSettings().getKeyOrder();
             }
 
             @Override
             public void removeKey(ResourceLocation id) {
                 toRemove.add(id);
-                copy.removeIcon(id);
+                copy.getVisualSettings().removeIcon(id);
             }
 
             public void save() {

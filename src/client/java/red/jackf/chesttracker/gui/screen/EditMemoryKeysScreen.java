@@ -83,10 +83,10 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                     keys.size(),
                     newIndex -> {
                         if (newIndex < currentIndex) {
-                            this.bankView.metadata().moveIcon(currentIndex, newIndex);
+                            this.bankView.metadata().getVisualSettings().moveIcon(currentIndex, newIndex);
                             scheduleRebuild = true;
                         } else if (newIndex > currentIndex + 1) {
-                            this.bankView.metadata().moveIcon(currentIndex, newIndex - 1);
+                            this.bankView.metadata().getVisualSettings().moveIcon(currentIndex, newIndex - 1);
                             scheduleRebuild = true;
                         }
                     })));
@@ -95,7 +95,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
 
             // icon
             this.addRenderableWidget(new ItemButton(
-                            bankView.metadata().getOrCreateIcon(key),
+                            bankView.metadata().getVisualSettings().getOrCreateIcon(key),
                             x,
                             y,
                             button -> Minecraft.getInstance().setScreen(new SelectorScreen<>(
@@ -104,7 +104,7 @@ public class EditMemoryKeysScreen extends BaseUtilScreen {
                                     GuiConstants.DEFAULT_ICON_ORDER,
                                     item -> {
                                         if (item != null) {
-                                            this.bankView.metadata().setIcon(key, new ItemStack(item));
+                                            this.bankView.metadata().getVisualSettings().setIcon(key, new ItemStack(item));
                                             scheduleRebuild = true;
                                         }
                                     }
