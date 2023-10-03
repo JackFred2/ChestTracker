@@ -1,15 +1,20 @@
 package red.jackf.chesttracker.compat.mods.wthit;
 
-import mcp.mobius.waila.api.*;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IBlockComponentProvider;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.component.ItemListComponent;
 import mcp.mobius.waila.api.data.ItemData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.chesttracker.util.ItemStackUtil;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
@@ -25,23 +30,42 @@ public enum ClientContentsPreview implements IBlockComponentProvider {
         // dont do anything if existing
         if (tooltip.getLine(ItemData.ID) != null) return;
 
-        var currentKey = ProviderHandler.getCurrentKey();
-        if (currentKey == null || MemoryBank.INSTANCE == null) return;
-        var keyMemories = MemoryBank.INSTANCE.getMemories(currentKey);
-        if (keyMemories == null) return;
-        var truePos = ConnectedBlocksGrabber.getConnected(accessor.getWorld(), accessor.getBlockState(), accessor.getPosition()).get(0);
-        var memory = keyMemories.get(truePos);
-        if (memory == null || memory.items().isEmpty()) return;
+        if (ProviderHandler.INSTANCE == null) return;
+        if (MemoryBank.INSTANCE == null) return;
 
-        // show items
-        var stacks = ItemStackUtil.flattenStacks(memory.items());
-        if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_ICON))
-            tooltip.setLine(ItemData.ID, new ItemListComponentWithChestTrackerIcon(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
-        else
-            tooltip.setLine(ItemData.ID, new ItemListComponent(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
+        if (accessor.getWorld() instanceof ClientLevel clientLevel) {
+            var blockSource = new CachedClientBlockSource(clientLevel, accessor.getPosition(), accessor.getBlockState());
 
-        if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_KEY_AND_LOCATION))
-            tooltip.addLine(getKeyAndLocationText(currentKey, truePos));
+            var override = ProviderHandler.INSTANCE.getKeyOverride(blockSource);
+
+            ResourceLocation key;
+            BlockPos pos;
+            if (override.isPresent()) {
+                key = override.get().getFirst();
+                pos = override.get().getSecond();
+            } else {
+                key = ProviderHandler.getCurrentKey();
+                pos = ConnectedBlocksGrabber.getConnected(accessor.getWorld(), accessor.getBlockState(), accessor.getPosition())
+                        .get(0);
+            }
+
+            if (key == null || pos == null) return;
+
+            var memoryKeys = MemoryBank.INSTANCE.getMemories(key);
+            if (memoryKeys == null) return;
+            var memory = memoryKeys.get(pos);
+            if (memory == null) return;
+
+            // show items
+            var stacks = ItemStackUtil.flattenStacks(memory.items());
+            if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_ICON))
+                tooltip.setLine(ItemData.ID, new ItemListComponentWithChestTrackerIcon(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
+            else
+                tooltip.setLine(ItemData.ID, new ItemListComponent(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
+
+            if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_KEY_AND_LOCATION))
+                tooltip.addLine(getKeyAndLocationText(key, pos));
+        }
     }
 
     private Component getKeyAndLocationText(ResourceLocation currentKey, BlockPos truePos) {

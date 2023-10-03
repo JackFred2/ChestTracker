@@ -27,7 +27,7 @@ public class MemoryIntegrity {
     private MemoryIntegrity() {
     }
 
-    private static final int TICKS_BETWEEN_ENTRY_REFILL = 200;
+    private static final int TICKS_BETWEEN_ENTRY_REFILL = 600;
     private static final double PERIODIC_CHECK_RANGE_SQUARED = 32 * 32;
     public static final long UNKNOWN_LOADED_TIMESTAMP = -437822L;
     public static final long UNKNOWN_WORLD_TIMESTAMP = -437821L;

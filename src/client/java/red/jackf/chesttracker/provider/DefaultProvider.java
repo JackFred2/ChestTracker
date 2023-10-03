@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.provider;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -33,6 +34,12 @@ public class DefaultProvider implements Provider {
     @Override
     public boolean applies(Coordinate coordinate) {
         return true;
+    }
+
+    @Override
+    public Optional<Pair<ResourceLocation, BlockPos>> getKeyOverride(ClientBlockSource source) {
+        if (source.blockState().is(Blocks.ENDER_CHEST)) return Optional.of(Pair.of(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
+        return Optional.empty();
     }
 
     @Override

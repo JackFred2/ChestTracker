@@ -1,8 +1,11 @@
 package red.jackf.chesttracker.api.provider;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.provider.ProviderHandler;
@@ -33,6 +36,14 @@ public interface Provider {
     boolean applies(Coordinate coordinate);
 
     /**
+     * Get a current memory based off a ClientBlockSource. If a key is non-standard (think ender chests), this should
+     * return an optional containing an alternate key to lookup. Otherwise, return an empty optional.
+     *
+     * @return An optional containing an alternative key to lookup, or an empty optional if not useful.
+     */
+    Optional<Pair<ResourceLocation, BlockPos>> getKeyOverride(ClientBlockSource source);
+
+    /**
      * <p>Create a new {@link MemoryBuilder.Entry} from a given screen.</p>
      * <p>Use {@link MemoryBuilder#create(List)} to create an entry and populate it with the given details.</p>
      *
@@ -44,6 +55,11 @@ public interface Provider {
      */
     Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen);
 
+    /**
+     * Get a list of default icons for keys to show in the menu.
+     *
+     * @return A list of default icons for memory keys.
+     */
     default List<MemoryKeyIcon> getDefaultIcons() {
         return GuiConstants.DEFAULT_ICONS;
     }
