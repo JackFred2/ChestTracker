@@ -115,6 +115,15 @@ repositories {
 			includeGroupAndSubgroups("me.shedaniel")
 		}
 	}
+
+	// WTHIT
+	maven {
+		url  = uri("https://maven2.bai.lol")
+		content {
+			includeGroupAndSubgroups("lol.bai")
+			includeGroupAndSubgroups("mcp.mobius.waila")
+		}
+	}
 }
 
 loom {
@@ -172,6 +181,11 @@ dependencies {
 
 	// mod compat
 	modImplementation("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+
+	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
+
+	modRuntimeOnly("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
+	modRuntimeOnly("lol.bai:badpackets:${properties["badpackets_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {

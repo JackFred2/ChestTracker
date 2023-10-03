@@ -95,6 +95,8 @@ public class ChestTrackerConfig {
     public static class Compatibility {
         @SerialEntry
         public boolean shulkerBoxTooltipIntegration = true;
+        @SerialEntry
+        public boolean wthitIntegration = true;
     }
 
     public void validate() {

@@ -341,8 +341,21 @@ public class ChestTrackerConfigScreenBuilder {
                                         () -> instance.instance().compatibility.shulkerBoxTooltipIntegration,
                                         b -> instance.instance().compatibility.shulkerBoxTooltipIntegration = b
                                 )
-                                .build()
-                )
+                                .build())
+                .option(Option.<Boolean>createBuilder()
+                                .name(translatable("chesttracker.config.compatibility.wthit"))
+                                .description(OptionDescription.of(
+                                        translatable("chesttracker.config.compatibility.wthit.description")
+                                ))
+                                .controller(opt -> BooleanControllerBuilder.create(opt)
+                                        .onOffFormatter()
+                                        .coloured(true))
+                                .binding(
+                                        instance.defaults().compatibility.wthitIntegration,
+                                        () -> instance.instance().compatibility.wthitIntegration,
+                                        b -> instance.instance().compatibility.wthitIntegration = b
+                                )
+                                .build())
                 .build();
     }
 }

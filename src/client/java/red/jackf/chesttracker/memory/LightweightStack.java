@@ -19,8 +19,8 @@ public record LightweightStack(Item item, @Nullable CompoundTag tag) {
             CompoundTag.CODEC.optionalFieldOf("tag").forGetter(stack -> Optional.ofNullable(stack.tag()))
     ).apply(instance, LightweightStack::new));
 
-    public LightweightStack(Item item) {
-        this(item, (CompoundTag) null);
+    public LightweightStack(ItemStack stack) {
+        this(stack.getItem(), stack.getTag());
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

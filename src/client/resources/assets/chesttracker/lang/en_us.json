@@ -2,7 +2,10 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
   "chesttracker.title": "Chest Tracker",
 
-  "chesttracker.compat.shulkerboxtooltip.tooltip": "Integration from ",
+  "chesttracker.compatibility.shulkerboxtooltip.tooltip": "Integration from ",
+  "config.waila.plugin_chesttracker": "Chest Tracker",
+  "config.waila.plugin_chesttracker.show_icon": "Show Chest Tracker's icon",
+  "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Show a highlight's position and memory key",
 
   "chesttracker.generic.seconds": "%d seconds",
   "chesttracker.generic.minutes": "%d minutes",
@@ -103,5 +106,7 @@
   "chesttracker.config.storage.json.readableJsonMemories.description": "Whether the JSON files in the memory directory should be readable, or compacted.",
 
   "chesttracker.config.compatibility.shulkerboxtooltip": "Shulker Box Tooltip Integration",
-  "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker overwrites Shulker Box Tooltip's server-side preview for ender chests with it's own client-side one, reading from the current Memory Bank. This functions on Realms and servers without Shulker Box Tooltip installed."
+  "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker overwrites Shulker Box Tooltip's server-side preview for ender chests with it's own client-side one, reading from the current Memory Bank. This functions on Realms and servers without Shulker Box Tooltip installed.",
+  "chesttracker.config.compatibility.wthit": "WTHIT Integration",
+  "chesttracker.config.compatibility.wthit.description": "Allows you to use the current Memory Bank to show highlights in WTHIT. There are additional settings under the WTHIT's plugin manager."
 }

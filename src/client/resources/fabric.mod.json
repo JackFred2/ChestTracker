@@ -45,5 +45,9 @@
     "whereisit": ">=2.2.1"
   },
   "suggests": {
+    "modmenu": "*",
+    "shulkerboxtooltip": "*",
+    "wthit": "*",
+    "jade": "*"
   }
 }

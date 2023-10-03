@@ -57,7 +57,7 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
     @Override
     public List<Component> addTooltip(@NotNull PreviewContext context) {
         return List.of(
-                translatable("chesttracker.compat.shulkerboxtooltip.tooltip").withStyle(ChatFormatting.GRAY)
+                translatable("chesttracker.compatibility.shulkerboxtooltip.tooltip").withStyle(ChatFormatting.GRAY)
                         .append(translatable("chesttracker.title").withStyle(ChatFormatting.GOLD))
         );
     }
