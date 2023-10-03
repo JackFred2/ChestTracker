@@ -24,10 +24,6 @@ public class DeveloperOverlay {
             lines.add("");
             if (MemoryBank.INSTANCE != null) {
                 var currentKey = ProviderHandler.getCurrentKey();
-                if (currentKey == null) {
-                    lines.add("Provider error");
-                    return;
-                }
                 lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
                 var loadedStr = "Loaded: " + MemoryBank.INSTANCE.getId();
                 if (MemoryBank.INSTANCE.getMetadata().getName() != null)
@@ -37,15 +33,18 @@ public class DeveloperOverlay {
                 var level = Minecraft.getInstance().level;
                 if (level != null) {
                     lines.add("Current key: " + currentKey);
-                    var currentLevelMemories = MemoryBank.INSTANCE.getMemories(currentKey);
-                    if (currentLevelMemories != null)
-                        lines.add("Memories in current dimension: " + currentLevelMemories.size());
-                    else
-                        lines.add("No memories in current dimension");
+                    if (currentKey != null) {
+                        var currentLevelMemories = MemoryBank.INSTANCE.getMemories(currentKey);
+                        if (currentLevelMemories != null)
+                            lines.add("Memories in current dimension: " + currentLevelMemories.size());
+                        else
+                            lines.add("No memories in current dimension");
+                    }
                 }
                 lines.add("");
                 var source = InteractionTracker.INSTANCE.getLastBlockSource();
-                var sourceStr = source.map(blockSource -> blockSource.pos().toShortString() + "@" + blockSource.level()
+                var sourceStr = source.map(blockSource -> blockSource.pos()
+                        .toShortString() + "@" + blockSource.level()
                         .dimension().location()).orElse("<none>");
                 lines.add("Location: " + sourceStr);
             } else {
