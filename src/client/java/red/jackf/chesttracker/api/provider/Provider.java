@@ -56,7 +56,8 @@ public interface Provider {
     Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen);
 
     /**
-     * Get a list of default icons for keys to show in the menu.
+     * Get a list of default icons for keys to show in the menu. These are displayed in the order of the list if manual
+     * key ordering is turned off in memory bank settings.
      *
      * @return A list of default icons for memory keys.
      */

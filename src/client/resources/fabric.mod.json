@@ -47,7 +47,6 @@
   "suggests": {
     "modmenu": "*",
     "shulkerboxtooltip": "*",
-    "wthit": "*",
-    "jade": "*"
+    "wthit": "*"
   }
 }
