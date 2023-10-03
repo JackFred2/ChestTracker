@@ -23,9 +23,12 @@ public class ProviderHandler {
     }
 
     public static void load(Coordinate coordinate) {
-        for (Provider provider : PROVIDERS)
-            if (provider.applies(coordinate))
+        for (Provider provider : PROVIDERS) {
+            if (provider.applies(coordinate)) {
                 INSTANCE = provider;
+                return;
+            }
+        }
         INSTANCE = DEFAULT;
     }
 

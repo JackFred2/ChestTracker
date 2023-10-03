@@ -17,6 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
+import red.jackf.chesttracker.api.provider.Provider;
+import red.jackf.chesttracker.compat.servers.HypixelProvider;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
@@ -141,5 +143,8 @@ public class ChestTracker implements ClientModInitializer {
         DefaultProvider.setup();
 
         ConnectionSettings.load();
+
+        // TODO move into self plugin
+        Provider.register(new HypixelProvider());
     }
 }

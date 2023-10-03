@@ -6,6 +6,7 @@ import red.jackf.chesttracker.api.provider.InteractionTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ public class DeveloperOverlay {
             if (!ChestTrackerConfig.INSTANCE.instance().debug.showDevHud) return;
             List<String> lines = new ArrayList<>();
             lines.add("Chest Tracker Debug");
+            lines.add("");
+            lines.add("Coordinate: " + Coordinate.getCurrent().orElse(null));
             lines.add("");
             lines.add("Provider: " + (ProviderHandler.INSTANCE != null ? String.valueOf(ProviderHandler.INSTANCE.name()) : "<none>"));
             lines.add("");
