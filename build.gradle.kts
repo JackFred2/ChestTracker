@@ -80,7 +80,7 @@ repositories {
 		}
 	}
 
-	// Dev Utils
+	// Dev Utils, Jade
 	maven {
 		name = "Modrinth Maven"
 		url = URI("https://api.modrinth.com/maven")
@@ -184,8 +184,11 @@ dependencies {
 
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
 
-	modRuntimeOnly("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
-	modRuntimeOnly("lol.bai:badpackets:${properties["badpackets_version"]}")
+	modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
+	modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
+
+	// modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
+	// modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {
