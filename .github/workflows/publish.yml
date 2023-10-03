@@ -4,19 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       lastTag:
-        description: 'Previous Tag (ex: v0.1.2)'
+        description: 'Previous Tag (ex: v2.0.0+1.20.2)'
         required: true
       newTag:
-        description: 'New Tag (ex: v0.1.3)'
+        description: 'New Tag (ex: v2.0.1+1.20.3)'
         required: true
       publishToModDistributors:
         description: 'Publish to Modrinth and CurseForge'
         required: true
         type: boolean
-
-permissions:
-  packages: read
-  contents: write
 
 jobs:
   publish:
@@ -29,35 +25,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      # check variable has correct format
-      - name: Fail on invalid tag format
-        if: ${{ !startsWith(github.event.inputs.newTag, 'v') }}
-        run: exit 1
-
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      # tag preconditions
-      - name: Check existing lastTag
-        run: |
-          if git show-ref --tags --verify --quiet "refs/tags/${{ github.event.inputs.lastTag }}"; then
-            echo "lastTag exists"
-            exit 0
-          else
-            echo "lastTag doesn't exist, failing"
-            exit 1
-          fi
-      - name: Check newTag doesn't exist
-        run: |
-          if git show-ref --tags --verify --quiet "refs/tags/${{ github.event.inputs.newTag }}"; then
-            echo "newTag already exists, failing"
-            exit 1
-          else
-            echo "newTag doesn't exist"
-            exit 0
-          fi
 
       - name: Create version tag
         uses: actions/github-script@v6
@@ -84,11 +55,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Publish to GitHub Package Registry and GitHub Release
+      - name: Publish to JackFredMaven and GitHub Release
         run: ./gradlew build generateChangelog publish githubRelease -PlastTag="${{ github.event.inputs.lastTag }}" -PnewTag="${{ github.event.inputs.newTag }}"
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JACKFRED_MAVEN_USER: ${{ secrets.JACKFRED_MAVEN_USER }}
+          JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
 
       - name: Publish to Modrinth and Curseforge
         run: ./gradlew build generateChangelog publishMods -PlastTag="${{ github.event.inputs.lastTag }}" -PnewTag="${{ github.event.inputs.newTag }}"
@@ -96,6 +69,8 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JACKFRED_MAVEN_USER: ${{ secrets.JACKFRED_MAVEN_USER }}
+          JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
 

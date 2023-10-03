@@ -24,7 +24,6 @@ import java.util.Optional;
 
 /**
  * Provider for Hypixel, mainly skyblock. Currently supports:
- * <li>Loot crates</li>
  * <li>SkyBlock Private Island</li>
  * <li>SkyBlock Ender Chest</li>
  */

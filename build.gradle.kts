@@ -19,7 +19,11 @@ plugins {
 group = properties["maven_group"]!!
 version = "${properties["mod_version"]!!}+${properties["minecraft_version"]!!}"
 
-val modReleaseType = properties["type"] ?: "release"
+val modReleaseType = when(properties["type"]) {
+	"alpha" -> ReleaseType.ALPHA
+	"beta" -> ReleaseType.BETA
+	else -> ReleaseType.STABLE
+}
 
 base {
 	archivesName.set("${properties["archives_base_name"]}-${properties["minecraft_version"]}")
@@ -257,7 +261,7 @@ if (lastTagVal != null && newTagVal != null) {
 			changelog.set(provider {
 				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
 			})
-			type.set(ReleaseType.STABLE)
+			type.set(modReleaseType)
 			modLoaders.add("fabric")
 			modLoaders.add("quilt")
 			file.set(tasks.named<RemapJarTask>("remapJar").get().archiveFile)
@@ -281,7 +285,7 @@ if (lastTagVal != null && newTagVal != null) {
 							slug.set(it)
 						}
 					}
-					listOf("emi", "jei", "roughly-enough-items", "modmenu").forEach {
+					listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit").forEach {
 						optional {
 							slug.set(it)
 						}
@@ -297,17 +301,17 @@ if (lastTagVal != null && newTagVal != null) {
 						minecraftVersions.add(it)
 					}
 					displayName.set("${properties["mod_name"]!!} ${version.get()}")
-					listOf("fabric-api", "yacl").forEach {
+					listOf("fabric-api", "yacl", "where-is-it").forEach {
 						requires {
 							slug.set(it)
 						}
 					}
-					listOf("where-is-it", "searchables").forEach {
+					listOf("searchables").forEach {
 						embeds {
 							slug.set(it)
 						}
 					}
-					listOf("emi", "jei", "rei", "modmenu").forEach {
+					listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit").forEach {
 						optional {
 							slug.set(it)
 						}
@@ -322,8 +326,6 @@ if (lastTagVal != null && newTagVal != null) {
 publishing {
 	publications {
 		create<MavenPublication>("mavenJava") {
-			setVersion(rootProject.version)
-			groupId = group as String
 			from(components["java"])
 		}
 	}
@@ -331,7 +333,7 @@ publishing {
 	repositories {
 		maven {
 			name = "JackFredMaven"
-			url = URI("https://maven.jackf.red/releases/")
+			url = uri("https://maven.jackf.red/releases/")
 			content {
 				includeGroupByRegex("red.jackf.*")
 			}
