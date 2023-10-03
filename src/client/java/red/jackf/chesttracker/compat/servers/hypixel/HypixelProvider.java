@@ -71,9 +71,9 @@ public class HypixelProvider implements Provider {
     @Override
     public Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen) {
         if (isOnSkyblock()) {
+            // private island
             var area = PlayerListUtils.getPrefixed("Area: ");
             if (area.isPresent() && area.get().equals("Private Island")) {
-
                 if (InteractionTracker.INSTANCE.getLastBlockSource().isPresent()) {
                     var lastBlock = InteractionTracker.INSTANCE.getLastBlockSource().get();
                     if (lastBlock.blockState().is(Blocks.CHEST) || lastBlock.blockState().is(Blocks.TRAPPED_CHEST)) {
@@ -86,6 +86,16 @@ public class HypixelProvider implements Provider {
                                .otherPositions(connected.stream().filter(pos -> !pos.equals(truePos)).toList())
                                .toEntry(SKYBLOCK_PRIVATE_ISLAND, truePos));
                     }
+                }
+            }
+
+            // ender chest
+            if (EnderChestReader.isEnderChest(screen)) {
+                var page = EnderChestReader.getPage(screen);
+                if (page.isPresent()) {
+                    var items = EnderChestReader.getItems(screen);
+                    return Optional.of(MemoryBuilder.create(items)
+                               .toEntry(SKYBLOCK_ENDER_CHEST, new BlockPos(page.get(), 0, 0)));
                 }
             }
         }
