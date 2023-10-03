@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -91,6 +92,7 @@ public abstract class FileBasedBackend implements Backend {
                 }
             } catch (JsonParseException | IOException ex) {
                 LOGGER.error("Error decoding metadata", ex);
+                FileUtil.tryMove(path, path.resolveSibling(path.getFileName() + ".corrupt"), StandardCopyOption.REPLACE_EXISTING);
             }
         }
         return Optional.empty();
