@@ -31,10 +31,10 @@ public class EnderChestReader {
     }
 
     private static boolean isMenuButton(ItemStack stack) {
-        var name = stack.getDisplayName().getString();
-        return name.isBlank()
-                || (stack.is(Items.PLAYER_HEAD) && name.contains(" Page"))
-                || (stack.is(Items.ARROW) && name.equals("Back"))
-                || (stack.is(Items.BARRIER) && name.equals("Close"));
+        var name = stack.getHoverName().getString();
+        return (stack.is(Items.BLACK_STAINED_GLASS_PANE) && name.isBlank())
+                || (stack.is(Items.PLAYER_HEAD) && name.contains("Page"))
+                || (stack.is(Items.ARROW) && name.contains("Back"))
+                || (stack.is(Items.BARRIER) && name.contains("Close"));
     }
 }
