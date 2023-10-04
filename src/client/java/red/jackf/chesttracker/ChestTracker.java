@@ -41,6 +41,7 @@ import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
+import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
 import java.util.Collections;
@@ -163,9 +164,15 @@ public class ChestTracker implements ClientModInitializer {
                 name = Component.Serializer.fromJson(beData.getString("CustomName"));
 
             if (items != null || name != null) {
+                var connected = ConnectedBlocksGrabber.getConnected(clientLevel, state, pos);
+                connected.forEach(connectedPos -> MemoryBank.INSTANCE.removeMemory(key, connectedPos));
+
+                var rootPos = connected.get(0);
+
                 var entry = MemoryBuilder.create(items == null ? Collections.emptyList() : items)
                         .withCustomName(name)
-                        .toEntry(key, pos);
+                        .otherPositions(connected.stream().filter(pos2 -> !pos2.equals(rootPos)).toList())
+                        .toEntry(key, rootPos);
 
                 MemoryBank.INSTANCE.addMemory(entry);
             }

@@ -139,20 +139,6 @@ public class MemoryBank {
     }
 
     /**
-     * Gets a specific memory from a key and position from this bank, or null if either are non-existent.
-     *
-     * @param key Memory key to search
-     * @param pos Position to lookup
-     * @return The memory at this key and position, or null if non-existent.
-     */
-    @Nullable
-    public Memory getMemory(ResourceLocation key, BlockPos pos) {
-        var memories = getMemories(key);
-        if (memories == null) return null;
-        return memories.get(pos);
-    }
-
-    /**
      * Returns a specific memory key from this bank, or null if non-existent. Only returns memories with names
      *
      * @param key Memory key to lookup
@@ -176,9 +162,15 @@ public class MemoryBank {
                 Instant.now());
         if (this.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
 
-        _addMemory(memories, entry.key(), entry.position(), memory);
-        if (memory.name() != null) _addMemory(namedMemories, entry.key(), entry.position(), memory);
-        addLinked(entry.key(), entry.position(), memory);
+        ResourceLocation key = entry.key();
+        BlockPos pos = entry.position();
+
+        for (BlockPos otherPos : memory.otherPositions())
+            removeMemory(key, otherPos);
+
+        _addMemory(memories, key, pos, memory);
+        if (memory.name() != null) _addMemory(namedMemories, key, pos, memory);
+        addLinked(key, pos, memory);
     }
 
     private static void _addMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos, Memory memory) {

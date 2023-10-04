@@ -139,12 +139,16 @@ loom {
 		}
 	}
 
-	runConfigs {
-		configureEach {
-			val path = buildscript.sourceFile?.parentFile?.resolve("log4j2.xml")
-			path?.let { property("log4j2.configurationFile", path.path) }
-		}
+	buildscript.sourceFile
+		?.parentFile
+		?.resolve("log4j2.xml")
+		?.let { log4jConfigs.from(it) }
+
+	runConfigs.configureEach {
+		this.programArgs.addAll("--username JackFred".split(" "))
+		this.vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
 	}
+
 
 	accessWidenerPath.set(file("src/client/resources/chesttracker.accesswidener"))
 }
