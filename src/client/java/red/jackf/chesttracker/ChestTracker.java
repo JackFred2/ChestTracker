@@ -12,9 +12,16 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.jackf.chesttracker.api.events.AfterPlayerPlaceBlock;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.api.provider.Provider;
@@ -24,7 +31,6 @@ import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
-import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
 import red.jackf.chesttracker.provider.DefaultProvider;
@@ -33,10 +39,12 @@ import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.rendering.NameRenderer;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
 
-import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class ChestTracker implements ClientModInitializer {
@@ -84,9 +92,8 @@ public class ChestTracker implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             // opening Chest Tracker GUI with no screen open
             if (client.screen == null && client.getOverlay() == null)
-                while (OPEN_GUI.consumeClick()) {
+                while (OPEN_GUI.consumeClick())
                     openInGame(client, null);
-                }
         });
 
         ClientTickEvents.START_WORLD_TICK.register(ignored -> {
@@ -119,17 +126,48 @@ public class ChestTracker implements ClientModInitializer {
                         Optional<MemoryBuilder.Entry> entry = ProviderHandler.INSTANCE.createMemory((AbstractContainerScreen<?>) screen1);
 
                         if (entry.isPresent()) {
-                            Memory memory = entry.get().memory().build(
-                                    bank.getMetadata().getLoadedTime(),
-                                    Minecraft.getInstance().level.getGameTime(),
-                                    Instant.now());
-                            if (bank.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
-                            bank.addMemory(entry.get().key(), entry.get().position(), memory);
+                            bank.addMemory(entry.get());
                             InteractionTrackerImpl.INSTANCE.clear();
                         }
                     });
                 else
                     LOGGER.debug("Blacklisted screen class, ignoring");
+            }
+        });
+
+        // auto add placed blocks with data, such as shulker boxes
+        AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) -> {
+            if (ProviderHandler.INSTANCE == null || MemoryBank.INSTANCE == null) return;
+
+            if (ProviderHandler.INSTANCE.getKeyOverride(new CachedClientBlockSource(clientLevel, pos, state)).isPresent())
+                return;
+
+            var key = ProviderHandler.getCurrentKey();
+            if (key == null) return;
+
+            List<ItemStack> items = null;
+            Component name = null;
+
+            // check for items
+            var beData = BlockItem.getBlockEntityData(placementStack);
+            if (beData != null && beData.contains("Items", Tag.TAG_LIST)) {
+                var loadedItems = NonNullList.withSize(27, ItemStack.EMPTY);
+                ContainerHelper.loadAllItems(beData, loadedItems);
+                if (!loadedItems.isEmpty()) items = loadedItems;
+            }
+
+            // check for names
+            if (placementStack.hasCustomHoverName())
+                name = placementStack.getHoverName();
+            else if (beData != null && beData.contains("CustomName"))
+                name = Component.Serializer.fromJson(beData.getString("CustomName"));
+
+            if (items != null || name != null) {
+                var entry = MemoryBuilder.create(items == null ? Collections.emptyList() : items)
+                        .withCustomName(name)
+                        .toEntry(key, pos);
+
+                MemoryBank.INSTANCE.addMemory(entry);
             }
         });
 

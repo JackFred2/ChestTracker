@@ -1,7 +1,8 @@
-package red.jackf.chesttracker.api;
+package red.jackf.chesttracker.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import red.jackf.chesttracker.api.ClientBlockSource;
 
 /**
  * Called after a player destroys a block on the client-side.

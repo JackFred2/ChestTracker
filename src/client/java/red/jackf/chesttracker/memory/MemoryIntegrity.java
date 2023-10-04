@@ -9,7 +9,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.api.AfterPlayerDestroyBlock;
+import red.jackf.chesttracker.api.events.AfterPlayerDestroyBlock;
 import red.jackf.chesttracker.provider.ProviderHandler;
 
 import java.time.Duration;

@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 public class ProviderUtils {
     private ProviderUtils() {}
 
+
+
     /**
      * Pulls a list of all item stacks from a container screen, and filters out any from the player's inventory.
      *

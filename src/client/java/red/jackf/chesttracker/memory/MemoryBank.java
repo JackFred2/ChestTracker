@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
@@ -18,6 +19,7 @@ import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,6 +139,20 @@ public class MemoryBank {
     }
 
     /**
+     * Gets a specific memory from a key and position from this bank, or null if either are non-existent.
+     *
+     * @param key Memory key to search
+     * @param pos Position to lookup
+     * @return The memory at this key and position, or null if non-existent.
+     */
+    @Nullable
+    public Memory getMemory(ResourceLocation key, BlockPos pos) {
+        var memories = getMemories(key);
+        if (memories == null) return null;
+        return memories.get(pos);
+    }
+
+    /**
      * Returns a specific memory key from this bank, or null if non-existent. Only returns memories with names
      *
      * @param key Memory key to lookup
@@ -148,21 +164,26 @@ public class MemoryBank {
     }
 
     /**
-     * Add a memory to a specific key and position
+     * Add a memory to a specific memory builder entry.
      *
-     * @param key    Key to add the memory to; usually a dimension ID, or a custom location
-     * @param pos    Position to add the memory to
-     * @param memory Memory to add
+     * @param entry MemoryBuilder Entry containing data about the memory.
      */
-    public void addMemory(ResourceLocation key, BlockPos pos, Memory memory) {
-        _addMemory(memories, key, pos, memory);
-        if (memory.name() != null) _addMemory(namedMemories, key, pos, memory);
-        addLinked(key, pos, memory);
+    public void addMemory(MemoryBuilder.Entry entry) {
+        if (Minecraft.getInstance().level == null) return;
+        Memory memory = entry.memory().build(
+                this.getMetadata().getLoadedTime(),
+                Minecraft.getInstance().level.getGameTime(),
+                Instant.now());
+        if (this.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) return;
+
+        _addMemory(memories, entry.key(), entry.position(), memory);
+        if (memory.name() != null) _addMemory(namedMemories, entry.key(), entry.position(), memory);
+        addLinked(entry.key(), entry.position(), memory);
     }
 
     private static void _addMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos, Memory memory) {
         var keyMemories = map.get(key);
-        if (memory.isEmpty() && keyMemories != null) {
+        if (memory.isEmpty() && keyMemories != null && memory.name() == null) {
             keyMemories.remove(pos);
             if (keyMemories.isEmpty()) map.remove(key);
         } else {
