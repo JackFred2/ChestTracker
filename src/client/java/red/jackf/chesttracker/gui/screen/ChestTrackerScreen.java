@@ -5,7 +5,10 @@ import com.blamejared.searchables.api.autcomplete.AutoComplete;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -31,8 +34,6 @@ import red.jackf.chesttracker.util.StreamUtil;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static red.jackf.chesttracker.util.GuiUtil.sprite;
 
 /**
  * The main screen
@@ -156,25 +157,35 @@ public class ChestTrackerScreen extends Screen {
         if (shouldFocusSearch)
             this.setInitialFocus(search);
 
-        // settings
-        var settingsButton = this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - GuiConstants.SMALL_MARGIN - BUTTON_SIZE,
+        // mod settings
+        this.addRenderableWidget(new ImageButton(
+                this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
                 this.top + GuiConstants.SMALL_MARGIN,
                 BUTTON_SIZE,
                 BUTTON_SIZE,
-                GuiUtil.twoSprite("settings/button"),
-                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))));
-        settingsButton.setTooltip(Tooltip.create(Component.translatable("mco.configure.world.buttons.settings")));
+                GuiUtil.twoSprite("mod_settings/button"),
+                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))))
+        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.modSettings")));
 
-        // change memories
+        // change memory bank
         this.addRenderableWidget(new ImageButton(
-                        this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
-                        this.top + GuiConstants.SMALL_MARGIN,
-                        BUTTON_SIZE,
-                        BUTTON_SIZE,
-                        new WidgetSprites(sprite("widgets/change_memory_bank/button"), sprite("widgets/change_memory_bank/button_highlighted")),
-                        this::openMemoryManager))
-                .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+                this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                this.top + GuiConstants.SMALL_MARGIN,
+                BUTTON_SIZE,
+                BUTTON_SIZE,
+                GuiUtil.twoSprite("change_memory_bank/button"),
+                this::openMemoryManager))
+        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+
+        // memory bank settings
+        this.addRenderableWidget(new ImageButton(
+                this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                this.top + GuiConstants.SMALL_MARGIN,
+                BUTTON_SIZE,
+                BUTTON_SIZE,
+                GuiUtil.twoSprite("memory_bank_settings/button"),
+                this::openMemoryBankSettings))
+        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryBankSettings")));
 
         // resize
         if (config.gui.showResizeWidget)
@@ -356,6 +367,15 @@ public class ChestTrackerScreen extends Screen {
                 () -> MemoryBank.INSTANCE == null ? parent : this,
                 // return to this screen unless the memories have been unloaded, in which case go to the parent
                 () -> Minecraft.getInstance().setScreen(this)
+        ));
+    }
+
+    private void openMemoryBankSettings(Button button) {
+        if (MemoryBank.INSTANCE == null) return;
+        Minecraft.getInstance().setScreen(new EditMemoryBankScreen(
+                this,
+                this::updateItems,
+                MemoryBank.INSTANCE.getId()
         ));
     }
 }

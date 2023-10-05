@@ -140,7 +140,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
         y += 15;
 
         // Load World Default
-        this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.createMemoryBank.loadDefault"), this::loadDefault)
+        this.addRenderableWidget(Button.builder(translatable("chesttracker.gui.createMemoryBank.fillDefault"), this::loadDefault)
                 .bounds(this.left + GuiConstants.MARGIN,
                         y,
                         workingWidth,

@@ -20,16 +20,23 @@
   "chesttracker.gui.open": "Open",
   "chesttracker.gui.resize": "Resize GUI",
   "chesttracker.gui.reorder": "Reorder Key",
+  "chesttracker.gui.modSettings": "Change Mod Settings",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
+  "chesttracker.gui.memoryBankSettings": "Change Memory Bank Settings",
+  "chesttracker.gui.selectIcon": "Choose an icon",
+  "chesttracker.gui.narration.drag": "Click and drag",
+
   "chesttracker.gui.memoryManager": "Manage Memory Banks",
   "chesttracker.gui.memoryManager.search": "Search Memory Banks",
   "chesttracker.gui.memoryManager.selectedBackend": "Backend: %s",
   "chesttracker.gui.memoryManager.newMemoryBank": "Create new Memory Bank",
+
   "chesttracker.gui.createMemoryBank": "Creating new Memory Bank",
-  "chesttracker.gui.createMemoryBank.loadDefault": "Load World Default",
+  "chesttracker.gui.createMemoryBank.fillDefault": "Fill World Default",
   "chesttracker.gui.createMemoryBank.createAndLoad": "Create and Load",
   "chesttracker.gui.createMemoryBank.alreadyExists": "Memory Bank already exists with this ID",
   "chesttracker.gui.createMemoryBank.emptyId": "Can't have empty ID",
+
   "chesttracker.gui.editMemoryBank": "Editing Memory Bank",
   "chesttracker.gui.editMemoryBank.markDefault": "Make Default",
   "chesttracker.gui.editMemoryBank.alreadyDefault": "Already Default",
@@ -64,13 +71,13 @@
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time": "Use Bank Loaded Time",
   "chesttracker.gui.editMemoryBank.search": "Search",
   "chesttracker.gui.editMemoryBank.search.searchRange": "Search Range: %s",
+
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
   "chesttracker.gui.editMemoryKeys.return": "Return",
   "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
   "chesttracker.gui.editMemoryKeys.useDefaultIconOrdering": "Use Default Icon Ordering",
-  "chesttracker.gui.selectIcon": "Choose an icon",
-  "chesttracker.gui.narration.drag": "Click and drag",
+
   "chesttracker.storage.json.fileSize": "File Size: %s",
 
   "chesttracker.config.open": "Open",
