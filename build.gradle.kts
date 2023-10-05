@@ -163,7 +163,7 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
-	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
