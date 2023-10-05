@@ -26,7 +26,7 @@ val modReleaseType = when(properties["type"]) {
 }
 
 base {
-	archivesName.set("${properties["archives_base_name"]}-${properties["minecraft_version"]}")
+	archivesName.set("${properties["archives_base_name"]}")
 }
 
 repositories {
