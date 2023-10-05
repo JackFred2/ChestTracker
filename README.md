@@ -8,15 +8,24 @@ An client-sided mod to remember where you've put items. Press **Y** to search fo
 
 ![An example image of Chest Tracker highlighting results, and showing names above chests](https://i.imgur.com/jfAfFDh.png)
 
+![The main Chest Tracker GUI](https://i.imgur.com/45pBNFJ.png)
+
 [Other Images](https://imgur.com/a/mDTAACo)
 
-## Requirements
+## Requirements (2.x) (≥ 1.20.2)
 
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [YACL](https://modrinth.com/mod/yacl)
 - [Where Is It](https://modrinth.com/mod/where-is-it) 2.x
 
 Where Is It embeds [JackFredLib](https://github.com/JackFred2/JackFredLib), which embeds [MixinExtras](https://github.com/LlamaLad7/MixinExtras).
+
+## Requirements (1.x) (< 1.20.2)
+
+Note: 1.x won't be recieving any new updates.
+
+- [Fabric API](https://modrinth.com/mod/fabric-api)
+- [Cloth Config](https://modrinth.com/mod/cloth-config)
 
 ## Features
 
