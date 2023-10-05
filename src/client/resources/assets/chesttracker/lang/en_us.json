@@ -2,7 +2,7 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
   "chesttracker.title": "Chest Tracker",
 
-  "chesttracker.compatibility.shulkerboxtooltip.tooltip": "Integration from ",
+  "chesttracker.compatibility.shulkerboxtooltip.tooltip": "Client-side preview via ",
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Show Chest Tracker's icon",
   "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Show a highlight's position and memory key",

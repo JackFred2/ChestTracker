@@ -1,6 +1,8 @@
 package red.jackf.chesttracker.compat.mods.shulkerboxtooltip;
 
 import com.misterpemodder.shulkerboxtooltip.api.PreviewContext;
+import com.misterpemodder.shulkerboxtooltip.api.PreviewType;
+import com.misterpemodder.shulkerboxtooltip.api.ShulkerBoxTooltipApi;
 import com.misterpemodder.shulkerboxtooltip.api.color.ColorKey;
 import com.misterpemodder.shulkerboxtooltip.api.provider.PreviewProvider;
 import net.minecraft.ChatFormatting;
@@ -46,7 +48,7 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
 
     @Override
     public boolean isFullPreviewAvailable(@NotNull PreviewContext context) {
-        return false;
+        return true;
     }
 
     @Override
@@ -56,9 +58,12 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
 
     @Override
     public List<Component> addTooltip(@NotNull PreviewContext context) {
-        return List.of(
-                translatable("chesttracker.compatibility.shulkerboxtooltip.tooltip").withStyle(ChatFormatting.GRAY)
-                        .append(translatable("chesttracker.title").withStyle(ChatFormatting.GOLD))
-        );
+        if (ShulkerBoxTooltipApi.getCurrentPreviewType(true) == PreviewType.FULL)
+            return List.of(
+                    translatable("chesttracker.compatibility.shulkerboxtooltip.tooltip").withStyle(ChatFormatting.GRAY)
+                            .append(translatable("chesttracker.title").withStyle(ChatFormatting.GOLD))
+            );
+        else
+            return Collections.emptyList();
     }
 }
