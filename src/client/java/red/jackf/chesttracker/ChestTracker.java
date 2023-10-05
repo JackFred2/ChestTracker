@@ -140,6 +140,9 @@ public class ChestTracker implements ClientModInitializer {
         AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) -> {
             if (ProviderHandler.INSTANCE == null || MemoryBank.INSTANCE == null) return;
 
+            if (!MemoryBank.INSTANCE.getMetadata().getFilteringSettings().autoAddPlacedBlocks.blockPredicate.test(state))
+                return;
+
             if (ProviderHandler.INSTANCE.getKeyOverride(new CachedClientBlockSource(clientLevel, pos, state)).isPresent())
                 return;
 
@@ -172,7 +175,7 @@ public class ChestTracker implements ClientModInitializer {
                 var entry = MemoryBuilder.create(items == null ? Collections.emptyList() : items)
                         .withCustomName(name)
                         .otherPositions(connected.stream().filter(pos2 -> !pos2.equals(rootPos)).toList())
-                        .toEntry(key, rootPos);
+                        .toEntry(key, rootPos );
 
                 MemoryBank.INSTANCE.addMemory(entry);
             }

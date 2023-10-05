@@ -249,10 +249,22 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                .getFilteringSettings().rememberedContainers = remembered
                ), SettingsTab.FILTERING);
 
+        addSetting(CycleButton.<FilteringSettings.AutoAddPlacedBlocks>builder(remembered -> remembered.label)
+                           .withValues(FilteringSettings.AutoAddPlacedBlocks.values())
+                           .withInitialValue(this.memoryBank.metadata().getFilteringSettings().autoAddPlacedBlocks)
+                           .create(getSettingsX(0),
+                                   getSettingsY(1),
+                                   getSettingsWidth(2),
+                                   BUTTON_HEIGHT,
+                                   translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks"),
+                                   (cycleButton, autoAdd) -> this.memoryBank.metadata()
+                                           .getFilteringSettings().autoAddPlacedBlocks = autoAdd
+                           ), SettingsTab.FILTERING);
+
         addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getFilteringSettings().rememberEnderChests)
                            .withTooltip(b -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.filtering.rememberEnderChests.tooltip")))
                            .create(getSettingsX(0),
-                                   getSettingsY(1),
+                                   getSettingsY(2),
                                    getSettingsWidth(1),
                                    BUTTON_HEIGHT,
                                    translatable("chesttracker.gui.editMemoryBank.filtering.rememberEnderChests"),

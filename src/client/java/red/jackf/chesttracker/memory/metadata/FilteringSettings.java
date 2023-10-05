@@ -23,28 +23,33 @@ public class FilteringSettings {
                 ModCodecs.ofEnum(RememberedContainers.class).optionalFieldOf("rememberedContainers")
                         .forGetter(settings -> Optional.of(settings.rememberedContainers)),
                 Codec.BOOL.optionalFieldOf("rememberEnderChests")
-                        .forGetter(settings -> Optional.of(settings.rememberEnderChests))
-        ).apply(instance, (onlyRememberNamed, rememberedContainers, rememberEnderChests) -> new FilteringSettings(
+                        .forGetter(settings -> Optional.of(settings.rememberEnderChests)),
+                ModCodecs.ofEnum(AutoAddPlacedBlocks.class).optionalFieldOf("autoAddPlacedBlocks")
+                        .forGetter(settings -> Optional.of(settings.autoAddPlacedBlocks))
+        ).apply(instance, (onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks) -> new FilteringSettings(
                 onlyRememberNamed.orElse(def.onlyRememberNamed),
                 rememberedContainers.orElse(def.rememberedContainers),
-                rememberEnderChests.orElse(def.rememberEnderChests)
+                rememberEnderChests.orElse(def.rememberEnderChests),
+                autoAddPlacedBlocks.orElse(def.autoAddPlacedBlocks)
         ));
     });
 
     public boolean onlyRememberNamed = false;
     public RememberedContainers rememberedContainers = RememberedContainers.ALL;
     public boolean rememberEnderChests = true;
+    public AutoAddPlacedBlocks autoAddPlacedBlocks = AutoAddPlacedBlocks.SHULKER_BOXES_ONLY;
 
     protected FilteringSettings() {}
 
-    public FilteringSettings(boolean onlyRememberNamed, RememberedContainers rememberedContainers, boolean rememberEnderChests) {
+    public FilteringSettings(boolean onlyRememberNamed, RememberedContainers rememberedContainers, boolean rememberEnderChests, AutoAddPlacedBlocks autoAddPlacedBlocks) {
         this.onlyRememberNamed = onlyRememberNamed;
         this.rememberedContainers = rememberedContainers;
         this.rememberEnderChests = rememberEnderChests;
+        this.autoAddPlacedBlocks = autoAddPlacedBlocks;
     }
 
     public FilteringSettings copy() {
-        return new FilteringSettings(onlyRememberNamed, rememberedContainers, rememberEnderChests);
+        return new FilteringSettings(onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks);
     }
 
     public enum RememberedContainers {
@@ -69,6 +74,23 @@ public class FilteringSettings {
             return state.getBlock() instanceof AbstractChestBlock
                     || state.is(BlockTags.SHULKER_BOXES)
                     || state.getBlock() instanceof BarrelBlock;
+        }
+    }
+
+    public enum AutoAddPlacedBlocks {
+        YES(state -> true,
+            translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.yes")),
+        SHULKER_BOXES_ONLY(state -> state.is(BlockTags.SHULKER_BOXES),
+                           translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.shulker_boxes_only")),
+        NO(state -> false,
+           translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.no"));
+
+        public final Predicate<BlockState> blockPredicate;
+        public final Component label;
+
+        AutoAddPlacedBlocks(Predicate<BlockState> blockPredicate, Component label) {
+            this.blockPredicate = blockPredicate;
+            this.label = label;
         }
     }
 }
