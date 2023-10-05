@@ -10,7 +10,7 @@ import java.util.Set;
  * <p>Screens can be blacklisted to globally prevent them from being tracked, this prevents edge cases such as interacting
  * with a blocked chest then opening the creative inventory. Any screen classes added to the blacklist will not be tracked,
  * as well as any subclasses.</p>
- * <p>By default, this includes the two inventory screens (survival and creative).</p>
+ * <p>By default, this includes the two inventory screens (survival and creative), and beacon screens.</p>
  */
 public class ScreenBlacklist {
     private static final Set<Class<? extends Screen>> BLACKLIST = new HashSet<>();

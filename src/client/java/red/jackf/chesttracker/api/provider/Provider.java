@@ -78,6 +78,14 @@ public interface Provider {
         return Optional.of(level.dimension().location());
     }
 
+    /**
+     * <p>Register a custom provider to be checked on server connection.</p>
+     *
+     * <p>Providers are checked in an arbitrary order; override {@link #applies(Coordinate)} to make sure yours is
+     * loaded in the correct context.</p>
+     *
+     * @param provider Provider to register.
+     */
     static void register(Provider provider) {
         ProviderHandler.register(provider);
     }

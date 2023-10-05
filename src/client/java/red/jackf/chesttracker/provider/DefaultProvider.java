@@ -2,7 +2,6 @@ package red.jackf.chesttracker.provider;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -46,9 +45,7 @@ public class DefaultProvider implements Provider {
     public Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen) {
         var tracker = InteractionTracker.INSTANCE;
         if (tracker.getPlayerLevel().isPresent() && tracker.getLastBlockSource().isPresent()) {
-            ClientLevel level = tracker.getPlayerLevel().get();
-
-            ResultHolder<MemoryBuilder.Entry> result = DefaultMemoryCreator.EVENT.invoker().get(this, screen, level);
+            ResultHolder<MemoryBuilder.Entry> result = DefaultMemoryCreator.EVENT.invoker().get(this, screen);
             if (result.hasValue()) return Optional.of(result.get());
         }
         return Optional.empty();
@@ -56,7 +53,7 @@ public class DefaultProvider implements Provider {
 
     public static void setup() {
         // regular block tracking
-        DefaultMemoryCreator.EVENT.register(EventPhases.FALLBACK_PHASE, (provider, screen, level) -> {
+        DefaultMemoryCreator.EVENT.register(EventPhases.FALLBACK_PHASE, (provider, screen) -> {
             if (InteractionTracker.INSTANCE.getLastBlockSource().isEmpty()) return ResultHolder.pass();
             ClientBlockSource source = InteractionTracker.INSTANCE.getLastBlockSource().get();
 
@@ -65,7 +62,7 @@ public class DefaultProvider implements Provider {
 
             if (!ProviderUtils.defaultShouldRemember(source)) return ResultHolder.pass();
 
-            List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(level, source.blockState(), source.pos());
+            List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(source.level(), source.blockState(), source.pos());
             BlockPos rootPos = connected.get(0);
 
             List<ItemStack> items = ProviderUtils.getNonPlayerStacksAsList(screen);
@@ -78,7 +75,7 @@ public class DefaultProvider implements Provider {
             );
         });
 
-        DefaultMemoryCreator.EVENT.register(EventPhases.DEFAULT_PHASE, ((provider, screen, level) -> {
+        DefaultMemoryCreator.EVENT.register(EventPhases.DEFAULT_PHASE, (provider, screen) -> {
             if (InteractionTracker.INSTANCE.getLastBlockSource().isEmpty()) return ResultHolder.pass();
             ClientBlockSource source = InteractionTracker.INSTANCE.getLastBlockSource().get();
 
@@ -89,6 +86,6 @@ public class DefaultProvider implements Provider {
             return ResultHolder.value(MemoryBuilder.create(items)
                               .toEntry(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO)
             );
-        }));
+        });
     }
 }
