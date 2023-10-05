@@ -1,4 +1,10 @@
-# Chest Tracker
+# Chest Tracker 1.x
+
+**Chest Tracker 1.x** is for 1.20.1 and earlier, is licensed under the MIT license, and is now
+deprecated in favour of version **2.x**.
+
+## Description
+
 A [Fabric](https://fabricmc.net) mod for remembering items and recalling where on the client.
 
 Original Forge idea by [HenneGamer](https://www.curseforge.com/minecraft/mc-mods/chestcounter).
