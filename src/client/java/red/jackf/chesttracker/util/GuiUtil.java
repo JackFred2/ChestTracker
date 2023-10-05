@@ -23,12 +23,6 @@ public class GuiUtil {
                                  sprite("widgets/" + path + "_highlighted"));
     }
 
-    public static WidgetSprites threeSprite(String path) {
-        return new WidgetSprites(sprite("widgets/" + path),
-                                 sprite("widgets/" + path + "_highlighted"),
-                                 sprite("widgets/" + path + "_disabled"));
-    }
-
     public static ImageButton close(int x, int y, Button.OnPress callback) {
         return new ImageButton(x, y, 12, 12, twoSprite("return/button"), callback);
     }

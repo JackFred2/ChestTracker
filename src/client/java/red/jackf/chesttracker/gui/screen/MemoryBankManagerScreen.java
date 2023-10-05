@@ -99,7 +99,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                             this.top + SEARCH_TOP,
                             BUTTON_SIZE,
                             BUTTON_SIZE,
-                            GuiUtil.threeSprite("new_memory_bank/button"),
+                            GuiUtil.twoSprite("new_memory_bank/button"),
                             b -> openCreateScreen(afterBankLoaded)))
                     .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryManager.newMemoryBank")));
         }
