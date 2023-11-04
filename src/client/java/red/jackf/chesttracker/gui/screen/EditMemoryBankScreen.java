@@ -398,6 +398,8 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                  getSettingsWidth(1),
                                  BUTTON_HEIGHT)
                          .build(), SettingsTab.MANAGE);
+
+        refreshManagementButtons();
     }
 
     private void highlightAll() {
