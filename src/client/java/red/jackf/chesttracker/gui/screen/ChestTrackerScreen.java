@@ -81,7 +81,7 @@ public class ChestTrackerScreen extends Screen {
         // ask for a memory to be loaded if not available
         if (MemoryBank.INSTANCE == null) {
             Minecraft.getInstance()
-                    .setScreen(new MemoryBankManagerScreen(parent, () -> Minecraft.getInstance().setScreen(this)));
+                     .setScreen(new MemoryBankManagerScreen(parent, () -> Minecraft.getInstance().setScreen(this)));
             return;
         }
 
@@ -159,39 +159,39 @@ public class ChestTrackerScreen extends Screen {
 
         // mod settings
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
-                this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                GuiUtil.twoSprite("mod_settings/button"),
-                button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))))
-        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.modSettings")));
+                    this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    BUTTON_SIZE,
+                    BUTTON_SIZE,
+                    GuiUtil.twoSprite("mod_settings/button"),
+                    button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))))
+            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.modSettings")));
 
         // change memory bank
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
-                this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                GuiUtil.twoSprite("change_memory_bank/button"),
-                this::openMemoryManager))
-        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+                    this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    BUTTON_SIZE,
+                    BUTTON_SIZE,
+                    GuiUtil.twoSprite("change_memory_bank/button"),
+                    this::openMemoryManager))
+            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
 
         // memory bank settings
         this.addRenderableWidget(new ImageButton(
-                this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
-                this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                GuiUtil.twoSprite("memory_bank_settings/button"),
-                this::openMemoryBankSettings))
-        .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryBankSettings")));
+                    this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    BUTTON_SIZE,
+                    BUTTON_SIZE,
+                    GuiUtil.twoSprite("memory_bank_settings/button"),
+                    this::openMemoryBankSettings))
+            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryBankSettings")));
 
         // resize
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
-                    GuiConstants.GRID_SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
-                    GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_WIDTH, GuiConstants.MAX_GRID_HEIGHT, (w, h) -> {
+                                                                    GuiConstants.GRID_SLOT_SIZE, config.gui.gridWidth, config.gui.gridHeight,
+                                                                    GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_WIDTH, GuiConstants.MAX_GRID_HEIGHT, (w, h) -> {
                 ChestTracker.LOGGER.debug("Resizing to {}w, {}h", w, h);
                 ChestTrackerConfig.INSTANCE.instance().gui.gridWidth = w;
                 ChestTrackerConfig.INSTANCE.instance().gui.gridHeight = h;
@@ -202,9 +202,13 @@ public class ChestTrackerScreen extends Screen {
         // key buttons
         if (MemoryBank.INSTANCE != null) {
             // fix bad order on first open of screen, kind of hacky
-            MemoryBank.INSTANCE.getKeys().forEach(loc -> MemoryBank.INSTANCE.getMetadata().getVisualSettings().getOrCreateIcon(loc));
+            MemoryBank.INSTANCE.getKeys().forEach(loc -> MemoryBank.INSTANCE.getMetadata().getVisualSettings()
+                                                                            .getOrCreateIcon(loc));
 
-            var todo = MemoryBank.INSTANCE.getKeys().stream().sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata().getVisualSettings().getKeyOrder())).toList();
+            var todo = MemoryBank.INSTANCE.getKeys().stream()
+                                          .sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata()
+                                                                                             .getVisualSettings()
+                                                                                             .getKeyOrder())).toList();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
 
             for (int index = 0; index < todo.size(); index++) {
@@ -213,8 +217,8 @@ public class ChestTrackerScreen extends Screen {
                 // get the relevant icon
                 var icon = MemoryBank.INSTANCE.getMetadata().getVisualSettings().getOrCreateIcon(resloc);
                 var button = this.addRenderableWidget(new ItemButton(icon,
-                        this.left - MEMORY_ICON_OFFSET,
-                        this.top + index * MEMORY_ICON_SPACING, b -> {
+                                                                     this.left - MEMORY_ICON_OFFSET,
+                                                                     this.top + index * MEMORY_ICON_SPACING, b -> {
                     // unhighlight old
                     if (buttons.containsKey(this.currentMemoryKey))
                         buttons.get(this.currentMemoryKey).setHighlighted(false);
@@ -256,16 +260,25 @@ public class ChestTrackerScreen extends Screen {
      */
     private void updateItems() {
         if (MemoryBank.INSTANCE == null) return;
-        var counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey);
+        int maxRange = MemoryBank.INSTANCE.getMetadata().getSearchSettings().itemListRange;
+        Map<LightweightStack, Integer> counts;
+
+        if (Minecraft.getInstance().player != null) {
+            counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey, Minecraft.getInstance().player.getEyePosition(), maxRange);
+        } else {
+            counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey);
+        }
+
         this.items = counts.entrySet().stream()
-                .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue)
-                        .reversed()) // sort highest to lowest
-                .map(e -> { // lightweight stack -> full stacks
-                    var stack = new ItemStack(e.getKey().item());
-                    stack.setTag(e.getKey().tag());
-                    stack.setCount(e.getValue());
-                    return stack;
-                }).collect(Collectors.toList());
+                           .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue)
+                                             .reversed()) // sort highest to lowest
+                           .map(e -> { // lightweight stack -> full stacks
+                               var stack = new ItemStack(e.getKey().item());
+                               stack.setTag(e.getKey().tag());
+                               stack.setCount(e.getValue());
+                               return stack;
+                           }).collect(Collectors.toList());
+
         filter(this.search.getValue());
     }
 

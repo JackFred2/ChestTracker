@@ -69,7 +69,10 @@
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time": "Use Real Time",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time": "Use World Time",
   "chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time": "Use Bank Loaded Time",
+  "chesttracker.gui.editMemoryBank.manage": "Manage",
   "chesttracker.gui.editMemoryBank.search": "Search",
+  "chesttracker.gui.editMemoryBank.search.itemListRange": "Item List Range: %s",
+  "chesttracker.gui.editMemoryBank.search.itemListRange.tooltip": "The maximum distance in blocks that the item list will display memories for.",
   "chesttracker.gui.editMemoryBank.search.searchRange": "Search Range: %s",
 
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",

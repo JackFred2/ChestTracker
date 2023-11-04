@@ -92,7 +92,7 @@ public class MemoryBank {
                 // load named memory cache
                 if (memory.getValue().name() != null)
                     this.namedMemories.computeIfAbsent(entry.getKey(), k -> new HashMap<>())
-                            .put(memory.getKey(), memory.getValue());
+                                      .put(memory.getKey(), memory.getValue());
 
                 // load linked positions
                 addLinked(entry.getKey(), memory.getKey(), memory.getValue());
@@ -173,7 +173,11 @@ public class MemoryBank {
         addLinked(key, pos, memory);
     }
 
-    private static void _addMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos, Memory memory) {
+    private static void _addMemory(
+            Map<ResourceLocation, Map<BlockPos, Memory>> map,
+            ResourceLocation key,
+            BlockPos pos,
+            Memory memory) {
         var keyMemories = map.get(key);
         if (memory.isEmpty() && keyMemories != null && memory.name() == null) {
             keyMemories.remove(pos);
@@ -209,7 +213,10 @@ public class MemoryBank {
         while (linkedPositions.getOrDefault(key, Collections.emptyMap()).values().remove(pos)) ;
     }
 
-    private static void _removeMemory(Map<ResourceLocation, Map<BlockPos, Memory>> map, ResourceLocation key, BlockPos pos) {
+    private static void _removeMemory(
+            Map<ResourceLocation, Map<BlockPos, Memory>> map,
+            ResourceLocation key,
+            BlockPos pos) {
         if (map.containsKey(key)) {
             map.get(key).remove(pos);
             if (map.get(key).isEmpty()) {
@@ -238,9 +245,28 @@ public class MemoryBank {
     public Map<LightweightStack, Integer> getCounts(ResourceLocation key) {
         if (memories.containsKey(key))
             return memories.get(key).values().stream()
-                    .flatMap(data -> data.items().stream())
-                    .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
-                            stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
+                           .flatMap(data -> data.items().stream())
+                           .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
+                                                                                   stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
+        else
+            return Collections.emptyMap();
+    }
+
+    /**
+     * Returns a list of counts of items in a given key at most <code>maxDistance</code> blocks away; used in the main
+     * screen. Not sorted in any particular order.
+     *
+     * @param key Memory Key to count and return
+     * @return Arbitrary order list of all items in a given memory key.
+     */
+    public Map<LightweightStack, Integer> getCounts(ResourceLocation key, Vec3 origin, int maxDistance) {
+        long maxSquare = (long) maxDistance * maxDistance;
+        if (memories.containsKey(key))
+            return memories.get(key).entrySet().stream()
+                           .filter(entry -> entry.getKey().getCenter().distanceToSqr(origin) < maxSquare)
+                           .flatMap(data -> data.getValue().items().stream())
+                           .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
+                                                                                   stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
         else
             return Collections.emptyMap();
     }
@@ -262,14 +288,14 @@ public class MemoryBank {
             for (Map.Entry<BlockPos, Memory> entry : memories.get(key).entrySet()) {
                 if (entry.getKey().distToCenterSqr(startPos) > rangeSquared) continue;
                 var matchedItem = entry.getValue().items().stream().filter(item -> SearchRequest.check(item, request))
-                        .findFirst();
+                                       .findFirst();
                 if (matchedItem.isEmpty()) continue;
                 var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().otherPositions());
                 results.add(SearchResult.builder(entry.getKey())
-                        .item(matchedItem.get())
-                        .name(entry.getValue().name(), offset)
-                        .otherPositions(entry.getValue().otherPositions())
-                        .build());
+                                        .item(matchedItem.get())
+                                        .name(entry.getValue().name(), offset)
+                                        .otherPositions(entry.getValue().otherPositions())
+                                        .build());
             }
             return results;
         } else {

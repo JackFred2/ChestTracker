@@ -19,9 +19,12 @@ public class SearchSettings {
     protected static final Codec<SearchSettings> CODEC = RecordCodecBuilder.create(instance -> {
         final var def = new SearchSettings();
         return instance.group(
+                RANGE_CODEC.optionalFieldOf("itemListRange")
+                           .forGetter(settings -> Optional.of(settings.itemListRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.itemListRange))),
                 RANGE_CODEC.optionalFieldOf("searchRange")
-                        .forGetter(settings -> Optional.of(settings.searchRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.searchRange)))
-        ).apply(instance, (searchRange) -> new SearchSettings(
+                           .forGetter(settings -> Optional.of(settings.searchRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.searchRange)))
+        ).apply(instance, (itemListRange, searchRange) -> new SearchSettings(
+                itemListRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.itemListRange))).orElse(def.itemListRange),
                 searchRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.searchRange))).orElse(def.searchRange)
         ));
     });
@@ -50,16 +53,18 @@ public class SearchSettings {
         return list.stream();
     }
 
+    public int itemListRange = 256;
     public int searchRange = 256;
 
     SearchSettings() {
     }
 
-    public SearchSettings(int searchRange) {
+    public SearchSettings(int itemListRange, int searchRange) {
+        this.itemListRange = itemListRange;
         this.searchRange = searchRange;
     }
 
     public SearchSettings copy() {
-        return new SearchSettings(searchRange);
+        return new SearchSettings(itemListRange, searchRange);
     }
 }

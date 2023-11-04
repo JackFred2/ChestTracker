@@ -23,6 +23,7 @@ import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.I18nUtil;
+import red.jackf.chesttracker.util.Misc;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.*;
@@ -202,8 +203,9 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 CommonComponents.EMPTY,
                 this::setSettingsTab));
         var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
-        selectorOptions.put(SettingsTab.FILTERING, Component.translatable("chesttracker.gui.editMemoryBank.filtering"));
-        selectorOptions.put(SettingsTab.INTEGRITY, Component.translatable("chesttracker.gui.editMemoryBank.integrity"));
+        selectorOptions.put(SettingsTab.FILTERING, translatable("chesttracker.gui.editMemoryBank.filtering"));
+        selectorOptions.put(SettingsTab.INTEGRITY, translatable("chesttracker.gui.editMemoryBank.integrity"));
+        selectorOptions.put(SettingsTab.MANAGE, translatable("chesttracker.gui.editMemoryBank.manage"));
         selectorOptions.put(SettingsTab.SEARCH, translatable("chesttracker.gui.editMemoryBank.search"));
         selectorOptions.put(SettingsTab.EMPTY, CommonComponents.EMPTY);
 
@@ -211,6 +213,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
         setupFilteringSettings();
         setupIntegritySettings();
+        setupManagementSettings();
         setupSearchSettings();
 
         addSetting(new StringWidget(getSettingsX(0),
@@ -336,15 +339,34 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 ), SettingsTab.INTEGRITY);
     }
 
+    private void setupManagementSettings() {
+        addSetting();
+    }
+
     private void setupSearchSettings() {
+        addSetting(Misc.let(new SteppedSlider<>(getSettingsX(0),
+                                                getSettingsY(0),
+                                                getSettingsWidth(2),
+                                                BUTTON_HEIGHT,
+                                                SearchSettings.SEARCH_RANGES,
+                                                this.memoryBank.metadata().getSearchSettings().itemListRange,
+                                       range -> translatable("chesttracker.gui.editMemoryBank.search.itemListRange",
+                                                             I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+
+            @Override
+            protected void applyValue() {
+                EditMemoryBankScreen.this.memoryBank.metadata().getSearchSettings().itemListRange = getSelected();
+            }
+        }, slider -> slider.setTooltip(Tooltip.create(translatable("chesttracker.gui.editMemoryBank.search.itemListRange.tooltip")))), SettingsTab.SEARCH);
+
         addSetting(new SteppedSlider<>(getSettingsX(0),
-               getSettingsY(0),
-               getSettingsWidth(2),
-               BUTTON_HEIGHT,
-               SearchSettings.SEARCH_RANGES,
-               this.memoryBank.metadata().getSearchSettings().searchRange,
-               range -> translatable("chesttracker.gui.editMemoryBank.search.searchRange",
-                                     I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+                                       getSettingsY(1),
+                                       getSettingsWidth(2),
+                                       BUTTON_HEIGHT,
+                                       SearchSettings.SEARCH_RANGES,
+                                       this.memoryBank.metadata().getSearchSettings().searchRange,
+                                       range -> translatable("chesttracker.gui.editMemoryBank.search.searchRange",
+                                                             I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
             @Override
             protected void applyValue() {
                 EditMemoryBankScreen.this.memoryBank.metadata().getSearchSettings().searchRange = getSelected();
@@ -449,6 +471,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     private enum SettingsTab {
         FILTERING,
         INTEGRITY,
+        MANAGE,
         SEARCH,
         EMPTY
     }
