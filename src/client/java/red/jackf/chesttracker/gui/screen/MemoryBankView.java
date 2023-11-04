@@ -1,6 +1,9 @@
 package red.jackf.chesttracker.gui.screen;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
@@ -8,6 +11,7 @@ import red.jackf.chesttracker.storage.Storage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * View of a memory bank for management purposes
@@ -19,7 +23,12 @@ public interface MemoryBankView {
 
     List<ResourceLocation> keys();
 
+    @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey);
+
     void removeKey(ResourceLocation id);
+
+    void remove(ResourceLocation id, BlockPos pos);
+
     void save();
 
     static MemoryBankView of(MemoryBank bank) {
@@ -43,9 +52,19 @@ public interface MemoryBankView {
             }
 
             @Override
+            public @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey) {
+                return bank.getMemories(memoryKey);
+            }
+
+            @Override
             public void removeKey(ResourceLocation id) {
                 toRemove.add(id);
                 copy.getVisualSettings().removeIcon(id);
+            }
+
+            @Override
+            public void remove(ResourceLocation id, BlockPos pos) {
+                bank.removeMemory(id, pos);
             }
 
             public void save() {
@@ -75,7 +94,15 @@ public interface MemoryBankView {
             }
 
             @Override
+            public @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey) {
+                return null;
+            }
+
+            @Override
             public void removeKey(ResourceLocation id) {}
+
+            @Override
+            public void remove(ResourceLocation id, BlockPos pos) {}
 
             public void save() {}
         };

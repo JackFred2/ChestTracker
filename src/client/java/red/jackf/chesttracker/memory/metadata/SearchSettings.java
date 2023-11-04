@@ -9,10 +9,12 @@ import red.jackf.chesttracker.util.ModCodecs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SearchSettings {
-    public static final List<Integer> SEARCH_RANGES = makeSearchRanges();
+    public static final List<Integer> SEARCH_RANGES = makeSearchRanges(true);
+    public static final List<Integer> SEARCH_RANGES_NO_INFINITE = makeSearchRanges(false);
 
     private static final Codec<Either<Integer, String>> RANGE_CODEC = Codec.either(ModCodecs.oneOf(Codec.INT, SEARCH_RANGES), ModCodecs.singular(Codec.STRING, "infinite"));
 
@@ -34,8 +36,8 @@ public class SearchSettings {
         return either.right().orElseThrow();
     }
 
-    private static List<Integer> makeSearchRanges() {
-        return Streams.concat(
+    private static List<Integer> makeSearchRanges(boolean withInfinite) {
+        var list = Streams.concat(
                 range(4, 16, 1),
                 range(16, 32, 2),
                 range(32, 64, 4),
@@ -43,8 +45,10 @@ public class SearchSettings {
                 range(128, 256, 16),
                 range(256, 512, 32),
                 range(512, 1024, 64),
-                Stream.of(1024, Integer.MAX_VALUE)
-        ).toList();
+                Stream.of(1024)
+        ).collect(Collectors.toList());
+        if (withInfinite) list.add(Integer.MAX_VALUE);
+        return list;
     }
 
     private static Stream<Integer> range(int from, int to, int step) {
