@@ -29,6 +29,9 @@ import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.I18nUtil;
 import red.jackf.chesttracker.util.Misc;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
+import red.jackf.whereisit.api.SearchResult;
+import red.jackf.whereisit.client.WhereIsItClient;
+import red.jackf.whereisit.client.render.Rendering;
 
 import java.util.*;
 
@@ -215,7 +218,8 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
         selectorOptions.put(SettingsTab.FILTERING, translatable("chesttracker.gui.editMemoryBank.filtering"));
         selectorOptions.put(SettingsTab.INTEGRITY, translatable("chesttracker.gui.editMemoryBank.integrity"));
-        if (isCurrentLoaded) selectorOptions.put(SettingsTab.MANAGE, translatable("chesttracker.gui.editMemoryBank.manage"));
+        if (isCurrentLoaded)
+            selectorOptions.put(SettingsTab.MANAGE, translatable("chesttracker.gui.editMemoryBank.manage"));
         selectorOptions.put(SettingsTab.SEARCH, translatable("chesttracker.gui.editMemoryBank.search"));
         selectorOptions.put(SettingsTab.EMPTY, CommonComponents.EMPTY);
 
@@ -363,11 +367,11 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
     private void setupManagementSettings() {
         pruneWithinRange = Button.builder(CommonComponents.EMPTY, b -> pruneWithinRange())
-                                           .bounds(getSettingsX(0), getSettingsY(1), getSettingsWidth(2), BUTTON_HEIGHT)
-                                           .build();
+                                 .bounds(getSettingsX(0), getSettingsY(1), getSettingsWidth(2), BUTTON_HEIGHT)
+                                 .build();
         pruneOutsideRange = Button.builder(CommonComponents.EMPTY, b -> pruneOutsideRange())
-                                           .bounds(getSettingsX(0), getSettingsY(2), getSettingsWidth(2), BUTTON_HEIGHT)
-                                           .build();
+                                  .bounds(getSettingsX(0), getSettingsY(2), getSettingsWidth(2), BUTTON_HEIGHT)
+                                  .build();
 
         addSetting(pruneWithinRange, SettingsTab.MANAGE);
         addSetting(pruneOutsideRange, SettingsTab.MANAGE);
@@ -387,16 +391,42 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 refreshManagementButtons();
             }
         }, SettingsTab.MANAGE);
+
+        addSetting(Button.builder(translatable("chesttracker.gui.editMemoryBank.manage.highlightAll"), b -> highlightAll())
+                         .bounds(getSettingsX(0),
+                                 getSettingsY(3),
+                                 getSettingsWidth(1),
+                                 BUTTON_HEIGHT)
+                         .build(), SettingsTab.MANAGE);
+    }
+
+    private void highlightAll() {
+        var currentKey = ProviderHandler.getCurrentKey();
+        if (currentKey == null) return;
+        var currentMemories = memoryBank.getMemories(currentKey);
+        if (currentMemories == null) return;
+
+        // TODO make this not an internal hack
+        WhereIsItClient.closedScreenThisSearch = false;
+        Rendering.resetSearchTime();
+        WhereIsItClient.recieveResults(currentMemories.entrySet().stream()
+                                                      .map(e -> SearchResult.builder(e.getKey())
+                                                                            .name(e.getValue().name(), null)
+                                                                            .otherPositions(e.getValue().otherPositions())
+                                                                            .build())
+                                                      .toList());
     }
 
     private void refreshManagementButtons() {
         Pair<Set<BlockPos>, Set<BlockPos>> counts = partitionMemoriesInCurrentKey();
 
         if (pruneWithinRange != null) {
-            pruneWithinRange.setMessage(translatable("chesttracker.gui.editMemoryBank.manage.deleteWithinRange", manageWorkingRange, counts.getFirst().size()));
+            pruneWithinRange.setMessage(translatable("chesttracker.gui.editMemoryBank.manage.deleteWithinRange", manageWorkingRange, counts.getFirst()
+                                                                                                                                           .size()));
         }
         if (pruneOutsideRange != null) {
-            pruneOutsideRange.setMessage(translatable("chesttracker.gui.editMemoryBank.manage.deleteOutsideRange", manageWorkingRange, counts.getSecond().size()));
+            pruneOutsideRange.setMessage(translatable("chesttracker.gui.editMemoryBank.manage.deleteOutsideRange", manageWorkingRange, counts.getSecond()
+                                                                                                                                             .size()));
         }
     }
 

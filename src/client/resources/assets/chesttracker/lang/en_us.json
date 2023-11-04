@@ -73,6 +73,7 @@
   "chesttracker.gui.editMemoryBank.manage.workingRange": "Range: %s",
   "chesttracker.gui.editMemoryBank.manage.deleteWithinRange": "Delete all memories within %s blocks (%s)",
   "chesttracker.gui.editMemoryBank.manage.deleteOutsideRange": "Delete all memories outside %s blocks (%s)",
+  "chesttracker.gui.editMemoryBank.manage.highlightAll": "Highlight All",
   "chesttracker.gui.editMemoryBank.search": "Search",
   "chesttracker.gui.editMemoryBank.search.itemListRange": "Item List Range: %s",
   "chesttracker.gui.editMemoryBank.search.itemListRange.tooltip": "The maximum distance in blocks that the item list will display memories for.",
