@@ -197,6 +197,16 @@ public class ChestTrackerConfigScreenBuilder {
                                         () -> instance.instance().gui.hideMemoryIds,
                                         b -> instance.instance().gui.hideMemoryIds = b)
                                 .build())
+                .option(Option.<Integer>createBuilder()
+                                .name(translatable("chesttracker.config.gui.itemListTextScale"))
+                                .description(OptionDescription.of(translatable("chesttracker.config.gui.itemListTextScale.description")))
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                        .range(-6, 0)
+                                        .step(1))
+                                .binding(instance.defaults().gui.itemListTextScale,
+                                         () -> instance.instance().gui.itemListTextScale,
+                                         i -> instance.instance().gui.itemListTextScale = i)
+                                .build())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui.widget;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,9 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
@@ -67,7 +69,7 @@ public class ItemListWidget extends AbstractWidget {
         var items = getOffsetItems();
         int x = (int) ((mouseX - getX()) / GuiConstants.GRID_SLOT_SIZE);
         int y = (int) ((mouseY - getY()) / GuiConstants.GRID_SLOT_SIZE);
-        var index = (y * gridWidth) + x;
+        int index = (y * gridWidth) + x;
         if (index >= items.size()) return;
         var request = new SearchRequest();
         SearchRequestPopulator.addItemStack(request, items.get(index), SearchRequestPopulator.Context.FAVOURITE);
@@ -83,13 +85,36 @@ public class ItemListWidget extends AbstractWidget {
         graphics.pose().popPose();
     }
 
+    private static Pair<Integer, Integer> getScales() {
+        int currentScale = Minecraft.getInstance().getWindow().calculateScale(
+                Minecraft.getInstance().options.guiScale().get(),
+                Minecraft.getInstance().isEnforceUnicode()
+        );
+        int textScale = Math.max(1, currentScale + ChestTrackerConfig.INSTANCE.instance().gui.itemListTextScale);
+
+        return Pair.of(textScale, currentScale);
+    }
+
     private void renderItemDecorations(GuiGraphics graphics) {
         var items = getOffsetItems();
         for (int i = 0; i < items.size(); i++) {
-            var item = items.get(i);
-            var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
-            var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);
-            graphics.renderItemDecorations(Minecraft.getInstance().font, item, x + 1, y + 1, StringUtil.magnitude(item.getCount(), 0)); // Counts
+            graphics.pose().pushPose();
+            int bottomRightX = this.getX() + GuiConstants.GRID_SLOT_SIZE * ((i % gridWidth) + 1);
+            int bottomRightY = this.getY() + GuiConstants.GRID_SLOT_SIZE * ((i / gridWidth) + 1);
+            graphics.pose().translate(bottomRightX - 1, bottomRightY - 1, 0);
+
+            Pair<Integer, Integer> scales = getScales();
+            int textScale = scales.getFirst();
+            int guiScale = scales.getSecond();
+            float scaleFactor = (float) textScale / guiScale;
+
+            graphics.pose().scale(scaleFactor, scaleFactor, 1f);
+
+            ItemStack item = items.get(i);
+            int offset = -GuiConstants.GRID_SLOT_SIZE + 2;
+            String text = StringUtil.magnitude(item.getCount(), 0);
+            graphics.renderItemDecorations(Minecraft.getInstance().font, item, offset, offset, text); // Counts
+            graphics.pose().popPose();
         }
     }
 

@@ -101,6 +101,8 @@
   "chesttracker.config.gui.gridSizeSlider": "%d slots",
   "chesttracker.config.gui.hideMemoryBankIds": "Hide Memory Bank IDs",
   "chesttracker.config.gui.hideMemoryBankIds.description": "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.",
+  "chesttracker.config.gui.itemListTextScale": "GUI Text Relative Scale",
+  "chesttracker.config.gui.itemListTextScale.description": "What GUI scale to render text in the item list at. Useful if your item counts stretch into other slots.",
   "chesttracker.config.dev": "Developer Utils",
   "chesttracker.config.dev.showDevHud": "Show Developer Hud",
   "chesttracker.config.dev.showDevHud.description": "Show Developer Hud",

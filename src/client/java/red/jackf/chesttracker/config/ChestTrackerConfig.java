@@ -72,6 +72,9 @@ public class ChestTrackerConfig {
 
         @SerialEntry(comment = "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.")
         public boolean hideMemoryIds = false;
+
+        @SerialEntry(comment = "How to scale the text in-GUI, relative to Minecraft's GUI scale? Minimum of 1.")
+        public int itemListTextScale = 0;
     }
 
     public static class Rendering {
@@ -102,6 +105,7 @@ public class ChestTrackerConfig {
     public void validate() {
         this.gui.gridWidth = Mth.clamp(this.gui.gridWidth, GuiConstants.MIN_GRID_COLUMNS, GuiConstants.MAX_GRID_WIDTH);
         this.gui.gridHeight = Mth.clamp(this.gui.gridHeight, GuiConstants.MIN_GRID_ROWS, GuiConstants.MAX_GRID_HEIGHT);
+        this.gui.itemListTextScale = Mth.clamp(this.gui.itemListTextScale, -6, 0);
         this.rendering.nameRange = Mth.clamp(this.rendering.nameRange, 4, 24);
         if (this.storage.storageBackend == null) this.storage.storageBackend = Type.NBT;
     }
