@@ -301,7 +301,7 @@ if (lastTagVal != null && newTagVal != null) {
 							slug.set(it)
 						}
 					}
-					listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit").forEach {
+					listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
 						optional {
 							slug.set(it)
 						}
@@ -327,7 +327,7 @@ if (lastTagVal != null && newTagVal != null) {
 							slug.set(it)
 						}
 					}
-					listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit").forEach {
+					listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
 						optional {
 							slug.set(it)
 						}
