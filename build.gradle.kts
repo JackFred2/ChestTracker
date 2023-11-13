@@ -153,6 +153,12 @@ loom {
 	accessWidenerPath.set(file("src/client/resources/chesttracker.accesswidener"))
 }
 
+// require for local compile + running, but not for dependencies of this project
+fun DependencyHandlerScope.modCompileLocalRuntime(any: String, configure: ExternalModuleDependency.() -> Unit = {}) {
+	modCompileOnly(any, configure)
+	modLocalRuntime(any, configure)
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
@@ -163,8 +169,6 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
-	modImplementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
-
 	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
@@ -187,14 +191,23 @@ dependencies {
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 
-	// mod compat
-	modImplementation("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	////////////////
+	// MOD COMPAT //
+	////////////////
 
+	// Mod Menu
+	modCompileLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+
+	// Shulker Box Tooltip
+	modCompileLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+
+	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
 
 	modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
 	modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
 
+	// Jade
 	// modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
 	// modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
