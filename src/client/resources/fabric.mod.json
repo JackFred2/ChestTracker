@@ -27,6 +27,9 @@
     ],
     "shulkerboxtooltip": [
       "red.jackf.chesttracker.compat.mods.shulkerboxtooltip.ChestTrackerShulkerBoxTooltip"
+    ],
+    "jade": [
+      "red.jackf.chesttracker.compat.mods.jade.ChestTrackerJadePlugin"
     ]
   },
   "mixins": [
@@ -47,6 +50,7 @@
   "suggests": {
     "modmenu": "*",
     "shulkerboxtooltip": "*",
-    "wthit": "*"
+    "wthit": "*",
+    "jade": "*"
   }
 }

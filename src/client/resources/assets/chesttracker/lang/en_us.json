@@ -1,8 +1,11 @@
 {
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
   "chesttracker.title": "Chest Tracker",
+  "chesttracker.compatibility.brand": "Client-side preview via ",
 
-  "chesttracker.compatibility.shulkerboxtooltip.tooltip": "Client-side preview via ",
+  "config.jade.plugin_chesttracker.memory_preview": "Chest Tracker Memories",
+  "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
+
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Show Chest Tracker's icon",
   "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Show a highlight's position and memory key",

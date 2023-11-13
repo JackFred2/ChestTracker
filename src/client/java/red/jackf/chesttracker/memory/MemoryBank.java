@@ -2,22 +2,28 @@ package red.jackf.chesttracker.memory;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.memory.metadata.Metadata;
+import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
+import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
+import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.time.Instant;
 import java.util.*;
@@ -308,5 +314,38 @@ public class MemoryBank {
      */
     public Set<ResourceLocation> getKeys() {
         return memories.keySet();
+    }
+
+    /**
+     * Utility method for getting the current Memory at a given position; based on the current Level.
+     *
+     * @return Memory at the given position and current level, or null if non-existent.
+     */
+    @Nullable
+    public static Memory getMemoryAt(Level level, BlockPos targetPos) {
+        if (ProviderHandler.INSTANCE == null) return null;
+        if (MemoryBank.INSTANCE == null) return null;
+        if (!(level instanceof ClientLevel clientLevel)) return null;
+
+        BlockState state = clientLevel.getBlockState(targetPos);
+        var blockSource = new CachedClientBlockSource(clientLevel, targetPos, state);
+
+        var override = ProviderHandler.INSTANCE.getKeyOverride(blockSource);
+
+        ResourceLocation key;
+        BlockPos pos;
+        if (override.isPresent()) {
+            key = override.get().getFirst();
+            pos = override.get().getSecond();
+        } else {
+            key = ProviderHandler.getCurrentKey();
+            pos = ConnectedBlocksGrabber.getConnected(clientLevel, state, targetPos).get(0);
+        }
+
+        if (key == null || pos == null) return null;
+
+        var memoryKeys = MemoryBank.INSTANCE.getMemories(key);
+        if (memoryKeys == null) return null;
+        return memoryKeys.get(pos);
     }
 }

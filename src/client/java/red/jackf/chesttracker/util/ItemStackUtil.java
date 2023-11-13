@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ItemStackUtil {
+    /**
+     * Combine and sort a list of ItemStacks in descending order of count
+     */
     public static List<ItemStack> flattenStacks(List<ItemStack> in) {
         var counts = new HashMap<LightweightStack, Integer>();
         for (ItemStack itemStack : in) {

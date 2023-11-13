@@ -3,10 +3,8 @@ package red.jackf.chesttracker.compat.mods.wthit;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
-import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import red.jackf.chesttracker.ChestTracker;
 
 public class ChestTrackerWTHITPlugin implements IWailaPlugin {
@@ -18,18 +16,19 @@ public class ChestTrackerWTHITPlugin implements IWailaPlugin {
 
     @Override
     public void register(IRegistrar registrar) {
-        possiblyFixWTHITTransferAPICauldronFluidRaceCondition();
-        registrar.addComponent(ClientContentsPreview.INSTANCE, TooltipPosition.BODY, Block.class, PRIORITY);
+        //possiblyFixWTHITTransferAPICauldronFluidRaceCondition();
+        registrar.addComponent(WTHITClientContentsPreview.INSTANCE, TooltipPosition.BODY, Block.class, PRIORITY);
 
         registrar.addConfig(CONFIG_SHOW_ICON, true);
         registrar.addConfig(CONFIG_SHOW_KEY_AND_LOCATION, false);
     }
 
+    /*
     private static void possiblyFixWTHITTransferAPICauldronFluidRaceCondition() {
         try {
             // call <clinit> before world load
             // noinspection UnstableApiUsage
             CauldronFluidContent.getForBlock(Blocks.AIR);
         } catch (Throwable ignored) {}
-    }
+    }*/
 }

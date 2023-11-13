@@ -208,8 +208,7 @@ dependencies {
 	modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
 
 	// Jade
-	// modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
-	// modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
+	modCompileLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {
