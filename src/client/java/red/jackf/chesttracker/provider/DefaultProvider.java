@@ -44,7 +44,7 @@ public class DefaultProvider implements Provider {
     @Override
     public Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen) {
         var tracker = InteractionTracker.INSTANCE;
-        if (tracker.getPlayerLevel().isPresent() && tracker.getLastBlockSource().isPresent()) {
+        if (tracker.getPlayerLevel().isPresent()) {
             ResultHolder<MemoryBuilder.Entry> result = DefaultMemoryCreator.EVENT.invoker().get(this, screen);
             if (result.hasValue()) return Optional.of(result.get());
         }
