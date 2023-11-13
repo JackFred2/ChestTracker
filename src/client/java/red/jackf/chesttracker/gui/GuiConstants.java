@@ -1,14 +1,9 @@
 package red.jackf.chesttracker.gui;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.jackfredlib.api.base.Memoizer;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,13 +29,6 @@ public interface GuiConstants {
 
     // Icon Buttons
     ItemStack UNKNOWN_ICON = new ItemStack(Items.CRAFTING_TABLE);
-    List<MemoryKeyIcon> DEFAULT_ICONS = Memoizer.of(() -> List.of(
-            new MemoryKeyIcon(MemoryBank.ENDER_CHEST_KEY, new ItemStack(Items.ENDER_CHEST)),
-            new MemoryKeyIcon(Level.OVERWORLD.location(), new ItemStack(Items.GRASS_BLOCK)),
-            new MemoryKeyIcon(new ResourceLocation("the_bumblezone", "the_bumblezone"), new ItemStack(Items.BEE_NEST)),
-            new MemoryKeyIcon(Level.NETHER.location(), new ItemStack(Items.NETHERRACK)),
-            new MemoryKeyIcon(Level.END.location(), new ItemStack(Items.END_STONE))
-    )).get();
 
     Map<Item, ItemStack> DEFAULT_ICON_ORDER = makeItemListOrder();
 

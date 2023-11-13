@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProviderHandler {
+    public static final Provider DEFAULT = new DefaultProvider();
     public static @Nullable Provider INSTANCE = null;
 
     private static final List<Provider> PROVIDERS = new ArrayList<>();
-    public static final Provider DEFAULT = new DefaultProvider();
 
     public static @Nullable ResourceLocation getCurrentKey() {
         return INSTANCE != null ? INSTANCE.getPlayersCurrentKey().orElse(null) : null;

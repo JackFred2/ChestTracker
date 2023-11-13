@@ -34,6 +34,7 @@ import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
+import red.jackf.chesttracker.provider.DefaultIcons;
 import red.jackf.chesttracker.provider.DefaultProvider;
 import red.jackf.chesttracker.provider.InteractionTrackerImpl;
 import red.jackf.chesttracker.provider.ProviderHandler;
@@ -190,6 +191,7 @@ public class ChestTracker implements ClientModInitializer {
         DeveloperOverlay.setup();
         GuiApiDefaults.setup();
         DefaultProvider.setup();
+        DefaultIcons.setup();
         ShareEnderChestIntegration.setup();
 
         ConnectionSettings.load();

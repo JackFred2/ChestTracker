@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
-import red.jackf.chesttracker.gui.GuiConstants;
+import red.jackf.chesttracker.api.provider.def.DefaultProviderHelper;
 import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
@@ -61,8 +61,8 @@ public interface Provider {
      *
      * @return A list of default icons for memory keys.
      */
-    default List<MemoryKeyIcon> getDefaultIcons() {
-        return GuiConstants.DEFAULT_ICONS;
+   default List<MemoryKeyIcon> getDefaultIcons() {
+        return DefaultProviderHelper.getDefaultIcons();
     }
 
     /**
