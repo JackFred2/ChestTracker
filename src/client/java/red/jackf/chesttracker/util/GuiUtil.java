@@ -24,6 +24,6 @@ public class GuiUtil {
     }
 
     public static ImageButton close(int x, int y, Button.OnPress callback) {
-        return new ImageButton(x, y, 12, 12, twoSprite("return/button"), callback);
+        return new ImageButton(x, y, 12, 12, twoSprite("close/button"), callback);
     }
 }

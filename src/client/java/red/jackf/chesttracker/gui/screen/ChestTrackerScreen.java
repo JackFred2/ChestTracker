@@ -35,6 +35,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static net.minecraft.network.chat.Component.translatable;
+
 /**
  * The main screen
  */
@@ -157,9 +159,16 @@ public class ChestTrackerScreen extends Screen {
         if (shouldFocusSearch)
             this.setInitialFocus(search);
 
+        // close
+        this.addRenderableWidget(GuiUtil.close(
+                    this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    button -> this.onClose()))
+            .setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
+
         // mod settings
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
@@ -169,7 +178,7 @@ public class ChestTrackerScreen extends Screen {
 
         // change memory bank
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
@@ -179,7 +188,7 @@ public class ChestTrackerScreen extends Screen {
 
         // memory bank settings
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE),
+                    this.left + this.menuWidth - 4 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
