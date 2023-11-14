@@ -3,7 +3,7 @@
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via ",
 
-  "config.jade.plugin_chesttracker.memory_preview": "Chest Tracker Memories",
+  "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
   "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
 
   "config.waila.plugin_chesttracker": "Chest Tracker",
