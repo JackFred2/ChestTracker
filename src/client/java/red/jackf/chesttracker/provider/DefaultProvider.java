@@ -37,7 +37,8 @@ public class DefaultProvider implements Provider {
 
     @Override
     public Optional<Pair<ResourceLocation, BlockPos>> getKeyOverride(ClientBlockSource source) {
-        if (source.blockState().is(Blocks.ENDER_CHEST)) return Optional.of(Pair.of(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
+        if (source.blockState().is(Blocks.ENDER_CHEST))
+            return Optional.of(Pair.of(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO));
         return Optional.empty();
     }
 
@@ -69,9 +70,12 @@ public class DefaultProvider implements Provider {
 
             // get connected, minus the original pos
             return ResultHolder.value(MemoryBuilder.create(items)
-                            .withCustomName(GetCustomName.EVENT.invoker().getName(source, screen).getNullable())
-                            .otherPositions(connected.stream().filter(pos -> !pos.equals(rootPos)).toList())
-                            .toEntry(currentKey, rootPos)
+                                                   .withCustomName(GetCustomName.EVENT.invoker().getName(source, screen).getNullable())
+                                                   .inContainer(source.blockState().getBlock())
+                                                   .otherPositions(connected.stream()
+                                                                            .filter(pos -> !pos.equals(rootPos))
+                                                                            .toList())
+                                                   .toEntry(currentKey, rootPos)
             );
         });
 
@@ -84,7 +88,8 @@ public class DefaultProvider implements Provider {
             List<ItemStack> items = ProviderUtils.getNonPlayerStacksAsList(screen);
 
             return ResultHolder.value(MemoryBuilder.create(items)
-                              .toEntry(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO)
+                                                   .inContainer(Blocks.ENDER_CHEST)
+                                                   .toEntry(MemoryBank.ENDER_CHEST_KEY, BlockPos.ZERO)
             );
         });
     }

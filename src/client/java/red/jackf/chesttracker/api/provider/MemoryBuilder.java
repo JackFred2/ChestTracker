@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.memory.Memory;
@@ -35,6 +36,14 @@ public interface MemoryBuilder {
      * @return This MemoryBuilder.
      */
     MemoryBuilder withCustomName(@Nullable Component name);
+
+    /**
+     * Designates that this memory was made in the given container block.
+     *
+     * @param container Block that this memory is located in
+     * @return This MemoryBuilder
+     */
+    MemoryBuilder inContainer(Block container);
 
     /**
      * Adds a set of other positions to be highlighted when the Memory is highlighted (think double chests).

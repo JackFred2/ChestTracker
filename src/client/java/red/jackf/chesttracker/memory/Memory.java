@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.ModCodecs;
 
@@ -27,6 +29,8 @@ public final class Memory {
                                     .forGetter(m -> Optional.ofNullable(m.name)),
                             ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
                                     .forGetter(Memory::otherPositions),
+                            BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("container")
+                                                   .forGetter(Memory::container),
                             Codec.LONG.optionalFieldOf("loadedTimestamp", MemoryIntegrity.UNKNOWN_LOADED_TIMESTAMP)
                                     .forGetter(Memory::loadedTimestamp),
                             Codec.LONG.optionalFieldOf("worldTimestamp", MemoryIntegrity.UNKNOWN_WORLD_TIMESTAMP)
@@ -34,10 +38,11 @@ public final class Memory {
                             ExtraCodecs.INSTANT_ISO8601.optionalFieldOf("realTimestamp", MemoryIntegrity.UNKNOWN_REAL_TIMESTAMP)
                                     .forGetter(Memory::realTimestamp)
                     )
-                    .apply(instance, (items, name, otherPositions, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(
+                    .apply(instance, (items, name, otherPositions, container, loadedTimestamp, worldTimestamp, realTimestamp) -> new Memory(
                             items,
                             name.orElse(null),
                             otherPositions,
+                            container,
                             loadedTimestamp,
                             worldTimestamp,
                             realTimestamp
@@ -50,11 +55,13 @@ public final class Memory {
     private final Long loadedTimestamp;
     private final Long inGameTimestamp;
     private final Instant realTimestamp;
+    private final Optional<Block> container;
 
     public Memory(
             List<ItemStack> items,
             @Nullable Component name,
             List<BlockPos> otherPositions,
+            Optional<Block> container,
             long loadedTimestamp,
             long inGameTimestamp,
             Instant realTimestamp) {
@@ -64,6 +71,7 @@ public final class Memory {
         this.loadedTimestamp = loadedTimestamp;
         this.inGameTimestamp = inGameTimestamp;
         this.realTimestamp = realTimestamp;
+        this.container = container;
     }
 
     public boolean isEmpty() {
@@ -92,5 +100,9 @@ public final class Memory {
 
     public Instant realTimestamp() {
         return realTimestamp;
+    }
+
+    public Optional<Block> container() {
+        return container;
     }
 }

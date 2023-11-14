@@ -177,6 +177,7 @@ public class ChestTracker implements ClientModInitializer {
                 var entry = MemoryBuilder.create(items == null ? Collections.emptyList() : items)
                         .withCustomName(name)
                         .otherPositions(connected.stream().filter(pos2 -> !pos2.equals(rootPos)).toList())
+                        .inContainer(state.getBlock())
                         .toEntry(key, rootPos );
 
                 MemoryBank.INSTANCE.addMemory(entry);
