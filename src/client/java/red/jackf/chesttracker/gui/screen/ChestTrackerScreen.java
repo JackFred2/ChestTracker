@@ -166,14 +166,14 @@ public class ChestTrackerScreen extends Screen {
 
         // close
         this.addRenderableWidget(GuiUtil.close(
-                    this.left + this.menuWidth - (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                    this.left + this.menuWidth - (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     button -> this.onClose()))
             .setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
 
         // mod settings
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - 2 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                    this.left + this.menuWidth - 2 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
@@ -183,7 +183,7 @@ public class ChestTrackerScreen extends Screen {
 
         // change memory bank
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - 3 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                    this.left + this.menuWidth - 3 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
@@ -193,7 +193,7 @@ public class ChestTrackerScreen extends Screen {
 
         // memory bank settings
         this.addRenderableWidget(new ImageButton(
-                    this.left + this.menuWidth - 4 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                    this.left + this.menuWidth - 4 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
@@ -203,13 +203,13 @@ public class ChestTrackerScreen extends Screen {
 
         // filtering
         this.addRenderableWidget(new ChangeableImageButton(
-                this.left + this.menuWidth - 5 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
-                this.top + GuiConstants.SMALL_MARGIN,
-                BUTTON_SIZE,
-                BUTTON_SIZE,
-                containerFilter.sprites,
-                CommonComponents.EMPTY,
-                this::cycleContainerFilter))
+                    this.left + this.menuWidth - 5 * (3 + BUTTON_SIZE),
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    BUTTON_SIZE,
+                    BUTTON_SIZE,
+                    containerFilter.sprites,
+                    CommonComponents.EMPTY,
+                    this::cycleContainerFilter))
             .setTooltip(this.getContainerFilterTooltip());
 
         // resize
@@ -450,8 +450,8 @@ public class ChestTrackerScreen extends Screen {
                 memory -> memory.getValue().container().map(b -> b instanceof HopperBlock).orElse(false),
                 translatable("chesttracker.gui.container_filter.hoppers")),
         FURNACES(GuiUtil.twoSprite("item_filter/furnaces"),
-                memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false),
-                translatable("chesttracker.gui.container_filter.furnaces"));
+                 memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false),
+                 translatable("chesttracker.gui.container_filter.furnaces"));
 
         public final WidgetSprites sprites;
         public final Component tooltip;
