@@ -58,6 +58,7 @@ public class ChestTrackerScreen extends Screen {
     private static final int SMALL_MENU_HEIGHT = 156;
 
     private static ContainerFilter containerFilter = ContainerFilter.ALL;
+    private static ItemSort itemSort = ItemSort.COUNT_DESCENDING;
 
     private int left = 0;
     private int top = 0;
@@ -212,6 +213,17 @@ public class ChestTrackerScreen extends Screen {
                     this::cycleContainerFilter))
             .setTooltip(this.getContainerFilterTooltip());
 
+        // item sort
+        this.addRenderableWidget(new ChangeableImageButton(
+                    this.left + this.menuWidth - 6 * (3 + BUTTON_SIZE),
+                    this.top + GuiConstants.SMALL_MARGIN,
+                    BUTTON_SIZE,
+                    BUTTON_SIZE,
+                    itemSort.sprites,
+                    CommonComponents.EMPTY,
+                    this::cycleItemSort))
+            .setTooltip(this.getItemSortTooltip());
+
         // resize
         if (config.gui.showResizeWidget)
             this.resize = this.addRenderableWidget(new ResizeWidget(left + menuWidth - 10, top + menuHeight - 10, left, top,
@@ -275,6 +287,17 @@ public class ChestTrackerScreen extends Screen {
         }
     }
 
+    private void cycleItemSort(ChangeableImageButton button) {
+        itemSort = Enums.next(itemSort);
+        button.setTooltip(getItemSortTooltip());
+        button.setSprites(itemSort.sprites);
+        updateItems();
+    }
+
+    private Tooltip getItemSortTooltip() {
+        return Tooltip.create(translatable("chesttracker.gui.item_sort", itemSort.tooltip));
+    }
+
     private Tooltip getContainerFilterTooltip() {
         return Tooltip.create(translatable("chesttracker.gui.container_filter", containerFilter.tooltip));
     }
@@ -311,8 +334,7 @@ public class ChestTrackerScreen extends Screen {
         counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate);
 
         this.items = counts.entrySet().stream()
-                           .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue)
-                                             .reversed()) // sort highest to lowest
+                           .sorted(itemSort.sort)
                            .map(e -> { // lightweight stack -> full stacks
                                var stack = new ItemStack(e.getKey().item());
                                stack.setTag(e.getKey().tag());
@@ -434,33 +456,58 @@ public class ChestTrackerScreen extends Screen {
     }
 
     public enum ContainerFilter {
-        ALL(GuiUtil.twoSprite("item_filter/all"),
-            memory -> true,
-            translatable("chesttracker.gui.container_filter.all")),
-        CHESTS(GuiUtil.twoSprite("item_filter/chests"),
-               memory -> memory.getValue().container().map(b -> b instanceof AbstractChestBlock<?>).orElse(false),
-               translatable("chesttracker.gui.container_filter.chests")),
-        BARRELS(GuiUtil.twoSprite("item_filter/barrels"),
-                memory -> memory.getValue().container().map(b -> b instanceof BarrelBlock).orElse(false),
-                translatable("chesttracker.gui.container_filter.barrels")),
-        SHULKER_BOXES(GuiUtil.twoSprite("item_filter/shulker_boxes"),
-                      memory -> memory.getValue().container().map(b -> b instanceof ShulkerBoxBlock).orElse(false),
-                      translatable("chesttracker.gui.container_filter.shulker_boxes")),
-        HOPPERS(GuiUtil.twoSprite("item_filter/hoppers"),
-                memory -> memory.getValue().container().map(b -> b instanceof HopperBlock).orElse(false),
-                translatable("chesttracker.gui.container_filter.hoppers")),
-        FURNACES(GuiUtil.twoSprite("item_filter/furnaces"),
-                 memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false),
-                 translatable("chesttracker.gui.container_filter.furnaces"));
+        ALL(GuiUtil.twoSprite("container_filter/all"),
+            translatable("chesttracker.gui.container_filter.all"),
+            memory -> true),
+        CHESTS(GuiUtil.twoSprite("container_filter/chests"),
+               translatable("chesttracker.gui.container_filter.chests"),
+               memory -> memory.getValue().container().map(b -> b instanceof AbstractChestBlock<?>).orElse(false)),
+        BARRELS(GuiUtil.twoSprite("container_filter/barrels"),
+                translatable("chesttracker.gui.container_filter.barrels"),
+                memory -> memory.getValue().container().map(b -> b instanceof BarrelBlock).orElse(false)),
+        SHULKER_BOXES(GuiUtil.twoSprite("container_filter/shulker_boxes"),
+                      translatable("chesttracker.gui.container_filter.shulker_boxes"),
+                      memory -> memory.getValue().container().map(b -> b instanceof ShulkerBoxBlock).orElse(false)),
+        HOPPERS(GuiUtil.twoSprite("container_filter/hoppers"),
+                translatable("chesttracker.gui.container_filter.hoppers"),
+        memory -> memory.getValue().container().map(b -> b instanceof HopperBlock).orElse(false)),
+        FURNACES(GuiUtil.twoSprite("container_filter/furnaces"),
+                 translatable("chesttracker.gui.container_filter.furnaces"),
+                 memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false));
 
-        public final WidgetSprites sprites;
-        public final Component tooltip;
+        private final WidgetSprites sprites;
+        private final Component tooltip;
         private final Predicate<Map.Entry<BlockPos, Memory>> filter;
 
-        ContainerFilter(WidgetSprites sprites, Predicate<Map.Entry<BlockPos, Memory>> filter, Component tooltip) {
+        ContainerFilter(WidgetSprites sprites, Component tooltip, Predicate<Map.Entry<BlockPos, Memory>> filter) {
             this.sprites = sprites;
-            this.filter = filter;
             this.tooltip = tooltip;
+            this.filter = filter;
+        }
+    }
+
+    public enum ItemSort {
+        COUNT_DESCENDING(GuiUtil.twoSprite("item_sort/count_descending"),
+                         translatable("chesttracker.gui.item_sort.count_descending"),
+                         Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()),
+        COUNT_ASCENDING(GuiUtil.twoSprite("item_sort/count_ascending"),
+                         translatable("chesttracker.gui.item_sort.count_ascending"),
+                         Comparator.comparingInt(Map.Entry::getValue)),
+        ALPHABETICAL_DESCENDING(GuiUtil.twoSprite("item_sort/alphabetical_descending"),
+                                translatable("chesttracker.gui.item_sort.alphabetical_descending"),
+                                Comparator.comparing(entry -> entry.getKey().toStack().getDisplayName().getString().toLowerCase(Locale.ROOT))),
+        ALPHABETICAL_ASCENDING(GuiUtil.twoSprite("item_sort/alphabetical_ascending"),
+                                translatable("chesttracker.gui.item_sort.alphabetical_ascending"),
+                                Comparator.<Map.Entry<LightweightStack, Integer>, String>comparing(entry -> entry.getKey().toStack().getDisplayName().getString().toLowerCase(Locale.ROOT)).reversed());
+
+        private final WidgetSprites sprites;
+        private final Component tooltip;
+        private final Comparator<Map.Entry<LightweightStack, Integer>> sort;
+
+        ItemSort(WidgetSprites sprites, Component tooltip, Comparator<Map.Entry<LightweightStack, Integer>> sort) {
+            this.sprites = sprites;
+            this.tooltip = tooltip;
+            this.sort = sort;
         }
     }
 }
