@@ -33,7 +33,7 @@ Note: 1.x won't be recieving any new updates.
 - Integration with:
   - [REI](https://modrinth.com/mod/rei), [JEI](https://modrinth.com/mod/jei), and [EMI](https://modrinth.com/mod/emi) via Where Is It; see [it's usage section](https://github.com/JackFred2/WhereIsIt#usage) 
   - [Shulker Box Tooltip](https://modrinth.com/mod/shulkerboxtooltip) - Show Ender Chest contents on the client
-  - [WTHIT](https://modrinth.com/mod/wthit) - Show contents of container you're looking at. Contains it's own plugin settings.
+  - [WTHIT](https://modrinth.com/mod/wthit) & [Jade](https://modrinth.com/mod/jade) - Show contents of container you're looking at. Contains it's own plugin settings.
 - Custom handling for:
   - Hypixel Skyblock (private island + ender chest).
 
@@ -52,6 +52,13 @@ to narrow down your search.
 Press the "Change Memory Bank Settings" to change how your memory bank functions. This includes integrity checks, which
 try to keep your data valid.
 
+# License
+
+Chest Tracker 2.x a ground-up rewrite and is licensed under LGPL-3.0-only, You have permission to use the textures,
+modified or not, in your resource pack.
+
+Legacy Chest Tracker 1.x is licensed under MIT (with some EPL rendering code), and is available on [the legacy branch](https://github.com/JackFred2/ChestTracker/tree/legacy-1.x).
+
 # Contributing (code / translations)
 
 TODO
@@ -60,9 +67,7 @@ TODO
 
 ## Core Mod
 
-Manual Bank Loading
-
-Possibly move IO to a separate thread?
+Possibly move IO to a separate thread? not a problem right now
 
 Bring inventory icon back? maybe stretch goal, want to make a JFLib module for nice
 snapping around inventory menus
@@ -70,5 +75,3 @@ snapping around inventory menus
 ## Compat
 
 [Inventory Tabs](https://modrinth.com/mod/inventory-tabs-updated) - When on 1.20.2
-
-[Jade](https://github.com/Snownee/Jade) - Previews for chests - Some point in future
