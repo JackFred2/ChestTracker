@@ -27,6 +27,7 @@ import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MemoryBank {
@@ -245,27 +246,31 @@ public class MemoryBank {
     /**
      * Returns a list of counts of items in a given key; used in the main screen. Not sorted in any particular order.
      *
-     * @param key Memory Key to count and return
+     * @param key    Memory Key to count and return
+     * @param filter Filter to apply to memory entries before getting counted.
      * @return Arbitrary order list of all items in a given memory key.
      */
-    public Map<LightweightStack, Integer> getCounts(ResourceLocation key) {
+    public Map<LightweightStack, Integer> getCounts(
+            ResourceLocation key,
+            Predicate<Map.Entry<BlockPos, Memory>> filter) {
         if (memories.containsKey(key))
-            return memories.get(key).values().stream()
-                           .flatMap(data -> data.items().stream())
+            return memories.get(key).entrySet().stream()
+                           .filter(filter)
+                           .flatMap(data -> data.getValue().items().stream())
                            .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
                                                                                    stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
         else
             return Collections.emptyMap();
     }
 
-    /**
+    /*
      * Returns a list of counts of items in a given key at most <code>maxDistance</code> blocks away; used in the main
      * screen. Not sorted in any particular order.
      *
      * @param key Memory Key to count and return
      * @return Arbitrary order list of all items in a given memory key.
      */
-    public Map<LightweightStack, Integer> getCounts(ResourceLocation key, Vec3 origin, int maxDistance) {
+    /*public Map<LightweightStack, Integer> getCounts(ResourceLocation key, Vec3 origin, int maxDistance) {
         long maxSquare = (long) maxDistance * maxDistance;
         if (memories.containsKey(key))
             return memories.get(key).entrySet().stream()
@@ -275,7 +280,7 @@ public class MemoryBank {
                                                                                    stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
         else
             return Collections.emptyMap();
-    }
+    }*/
 
     /**
      * Parse a Where Is It search-request and runs it through a given dimension's memories.

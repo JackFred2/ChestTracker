@@ -5,15 +5,16 @@ import com.blamejared.searchables.api.autcomplete.AutoComplete;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -26,8 +27,10 @@ import red.jackf.chesttracker.gui.util.SearchablesUtil;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
+import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
+import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.StreamUtil;
 
@@ -41,7 +44,7 @@ import static net.minecraft.network.chat.Component.translatable;
  * The main screen
  */
 public class ChestTrackerScreen extends Screen {
-    private static final Component TITLE = Component.translatable("chesttracker.title");
+    private static final Component TITLE = translatable("chesttracker.title");
     private static final int TITLE_LEFT = 8;
     private static final int TITLE_TOP = 8;
     private static final int SEARCH_LEFT = 8;
@@ -53,6 +56,8 @@ public class ChestTrackerScreen extends Screen {
     private static final int MEMORY_ICON_SPACING = 24;
     private static final int SMALL_MENU_WIDTH = 192;
     private static final int SMALL_MENU_HEIGHT = 156;
+
+    private static ContainerFilter containerFilter = ContainerFilter.ALL;
 
     private int left = 0;
     private int top = 0;
@@ -174,7 +179,7 @@ public class ChestTrackerScreen extends Screen {
                     BUTTON_SIZE,
                     GuiUtil.twoSprite("mod_settings/button"),
                     button -> Minecraft.getInstance().setScreen(ChestTrackerConfigScreenBuilder.build(this))))
-            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.modSettings")));
+            .setTooltip(Tooltip.create(translatable("chesttracker.gui.modSettings")));
 
         // change memory bank
         this.addRenderableWidget(new ImageButton(
@@ -184,7 +189,7 @@ public class ChestTrackerScreen extends Screen {
                     BUTTON_SIZE,
                     GuiUtil.twoSprite("change_memory_bank/button"),
                     this::openMemoryManager))
-            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.openMemoryManager")));
+            .setTooltip(Tooltip.create(translatable("chesttracker.gui.openMemoryManager")));
 
         // memory bank settings
         this.addRenderableWidget(new ImageButton(
@@ -194,7 +199,18 @@ public class ChestTrackerScreen extends Screen {
                     BUTTON_SIZE,
                     GuiUtil.twoSprite("memory_bank_settings/button"),
                     this::openMemoryBankSettings))
-            .setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.memoryBankSettings")));
+            .setTooltip(Tooltip.create(translatable("chesttracker.gui.memoryBankSettings")));
+
+        // filtering
+        this.addRenderableWidget(new ChangeableImageButton(
+                this.left + this.menuWidth - 5 * (GuiConstants.SMALL_MARGIN + BUTTON_SIZE) + 2,
+                this.top + GuiConstants.SMALL_MARGIN,
+                BUTTON_SIZE,
+                BUTTON_SIZE,
+                containerFilter.sprites,
+                CommonComponents.EMPTY,
+                this::cycleContainerFilter))
+            .setTooltip(this.getContainerFilterTooltip());
 
         // resize
         if (config.gui.showResizeWidget)
@@ -259,6 +275,17 @@ public class ChestTrackerScreen extends Screen {
         }
     }
 
+    private Tooltip getContainerFilterTooltip() {
+        return Tooltip.create(translatable("chesttracker.gui.container_filter", containerFilter.tooltip));
+    }
+
+    private void cycleContainerFilter(ChangeableImageButton button) {
+        containerFilter = Enums.next(containerFilter);
+        button.setTooltip(getContainerFilterTooltip());
+        button.setSprites(containerFilter.sprites);
+        updateItems();
+    }
+
     @Override
     protected void repositionElements() {
         super.repositionElements();
@@ -272,11 +299,16 @@ public class ChestTrackerScreen extends Screen {
         int maxRange = MemoryBank.INSTANCE.getMetadata().getSearchSettings().itemListRange;
         Map<LightweightStack, Integer> counts;
 
+        Predicate<Map.Entry<BlockPos, Memory>> predicate = containerFilter.filter;
+
+        // apply max range if necessary
         if (Minecraft.getInstance().player != null) {
-            counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey, Minecraft.getInstance().player.getEyePosition(), maxRange);
-        } else {
-            counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey);
+            long squareMaxRange = (long) maxRange * maxRange;
+            Vec3 origin = Minecraft.getInstance().player.getEyePosition();
+            predicate = predicate.and(entry -> entry.getKey().getCenter().distanceToSqr(origin) < squareMaxRange);
         }
+
+        counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate);
 
         this.items = counts.entrySet().stream()
                            .sorted(Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue)
@@ -399,5 +431,36 @@ public class ChestTrackerScreen extends Screen {
                 this::updateItems,
                 MemoryBank.INSTANCE.getId()
         ));
+    }
+
+    public enum ContainerFilter {
+        ALL(GuiUtil.twoSprite("item_filter/all"),
+            memory -> true,
+            translatable("chesttracker.gui.container_filter.all")),
+        CHESTS(GuiUtil.twoSprite("item_filter/chests"),
+               memory -> memory.getValue().container().map(b -> b instanceof AbstractChestBlock<?>).orElse(false),
+               translatable("chesttracker.gui.container_filter.chests")),
+        BARRELS(GuiUtil.twoSprite("item_filter/barrels"),
+                memory -> memory.getValue().container().map(b -> b instanceof BarrelBlock).orElse(false),
+                translatable("chesttracker.gui.container_filter.barrels")),
+        SHULKER_BOXES(GuiUtil.twoSprite("item_filter/shulker_boxes"),
+                      memory -> memory.getValue().container().map(b -> b instanceof ShulkerBoxBlock).orElse(false),
+                      translatable("chesttracker.gui.container_filter.shulker_boxes")),
+        HOPPERS(GuiUtil.twoSprite("item_filter/hoppers"),
+                memory -> memory.getValue().container().map(b -> b instanceof HopperBlock).orElse(false),
+                translatable("chesttracker.gui.container_filter.hoppers")),
+        FURNACES(GuiUtil.twoSprite("item_filter/furnaces"),
+                memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false),
+                translatable("chesttracker.gui.container_filter.furnaces"));
+
+        public final WidgetSprites sprites;
+        public final Component tooltip;
+        private final Predicate<Map.Entry<BlockPos, Memory>> filter;
+
+        ContainerFilter(WidgetSprites sprites, Predicate<Map.Entry<BlockPos, Memory>> filter, Component tooltip) {
+            this.sprites = sprites;
+            this.filter = filter;
+            this.tooltip = tooltip;
+        }
     }
 }
