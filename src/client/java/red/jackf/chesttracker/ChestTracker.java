@@ -139,6 +139,7 @@ public class ChestTracker implements ClientModInitializer {
         });
 
         // auto add placed blocks with data, such as shulker boxes
+        // TODO after fabric#3367 is merged: replace with that
         AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) -> {
             if (ProviderHandler.INSTANCE == null || MemoryBank.INSTANCE == null) return;
 

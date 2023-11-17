@@ -325,7 +325,7 @@ public class ChestTrackerScreen extends Screen {
         Predicate<Map.Entry<BlockPos, Memory>> predicate = containerFilter.filter;
 
         // apply max range if necessary
-        if (Minecraft.getInstance().player != null) {
+        if (Minecraft.getInstance().player != null && Objects.equals(ProviderHandler.getCurrentKey(), currentMemoryKey)) {
             long squareMaxRange = (long) maxRange * maxRange;
             Vec3 origin = Minecraft.getInstance().player.getEyePosition();
             predicate = predicate.and(entry -> entry.getKey().getCenter().distanceToSqr(origin) < squareMaxRange);
