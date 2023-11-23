@@ -55,22 +55,16 @@ repositories {
 		url = URI("https://maven.isxander.dev/releases")
 		content {
 			includeGroup("dev.isxander.yacl")
+			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
 
-	// YACL Dependencies
+	// YACL Snapshots
 	maven {
-		name = "Sonatype"
-		url = URI("https://oss.sonatype.org/content/repositories/snapshots")
+		name = "Xander Snapshot Maven"
+		url = URI("https://maven.isxander.dev/snapshots")
 		content {
-			includeGroupByRegex("com.twelvemonkeys.*")
-		}
-	}
-
-	maven {
-		name = "QuiltMC"
-		url = uri("https://maven.quiltmc.org/repository/release")
-		content {
+			includeGroup("dev.isxander.yacl")
 			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
@@ -153,12 +147,6 @@ loom {
 	accessWidenerPath.set(file("src/client/resources/chesttracker.accesswidener"))
 }
 
-// require for local compile + running, but not for dependencies of this project
-fun DependencyHandlerScope.modCompileLocalRuntime(any: String, configure: ExternalModuleDependency.() -> Unit = {}) {
-	modCompileOnly(any, configure)
-	modLocalRuntime(any, configure)
-}
-
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
@@ -186,7 +174,6 @@ dependencies {
 	include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
 
 	// dev util
-	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 
@@ -195,19 +182,22 @@ dependencies {
 	////////////////
 
 	// Mod Menu
-	modCompileLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
-	modCompileLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
 
-	modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
-	modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
+	//modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
+	//modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
 
 	// Jade
-	modCompileLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
+	modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
+	//modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {

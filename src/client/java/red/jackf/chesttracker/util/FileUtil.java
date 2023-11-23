@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +44,7 @@ public class FileUtil {
             if (err.isPresent()) {
                 throw new IOException("Error encoding to NBT %s".formatted(err.get()));
             } else if (result.isPresent() && result.get() instanceof CompoundTag compound) {
-                NbtIo.writeCompressed(compound, path.toFile());
+                NbtIo.writeCompressed(compound, path);
                 return true;
             } else { //noinspection OptionalGetWithoutIsPresent
                 throw new IOException("Error encoding to NBT: not a compound tag: %s".formatted(result.get()));
@@ -65,7 +66,7 @@ public class FileUtil {
     public static <T> Optional<T> loadFromNbt(Codec<T> codec, Path path) {
         if (Files.isRegularFile(path)) {
             try {
-                var tag = NbtIo.readCompressed(path.toFile());
+                var tag = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
                 var loaded = codec.decode(NbtOps.INSTANCE, tag).get();
                 if (loaded.right().isPresent()) {
                     throw new IOException("Invalid NBT: %s".formatted(loaded.right().get()));

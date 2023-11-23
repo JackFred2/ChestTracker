@@ -1,7 +1,7 @@
 package red.jackf.chesttracker.compat.mods;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.EventPhases;
@@ -17,7 +17,7 @@ public class ShareEnderChestIntegration {
 
     public static void setup() {
         DefaultMemoryCreator.EVENT.register(EventPhases.PRIORITY_PHASE, (provider, screen) -> {
-            if (screen.getTitle().getContents() instanceof LiteralContents literal && literal.text().equals("Shared Ender Chest")) {
+            if (screen.getTitle().getContents() instanceof PlainTextContents.LiteralContents literal && literal.text().equals("Shared Ender Chest")) {
                 List<ItemStack> items = ProviderUtils.getNonPlayerStacksAsList(screen);
 
                 return ResultHolder.value(MemoryBuilder.create(items)
