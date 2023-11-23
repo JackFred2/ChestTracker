@@ -180,7 +180,6 @@ dependencies {
 	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
-	implementation("blue.endless:jankson:${properties["jankson_version"]}")
 
 	// Gui
 	modImplementation("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
