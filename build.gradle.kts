@@ -1,8 +1,9 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage", "RedundantNullableReturnType")
 
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 import me.modmuss50.mpp.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
+import org.ajoberstar.grgit.Grgit
 import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
 import java.net.URI
@@ -16,8 +17,15 @@ plugins {
 	// id("io.github.juuxel.loom-vineflower") version "1.11.0"
 }
 
+// it IS possible for null
+val grgit: Grgit? = project.grgit
+
+fun getVersionSuffix(): String {
+	return grgit?.branch?.current()?.name ?: "nogit"
+}
+
 group = properties["maven_group"]!!
-version = "${properties["mod_version"]!!}+${properties["minecraft_version"]!!}"
+version = "${properties["mod_version"]!!}+${getVersionSuffix()}"
 
 val modReleaseType = when(properties["type"]) {
 	"alpha" -> ReleaseType.ALPHA
@@ -172,6 +180,8 @@ dependencies {
 	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
+
+	// TODO remove
 	include("red.jackf:whereisit:${properties["where-is-it_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
@@ -246,7 +256,7 @@ if (lastTagVal != null && newTagVal != null) {
 		prefixFilters.set(properties["changelog_filter"]!!.toString().split(","))
 	}
 
-	if (System.getenv().containsKey("GITHUB_TOKEN")) {
+	if (System.getenv().containsKey("GITHUB_TOKEN") && grgit != null) {
 		tasks.named<GithubReleaseTask>("githubRelease") {
 			dependsOn(generateChangelogTask)
 
@@ -261,7 +271,7 @@ if (lastTagVal != null && newTagVal != null) {
 				tasks["remapSourcesJar"].outputs.files,
 			)
 
-			body.set(provider {
+			body.set(project.provider {
 				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
 			})
 		}
@@ -346,6 +356,8 @@ publishing {
 	}
 
 	repositories {
+		if (!System.getenv().containsKey("CI")) mavenLocal()
+
 		maven {
 			name = "JackFredMaven"
 			url = uri("https://maven.jackf.red/releases/")
