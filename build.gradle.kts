@@ -290,12 +290,12 @@ if (lastTagVal != null && newTagVal != null) {
 						minecraftVersions.add(it)
 					}
 					displayName.set("${properties["prefix"]!!} ${properties["mod_name"]!!} ${version.get()}")
-					listOf("fabric-api", "yacl", "where-is-it").forEach {
+					listOf("fabric-api", "yacl").forEach {
 						requires {
 							slug.set(it)
 						}
 					}
-					listOf("searchables").forEach {
+					listOf("where-is-it", "searchables").forEach {
 						embeds {
 							slug.set(it)
 						}

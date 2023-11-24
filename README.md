@@ -16,9 +16,8 @@ An client-sided mod to remember where you've put items. Press **Y** to search fo
 
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [YACL](https://modrinth.com/mod/yacl)
-- [Where Is It](https://modrinth.com/mod/where-is-it) 2.x
 
-Where Is It embeds [JackFredLib](https://github.com/JackFred2/JackFredLib), which embeds [MixinExtras](https://github.com/LlamaLad7/MixinExtras).
+Chest Tracker embeds [Where Is It](https://modrinth.com/mod/where-is-it), [JackFredLib](https://github.com/JackFred2/JackFredLib) and [MixinExtras](https://github.com/LlamaLad7/MixinExtras).
 
 ## Requirements (1.x) (< 1.20.2)
 
@@ -52,16 +51,12 @@ to narrow down your search.
 Press the "Change Memory Bank Settings" to change how your memory bank functions. This includes integrity checks, which
 try to keep your data valid.
 
-# License
+## License
 
 Chest Tracker 2.x a ground-up rewrite and is licensed under LGPL-3.0-only, You have permission to use the textures,
 modified or not, in your resource pack.
 
 Legacy Chest Tracker 1.x is licensed under MIT (with some EPL rendering code), and is available on [the legacy branch](https://github.com/JackFred2/ChestTracker/tree/legacy-1.x).
-
-# Contributing (code / translations)
-
-TODO
 
 # TODO
 
