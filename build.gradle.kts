@@ -3,35 +3,25 @@
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 import me.modmuss50.mpp.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
-import org.ajoberstar.grgit.Grgit
 import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
-import java.net.URI
 
 plugins {
 	id("maven-publish")
 	id("fabric-loom") version "1.4-SNAPSHOT"
 	id("com.github.breadmoirai.github-release") version "2.4.1"
-	id("org.ajoberstar.grgit") version "5.0.+"
+	id("org.ajoberstar.grgit") version "5.2.1"
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
-	// id("io.github.juuxel.loom-vineflower") version "1.11.0"
 }
 
-// it IS possible for null
-val grgit: Grgit? = project.grgit
+val grgit = runCatching { project.grgitService.service.get().grgit }.getOrNull()
 
 fun getVersionSuffix(): String {
-	return grgit?.branch?.current()?.name ?: "nogit"
+	return grgit?.branch?.current()?.name ?: "nogit+${properties["minecraft_version"]}"
 }
 
 group = properties["maven_group"]!!
-version = "${properties["mod_version"]!!}+${getVersionSuffix()}"
-
-val modReleaseType = when(properties["type"]) {
-	"alpha" -> ReleaseType.ALPHA
-	"beta" -> ReleaseType.BETA
-	else -> ReleaseType.STABLE
-}
+version = "${properties["mod_version"]}+${getVersionSuffix()}"
 
 base {
 	archivesName.set("${properties["archives_base_name"]}")
@@ -41,7 +31,7 @@ repositories {
 	// Parchment Mappings
 	maven {
 		name = "ParchmentMC"
-		url = URI("https://maven.parchmentmc.org")
+		url = uri("https://maven.parchmentmc.org")
 		content {
 			includeGroup("org.parchmentmc.data")
 		}
@@ -50,7 +40,7 @@ repositories {
 	// Mod Menu, EMI
 	maven {
 		name = "TerraformersMC"
-		url = URI("https://maven.terraformersmc.com/releases/")
+		url = uri("https://maven.terraformersmc.com/releases/")
 		content {
 			includeGroup("com.terraformersmc")
 			includeGroup("dev.emi")
@@ -60,25 +50,19 @@ repositories {
 	// YACL
 	maven {
 		name = "Xander Maven"
-		url = URI("https://maven.isxander.dev/releases")
+		url = uri("https://maven.isxander.dev/releases")
 		content {
 			includeGroup("dev.isxander.yacl")
+			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
 
-	// YACL Dependencies
+	// YACL Snapshots
 	maven {
-		name = "Sonatype"
-		url = URI("https://oss.sonatype.org/content/repositories/snapshots")
+		name = "Xander Snapshot Maven"
+		url = uri("https://maven.isxander.dev/snapshots")
 		content {
-			includeGroupByRegex("com.twelvemonkeys.*")
-		}
-	}
-
-	maven {
-		name = "QuiltMC"
-		url = uri("https://maven.quiltmc.org/repository/release")
-		content {
+			includeGroup("dev.isxander.yacl")
 			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
@@ -86,7 +70,7 @@ repositories {
 	// Searchables
 	maven {
 		name = "BlameJared"
-		url = URI("https://maven.blamejared.com")
+		url = uri("https://maven.blamejared.com")
 		content {
 			includeGroupAndSubgroups("com.blamejared.searchables")
 		}
@@ -95,7 +79,7 @@ repositories {
 	// Dev Utils, Jade
 	maven {
 		name = "Modrinth Maven"
-		url = URI("https://api.modrinth.com/maven")
+		url = uri("https://api.modrinth.com/maven")
 		content {
 			includeGroup("maven.modrinth")
 		}
@@ -104,7 +88,7 @@ repositories {
 	// Where Is It, JackFredLib
 	maven {
 		name = "JackFredMaven"
-		url = URI("https://maven.jackf.red/releases/")
+		url = uri("https://maven.jackf.red/releases/")
 		content {
 			includeGroupAndSubgroups("red.jackf")
 		}
@@ -147,24 +131,14 @@ loom {
 		}
 	}
 
-	buildscript.sourceFile
-		?.parentFile
-		?.resolve("log4j2.xml")
-		?.let { log4jConfigs.from(it) }
+	log4jConfigs.from(file("log4j2.xml"))
 
 	runConfigs.configureEach {
 		this.programArgs.addAll("--username JackFred".split(" "))
 		this.vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
 	}
 
-
 	accessWidenerPath.set(file("src/client/resources/chesttracker.accesswidener"))
-}
-
-// require for local compile + running, but not for dependencies of this project
-fun DependencyHandlerScope.modCompileLocalRuntime(any: String, configure: ExternalModuleDependency.() -> Unit = {}) {
-	modCompileOnly(any, configure)
-	modLocalRuntime(any, configure)
 }
 
 dependencies {
@@ -177,14 +151,10 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
 
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
-	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}") {
-		exclude(group = "com.terraformersmc", module = "modmenu")
-	}
 
-	// TODO remove
-	include("red.jackf:whereisit:${properties["where-is-it_version"]}") {
-		exclude(group = "com.terraformersmc", module = "modmenu")
-	}
+	// Where is it
+	modImplementation("red.jackf:whereisit:${properties["where-is-it_version"]}")
+	include("red.jackf:whereisit:${properties["where-is-it_version"]}")
 
 	// Config
 	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}") {
@@ -205,19 +175,22 @@ dependencies {
 	////////////////
 
 	// Mod Menu
-	modCompileLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
-	modCompileLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
 
-	modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
-	modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
+	//modLocalRuntime("mcp.mobius.waila:wthit:${properties["wthit_version"]}")
+	//modLocalRuntime("lol.bai:badpackets:${properties["badpackets_version"]}")
 
 	// Jade
-	modCompileLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
+	modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
+	//modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {
@@ -248,98 +221,108 @@ tasks.jar {
 
 val lastTagVal = properties["lastTag"]?.toString()
 val newTagVal = properties["newTag"]?.toString()
-if (lastTagVal != null && newTagVal != null) {
-	val generateChangelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
+
+var changelogText: Provider<String>
+var changelogTask: TaskProvider<GenerateChangelogTask>? = null
+
+changelogText = if (lastTagVal != null && newTagVal != null) {
+	changelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
 		lastTag.set(lastTagVal)
 		newTag.set(newTagVal)
 		githubUrl.set(properties["github_url"]!!.toString())
 		prefixFilters.set(properties["changelog_filter"]!!.toString().split(","))
 	}
 
-	if (System.getenv().containsKey("GITHUB_TOKEN") && grgit != null) {
-		tasks.named<GithubReleaseTask>("githubRelease") {
-			dependsOn(generateChangelogTask)
+	project.provider {
+		return@provider changelogTask!!.get().changelogFile.get().asFile.readText()
+	}
+} else {
+	project.provider { "Could not generate changelog." }
+}
 
-			authorization.set(System.getenv("GITHUB_TOKEN")?.let { "Bearer $it" })
-			owner.set(properties["github_owner"]!!.toString())
-			repo.set(properties["github_repo"]!!.toString())
-			tagName.set(newTagVal)
-			releaseName.set("${properties["mod_name"]} $newTagVal")
-			targetCommitish.set(grgit.branch.current().name)
-			releaseAssets.from(
-				tasks["remapJar"].outputs.files,
-				tasks["remapSourcesJar"].outputs.files,
-			)
+if (System.getenv().containsKey("GITHUB_TOKEN") && grgit != null) {
+	tasks.named<GithubReleaseTask>("githubRelease") {
+		authorization.set(System.getenv("GITHUB_TOKEN")?.let { "Bearer $it" })
+		body.set(changelogText)
+		owner.set(properties["github_owner"]!!.toString())
+		repo.set(properties["github_repo"]!!.toString())
+		tagName.set(newTagVal)
+		releaseName.set("${properties["mod_name"]} $newTagVal")
+		targetCommitish.set(grgit.branch.current().name)
+		releaseAssets.from(
+			tasks["remapJar"].outputs.files,
+			tasks["remapSourcesJar"].outputs.files,
+		)
 
-			body.set(project.provider {
-				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
-			})
+		changelogTask?.let {
+			this@named.dependsOn(it)
 		}
 	}
+}
 
-	tasks.named<DefaultTask>("publishMods") {
-		dependsOn(generateChangelogTask)
-	}
+tasks.named<DefaultTask>("publishMods") {
+	changelogTask?.let { this.dependsOn(changelogTask) }
+}
 
-	if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsKey(it) }) {
-		publishMods {
-			changelog.set(provider {
-				return@provider generateChangelogTask.get().changelogFile.get().asFile.readText()
-			})
-			type.set(modReleaseType)
-			modLoaders.add("fabric")
-			modLoaders.add("quilt")
-			file.set(tasks.named<RemapJarTask>("remapJar").get().archiveFile)
-			// additionalFiles.from(tasks.named<RemapSourcesJarTask>("remapSourcesJar").get().archiveFile)
+if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsKey(it) }) {
+	publishMods {
+		changelog.set(changelogText)
+		type.set(when(properties["release_type"]) {
+			"release" -> ReleaseType.STABLE
+			"beta" -> ReleaseType.BETA
+			else -> ReleaseType.ALPHA
+		})
+		modLoaders.add("fabric")
+		modLoaders.add("quilt")
+		file.set(tasks.named<RemapJarTask>("remapJar").get().archiveFile)
 
-			if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
-				curseforge {
-					projectId.set("397217")
-					accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
-					properties["game_versions"]!!.toString().split(",").forEach {
-						minecraftVersions.add(it)
+		if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
+			curseforge {
+				projectId.set("397217")
+				accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+				properties["game_versions_curse"]!!.toString().split(",").forEach {
+					minecraftVersions.add(it)
+				}
+				displayName.set("${properties["prefix"]!!} ${properties["mod_name"]!!} ${version.get()}")
+				listOf("fabric-api", "yacl").forEach {
+					requires {
+						slug.set(it)
 					}
-					displayName.set("${properties["prefix"]!!} ${properties["mod_name"]!!} ${version.get()}")
-					listOf("fabric-api", "yacl").forEach {
-						requires {
-							slug.set(it)
-						}
+				}
+				listOf("where-is-it", "searchables").forEach {
+					embeds {
+						slug.set(it)
 					}
-					listOf("where-is-it", "searchables").forEach {
-						embeds {
-							slug.set(it)
-						}
-					}
-					listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
-						optional {
-							slug.set(it)
-						}
+				}
+				listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
+					optional {
+						slug.set(it)
 					}
 				}
 			}
+		}
 
-			if (System.getenv().containsKey("MODRINTH_TOKEN") || dryRun.get()) {
-				modrinth {
-					accessToken.set(System.getenv("MODRINTH_TOKEN"))
-					projectId.set("ni4SrKmq")
-					properties["game_versions"]!!.toString().split(",").forEach {
-						minecraftVersions.add(it)
+		if (System.getenv().containsKey("MODRINTH_TOKEN") || dryRun.get()) {
+			modrinth {
+				accessToken.set(System.getenv("MODRINTH_TOKEN"))
+				projectId.set("ni4SrKmq")
+				properties["game_versions_mr"]!!.toString().split(",").forEach {
+					minecraftVersions.add(it)
+				}
+				displayName.set("${properties["mod_name"]!!} ${version.get()}")
+				listOf("fabric-api", "yacl", "where-is-it").forEach {
+					requires {
+						slug.set(it)
 					}
-					displayName.set("${properties["mod_name"]!!} ${version.get()}")
-					listOf("fabric-api", "yacl", "where-is-it").forEach {
-						requires {
-							slug.set(it)
-						}
+				}
+				listOf("searchables").forEach {
+					embeds {
+						slug.set(it)
 					}
-					listOf("searchables").forEach {
-						embeds {
-							slug.set(it)
-						}
-					}
-					listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
-						optional {
-							slug.set(it)
-						}
+				}
+				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
+					optional {
+						slug.set(it)
 					}
 				}
 			}
