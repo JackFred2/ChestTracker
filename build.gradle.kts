@@ -310,12 +310,12 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 					minecraftVersions.add(it)
 				}
 				displayName.set("${properties["mod_name"]!!} ${version.get()}")
-				listOf("fabric-api", "yacl", "where-is-it").forEach {
+				listOf("fabric-api", "yacl").forEach {
 					requires {
 						slug.set(it)
 					}
 				}
-				listOf("searchables").forEach {
+				listOf("where-is-it", "searchables").forEach {
 					embeds {
 						slug.set(it)
 					}
