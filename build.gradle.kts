@@ -122,6 +122,16 @@ repositories {
 	}
 }
 
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
 loom {
     splitEnvironmentSourceSets()
 
@@ -200,16 +210,6 @@ tasks.withType<ProcessResources>().configureEach {
 
 tasks.withType<JavaCompile>().configureEach {
 	options.release.set(17)
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.jar {
