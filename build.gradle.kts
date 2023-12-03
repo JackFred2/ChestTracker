@@ -218,6 +218,16 @@ tasks.jar {
 	}
 }
 
+fun makeChangelogPrologue(): String {
+	return """
+		|Bundled:
+		|  - Where Is It: ${properties["where-is-it_version"]}
+		|  - Searchables: ${properties["searchables_version"]}
+		|  """.trimMargin()
+}
+
+println(makeChangelogPrologue())
+
 val lastTagVal = properties["lastTag"]?.toString()
 val newTagVal = properties["newTag"]?.toString()
 
@@ -228,6 +238,7 @@ changelogText = if (lastTagVal != null && newTagVal != null) {
 	changelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
 		lastTag.set(lastTagVal)
 		newTag.set(newTagVal)
+		prologue.set(makeChangelogPrologue())
 		githubUrl.set(properties["github_url"]!!.toString())
 		prefixFilters.set(properties["changelog_filter"]!!.toString().split(","))
 	}
