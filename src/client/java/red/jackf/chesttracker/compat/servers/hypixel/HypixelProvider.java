@@ -15,8 +15,8 @@ import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.api.provider.Provider;
 import red.jackf.chesttracker.api.provider.ProviderUtils;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
-import red.jackf.jackfredlib.client.api.gps.PlayerListUtils;
-import red.jackf.jackfredlib.client.api.gps.ScoreboardUtils;
+import red.jackf.jackfredlib.client.api.gps.PlayerListSnapshot;
+import red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.util.List;
@@ -43,7 +43,11 @@ public class HypixelProvider implements Provider {
     );
 
     protected static boolean isOnSkyblock() {
-        return ScoreboardUtils.getPrefixed("SKYBLOCK").isPresent();
+        return ScoreboardSnapshot.take().map(snapshot -> snapshot.title().getString().startsWith("SKYBLOCK")).orElse(false);
+    }
+
+    private static Optional<String> getSkyblockArea() {
+        return PlayerListSnapshot.take().nameWithPrefixStripped("Area: ");
     }
 
     @Override
@@ -71,7 +75,7 @@ public class HypixelProvider implements Provider {
     public Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen) {
         if (isOnSkyblock()) {
             // private island
-            var area = PlayerListUtils.getPrefixed("Area: ");
+            var area = getSkyblockArea();
             if (area.isPresent() && area.get().equals("Private Island")) {
                 if (InteractionTracker.INSTANCE.getLastBlockSource().isPresent()) {
                     var lastBlock = InteractionTracker.INSTANCE.getLastBlockSource().get();
@@ -105,7 +109,7 @@ public class HypixelProvider implements Provider {
     @Override
     public Optional<ResourceLocation> getPlayersCurrentKey() {
         if (isOnSkyblock()) {
-            var area = PlayerListUtils.getPrefixed("Area: ");
+            var area = getSkyblockArea();
             if (area.isPresent() && area.get().equals("Private Island")) {
                 return Optional.of(SKYBLOCK_PRIVATE_ISLAND);
             }
