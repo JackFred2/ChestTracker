@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class ItemListWidget extends AbstractWidget {
     private static final ResourceLocation BACKGROUND_SPRITE = GuiUtil.sprite("widgets/slot_background");
+    private static final ItemStack DUMMY_ITEM_FOR_COUNT = new ItemStack(Items.EMERALD);
 
     private final int gridWidth;
     private final int gridHeight;
@@ -78,10 +80,10 @@ public class ItemListWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
-        this.renderItems(graphics);
-        this.renderItemDecorations(graphics);
-        this.renderAdditional(graphics, mouseX, mouseY);
+        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
+        this.renderItems(graphics); // item models
+        this.renderItemDecorations(graphics); // stack size and durability
+        this.renderAdditional(graphics, mouseX, mouseY); // tooltips
     }
 
     private void renderItems(GuiGraphics graphics) {
@@ -110,22 +112,28 @@ public class ItemListWidget extends AbstractWidget {
     private void renderItemDecorations(GuiGraphics graphics) {
         var items = getOffsetItems();
         for (int i = 0; i < items.size(); i++) {
+            ItemStack item = items.get(i);
+            int offset = -GuiConstants.GRID_SLOT_SIZE + 2;
+
+            // move to correct slot on screen
             graphics.pose().pushPose();
             int bottomRightX = this.getX() + GuiConstants.GRID_SLOT_SIZE * ((i % gridWidth) + 1);
             int bottomRightY = this.getY() + GuiConstants.GRID_SLOT_SIZE * ((i / gridWidth) + 1);
             graphics.pose().translate(bottomRightX - 1, bottomRightY - 1, 0);
 
+            // durability, scaled normally
+            graphics.renderItemDecorations(Minecraft.getInstance().font, item, offset, offset, "");
+
+            // scale down for text
             Pair<Integer, Integer> scales = getScales();
             int textScale = scales.getFirst();
             int guiScale = scales.getSecond();
             float scaleFactor = (float) textScale / guiScale;
-
             graphics.pose().scale(scaleFactor, scaleFactor, 1f);
 
-            ItemStack item = items.get(i);
-            int offset = -GuiConstants.GRID_SLOT_SIZE + 2;
+            // render count text scaled down
             String text = StringUtil.magnitude(item.getCount(), 0);
-            graphics.renderItemDecorations(Minecraft.getInstance().font, item, offset, offset, text); // Counts
+            graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
             graphics.pose().popPose();
         }
     }
