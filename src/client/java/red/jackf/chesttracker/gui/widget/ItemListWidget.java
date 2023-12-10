@@ -78,11 +78,23 @@ public class ItemListWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
         this.renderItems(graphics);
-        graphics.pose().pushPose();
         this.renderItemDecorations(graphics);
         this.renderAdditional(graphics, mouseX, mouseY);
-        graphics.pose().popPose();
+    }
+
+    private void renderItems(GuiGraphics graphics) {
+        var items = getOffsetItems();
+        // background
+        for (int i = 0; i < (gridWidth * gridHeight); i++) {
+            var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
+            var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);
+            if (i < items.size()) {
+                var item = items.get(i);
+                graphics.renderItem(item, x + 1, y + 1); // Item
+            }
+        }
     }
 
     private static Pair<Integer, Integer> getScales() {
@@ -136,23 +148,9 @@ public class ItemListWidget extends AbstractWidget {
                     .withStyle(ChatFormatting.GREEN));
             var image = stack.getTooltipImage();
             graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 250f);
+            graphics.pose().translate(0, 0, 150f);
             graphics.renderTooltip(Minecraft.getInstance().font, lines, image, mouseX, mouseY);
             graphics.pose().popPose();
-        }
-    }
-
-    private void renderItems(GuiGraphics graphics) {
-        var items = getOffsetItems();
-        // background
-        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
-        for (int i = 0; i < (gridWidth * gridHeight); i++) {
-            var x = this.getX() + GuiConstants.GRID_SLOT_SIZE * (i % gridWidth);
-            var y = this.getY() + GuiConstants.GRID_SLOT_SIZE * (i / gridWidth);
-            if (i < items.size()) {
-                var item = items.get(i);
-                graphics.renderItem(item, x + 1, y + 1); // Item
-            }
         }
     }
 

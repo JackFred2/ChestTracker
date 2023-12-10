@@ -160,7 +160,7 @@ public class ChestTrackerScreen extends Screen {
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
         if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
-            this.addRenderableOnly(autoCompleting.autoComplete());
+            this.addRenderableOnly(new WidgetZOffsetWrapper<>(autoCompleting.autoComplete(), 250));
 
         if (shouldFocusSearch)
             this.setInitialFocus(search);
