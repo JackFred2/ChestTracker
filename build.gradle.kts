@@ -145,7 +145,8 @@ loom {
 
 	runConfigs.configureEach {
 		this.programArgs.addAll("--username JackFred".split(" "))
-		this.vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
+		// requires JetBrains Runtime
+		// this.vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
 	}
 
 	accessWidenerPath.set(file("src/client/resources/chesttracker.accesswidener"))
