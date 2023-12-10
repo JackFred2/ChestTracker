@@ -17,7 +17,7 @@ An client-sided mod to remember where you've put items. Press **Y** to search fo
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [YACL](https://modrinth.com/mod/yacl)
 
-Chest Tracker embeds [Where Is It](https://modrinth.com/mod/where-is-it) and [JackFredLib](https://github.com/JackFred2/JackFredLib).
+Chest Tracker embeds [Where Is It](https://modrinth.com/mod/where-is-it), [JackFredLib](https://github.com/JackFred2/JackFredLib) and [Searchables](https://github.com/jaredlll08/searchables).
 
 ## Requirements (1.x) (< 1.20.2)
 
