@@ -221,6 +221,8 @@ tasks.jar {
 
 fun makeChangelogPrologue(): String {
 	return """
+		|This version requires a dependency overrides for Searchables: for more information, see https://github.com/JackFred2/ChestTracker/releases/tag/v2.1.2%2B1.20.4
+		|
 		|Bundled:
 		|  - Where Is It: ${properties["where-is-it_version"]}
 		|  - Searchables: ${properties["searchables_version"]}
