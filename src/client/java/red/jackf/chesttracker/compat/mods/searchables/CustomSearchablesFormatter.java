@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui.util;
+package red.jackf.chesttracker.compat.mods.searchables;
 
 import com.blamejared.searchables.api.SearchableType;
 import com.blamejared.searchables.api.TokenRange;
@@ -13,6 +13,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.gui.util.TextColours;
 
 import java.util.ArrayList;
 import java.util.List;

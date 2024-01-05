@@ -172,10 +172,6 @@ dependencies {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
 
-	// Gui
-	modImplementation("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-	include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-
 	// dev util
 	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
@@ -185,13 +181,18 @@ dependencies {
 	// MOD COMPAT //
 	////////////////
 
+	// Searchables
+	modCompileOnly("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	//modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	// include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+
 	// Mod Menu
 	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
-	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	// modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
@@ -224,7 +225,6 @@ fun makeChangelogPrologue(): String {
 	return """
 		|Bundled:
 		|  - Where Is It: ${properties["where-is-it_version"]}
-		|  - Searchables: ${properties["searchables_version"]}
 		|  """.trimMargin()
 }
 
@@ -327,12 +327,12 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 						slug.set(it)
 					}
 				}
-				listOf("where-is-it", "searchables").forEach {
+				listOf("where-is-it").forEach {
 					embeds {
 						slug.set(it)
 					}
 				}
-				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
+				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade", "searchables").forEach {
 					optional {
 						slug.set(it)
 					}

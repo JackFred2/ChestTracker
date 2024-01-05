@@ -47,6 +47,9 @@
     "yet_another_config_lib_v3": ">=3.2.0",
     "whereisit": ">=2.3.0"
   },
+  "recommends": {
+    "searchables": "*"
+  },
   "suggests": {
     "modmenu": "*",
     "shulkerboxtooltip": "*",

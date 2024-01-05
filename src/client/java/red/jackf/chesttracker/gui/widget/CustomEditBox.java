@@ -10,8 +10,10 @@ import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.util.GuiUtil;
 
 public class CustomEditBox extends EditBox {
-    public CustomEditBox(Font font, int x, int y, int width, int height, @Nullable EditBox editBox, Component component) {
-        super(font, x, y, width, height, editBox, component);
+    public static final Component SEARCH_MESSAGE = Component.translatable("gui.recipebook.search_hint");
+
+    public CustomEditBox(Font font, int x, int y, int width, int height, @Nullable EditBox editBox, Component message) {
+        super(font, x, y, width, height, editBox, message);
         this.setBordered(false);
     }
 

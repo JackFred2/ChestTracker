@@ -1,8 +1,5 @@
 package red.jackf.chesttracker.gui.screen;
 
-import com.blamejared.searchables.api.SearchablesConstants;
-import com.blamejared.searchables.api.autcomplete.AutoComplete;
-import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -19,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.compat.Compatibility;
+import red.jackf.chesttracker.compat.mods.searchables.SearchablesUtil;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.GuiConstants;
-import red.jackf.chesttracker.gui.util.CustomSearchablesFormatter;
-import red.jackf.chesttracker.gui.util.SearchablesUtil;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.LightweightStack;
@@ -32,6 +29,7 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.ItemStackUtil;
 import red.jackf.chesttracker.util.StreamUtil;
 
 import java.util.*;
@@ -122,23 +120,17 @@ public class ChestTrackerScreen extends Screen {
         // search
         var shouldFocusSearch = this.search == null || this.search.isFocused();
         shouldFocusSearch &= config.gui.autofocusSearchBar;
-        var formatter = new CustomSearchablesFormatter(SearchablesUtil.ITEM_STACK);
-        if (config.gui.showAutocomplete) {
-            var autocompleting = addRenderableWidget(new AutoCompletingEditBox<>(
+        if (config.gui.showAutocomplete && Compatibility.SEARCHABLES) {
+            this.search = addRenderableWidget(SearchablesUtil.getEditBox(
                     font,
                     left + SEARCH_LEFT,
                     top + SEARCH_TOP,
                     menuWidth - 16,
                     12,
                     this.search,
-                    SearchablesConstants.COMPONENT_SEARCH,
-                    SearchablesUtil.ITEM_STACK,
-                    () -> items
+                    () -> items,
+                    this::filter
             ));
-            autocompleting.setFormatter(formatter);
-            autocompleting.addResponder(formatter);
-            autocompleting.addResponder(this::filter);
-            this.search = autocompleting;
         } else {
             this.search = addRenderableWidget(new CustomEditBox(
                     font,
@@ -147,20 +139,15 @@ public class ChestTrackerScreen extends Screen {
                     menuWidth - 16,
                     12,
                     this.search,
-                    SearchablesConstants.COMPONENT_SEARCH
+                    CustomEditBox.SEARCH_MESSAGE
             ));
-            this.search.setFormatter(formatter);
-            this.search.setHint(SearchablesConstants.COMPONENT_SEARCH);
-            this.search.setResponder(s -> {
-                formatter.accept(s);
-                this.filter(s);
-            });
+            this.search.setHint(CustomEditBox.SEARCH_MESSAGE);
+            this.search.setResponder(this::filter);
         }
         this.search.setTextColor(TextColours.getTextColour());
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
-        if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
-            this.addRenderableOnly(new WidgetZOffsetWrapper<>(autoCompleting.autoComplete(), 250));
+        ifSearchables(() -> this.addRenderableWidget(SearchablesUtil.getWrappedAutocomplete(this.search)));
 
         if (shouldFocusSearch)
             this.setInitialFocus(search);
@@ -349,7 +336,12 @@ public class ChestTrackerScreen extends Screen {
      * Update the items list with the currently cached items, filtered by the search bar.
      */
     private void filter(String filter) {
-        var filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
+        List<ItemStack> filtered;
+        if (Compatibility.SEARCHABLES) {
+            filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
+        } else {
+            filtered = this.items.stream().filter(stack -> ItemStackUtil.defaultPredicate(stack, filter.toLowerCase())).toList();
+        }
         this.itemList.setItems(filtered);
         var guiConfig = ChestTrackerConfig.INSTANCE.instance().gui;
         this.scroll.setDisabled(filtered.size() <= (guiConfig.gridWidth * guiConfig.gridHeight));
@@ -358,17 +350,20 @@ public class ChestTrackerScreen extends Screen {
     /**
      * Test for autocomplete-specific operations. Used to check mouse operations over the autocomplete bar.
      */
-    private boolean ifAutocomplete(Predicate<AutoComplete<?>> predicate) {
-        if (this.search instanceof AutoCompletingEditBox<?> autoCompleting)
-            return predicate.test(autoCompleting.autoComplete());
-        else {
+    private boolean ifSearchables(Predicate<AbstractWidget> predicate) {
+        return Compatibility.SEARCHABLES && SearchablesUtil.ifSearchables(this.search, predicate);
+    }
+
+    private void ifSearchables(Runnable ifSearchables) {
+        ifSearchables(ignored -> {
+            ifSearchables.run();
             return false;
-        }
+        });
     }
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
-        this.itemList.setHideTooltip(this.search.isFocused() && ifAutocomplete(a -> a.isMouseOver(mouseX, mouseY)));
+        this.itemList.setHideTooltip(this.search.isFocused() && ifSearchables(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, TextColours.getLabelColour(), false); // title
     }
@@ -377,8 +372,7 @@ public class ChestTrackerScreen extends Screen {
     public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
         super.renderBackground(graphics, i, j, f);
         graphics.blitSprite(GuiUtil.BACKGROUND_SPRITE, left, top, menuWidth, menuHeight);
-        if (this.search instanceof AutoCompletingEditBox<?>)
-            graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight());
+        ifSearchables(() -> graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight()));
     }
 
     @Override
@@ -403,7 +397,7 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.search.isFocused() && ifAutocomplete(a -> a.mouseClicked(mouseX, mouseY, button))) return true;
+        if (this.search.isFocused() && ifSearchables(a -> a.mouseClicked(mouseX, mouseY, button))) return true;
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -411,7 +405,7 @@ public class ChestTrackerScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         // Searchables Edit Box Support
         double finalDelta = deltaY;
-        if (search.isFocused() && ifAutocomplete(a -> a.mouseScrolled(mouseX, mouseY, deltaX, finalDelta))) {
+        if (search.isFocused() && ifSearchables(a -> a.mouseScrolled(mouseX, mouseY, deltaX, finalDelta))) {
             return true;
         } else if (itemList.isMouseOver(mouseX, mouseY) || scroll.isMouseOver(mouseX, mouseY)) {
             deltaY /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.instance().gui.gridHeight);
