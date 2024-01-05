@@ -300,12 +300,12 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 						slug.set(it)
 					}
 				}
-				listOf("where-is-it", "searchables").forEach {
+				listOf("where-is-it").forEach {
 					embeds {
 						slug.set(it)
 					}
 				}
-				listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
+				listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade", "searchables").forEach {
 					optional {
 						slug.set(it)
 					}
