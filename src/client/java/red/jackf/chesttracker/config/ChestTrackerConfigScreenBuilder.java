@@ -14,6 +14,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
+import red.jackf.chesttracker.compat.Compatibility;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -118,9 +119,16 @@ public class ChestTrackerConfigScreenBuilder {
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.showAutocomplete"))
-                        .description(b -> OptionDescription.createBuilder()
-                                .image(getDescriptionImage("show_autocomplete", b), 85, 59)
-                                .build())
+                        .description(b -> {
+                            var desc = OptionDescription.createBuilder()
+                                             .image(getDescriptionImage("show_autocomplete", b), 85, 59)
+                                             .text(translatable("chesttracker.config.searchables.required"));
+
+                            if (!Compatibility.SEARCHABLES) desc.text(translatable("chesttracker.config.searchables.notInstalled").withStyle(ChatFormatting.RED));
+
+                            return desc.build();
+                        })
+                        .available(Compatibility.SEARCHABLES)
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
                                 .coloured(true))
@@ -131,9 +139,16 @@ public class ChestTrackerConfigScreenBuilder {
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.gui.autocompleteShowsRegularNames"))
-                        .description(b -> OptionDescription.createBuilder()
-                                .image(getDescriptionImage("show_unnamed_in_autocomplete", b), 118, 85)
-                                .build())
+                        .description(b -> {
+                            var desc = OptionDescription.createBuilder()
+                                             .image(getDescriptionImage("show_unnamed_in_autocomplete", b), 118, 85)
+                                             .text(translatable("chesttracker.config.searchables.required"));
+
+                            if (!Compatibility.SEARCHABLES) desc.text(translatable("chesttracker.config.searchables.notInstalled").withStyle(ChatFormatting.RED));
+
+                            return desc.build();
+                        })
+                        .available(Compatibility.SEARCHABLES)
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
                                 .coloured(true))

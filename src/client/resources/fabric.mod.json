@@ -41,11 +41,14 @@
   "accessWidener": "chesttracker.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.0",
-    "minecraft": ">=1.20.2",
+    "minecraft": ">=1.20.3",
     "java": ">=17",
     "fabric-api": "*",
     "yet_another_config_lib_v3": ">=3.2.0",
     "whereisit": ">=2.3.0"
+  },
+  "recommends": {
+    "searchables": "*"
   },
   "suggests": {
     "modmenu": "*",

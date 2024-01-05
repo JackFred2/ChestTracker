@@ -172,10 +172,6 @@ dependencies {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
 
-	// Gui
-	modImplementation("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-	include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-
 	// dev util
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
@@ -184,13 +180,18 @@ dependencies {
 	// MOD COMPAT //
 	////////////////
 
+	// Searchables
+	modCompileOnly("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	// include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+
 	// Mod Menu
 	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
-	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	// modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
@@ -221,11 +222,8 @@ tasks.jar {
 
 fun makeChangelogPrologue(): String {
 	return """
-		|This version requires a dependency overrides for Searchables: for more information, see https://github.com/JackFred2/ChestTracker/releases/tag/v2.1.2%2B1.20.4
-		|
 		|Bundled:
 		|  - Where Is It: ${properties["where-is-it_version"]}
-		|  - Searchables: ${properties["searchables_version"]}
 		|  """.trimMargin()
 }
 
@@ -328,12 +326,12 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 						slug.set(it)
 					}
 				}
-				listOf("where-is-it", "searchables").forEach {
+				listOf("where-is-it").forEach {
 					embeds {
 						slug.set(it)
 					}
 				}
-				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
+				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade", "searchables").forEach {
 					optional {
 						slug.set(it)
 					}
