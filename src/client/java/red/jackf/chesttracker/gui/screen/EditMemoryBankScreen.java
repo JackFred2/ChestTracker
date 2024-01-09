@@ -93,7 +93,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         this.addRenderableWidget(GuiUtil.close(
                 left + menuWidth - (GuiConstants.SMALL_MARGIN + CLOSE_BUTTON_SIZE),
                 top + GuiConstants.SMALL_MARGIN,
-                b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
+                b -> this.onClose()));
 
         // details label
         this.addRenderableOnly(new TextWidget(this.left + GuiConstants.MARGIN,

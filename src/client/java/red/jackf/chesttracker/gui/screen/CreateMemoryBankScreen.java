@@ -2,9 +2,6 @@ package red.jackf.chesttracker.gui.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -68,13 +65,10 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
         final int workingWidth = this.menuWidth - 2 * GuiConstants.MARGIN;
 
         // close button
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(GuiUtil.close(
                 left + menuWidth - (GuiConstants.SMALL_MARGIN + CLOSE_BUTTON_SIZE),
                 top + GuiConstants.SMALL_MARGIN,
-                CLOSE_BUTTON_SIZE,
-                CLOSE_BUTTON_SIZE,
-                new WidgetSprites(GuiUtil.sprite("widgets/return/button"), GuiUtil.sprite("widgets/return/button_highlighted")),
-                b -> this.onClose())).setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
+                b -> this.onClose()));
 
         int y = this.top + CONTENT_TOP;
 
