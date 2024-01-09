@@ -156,8 +156,7 @@ public class ChestTrackerScreen extends Screen {
         this.addRenderableWidget(GuiUtil.close(
                     this.left + this.menuWidth - (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
-                    button -> this.onClose()))
-            .setTooltip(Tooltip.create(translatable("mco.selectServer.close")));
+                    button -> this.onClose()));
 
         // mod settings
         this.addRenderableWidget(new ImageButton(

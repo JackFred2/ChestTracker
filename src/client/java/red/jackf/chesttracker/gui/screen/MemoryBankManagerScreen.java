@@ -88,7 +88,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
         this.addRenderableWidget(GuiUtil.close(
                 this.left + this.menuWidth - BUTTON_SIZE - GuiConstants.SMALL_MARGIN,
                 this.top + GuiConstants.SMALL_MARGIN,
-                b -> this.onClose())).setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
+                b -> this.onClose()));
 
         var inGame = Minecraft.getInstance().level != null;
 
