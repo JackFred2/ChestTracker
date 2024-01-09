@@ -20,6 +20,7 @@ import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
@@ -31,10 +32,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MemoryBank {
-    public static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORIES_CODEC = ModCodecs.makeMutableMap(
+    public static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORIES_CODEC = JFLCodecs.mutableMap(
             Codec.unboundedMap(
                     ResourceLocation.CODEC,
-                    ModCodecs.makeMutableMap(Codec.unboundedMap(
+                    JFLCodecs.mutableMap(Codec.unboundedMap(
                             ModCodecs.BLOCK_POS_STRING,
                             Memory.CODEC
                     ))

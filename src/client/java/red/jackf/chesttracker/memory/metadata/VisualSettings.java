@@ -7,8 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.provider.ProviderHandler;
-import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.chesttracker.util.StreamUtil;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +21,7 @@ public class VisualSettings {
     public static Codec<VisualSettings> CODEC = RecordCodecBuilder.create(instance -> {
         final var def = new VisualSettings();
         return instance.group(
-                ModCodecs.makeMutableList(MemoryKeyIcon.CODEC.listOf()).optionalFieldOf("icons")
+                JFLCodecs.mutableList(MemoryKeyIcon.CODEC.listOf()).optionalFieldOf("icons")
                     .forGetter(meta -> Optional.of(meta.icons)),
                 Codec.BOOL.optionalFieldOf("useDefaultIconOrder")
                     .forGetter(visualSettings -> Optional.of(visualSettings.useDefaultIconOrder))
