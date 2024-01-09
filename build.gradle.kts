@@ -23,6 +23,8 @@ fun getVersionSuffix(): String {
 group = properties["maven_group"]!!
 version = "${properties["mod_version"]}+${getVersionSuffix()}"
 
+val isBundlingSearchables = properties["bundle_searchables"] == "true"
+
 base {
 	archivesName.set("${properties["archives_base_name"]}")
 }
@@ -173,7 +175,6 @@ dependencies {
 	}
 
 	// dev util
-	modCompileOnly("dev.emi:emi-fabric:${properties["emi_version"]}:api")
 	//modLocalRuntime("dev.emi:emi-fabric:${properties["emi_version"]}")
 	//modLocalRuntime("maven.modrinth:jsst:mc1.20-0.3.12")
 
@@ -183,8 +184,8 @@ dependencies {
 
 	// Searchables
 	modCompileOnly("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-	//modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-	// include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	if (isBundlingSearchables) include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
 
 	// Mod Menu
 	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
@@ -222,10 +223,18 @@ tasks.jar {
 }
 
 fun makeChangelogPrologue(): String {
-	return """
+	return if (isBundlingSearchables) {
+		"""
+		|Bundled:
+		|  - Where Is It: ${properties["where-is-it_version"]}
+		|  - Searchables: ${properties["searchables_version"]}
+		|  """.trimMargin()
+	} else {
+		"""
 		|Bundled:
 		|  - Where Is It: ${properties["where-is-it_version"]}
 		|  """.trimMargin()
+	}
 }
 
 println(makeChangelogPrologue())
@@ -306,9 +315,19 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 						slug.set(it)
 					}
 				}
-				listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade", "searchables").forEach {
+				listOf("emi", "jei", "roughly-enough-items", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
 					optional {
 						slug.set(it)
+					}
+				}
+
+				if (isBundlingSearchables) {
+					embeds {
+						slug.set("searchables")
+					}
+				} else {
+					optional {
+						slug.set("searchables")
 					}
 				}
 			}
@@ -332,9 +351,19 @@ if (listOf("CURSEFORGE_TOKEN", "MODRINTH_TOKEN").any { System.getenv().containsK
 						slug.set(it)
 					}
 				}
-				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade", "searchables").forEach {
+				listOf("emi", "jei", "rei", "modmenu", "shulkerboxtooltip", "wthit", "jade").forEach {
 					optional {
 						slug.set(it)
+					}
+				}
+
+				if (isBundlingSearchables) {
+					embeds {
+						slug.set("searchables")
+					}
+				} else {
+					optional {
+						slug.set("searchables")
 					}
 				}
 			}
