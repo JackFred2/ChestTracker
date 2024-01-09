@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class SearchSettings {
     public static final List<Integer> SEARCH_RANGES = makeSearchRanges(true);
     public static final List<Integer> SEARCH_RANGES_NO_INFINITE = makeSearchRanges(false);
 
-    private static final Codec<Either<Integer, String>> RANGE_CODEC = Codec.either(ModCodecs.oneOf(Codec.INT, SEARCH_RANGES), ModCodecs.singular(Codec.STRING, "infinite"));
+    private static final Codec<Either<Integer, String>> RANGE_CODEC = Codec.either(JFLCodecs.oneOf(Codec.INT, SEARCH_RANGES), ModCodecs.singular(Codec.STRING, "infinite"));
 
     protected static final Codec<SearchSettings> CODEC = RecordCodecBuilder.create(instance -> {
         final var def = new SearchSettings();

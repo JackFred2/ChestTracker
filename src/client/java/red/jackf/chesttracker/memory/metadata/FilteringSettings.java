@@ -7,7 +7,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.AbstractChestBlock;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -20,11 +20,11 @@ public class FilteringSettings {
         return instance.group(
                 Codec.BOOL.optionalFieldOf("onlyRememberNamed")
                         .forGetter(settings -> Optional.of(settings.onlyRememberNamed)),
-                ModCodecs.ofEnum(RememberedContainers.class).optionalFieldOf("rememberedContainers")
+                JFLCodecs.forEnum(RememberedContainers.class).optionalFieldOf("rememberedContainers")
                         .forGetter(settings -> Optional.of(settings.rememberedContainers)),
                 Codec.BOOL.optionalFieldOf("rememberEnderChests")
                         .forGetter(settings -> Optional.of(settings.rememberEnderChests)),
-                ModCodecs.ofEnum(AutoAddPlacedBlocks.class).optionalFieldOf("autoAddPlacedBlocks")
+                JFLCodecs.forEnum(AutoAddPlacedBlocks.class).optionalFieldOf("autoAddPlacedBlocks")
                         .forGetter(settings -> Optional.of(settings.autoAddPlacedBlocks))
         ).apply(instance, (onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks) -> new FilteringSettings(
                 onlyRememberNamed.orElse(def.onlyRememberNamed),

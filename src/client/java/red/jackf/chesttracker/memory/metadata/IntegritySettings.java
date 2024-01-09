@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.I18nUtil;
-import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Optional;
 
@@ -17,11 +17,11 @@ public class IntegritySettings {
                                 .forGetter(settings -> Optional.of(settings.removeOnPlayerBlockBreak)),
                         Codec.BOOL.optionalFieldOf("checkPeriodicallyForMissingBlocks")
                                 .forGetter(settings -> Optional.of(settings.checkPeriodicallyForMissingBlocks)),
-                        ModCodecs.ofEnum(MemoryLifetime.class).optionalFieldOf("memoryLifetime")
+                        JFLCodecs.forEnum(MemoryLifetime.class).optionalFieldOf("memoryLifetime")
                                 .forGetter(settings -> Optional.of(settings.memoryLifetime)),
                         Codec.BOOL.optionalFieldOf("preserveNamed")
                                 .forGetter(settings -> Optional.of(settings.preserveNamed)),
-                        ModCodecs.ofEnum(LifetimeCountMode.class).optionalFieldOf("lifetimeCountMode")
+                        JFLCodecs.forEnum(LifetimeCountMode.class).optionalFieldOf("lifetimeCountMode")
                                 .forGetter(settings -> Optional.of(settings.lifetimeCountMode))
                 )
                 .apply(instance, (removeOnPlayerBlockBreak, checkPeriodicallyForMissingBlocks, memoryLifetime, preserveNamed, lifetimeCountMode) ->

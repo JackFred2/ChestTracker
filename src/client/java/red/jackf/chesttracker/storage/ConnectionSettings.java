@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
-import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.nio.file.Path;
@@ -59,5 +59,5 @@ public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
     private static final Codec<ConnectionSettings> CONNECTION_SETTINGS_CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.STRING.optionalFieldOf("memory_bank_id_override").forGetter(ConnectionSettings::memoryBankIdOverride)
     ).apply(i, ConnectionSettings::new));
-    private static final Codec<Map<String, ConnectionSettings>> FILE_CODEC = ModCodecs.makeMutableMap(Codec.unboundedMap(Codec.STRING, CONNECTION_SETTINGS_CODEC));
+    private static final Codec<Map<String, ConnectionSettings>> FILE_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(Codec.STRING, CONNECTION_SETTINGS_CODEC));
 }
