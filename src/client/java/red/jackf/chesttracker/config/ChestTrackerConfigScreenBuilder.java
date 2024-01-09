@@ -20,8 +20,8 @@ import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
 import red.jackf.chesttracker.util.Constants;
-import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.StringUtil;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import java.nio.file.Files;

@@ -4,8 +4,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.ClientBlockSource;
+import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
