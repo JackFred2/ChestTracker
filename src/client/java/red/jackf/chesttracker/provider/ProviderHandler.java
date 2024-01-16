@@ -1,8 +1,10 @@
 package red.jackf.chesttracker.provider;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.provider.Provider;
+import red.jackf.chesttracker.compat.servers.hypixel.HypixelProvider;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.ArrayList;
@@ -34,5 +36,17 @@ public class ProviderHandler {
 
     public static void unload() {
         INSTANCE = null;
+    }
+
+    public static void setup() {
+        // TODO move into self plugin
+        Provider.register(HypixelProvider.INSTANCE);
+
+        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+            if (INSTANCE == null) return;
+            if (!overlay) INSTANCE.onChatMessage(message);
+        });
+
+
     }
 }

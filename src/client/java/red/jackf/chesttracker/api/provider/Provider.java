@@ -4,7 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.api.provider.def.DefaultProviderHelper;
@@ -54,6 +57,22 @@ public interface Provider {
      * @return An optional containing a memory entry, or an empty optional if not present.
      */
     Optional<MemoryBuilder.Entry> createMemory(AbstractContainerScreen<?> screen);
+
+    /**
+     * Called whenever a message is received in chat. Used to help track the current key for some providers, such as
+     * Hypixel SMP.
+     *
+     * @param message Message received from the server.
+     */
+    default void onChatMessage(Component message) {}
+
+    /**
+     * Called when a player respawns - including changing dimensions, from lobby to server and vice versa.
+     *
+     * @param from The old level key the player was in
+     * @param to The new level key the player is going to
+     */
+    default void onRespawn(ResourceKey<Level> from, ResourceKey<Level> to) {}
 
     /**
      * Get a list of default icons for keys to show in the menu. These are displayed in the order of the list if manual

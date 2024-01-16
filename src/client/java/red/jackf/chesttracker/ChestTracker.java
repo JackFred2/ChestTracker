@@ -24,9 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.events.AfterPlayerPlaceBlock;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
-import red.jackf.chesttracker.api.provider.Provider;
 import red.jackf.chesttracker.compat.mods.ShareEnderChestIntegration;
-import red.jackf.chesttracker.compat.servers.hypixel.HypixelProvider;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
@@ -198,7 +196,6 @@ public class ChestTracker implements ClientModInitializer {
 
         ConnectionSettings.load();
 
-        // TODO move into self plugin
-        Provider.register(new HypixelProvider());
+        ProviderHandler.setup();
     }
 }
