@@ -35,6 +35,7 @@ Note: 1.x won't be recieving any new updates.
   - [WTHIT](https://modrinth.com/mod/wthit) & [Jade](https://modrinth.com/mod/jade) - Show contents of container you're looking at. Contains it's own plugin settings.
 - Custom handling for:
   - Hypixel Skyblock (private island + ender chest).
+  - Hypixel SMP
 
 ## Usage
 
