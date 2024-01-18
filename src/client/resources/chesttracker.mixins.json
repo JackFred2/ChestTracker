@@ -3,6 +3,7 @@
   "package": "red.jackf.chesttracker.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AbstractContainerScreenAccessor",
     "AbstractWidgetAccessor",
     "BlockItemMixin",
     "BlockMixin",

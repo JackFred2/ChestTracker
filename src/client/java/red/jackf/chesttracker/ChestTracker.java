@@ -29,6 +29,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
+import red.jackf.chesttracker.gui.invbutton.InventoryButtonHandler;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
@@ -65,7 +66,7 @@ public class ChestTracker implements ClientModInitializer {
             new KeyMapping("key.chesttracker.open_gui", InputConstants.Type.KEYSYM, InputConstants.KEY_GRAVE, "chesttracker.title")
     );
 
-    private void openInGame(Minecraft client, @Nullable Screen parent) {
+    public static void openInGame(Minecraft client, @Nullable Screen parent) {
         client.setScreen(new ChestTrackerScreen(parent));
     }
 
@@ -135,6 +136,8 @@ public class ChestTracker implements ClientModInitializer {
                     LOGGER.debug("Blacklisted screen class, ignoring");
             }
         });
+
+        InventoryButtonHandler.setup();
 
         // auto add placed blocks with data, such as shulker boxes
         // TODO after fabric#3367 is merged: replace with that
