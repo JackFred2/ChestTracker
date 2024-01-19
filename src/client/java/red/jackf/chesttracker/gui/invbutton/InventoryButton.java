@@ -13,32 +13,68 @@ import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.util.GuiUtil;
 
-import java.util.function.Supplier;
-
 public class InventoryButton extends AbstractWidget {
     private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
-    private static final int SIZE = 9;
+    private static final int Z_OFFSET = 400;
+    static final int SIZE = 9;
     private final AbstractContainerScreen<?> parent;
-    private final Supplier<Integer> xSupplier;
+    private ButtonPosition position;
 
-    protected InventoryButton(AbstractContainerScreen<?> parent, Supplier<Integer> xSupplier, int y) {
-        super(xSupplier.get(), y, SIZE, SIZE, Component.translatable("chesttracker.title"));
+    private boolean canDrag = false;
+    private boolean isDragging = false;
+
+    protected InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
+        super(position.getX(parent), position.getY(parent), SIZE, SIZE, Component.translatable("chesttracker.title"));
         this.parent = parent;
-        this.xSupplier = xSupplier;
+        this.position = position;
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
     }
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.setX(this.xSupplier.get());
+        if (!this.isDragging) {
+            this.position.apply(this.parent, this);
+        }
         ResourceLocation resourceLocation = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
-        graphics.blitSprite(resourceLocation, this.getX(), this.getY(), this.width, this.height);
+        graphics.blitSprite(resourceLocation, this.getX(), this.getY(), Z_OFFSET, this.width, this.height);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        ChestTracker.openInGame(Minecraft.getInstance(), this.parent);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.isMouseOver(mouseX, mouseY)) {
+            this.canDrag = true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (this.canDrag) {
+            this.isDragging = true;
+            this.position = ButtonPosition.calculate(parent, (int) mouseX, (int) mouseY);
+            this.position.apply(this.parent, this);
+            this.setTooltip(Tooltip.create(Component.literal(this.position.toString())));
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        this.canDrag = false;
+        if (this.isDragging) {
+            this.isDragging = false;
+            ButtonPositionMap.setUser(this.parent, this.position);
+            this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
+            return true;
+        } else if (this.isMouseOver(mouseX, mouseY)) {
+            ChestTracker.openInGame(Minecraft.getInstance(), this.parent);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

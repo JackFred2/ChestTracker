@@ -13,7 +13,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.invbutton.ButtonPosition;
-import red.jackf.chesttracker.gui.invbutton.ButtonPositionTracker;
+import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class InventoryButtonPositionLoader implements SimpleResourceReloadListen
                                          ProfilerFiller profiler,
                                          Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            ButtonPositionTracker.INSTANCE.loadDatapackPositions(data);
+            ButtonPositionMap.loadDatapackPositions(data);
             return null;
         }, executor);
     }
