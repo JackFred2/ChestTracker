@@ -1,0 +1,12 @@
+{
+  "class_names": [
+    "net.minecraft.class_494",
+    "net.minecraft.client.gui.screens.inventory.LoomScreen"
+  ],
+  "position": {
+    "x_align": "right",
+    "x_offset": 13,
+    "y_align": "top",
+    "y_offset": 5
+  }
+}

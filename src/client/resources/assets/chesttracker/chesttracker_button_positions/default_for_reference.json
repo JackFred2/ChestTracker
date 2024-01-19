@@ -1,0 +1,12 @@
+{
+  "class_names": [
+    "DEFAULT"
+  ],
+  "__comment": "The default for any screen which doesn't have an override.",
+  "position": {
+    "x_align": "right",
+    "x_offset": 14,
+    "y_align": "top",
+    "y_offset": 5
+  }
+}
