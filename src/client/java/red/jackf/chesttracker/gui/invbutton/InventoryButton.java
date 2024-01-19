@@ -13,20 +13,25 @@ import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.util.GuiUtil;
 
+import java.util.function.Supplier;
+
 public class InventoryButton extends AbstractWidget {
     private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
     private static final int SIZE = 9;
     private final AbstractContainerScreen<?> parent;
+    private final Supplier<Integer> xSupplier;
 
-    protected InventoryButton(AbstractContainerScreen<?> parent, int x, int y) {
-        super(x, y, SIZE, SIZE, Component.translatable("chesttracker.title"));
+    protected InventoryButton(AbstractContainerScreen<?> parent, Supplier<Integer> xSupplier, int y) {
+        super(xSupplier.get(), y, SIZE, SIZE, Component.translatable("chesttracker.title"));
         this.parent = parent;
+        this.xSupplier = xSupplier;
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
     }
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.setX(this.xSupplier.get());
         ResourceLocation resourceLocation = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
         graphics.blitSprite(resourceLocation, this.getX(), this.getY(), this.width, this.height);
     }

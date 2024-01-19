@@ -2,27 +2,23 @@ package red.jackf.chesttracker.gui.invbutton;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import red.jackf.chesttracker.mixins.AbstractContainerScreenAccessor;
-
-import java.util.Set;
+import net.minecraft.server.packs.PackType;
+import red.jackf.chesttracker.gui.invbutton.data.InventoryButtonPositionLoader;
 
 public class InventoryButtonHandler {
     public static void setup() {
-        Set<Class<? extends AbstractContainerScreen<?>>> validClasses = Set.of(InventoryScreen.class);
-
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof AbstractContainerScreen<?> menuScreen && validClasses.contains(screen.getClass())) {
-                int left = ((AbstractContainerScreenAccessor) menuScreen).chesttracker$getLeft();
-                int top = ((AbstractContainerScreenAccessor) menuScreen).chesttracker$getTop();
-                int x = left - 11;
-                int y = top - 11;
+            if (screen instanceof AbstractContainerScreen<?> menuScreen) {
+                var position = ButtonPositionTracker.INSTANCE.getFor(menuScreen);
 
-                Screens.getButtons(menuScreen).add(new InventoryButton(menuScreen, x, y));
+                Screens.getButtons(menuScreen).add(
+                        new InventoryButton(menuScreen, () -> position.getX(menuScreen), position.getY(menuScreen))
+                );
             }
         });
 
-
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new InventoryButtonPositionLoader());
     }
 }
