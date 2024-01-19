@@ -86,6 +86,7 @@ public class ChestTrackerConfigScreenBuilder {
         return ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.title"))
                 .group(makeGuiGroup(instance))
+                .group(makeInventoryButtonGroup(instance))
                 .group(makeRenderingGroup(instance))
                 .group(makeDevGuiGroup(instance))
                 .build();
@@ -222,6 +223,26 @@ public class ChestTrackerConfigScreenBuilder {
                                          () -> instance.instance().gui.itemListTextScale,
                                          i -> instance.instance().gui.itemListTextScale = i)
                                 .build())
+                .build();
+    }
+
+    private static OptionGroup makeInventoryButtonGroup(ConfigClassHandler<ChestTrackerConfig> instance) {
+        return OptionGroup.createBuilder()
+                .name(translatable("chesttracker.config.inventoryButton"))
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.inventoryButton.enabled"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .image(getDescriptionImage("inventory_button", b), 128, 128)
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.defaults().gui.inventoryButton.enabled,
+                                () -> instance.instance().gui.inventoryButton.enabled,
+                                b -> instance.instance().gui.inventoryButton.enabled = b
+                        )
+                        .build())
                 .build();
     }
 
