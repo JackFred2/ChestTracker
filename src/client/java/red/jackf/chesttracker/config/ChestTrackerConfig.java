@@ -75,6 +75,13 @@ public class ChestTrackerConfig {
 
         @SerialEntry(comment = "How to scale the text in-GUI, relative to Minecraft's GUI scale? Minimum of 1.")
         public int itemListTextScale = 0;
+
+        @SerialEntry
+        public InventoryButton inventoryButton = new InventoryButton();
+        public static class InventoryButton {
+            @SerialEntry(comment = "Whether to enable the button that appears in inventory screens.")
+            public boolean enabled = true;
+        }
     }
 
     public static class Rendering {
