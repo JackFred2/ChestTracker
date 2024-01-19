@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.server.packs.PackType;
-import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.invbutton.data.InventoryButtonPositionLoader;
 
@@ -14,11 +13,14 @@ public class InventoryButtonHandler {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (!ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.enabled) return;
             if (screen instanceof AbstractContainerScreen<?> menuScreen) {
-                var position = ButtonPositionTracker.INSTANCE.getFor(menuScreen);
+                var position = ButtonPositionMap.getFor(menuScreen);
 
-                Screens.getButtons(menuScreen).add(
-                        new InventoryButton(menuScreen, () -> position.getX(menuScreen), position.getY(menuScreen))
-                );
+                InventoryButton button = new InventoryButton(menuScreen, position);
+
+                ((CTScreenDuck) menuScreen).chesttracker$setButton(button);
+
+                // add to start so interactions happen first
+                Screens.getButtons(menuScreen).add(0, button);
             }
         });
 
