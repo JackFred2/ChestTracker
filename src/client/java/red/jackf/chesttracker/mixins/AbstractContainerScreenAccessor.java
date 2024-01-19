@@ -11,4 +11,10 @@ public interface AbstractContainerScreenAccessor {
 
     @Accessor("topPos")
     int chesttracker$getTop();
+
+    @Accessor("imageWidth")
+    int chesttracker$getWidth();
+
+    @Accessor("imageHeight")
+    int chesttracker$getHeight();
 }
