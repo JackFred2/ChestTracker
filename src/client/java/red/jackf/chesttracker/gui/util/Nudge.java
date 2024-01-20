@@ -3,10 +3,12 @@ package red.jackf.chesttracker.gui.util;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import red.jackf.chesttracker.gui.invbutton.ButtonPosition;
+import red.jackf.chesttracker.gui.invbutton.CTScreenDuck;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Nudges a screen rectangle into a free position closest to cursor. Pretty inefficiently, it checks each pixel position
@@ -18,42 +20,126 @@ public class Nudge {
      * Max radius to check before failing
      */
     private static final int LIMIT = 100;
+    public static final int GUI_BORDER_EXTENSION = 8;
+    public static final int GUI_PADDING = 4;
+    public static final int GUI_MARGIN = 2;
+    public static final int SLOT_MARGIN = 2;
+    public static final int SCREEN_MARGIN = 2;
 
-    public static Optional<ScreenRectangle> adjust(ScreenRectangle start, Set<ScreenRectangle> colliders) {
-        if (isFree(start, colliders)) return Optional.of(start);
+    public static Set<ScreenRectangle> getCollidersFor(AbstractContainerScreen<?> screen) {
+        final int width = ((CTScreenDuck) screen).chesttracker$getWidth();
+        final int recipeWidth = ButtonPosition.getRecipeComponentWidth(screen);
+        final int height = ((CTScreenDuck) screen).chesttracker$getHeight();
 
-        /*for (int i = 0; i < LIMIT; i++) {
-            for (ScreenDirection direction : ScreenDirection.values()) {
-                var pos = step(start, direction, i);
-                if (isFree(pos, colliders)) return Optional.of(pos);
-            }
-        }*/
+        final int left = ((CTScreenDuck) screen).chesttracker$getLeft();
+        final int top = ((CTScreenDuck) screen).chesttracker$getTop();
 
-        /*
-        for (Iterator<ScreenPosition> it = spiral(start.position(), 20); it.hasNext(); ) {
-            var rect = new ScreenRectangle(it.next(), start.width(), start.height());
-            if (isFree(rect, colliders)) return Optional.of(rect);
-        }*/
+        final int twiceMargin = 2 * GUI_MARGIN;
+        final int twiceBorderExt = 2 * GUI_BORDER_EXTENSION;
+
+        var colliders = new HashSet<ScreenRectangle>();
+
+        // add nudging around borders around borders
+        // these extend a bit in sort of a hashtag shape, for snapping outside the gui
+        colliders.add(new ScreenRectangle(
+                left - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                top - GUI_MARGIN,
+                width + twiceMargin + twiceBorderExt,
+                GUI_PADDING + GUI_MARGIN
+        )); // top
+        colliders.add(new ScreenRectangle(
+                left - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                top + height - GUI_PADDING,
+                width + twiceMargin + twiceBorderExt,
+                GUI_PADDING + GUI_MARGIN
+        )); // bottom
+
+        colliders.add(new ScreenRectangle(
+                left - GUI_MARGIN,
+                top - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                GUI_PADDING + GUI_MARGIN,
+                height + twiceMargin + twiceBorderExt
+        )); // left
+        colliders.add(new ScreenRectangle(
+                left + width - GUI_PADDING,
+                top - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                GUI_PADDING + GUI_MARGIN,
+                height + twiceMargin + twiceBorderExt
+        )); // right
+
+        // recipe book IF OPEN
+        final RecipeBookComponent recipe = ButtonPosition.getVisibleRecipe(screen);
+        if (recipe != null) {
+            colliders.add(new ScreenRectangle(
+                    left - recipeWidth - 2,
+                    top - 2,
+                    recipeWidth + 4,
+                    height + 4
+            ));
+        }
+
+        // add slots
+        for (var slot : screen.getMenu().slots) {
+            colliders.add(inflate(new ScreenRectangle(
+                    left + slot.x,
+                    top + slot.y,
+                    16,
+                    16
+            ), SLOT_MARGIN));
+        }
+
+        return colliders;
+    }
+
+    public static ScreenRectangle tryPlaceWithin(ScreenRectangle toMove, ScreenRectangle border) {
+        // move horizontally
+        if (toMove.width() <= border.width()) {
+            if (toMove.right() > border.right())
+                toMove = new ScreenRectangle(border.right() - toMove.width(), toMove.top(), toMove.width(), toMove.height());
+            else if (toMove.left() < border.left())
+                toMove = new ScreenRectangle(border.left(), toMove.top(), toMove.width(), toMove.height());
+        }
+
+        // move vertically
+        if (toMove.height() <= border.height()) {
+            if (toMove.bottom() > border.bottom())
+                toMove = new ScreenRectangle(toMove.left(), border.bottom() - toMove.height(), toMove.width(), toMove.height());
+            else if (toMove.top() < border.top())
+                toMove = new ScreenRectangle(toMove.left(), border.top(), toMove.width(), toMove.height());
+        }
+
+        return toMove;
+    }
+
+    public static Optional<ScreenRectangle> adjust(ScreenRectangle start, Set<ScreenRectangle> colliders, ScreenRectangle border) {
+        // adjust start to be within bounds
+        start = tryPlaceWithin(start, border);
+
+        if (isFree(start, colliders, border)) return Optional.of(start);
 
         for (int i = 0; i < LIMIT; i++) {
             for (var pos : getAtRadius(start.position(), i)) {
                 var rect = new ScreenRectangle(pos, start.width(), start.height());
-                if (isFree(rect, colliders)) return Optional.of(rect);
+                if (isFree(rect, colliders, border)) return Optional.of(rect);
             }
         }
 
         return Optional.empty();
     }
 
-    private static boolean isFree(ScreenRectangle start, Set<ScreenRectangle> colliders) {
+    public static boolean isFree(ScreenRectangle start, Set<ScreenRectangle> colliders, ScreenRectangle border) {
+        if (start.left() < border.left() ||
+                start.right() > border.right() ||
+                start.top() < border.top() ||
+                start.bottom() > border.bottom()) return false;
+
         for (ScreenRectangle collider : colliders) {
             if (start.overlaps(collider)) return false;
         }
         return true;
     }
 
-    /*
-    private static ScreenRectangle step(ScreenRectangle start, ScreenDirection dir, int amount) {
+    public static ScreenRectangle step(ScreenRectangle start, ScreenDirection dir, int amount) {
         var pos = switch (dir) {
             case UP -> new ScreenPosition(start.position().x(), start.position().y() - amount);
             case DOWN -> new ScreenPosition(start.position().x(), start.position().y() + amount);
@@ -61,7 +147,7 @@ public class Nudge {
             case RIGHT -> new ScreenPosition(start.position().x() + amount, start.position().y());
         };
         return new ScreenRectangle(pos, start.width(), start.height());
-    }*/
+    }
 
     private static ScreenPosition stepOrth(ScreenPosition start, ScreenDirection dir, int amount, int orthAmount) {
         return switch (dir) {
@@ -85,46 +171,30 @@ public class Nudge {
         return list;
     }
 
-    /*
-    private static ScreenDirection right(ScreenDirection in) {
-        return switch (in) {
-            case UP -> ScreenDirection.RIGHT;
-            case RIGHT -> ScreenDirection.DOWN;
-            case DOWN -> ScreenDirection.LEFT;
-            case LEFT -> ScreenDirection.UP;
-        };
+    public static ScreenRectangle encompassing(List<ScreenRectangle> rectangles) {
+        if (rectangles.isEmpty()) return ScreenRectangle.empty();
+        if (rectangles.size() == 1) return rectangles.get(0);
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+
+        for (ScreenRectangle rect : rectangles) {
+            minX = Math.min(minX, rect.left());
+            maxX = Math.max(maxX, rect.right());
+            minY = Math.min(minY, rect.top());
+            maxY = Math.max(maxY, rect.bottom());
+        }
+
+        return new ScreenRectangle(minX, minY, maxX - minX, maxY - minY);
     }
 
-    private static Iterator<ScreenPosition> spiral(ScreenPosition origin, int radius) {
-        return new Iterator<>() {
-            private final int max = (1 + 2 * radius) * (1 + 2 * radius);
-            private int index = 0;
-            private int currentStep = 0;
-            private int currentStepLength = 1;
-            private ScreenPosition pos = origin;
-            private ScreenDirection dir = ScreenDirection.UP;
-
-            @Override
-            public boolean hasNext() {
-                return index < max;
-            }
-
-            @Override
-            public ScreenPosition next() {
-                if (index >= max) throw new NoSuchElementException();
-                var result = pos;
-
-                index++;
-                currentStep++;
-                pos = pos.step(dir);
-                if (currentStep >= currentStepLength) {
-                    dir = right(dir);
-                    currentStep = 0;
-                    if (dir.getAxis() == ScreenAxis.VERTICAL) currentStepLength += 1;
-                }
-
-                return result;
-            }
-        };
-    }*/
+    public static ScreenRectangle inflate(ScreenRectangle rectangle, int amount) {
+        return new ScreenRectangle(
+                rectangle.left() - amount,
+                rectangle.top() - amount,
+                rectangle.width() + 2 * amount,
+                rectangle.height() + 2 * amount
+        );
+    }
 }
