@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui.invbutton;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -16,11 +17,13 @@ import red.jackf.chesttracker.util.GuiUtil;
 public class InventoryButton extends AbstractWidget {
     private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
     private static final int Z_OFFSET = 400;
+    private static final int MS_BEFORE_DRAG_START = 300;
     static final int SIZE = 9;
     private final AbstractContainerScreen<?> parent;
     private ButtonPosition position;
 
     private boolean canDrag = false;
+    private long mouseDownStart = -1;
     private boolean isDragging = false;
 
     protected InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
@@ -44,13 +47,14 @@ public class InventoryButton extends AbstractWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isMouseOver(mouseX, mouseY)) {
             this.canDrag = true;
+            this.mouseDownStart = Util.getMillis();
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (this.canDrag) {
+        if (this.canDrag && Util.getMillis() - mouseDownStart >= MS_BEFORE_DRAG_START) {
             this.isDragging = true;
             var newPos = ButtonPosition.calculate(parent, (int) mouseX, (int) mouseY);
             if (newPos.isPresent()) {
@@ -68,6 +72,7 @@ public class InventoryButton extends AbstractWidget {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         this.canDrag = false;
+        this.mouseDownStart = -1;
         if (this.isDragging) {
             this.isDragging = false;
             ButtonPositionMap.setUser(this.parent, this.position);
