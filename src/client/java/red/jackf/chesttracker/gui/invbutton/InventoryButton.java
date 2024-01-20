@@ -26,8 +26,9 @@ public class InventoryButton extends AbstractWidget {
     static final int Z_OFFSET = 400;
     private static final int MS_BEFORE_DRAG_START = 200;
     private static final int EXPANDED_HOVER_INFLATE = 5;
-    private static final int EXTRA_BUTTON_SPACING = 5;
+    private static final int EXTRA_BUTTON_SPACING = 3;
     static final int SIZE = 9;
+    static final int IMAGE_SIZE = 11;
     private final AbstractContainerScreen<?> parent;
     private ButtonPosition lastPosition;
     private ButtonPosition position;
@@ -35,7 +36,7 @@ public class InventoryButton extends AbstractWidget {
     private boolean canDrag = false;
     private long mouseDownStart = -1;
     private boolean isDragging = false;
-    private final List<SecondaryButton> extraButtons;
+    private final List<AbstractWidget> secondaryButtons;
     private ScreenRectangle expandedHoverArea = ScreenRectangle.empty();
 
     protected InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
@@ -46,7 +47,7 @@ public class InventoryButton extends AbstractWidget {
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
-        this.extraButtons = List.of(
+        this.secondaryButtons = List.of(
                 new SecondaryButton(this.getX(), this.getY(), GuiUtil.twoSprite("inventory_button/forget"), Component.empty()),
                 new SecondaryButton(this.getX(), this.getY(), GuiUtil.twoSprite("inventory_button/rename"), Component.empty())
         );
@@ -63,10 +64,12 @@ public class InventoryButton extends AbstractWidget {
             this.showExtraButtons(false);
         }
 
-        ResourceLocation texture = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
-        graphics.blitSprite(texture, this.getX(), this.getY(), Z_OFFSET, this.width, this.height);
+        // NOTE: texture is 11x11 while button is 9x9
 
-        for (SecondaryButton secondary : this.extraButtons) {
+        ResourceLocation texture = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
+        graphics.blitSprite(texture, this.getX() - 1, this.getY() - 1, Z_OFFSET, IMAGE_SIZE, IMAGE_SIZE);
+
+        for (AbstractWidget secondary : this.secondaryButtons) {
             secondary.render(graphics, mouseX, mouseY, partialTick);
         }
     }
@@ -81,29 +84,32 @@ public class InventoryButton extends AbstractWidget {
         this.setPosition(this.position.getX(parent), this.position.getY(parent));
 
         var colliders = Nudge.getCollidersFor(parent);
-        // get best direction
 
+        // get best direction
+        // todo: try all and:
+        //   - try to go along a non-free dir with a priority of some sort
+        //   - default to right
+        //   - if none free, move entire block somewhere free using Nudge#adjust
+        //
         ScreenDirection freeDir = ScreenDirection.RIGHT;
         for (var dir : List.of(ScreenDirection.RIGHT, ScreenDirection.LEFT, ScreenDirection.DOWN, ScreenDirection.UP)) {
             var rect = this.rectangleFor(dir);
-            System.out.println(dir + ": " + rect);
             if (Nudge.isFree(rect, colliders, parent.getRectangle())) {
                 freeDir = dir;
                 break;
             }
         }
-        System.out.println(freeDir);
 
-        for (int i = 1; i <= this.extraButtons.size(); i++) {
+        for (int i = 1; i <= this.secondaryButtons.size(); i++) {
             ScreenRectangle pos = Nudge.step(this.getRectangle(), freeDir, (SIZE + EXTRA_BUTTON_SPACING) * i);
-            this.extraButtons.get(i - 1).setPosition(pos.left(), pos.top());
+            this.secondaryButtons.get(i - 1).setPosition(pos.left(), pos.top());
         }
     }
 
     private ScreenRectangle rectangleFor(ScreenDirection dir) {
         var boxes = new ArrayList<ScreenRectangle>();
         boxes.add(this.getRectangle());
-        for (int i = 1; i <= this.extraButtons.size(); i++) {
+        for (int i = 1; i <= this.secondaryButtons.size(); i++) {
             boxes.add(Nudge.step(this.getRectangle(), dir, (SIZE + EXTRA_BUTTON_SPACING) * i));
         }
 
@@ -111,14 +117,14 @@ public class InventoryButton extends AbstractWidget {
     }
 
     private void showExtraButtons(boolean shouldShow) {
-        for (SecondaryButton secondary : this.extraButtons) {
+        for (AbstractWidget secondary : this.secondaryButtons) {
             secondary.visible = shouldShow;
         }
 
         if (shouldShow) {
             var encompassing = Nudge.encompassing(Stream.concat(
                     Stream.of(this.getRectangle()),
-                    this.extraButtons.stream().map(AbstractWidget::getRectangle))
+                    this.secondaryButtons.stream().map(AbstractWidget::getRectangle))
                     .toList());
             this.expandedHoverArea = Nudge.inflate(encompassing, EXPANDED_HOVER_INFLATE);
         } else {
@@ -132,7 +138,7 @@ public class InventoryButton extends AbstractWidget {
             this.canDrag = true;
             this.mouseDownStart = Util.getMillis();
         }
-        for (SecondaryButton secondary : this.extraButtons) {
+        for (AbstractWidget secondary : this.secondaryButtons) {
             if (secondary.mouseClicked(mouseX, mouseY, button)) return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);

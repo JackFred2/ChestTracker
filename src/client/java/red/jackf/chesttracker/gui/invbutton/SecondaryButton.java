@@ -22,7 +22,7 @@ public class SecondaryButton extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation texture = sprites.get(this.isActive(), this.isHoveredOrFocused());
-        graphics.blitSprite(texture, this.getX(), this.getY(), Z_OFFSET, this.width, this.height);
+        graphics.blitSprite(texture, this.getX() - 1, this.getY() - 1, Z_OFFSET - 10, InventoryButton.IMAGE_SIZE, InventoryButton.IMAGE_SIZE);
     }
 
     @Override
