@@ -2,13 +2,19 @@ package red.jackf.chesttracker.gui.invbutton;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.util.Nudge;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
-import java.util.NavigableMap;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAlignment yAlign, int yOffset) {
     public static final Codec<ButtonPosition> CODEC = RecordCodecBuilder.create(
@@ -19,6 +25,10 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
                     Codec.INT.fieldOf("y_offset").forGetter(ButtonPosition::yOffset)
             ).apply(instance, ButtonPosition::new));
     private static final int SCREEN_MARGIN = 2;
+    private static final int GUI_PADDING = 4;
+    private static final int GUI_MARGIN = 2;
+    private static final int GUI_BORDER_EXTENSION = 8;
+    private static final int SLOT_MARGIN = 2;
 
     public int getX(AbstractContainerScreen<?> screen) {
         int left = ((CTScreenDuck) screen).chesttracker$getLeft();
@@ -50,15 +60,19 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
         inventoryButton.setPosition(x, y);
     }
 
-    static int getRecipeComponentWidth(AbstractContainerScreen<?> screen) {
+    static @Nullable RecipeBookComponent getVisibleRecipe(AbstractContainerScreen<?> screen) {
         if (screen instanceof RecipeUpdateListener recipeHolder && recipeHolder.getRecipeBookComponent().isVisible()) {
-            return RecipeBookComponent.IMAGE_WIDTH + 34;
+            return recipeHolder.getRecipeBookComponent();
         } else {
-            return 0;
+            return null;
         }
     }
 
-    static ButtonPosition calculate(AbstractContainerScreen<?> screen, int mouseX, int mouseY) {
+    static int getRecipeComponentWidth(AbstractContainerScreen<?> screen) {
+        return getVisibleRecipe(screen) == null ? 0 : RecipeBookComponent.IMAGE_WIDTH + 32;
+    }
+
+    static Optional<ButtonPosition> calculate(AbstractContainerScreen<?> screen, int mouseX, int mouseY) {
         final int width = ((CTScreenDuck) screen).chesttracker$getWidth();
         final int recipeWidth = getRecipeComponentWidth(screen);
         final int height = ((CTScreenDuck) screen).chesttracker$getHeight();
@@ -66,8 +80,78 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
         final int left = ((CTScreenDuck) screen).chesttracker$getLeft();
         final int top = ((CTScreenDuck) screen).chesttracker$getTop();
 
+        // so we're dragging the center of the button
+        mouseX -= InventoryButton.SIZE / 2;
+        mouseY -= InventoryButton.SIZE / 2;
+
+        // keep within screen bounds
         mouseX = Mth.clamp(mouseX, SCREEN_MARGIN, screen.width - SCREEN_MARGIN - InventoryButton.SIZE);
         mouseY = Mth.clamp(mouseY, SCREEN_MARGIN, screen.height - SCREEN_MARGIN - InventoryButton.SIZE);
+
+        if (!Screen.hasShiftDown()) {
+            // don't allow in recipe book
+            Set<ScreenRectangle> collisions = new HashSet<>();
+
+            final int twiceMargin = 2 * GUI_MARGIN;
+            final int twiceBorderExt = 2 * GUI_BORDER_EXTENSION;
+
+            // add nudging around borders around borders
+            // these extend a bit in sort of a hashtag shape, for snapping outside the gui
+            collisions.add(new ScreenRectangle(
+                    left - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                    top - GUI_MARGIN,
+                    width + twiceMargin + twiceBorderExt,
+                    GUI_PADDING + GUI_MARGIN
+            )); // top
+            collisions.add(new ScreenRectangle(
+                    left - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                    top + height - GUI_PADDING,
+                    width + twiceMargin + twiceBorderExt,
+                    GUI_PADDING + GUI_MARGIN
+            )); // bottom
+
+            collisions.add(new ScreenRectangle(
+                    left - GUI_MARGIN,
+                    top - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                    GUI_PADDING + GUI_MARGIN,
+                    height + twiceMargin + twiceBorderExt
+            )); // left
+            collisions.add(new ScreenRectangle(
+                    left + width - GUI_PADDING,
+                    top - GUI_MARGIN - GUI_BORDER_EXTENSION,
+                    GUI_PADDING + GUI_MARGIN,
+                    height + twiceMargin + twiceBorderExt
+            )); // right
+
+            // recipe book IF OPEN
+            final RecipeBookComponent recipe = getVisibleRecipe(screen);
+            if (recipe != null) {
+                collisions.add(new ScreenRectangle(
+                        left - recipeWidth - 2,
+                        top - 2,
+                        recipeWidth + 4,
+                        height + 4
+                ));
+            }
+
+            // add slots
+            for (var slot : screen.getMenu().slots) {
+                collisions.add(new ScreenRectangle(
+                        left + slot.x - SLOT_MARGIN,
+                        top + slot.y - SLOT_MARGIN,
+                        16 + 2 * SLOT_MARGIN,
+                        16 + 2 * SLOT_MARGIN
+                ));
+            }
+
+            // apply
+            var nudged = Nudge.adjust(new ScreenRectangle(mouseX, mouseY, InventoryButton.SIZE, InventoryButton.SIZE), collisions);
+
+            if (nudged.isEmpty()) return Optional.empty();
+
+            mouseX = nudged.get().left();
+            mouseY = nudged.get().top();
+        }
 
         VerticalAlignment yAlign;
         int yOffset;
@@ -102,7 +186,7 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
             xAlign = HorizontalAlignment.screen_left;
             xOffset = mouseX;
         } else if (mouseX <= leftGuiRightGuiMidpoint) {
-            if (mouseX <= left && mouseY > top && mouseY <= top + height) {
+            if (mouseX <= left - 2 && mouseY > top && mouseY <= top + height) {
                 xAlign = HorizontalAlignment.left_with_recipe;
                 xOffset = mouseX - left + recipeWidth;
             } else {
@@ -117,7 +201,7 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
             xOffset = screen.width - mouseX;
         }
 
-        return new ButtonPosition(xAlign, xOffset, yAlign, yOffset);
+        return Optional.of(new ButtonPosition(xAlign, xOffset, yAlign, yOffset));
     }
 
     public enum HorizontalAlignment {
@@ -133,15 +217,5 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
         screen_bottom,
         top,
         bottom
-    }
-
-    private static <T> T getClosest(NavigableMap<Integer, T> options, int value) {
-        var lower = options.floorEntry(value);
-        var higher = options.higherEntry(value);
-        if (lower == null) return higher.getValue();
-        if (higher == null) return lower.getValue();
-        int lowDistance = Math.abs(value - lower.getKey());
-        int highDistance = Math.abs(value - higher.getKey());
-        return lowDistance <= highDistance ? lower.getValue() : higher.getValue();
     }
 }
