@@ -28,6 +28,7 @@ import red.jackf.chesttracker.compat.mods.ShareEnderChestIntegration;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
+import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.gui.invbutton.InventoryButtonHandler;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
@@ -198,6 +199,7 @@ public class ChestTracker implements ClientModInitializer {
         ShareEnderChestIntegration.setup();
 
         ConnectionSettings.load();
+        ButtonPositionMap.loadUserPositions();
 
         ProviderHandler.setup();
     }
