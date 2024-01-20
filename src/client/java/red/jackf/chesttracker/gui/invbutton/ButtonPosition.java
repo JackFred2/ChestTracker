@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.gui.util.Nudge;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,43 +23,38 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
                     JFLCodecs.forEnum(VerticalAlignment.class).fieldOf("y_align").forGetter(ButtonPosition::yAlign),
                     Codec.INT.fieldOf("y_offset").forGetter(ButtonPosition::yOffset)
             ).apply(instance, ButtonPosition::new));
-    private static final int SCREEN_MARGIN = 2;
-    private static final int GUI_PADDING = 4;
-    private static final int GUI_MARGIN = 2;
-    private static final int GUI_BORDER_EXTENSION = 8;
-    private static final int SLOT_MARGIN = 2;
 
     public int getX(AbstractContainerScreen<?> screen) {
         int left = ((CTScreenDuck) screen).chesttracker$getLeft();
         int recipeWidth = getRecipeComponentWidth(screen);
 
-        return switch (xAlign) {
+        return Mth.clamp(switch (xAlign) {
             case screen_left -> xOffset;
             case screen_right -> screen.width - xOffset;
             case left_with_recipe -> left - recipeWidth + xOffset;
             case left -> left + xOffset;
             case right -> left + ((CTScreenDuck) screen).chesttracker$getWidth() - xOffset;
-        };
+        }, Nudge.SCREEN_MARGIN, screen.width - Nudge.SCREEN_MARGIN - InventoryButton.SIZE);
     }
 
     public int getY(AbstractContainerScreen<?> screen) {
         int top = ((CTScreenDuck) screen).chesttracker$getTop();
 
-        return switch (yAlign) {
+        return Mth.clamp(switch (yAlign) {
             case screen_top -> yOffset;
             case screen_bottom -> screen.height - yOffset;
             case top -> top + yOffset;
             case bottom -> top + ((CTScreenDuck) screen).chesttracker$getHeight() - yOffset;
-        };
+        }, Nudge.SCREEN_MARGIN, screen.height - Nudge.SCREEN_MARGIN - InventoryButton.SIZE);
     }
 
     public void apply(AbstractContainerScreen<?> parent, InventoryButton inventoryButton) {
-        int x = Mth.clamp(getX(parent), SCREEN_MARGIN, parent.width - SCREEN_MARGIN - InventoryButton.SIZE);
-        int y = Mth.clamp(getY(parent), SCREEN_MARGIN, parent.height - SCREEN_MARGIN - InventoryButton.SIZE);
+        int x = getX(parent);
+        int y = getY(parent);
         inventoryButton.setPosition(x, y);
     }
 
-    static @Nullable RecipeBookComponent getVisibleRecipe(AbstractContainerScreen<?> screen) {
+    public static @Nullable RecipeBookComponent getVisibleRecipe(AbstractContainerScreen<?> screen) {
         if (screen instanceof RecipeUpdateListener recipeHolder && recipeHolder.getRecipeBookComponent().isVisible()) {
             return recipeHolder.getRecipeBookComponent();
         } else {
@@ -68,7 +62,7 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
         }
     }
 
-    static int getRecipeComponentWidth(AbstractContainerScreen<?> screen) {
+    public static int getRecipeComponentWidth(AbstractContainerScreen<?> screen) {
         return getVisibleRecipe(screen) == null ? 0 : RecipeBookComponent.IMAGE_WIDTH + 32;
     }
 
@@ -85,67 +79,15 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
         mouseY -= InventoryButton.SIZE / 2;
 
         // keep within screen bounds
-        mouseX = Mth.clamp(mouseX, SCREEN_MARGIN, screen.width - SCREEN_MARGIN - InventoryButton.SIZE);
-        mouseY = Mth.clamp(mouseY, SCREEN_MARGIN, screen.height - SCREEN_MARGIN - InventoryButton.SIZE);
+        mouseX = Mth.clamp(mouseX, Nudge.SCREEN_MARGIN, screen.width - Nudge.SCREEN_MARGIN - InventoryButton.SIZE);
+        mouseY = Mth.clamp(mouseY, Nudge.SCREEN_MARGIN, screen.height - Nudge.SCREEN_MARGIN - InventoryButton.SIZE);
 
         if (!Screen.hasShiftDown()) {
             // don't allow in recipe book
-            Set<ScreenRectangle> collisions = new HashSet<>();
-
-            final int twiceMargin = 2 * GUI_MARGIN;
-            final int twiceBorderExt = 2 * GUI_BORDER_EXTENSION;
-
-            // add nudging around borders around borders
-            // these extend a bit in sort of a hashtag shape, for snapping outside the gui
-            collisions.add(new ScreenRectangle(
-                    left - GUI_MARGIN - GUI_BORDER_EXTENSION,
-                    top - GUI_MARGIN,
-                    width + twiceMargin + twiceBorderExt,
-                    GUI_PADDING + GUI_MARGIN
-            )); // top
-            collisions.add(new ScreenRectangle(
-                    left - GUI_MARGIN - GUI_BORDER_EXTENSION,
-                    top + height - GUI_PADDING,
-                    width + twiceMargin + twiceBorderExt,
-                    GUI_PADDING + GUI_MARGIN
-            )); // bottom
-
-            collisions.add(new ScreenRectangle(
-                    left - GUI_MARGIN,
-                    top - GUI_MARGIN - GUI_BORDER_EXTENSION,
-                    GUI_PADDING + GUI_MARGIN,
-                    height + twiceMargin + twiceBorderExt
-            )); // left
-            collisions.add(new ScreenRectangle(
-                    left + width - GUI_PADDING,
-                    top - GUI_MARGIN - GUI_BORDER_EXTENSION,
-                    GUI_PADDING + GUI_MARGIN,
-                    height + twiceMargin + twiceBorderExt
-            )); // right
-
-            // recipe book IF OPEN
-            final RecipeBookComponent recipe = getVisibleRecipe(screen);
-            if (recipe != null) {
-                collisions.add(new ScreenRectangle(
-                        left - recipeWidth - 2,
-                        top - 2,
-                        recipeWidth + 4,
-                        height + 4
-                ));
-            }
-
-            // add slots
-            for (var slot : screen.getMenu().slots) {
-                collisions.add(new ScreenRectangle(
-                        left + slot.x - SLOT_MARGIN,
-                        top + slot.y - SLOT_MARGIN,
-                        16 + 2 * SLOT_MARGIN,
-                        16 + 2 * SLOT_MARGIN
-                ));
-            }
+            Set<ScreenRectangle> collisions = Nudge.getCollidersFor(screen);
 
             // apply
-            var nudged = Nudge.adjust(new ScreenRectangle(mouseX, mouseY, InventoryButton.SIZE, InventoryButton.SIZE), collisions);
+            var nudged = Nudge.adjust(new ScreenRectangle(mouseX, mouseY, InventoryButton.SIZE, InventoryButton.SIZE), collisions, screen.getRectangle());
 
             if (nudged.isEmpty()) return Optional.empty();
 
