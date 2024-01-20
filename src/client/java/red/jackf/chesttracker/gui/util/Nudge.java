@@ -8,7 +8,15 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * <p>Nudges a screen rectangle into a free position closest to cursor. Pretty inefficiently, it checks each pixel position
+ * up to a radius of 100 but it has no FPS drops on my machine and premature optimization is the root of all evil. If
+ * you've got a faster algorithm to suggest please do.</p>
+ */
 public class Nudge {
+    /**
+     * Max radius to check before failing
+     */
     private static final int LIMIT = 100;
 
     public static Optional<ScreenRectangle> adjust(ScreenRectangle start, Set<ScreenRectangle> colliders) {
