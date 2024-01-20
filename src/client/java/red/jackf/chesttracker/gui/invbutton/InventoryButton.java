@@ -52,9 +52,13 @@ public class InventoryButton extends AbstractWidget {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (this.canDrag) {
             this.isDragging = true;
-            this.position = ButtonPosition.calculate(parent, (int) mouseX, (int) mouseY);
-            this.position.apply(this.parent, this);
-            this.setTooltip(Tooltip.create(Component.literal(this.position.toString())));
+            var newPos = ButtonPosition.calculate(parent, (int) mouseX, (int) mouseY);
+            if (newPos.isPresent()) {
+                this.position = newPos.get();
+                this.position.apply(this.parent, this);
+                //this.setTooltip(Tooltip.create(Component.literal(this.position.toString())));
+                this.setTooltip(null);
+            }
             return true;
         }
 
