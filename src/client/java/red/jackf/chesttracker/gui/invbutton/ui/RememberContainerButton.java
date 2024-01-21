@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui.invbutton.ui;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
@@ -27,14 +28,18 @@ public class RememberContainerButton extends SecondaryButton {
 
     private void setState(State state) {
         this.state = state;
-        this.setMessage(state.tooltip);
-        this.setTooltip(Tooltip.create(state.tooltip));
+        Component message = Component.translatable("chesttracker.inventoryButton.rememberContainer", state.tooltip);
+        this.setMessage(message);
+        this.setTooltip(Tooltip.create(message));
     }
 
     public enum State {
-        YES(GuiUtil.twoSprite("inventory_button/should_remember/yes"), Component.literal("yes")),
-        DEFAULT(GuiUtil.twoSprite("inventory_button/should_remember/default"), Component.literal("default")),
-        NO(GuiUtil.twoSprite("inventory_button/should_remember/no"), Component.literal("no"));
+        ALWAYS(GuiUtil.twoSprite("inventory_button/remember_container/always"),
+                Component.translatable("chesttracker.inventoryButton.rememberContainer.always").withStyle(ChatFormatting.GREEN)),
+        DEFAULT(GuiUtil.twoSprite("inventory_button/remember_container/default"),
+                Component.translatable("chesttracker.inventoryButton.rememberContainer.default").withStyle(ChatFormatting.GOLD)),
+        NEVER(GuiUtil.twoSprite("inventory_button/remember_container/never"),
+                Component.translatable("chesttracker.inventoryButton.rememberContainer.never").withStyle(ChatFormatting.RED));
 
         private final WidgetSprites sprites;
         private final Component tooltip;
