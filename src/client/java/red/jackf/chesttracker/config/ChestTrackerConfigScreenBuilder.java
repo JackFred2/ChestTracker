@@ -247,7 +247,7 @@ public class ChestTrackerConfigScreenBuilder {
                         .name(translatable("chesttracker.config.inventoryButton.showExtra"))
                         .description(b -> OptionDescription.createBuilder()
                                 .text(translatable("chesttracker.config.inventoryButton.showExtra.description"))
-                                .image(getDescriptionImage("inventory_button_show_extra", b), 128, 128)
+                                .image(getDescriptionImage("inventory_button_show_extra", b), 256, 192)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
@@ -259,6 +259,7 @@ public class ChestTrackerConfigScreenBuilder {
                         ).build())
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.manageCustom"))
+                        .text(translatable("chesttracker.gui.open"))
                         .action(ChestTrackerConfigScreenBuilder::managePreferences)
                         .build())
                 .build();
