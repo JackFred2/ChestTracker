@@ -1,7 +1,10 @@
 {
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
+
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via ",
+  "chesttracker.inventory_button.rename": "Rename Container",
+  "chesttracker.inventory_button.forget": "Forget",
 
   "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
   "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
