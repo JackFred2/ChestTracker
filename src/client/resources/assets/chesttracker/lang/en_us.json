@@ -9,6 +9,9 @@
   "chesttracker.inventoryButton.rememberContainer.always": "Always",
   "chesttracker.inventoryButton.rememberContainer.default": "Use Memory Bank Settings",
   "chesttracker.inventoryButton.rememberContainer.never": "Never",
+  "chesttracker.inventoryButton.export": "Export Position",
+  "chesttracker.inventoryButton.export.toast": "Exported to %s",
+  "chesttracker.inventoryButton.export.errorToast": "Error exporting position; check the console.",
 
   "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
   "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
@@ -130,6 +133,8 @@
   "chesttracker.config.inventoryButton.showExtra": "Show Extra Buttons",
   "chesttracker.config.inventoryButton.showExtra.description": "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.",
   "chesttracker.config.inventoryButton.manageCustom": "Manage Custom Button Positions",
+  "chesttracker.config.inventoryButton.export": "Show Export Button",
+  "chesttracker.config.inventoryButton.export.description": "Whether to show an export button for custom button positions. Files get placed in %s.",
   "chesttracker.config.rendering": "Rendering",
   "chesttracker.config.rendering.nameRenderRange": "Name Render Range",
   "chesttracker.config.dev": "Developer Utils",

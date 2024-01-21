@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.compat.Compatibility;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
+import red.jackf.chesttracker.gui.invbutton.PositionExporter;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
@@ -243,6 +244,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.instance().gui.inventoryButton.enabled,
                                 b -> instance.instance().gui.inventoryButton.enabled = b
                         ).build())
+                /*
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.showExtra"))
                         .description(b -> OptionDescription.createBuilder()
@@ -256,7 +258,18 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.defaults().gui.inventoryButton.showExtra,
                                 () -> instance.instance().gui.inventoryButton.showExtra,
                                 b -> instance.instance().gui.inventoryButton.showExtra = b
-                        ).build())
+                        ).build())*/
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.inventoryButton.export"))
+                        .description(OptionDescription.of(translatable("chesttracker.config.inventoryButton.export.description",
+                                literal(PositionExporter.getExportPath().toString()).withStyle(ChatFormatting.GOLD))))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(instance.defaults().gui.inventoryButton.showExport,
+                                () -> instance.instance().gui.inventoryButton.showExport,
+                                b -> instance.instance().gui.inventoryButton.showExport = b)
+                        .build())
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.manageCustom"))
                         .text(translatable("chesttracker.gui.open"))
