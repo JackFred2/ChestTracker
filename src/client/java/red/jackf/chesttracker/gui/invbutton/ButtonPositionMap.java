@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.gui.invbutton;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
@@ -46,6 +47,28 @@ public class ButtonPositionMap {
     }
 
     /**
+     * Return a read-only copy of the user position map.
+     */
+    public static Map<String, ButtonPosition> getUserPositions() {
+        return ImmutableMap.copyOf(userPositions);
+    }
+
+    /**
+     * Remove a given screen from the user preference map.
+     */
+    public static void removeUserPosition(String position) {
+        boolean result = userPositions.remove(position) != null;
+        if (result) saveUserPositions();
+    }
+
+    /**
+     * Save the user position file.
+     */
+    private static void saveUserPositions() {
+        FileUtil.saveToNbt(userPositions, USER_CODEC, USER_PATH);
+    }
+
+    /**
      * Returns the class name for a screen, mapped to intermediary if possible.
      */
     private static String getClassString(AbstractContainerScreen<?> screen) {
@@ -74,7 +97,7 @@ public class ButtonPositionMap {
             userPositions.put(className, userPosition);
         }
 
-        FileUtil.saveToNbt(userPositions, USER_CODEC, USER_PATH);
+        saveUserPositions();
     }
 
     /**
