@@ -462,8 +462,14 @@ public class ChestTrackerConfigScreenBuilder {
         var options = ButtonPositionMap.getUserPositions();
 
         for (String className : options.keySet().stream().sorted().toList()) {
+            String rawName = getDeobfName(className);
+
+            String[] split = rawName.split("\\.");
+            String shortened = split[split.length - 1];
+
             category.option(ButtonOption.createBuilder()
-                    .name(literal(getDeobfName(className)))
+                    .name(literal(shortened))
+                    .description(OptionDescription.of(literal(rawName)))
                     .text(translatable("mco.configure.world.buttons.delete"))
                     .action((ignored, button2) -> {
                         button2.setAvailable(false);
