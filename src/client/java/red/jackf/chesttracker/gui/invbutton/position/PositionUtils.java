@@ -28,11 +28,15 @@ public interface PositionUtils {
         }
     }
 
+    static boolean isRecipeBookVisible(AbstractContainerScreen<?> screen) {
+        return getVisibleRecipe(screen) != null;
+    }
+
     /**
      * Gets the width of the recipe component currently visible, or 0 if none. Padded a bit to account for recipe tabs.
      */
     static int getRecipeComponentWidth(AbstractContainerScreen<?> screen) {
-        return getVisibleRecipe(screen) == null ? 0 : RecipeBookComponent.IMAGE_WIDTH + 32;
+        return getVisibleRecipe(screen) == null ? 0 : RecipeBookComponent.IMAGE_WIDTH + 33;
     }
 
     /**
