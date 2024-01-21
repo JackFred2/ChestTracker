@@ -81,7 +81,7 @@ public class FilteringSettings {
         YES(state -> true,
             translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.yes")),
         SHULKER_BOXES_ONLY(state -> state.is(BlockTags.SHULKER_BOXES),
-                           translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.shulker_boxes_only")),
+                           translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.shulkerBoxesOnly")),
         NO(state -> false,
            translatable("chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.no"));
 
