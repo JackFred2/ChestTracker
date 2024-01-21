@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
+import red.jackf.chesttracker.gui.invbutton.PositionExporter;
 import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.gui.invbutton.position.PositionUtils;
 import red.jackf.chesttracker.gui.invbutton.position.RectangleUtils;
 import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,7 +45,7 @@ public class InventoryButton extends AbstractWidget {
     private boolean canDrag = false;
     private long mouseDownStart = -1;
     private boolean isDragging = false;
-    private final List<SecondaryButton> secondaryButtons;
+    private final List<SecondaryButton> secondaryButtons = new ArrayList<>();
     private ScreenRectangle expandedHoverArea = ScreenRectangle.empty();
 
     public InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
@@ -57,17 +57,18 @@ public class InventoryButton extends AbstractWidget {
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
+        /*
         // TODO only add ones relevant to the current screen - memory existing, etc.
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra) {
-            this.secondaryButtons = List.of(
-                    new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {
-                    }),
-                    new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {
-                    }),
-                    new RememberContainerButton()
-            );
-        } else {
-            this.secondaryButtons = Collections.emptyList();
+
+            this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
+            this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
+            this.secondaryButtons.add(new RememberContainerButton());
+        }*/
+
+        if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExport) {
+            this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/export"), Component.translatable("chesttracker.inventoryButton.export"), () ->
+                PositionExporter.export(this.parent, this.position)));
         }
 
         for (int i = 0; i < this.secondaryButtons.size(); i++) {

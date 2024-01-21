@@ -22,7 +22,7 @@ public class ButtonPositionMap {
     private static final ButtonPosition FALLBACK_DEFAULT
             = new ButtonPosition(ButtonPosition.HorizontalAlignment.right, 14, ButtonPosition.VerticalAlignment.top, 5);
     private static final Path USER_PATH = Constants.STORAGE_DIR.resolve("user_button_positions.dat");
-    private static final Codec<Map<String, ButtonPosition>> USER_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(
+    protected static final Codec<Map<String, ButtonPosition>> USER_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(
             Codec.STRING, ButtonPosition.CODEC
     ));
 
@@ -71,7 +71,7 @@ public class ButtonPositionMap {
     /**
      * Returns the class name for a screen, mapped to intermediary if possible.
      */
-    private static String getClassString(AbstractContainerScreen<?> screen) {
+    public static String getClassString(AbstractContainerScreen<?> screen) {
         String className = screen.getClass().getCanonicalName();
 
         // prefer intermediary if we can in case we're in a dev env
