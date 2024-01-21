@@ -38,6 +38,7 @@ public class InventoryButton extends AbstractWidget {
     private final AbstractContainerScreen<?> parent;
     private ButtonPosition lastPosition;
     private ButtonPosition position;
+    private boolean lastRecipeBookVisible;
 
     private boolean canDrag = false;
     private long mouseDownStart = -1;
@@ -50,6 +51,7 @@ public class InventoryButton extends AbstractWidget {
         this.parent = parent;
         this.position = position;
         this.lastPosition = position;
+        this.lastRecipeBookVisible = PositionUtils.isRecipeBookVisible(parent);
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
@@ -90,8 +92,10 @@ public class InventoryButton extends AbstractWidget {
     }
 
     private void applyPosition(boolean force) {
-        if (!force && this.position.equals(this.lastPosition)) return;
+        boolean isRecipeBookVisible = PositionUtils.isRecipeBookVisible(parent);
+        if (!force && this.position.equals(this.lastPosition) && isRecipeBookVisible == lastRecipeBookVisible) return;
         this.lastPosition = position;
+        this.lastRecipeBookVisible = isRecipeBookVisible;
         this.setPosition(this.position.getX(parent), this.position.getY(parent));
 
         var colliders = RectangleUtils.getCollidersFor(parent);
