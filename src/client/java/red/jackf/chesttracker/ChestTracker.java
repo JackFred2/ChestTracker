@@ -30,7 +30,7 @@ import red.jackf.chesttracker.gui.DeveloperOverlay;
 import red.jackf.chesttracker.gui.GuiApiDefaults;
 import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.gui.screen.ChestTrackerScreen;
-import red.jackf.chesttracker.gui.invbutton.InventoryButtonHandler;
+import red.jackf.chesttracker.gui.invbutton.InventoryButtonFeature;
 import red.jackf.chesttracker.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.MemoryIntegrity;
@@ -138,7 +138,7 @@ public class ChestTracker implements ClientModInitializer {
             }
         });
 
-        InventoryButtonHandler.setup();
+        InventoryButtonFeature.setup();
 
         // auto add placed blocks with data, such as shulker boxes
         // TODO after fabric#3367 is merged: replace with that

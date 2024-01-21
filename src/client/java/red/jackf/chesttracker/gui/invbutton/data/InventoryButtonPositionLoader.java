@@ -12,7 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.invbutton.ButtonPosition;
+import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 
 import java.io.Reader;

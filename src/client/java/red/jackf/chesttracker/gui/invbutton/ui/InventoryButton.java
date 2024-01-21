@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui.invbutton;
+package red.jackf.chesttracker.gui.invbutton.ui;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -14,20 +14,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.gui.util.Nudge;
+import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
+import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
+import red.jackf.chesttracker.gui.invbutton.position.PositionUtils;
+import red.jackf.chesttracker.gui.invbutton.position.RectangleUtils;
 import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Main Chest Tracker button.
+ */
 public class InventoryButton extends AbstractWidget {
     private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
     static final int Z_OFFSET = 400;
     private static final int MS_BEFORE_DRAG_START = 200;
     private static final int EXPANDED_HOVER_INFLATE = 5;
     private static final int EXTRA_BUTTON_SPACING = 3;
-    static final int SIZE = 9;
+    public static final int SIZE = 9;
     static final int IMAGE_SIZE = 11;
     private final AbstractContainerScreen<?> parent;
     private ButtonPosition lastPosition;
@@ -39,7 +45,7 @@ public class InventoryButton extends AbstractWidget {
     private final List<SecondaryButton> secondaryButtons;
     private ScreenRectangle expandedHoverArea = ScreenRectangle.empty();
 
-    protected InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
+    public InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
         super(position.getX(parent), position.getY(parent), SIZE, SIZE, Component.translatable("chesttracker.title"));
         this.parent = parent;
         this.position = position;
@@ -87,7 +93,7 @@ public class InventoryButton extends AbstractWidget {
         this.lastPosition = position;
         this.setPosition(this.position.getX(parent), this.position.getY(parent));
 
-        var colliders = Nudge.getCollidersFor(parent);
+        var colliders = RectangleUtils.getCollidersFor(parent);
 
         // get best direction
         // todo: try all and:
@@ -98,14 +104,14 @@ public class InventoryButton extends AbstractWidget {
         ScreenDirection freeDir = ScreenDirection.RIGHT;
         for (var dir : List.of(ScreenDirection.RIGHT, ScreenDirection.LEFT, ScreenDirection.DOWN, ScreenDirection.UP)) {
             var rect = this.rectangleFor(dir);
-            if (Nudge.isFree(rect, colliders, parent.getRectangle())) {
+            if (RectangleUtils.isFree(rect, colliders, parent.getRectangle())) {
                 freeDir = dir;
                 break;
             }
         }
 
         for (int i = 1; i <= this.secondaryButtons.size(); i++) {
-            ScreenRectangle pos = Nudge.step(this.getRectangle(), freeDir, (SIZE + EXTRA_BUTTON_SPACING) * i);
+            ScreenRectangle pos = RectangleUtils.step(this.getRectangle(), freeDir, (SIZE + EXTRA_BUTTON_SPACING) * i);
             this.secondaryButtons.get(i - 1).setPosition(pos.left(), pos.top());
         }
     }
@@ -114,10 +120,10 @@ public class InventoryButton extends AbstractWidget {
         var boxes = new ArrayList<ScreenRectangle>();
         boxes.add(this.getRectangle());
         for (int i = 1; i <= this.secondaryButtons.size(); i++) {
-            boxes.add(Nudge.step(this.getRectangle(), dir, (SIZE + EXTRA_BUTTON_SPACING) * i));
+            boxes.add(RectangleUtils.step(this.getRectangle(), dir, (SIZE + EXTRA_BUTTON_SPACING) * i));
         }
 
-        return Nudge.encompassing(boxes);
+        return RectangleUtils.encompassing(boxes);
     }
 
     private void showExtraButtons(boolean shouldShow) {
@@ -126,11 +132,11 @@ public class InventoryButton extends AbstractWidget {
         }
 
         if (shouldShow) {
-            var encompassing = Nudge.encompassing(Stream.concat(
+            var encompassing = RectangleUtils.encompassing(Stream.concat(
                     Stream.of(this.getRectangle()),
                     this.secondaryButtons.stream().map(AbstractWidget::getRectangle))
                     .toList());
-            this.expandedHoverArea = Nudge.inflate(encompassing, EXPANDED_HOVER_INFLATE);
+            this.expandedHoverArea = RectangleUtils.inflate(encompassing, EXPANDED_HOVER_INFLATE);
         } else {
             this.expandedHoverArea = ScreenRectangle.empty();
         }
@@ -152,7 +158,7 @@ public class InventoryButton extends AbstractWidget {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (this.canDrag && Util.getMillis() - mouseDownStart >= MS_BEFORE_DRAG_START) {
             this.isDragging = true;
-            var newPos = ButtonPosition.calculate(parent, (int) mouseX, (int) mouseY);
+            var newPos = PositionUtils.calculate(parent, (int) mouseX, (int) mouseY);
             if (newPos.isPresent()) {
                 this.position = newPos.get();
                 this.applyPosition(false);
@@ -172,7 +178,7 @@ public class InventoryButton extends AbstractWidget {
 
         if (this.isDragging) {
             this.isDragging = false;
-            ButtonPositionMap.setUser(this.parent, this.position);
+            ButtonPositionMap.saveUserPosition(this.parent, this.position);
             this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
             return true;
         } else if (this.isMouseOver(mouseX, mouseY)) {
