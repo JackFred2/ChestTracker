@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.gui.invbutton.position.PositionUtils;
@@ -21,6 +22,7 @@ import red.jackf.chesttracker.gui.invbutton.position.RectangleUtils;
 import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -55,11 +57,18 @@ public class InventoryButton extends AbstractWidget {
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
-        this.secondaryButtons = List.of(
-                new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}),
-                new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}),
-                new RememberContainerButton()
-        );
+        // TODO only add ones relevant to the current screen - memory existing, etc.
+        if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra) {
+            this.secondaryButtons = List.of(
+                    new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {
+                    }),
+                    new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {
+                    }),
+                    new RememberContainerButton()
+            );
+        } else {
+            this.secondaryButtons = Collections.emptyList();
+        }
 
         for (int i = 0; i < this.secondaryButtons.size(); i++) {
             this.secondaryButtons.get(i).setButtonIndex(i + 1);
@@ -102,10 +111,8 @@ public class InventoryButton extends AbstractWidget {
 
         // get best direction
         // todo: try all and:
-        //   - try to go along a non-free dir with a priority of some sort
-        //   - default to right
-        //   - if none free, move entire block somewhere free using Nudge#adjust
-        //
+        //   - prefer towards center, horizontal first then vertical
+        //   - otherwise find free space anywhere and move all
         ScreenDirection freeDir = ScreenDirection.RIGHT;
         for (var dir : List.of(ScreenDirection.RIGHT, ScreenDirection.LEFT, ScreenDirection.DOWN, ScreenDirection.UP)) {
             var rect = this.rectangleFor(dir);

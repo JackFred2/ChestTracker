@@ -81,6 +81,8 @@ public class ChestTrackerConfig {
         public static class InventoryButton {
             @SerialEntry(comment = "Whether to enable the button that appears in inventory screens.")
             public boolean enabled = true;
+            @SerialEntry(comment = "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.")
+            public boolean showExtra = true;
         }
     }
 

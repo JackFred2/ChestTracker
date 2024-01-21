@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import red.jackf.chesttracker.compat.Compatibility;
 import red.jackf.chesttracker.gui.GuiConstants;
+import red.jackf.chesttracker.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
@@ -241,7 +242,24 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.defaults().gui.inventoryButton.enabled,
                                 () -> instance.instance().gui.inventoryButton.enabled,
                                 b -> instance.instance().gui.inventoryButton.enabled = b
-                        )
+                        ).build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.inventoryButton.showExtra"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .text(translatable("chesttracker.config.inventoryButton.showExtra.description"))
+                                .image(getDescriptionImage("inventory_button_show_extra", b), 128, 128)
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.defaults().gui.inventoryButton.showExtra,
+                                () -> instance.instance().gui.inventoryButton.showExtra,
+                                b -> instance.instance().gui.inventoryButton.showExtra = b
+                        ).build())
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("chesttracker.config.inventoryButton.manageCustom"))
+                        .action(ChestTrackerConfigScreenBuilder::managePreferences)
                         .build())
                 .build();
     }
@@ -403,5 +421,59 @@ public class ChestTrackerConfigScreenBuilder {
                                 )
                                 .build())
                 .build();
+    }
+
+    //////////////////////////////////
+    // USER BUTTON POSITION MANAGER //
+    //////////////////////////////////
+    private static String getDeobfName(String className) {
+        // yes these are yarn names not mojmap but im avoiding licensing issues
+        return switch (className) {
+            case "net.minecraft.class_471" -> "net.minecraft.client.gui.screen.ingame.AnvilScreen";
+            case "net.minecraft.class_466" -> "net.minecraft.client.gui.screen.ingame.BeaconScreen";
+            case "net.minecraft.class_3871" -> "net.minecraft.client.gui.screen.ingame.BlastFurnaceScreen";
+            case "net.minecraft.class_472" -> "net.minecraft.client.gui.screen.ingame.BrewingStandScreen";
+            case "net.minecraft.class_3934" -> "net.minecraft.client.gui.screen.ingame.CartographyTableScreen";
+            case "net.minecraft.class_476" -> "net.minecraft.client.gui.screen.ingame.GenericContainerScreen";
+            case "net.minecraft.class_479" -> "net.minecraft.client.gui.screen.ingame.CraftingScreen";
+            case "net.minecraft.class_481" -> "net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen";
+            case "net.minecraft.class_480" -> "net.minecraft.client.gui.screen.ingame.Generic3x3ContainerScreen";
+            case "net.minecraft.class_486" -> "net.minecraft.client.gui.screen.ingame.EnchantmentScreen";
+            case "net.minecraft.class_3873" -> "net.minecraft.client.gui.screen.ingame.FurnaceScreen";
+            case "net.minecraft.class_3802" -> "net.minecraft.client.gui.screen.ingame.GrindstoneScreen";
+            case "net.minecraft.class_488" -> "net.minecraft.client.gui.screen.ingame.HopperScreen";
+            case "net.minecraft.class_491" -> "net.minecraft.client.gui.screen.ingame.HorseScreen";
+            case "net.minecraft.class_490" -> "net.minecraft.client.gui.screen.ingame.InventoryScreen";
+            case "net.minecraft.class_494" -> "net.minecraft.client.gui.screen.ingame.LoomScreen";
+            case "net.minecraft.class_492" -> "net.minecraft.client.gui.screen.ingame.MerchantScreen";
+            case "net.minecraft.class_495" -> "net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen";
+            case "net.minecraft.class_4895" -> "net.minecraft.client.gui.screen.ingame.SmithingScreen";
+            case "net.minecraft.class_3874" -> "net.minecraft.client.gui.screen.ingame.SmokerScreen";
+            case "net.minecraft.class_3979" -> "net.minecraft.client.gui.screen.ingame.StonecutterScreen";
+            default -> className;
+        };
+    }
+
+    private static void managePreferences(YACLScreen parent, ButtonOption button) {
+        var category = ConfigCategory.createBuilder()
+                .name(translatable("chesttracker.config.inventoryButton.manageCustom"));
+
+        var options = ButtonPositionMap.getUserPositions();
+
+        for (String className : options.keySet().stream().sorted().toList()) {
+            category.option(ButtonOption.createBuilder()
+                    .name(literal(getDeobfName(className)))
+                    .text(translatable("mco.configure.world.buttons.delete"))
+                    .action((ignored, button2) -> {
+                        button2.setAvailable(false);
+                        ButtonPositionMap.removeUserPosition(className);
+                    }).build());
+        }
+
+        Minecraft.getInstance().setScreen(YetAnotherConfigLib.createBuilder()
+                .title(translatable("chesttracker.config.inventoryButton.manageCustom"))
+                .category(category.build())
+                .build()
+                .generateScreen(parent));
     }
 }

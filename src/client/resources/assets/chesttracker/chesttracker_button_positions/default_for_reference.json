@@ -2,7 +2,8 @@
   "class_names": [
     "DEFAULT"
   ],
-  "__comment": "The default for any screen which doesn't have an override.",
+  "__comment": "The default for any screen which doesn't have either a user preference or a datapack override.",
+  "__comment2": "A copy of this will be loaded from code if this JSON file cannot load.",
   "position": {
     "x_align": "right",
     "x_offset": 14,
