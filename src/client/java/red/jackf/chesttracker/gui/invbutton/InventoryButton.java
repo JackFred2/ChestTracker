@@ -36,7 +36,7 @@ public class InventoryButton extends AbstractWidget {
     private boolean canDrag = false;
     private long mouseDownStart = -1;
     private boolean isDragging = false;
-    private final List<AbstractWidget> secondaryButtons;
+    private final List<SecondaryButton> secondaryButtons;
     private ScreenRectangle expandedHoverArea = ScreenRectangle.empty();
 
     protected InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
@@ -48,8 +48,8 @@ public class InventoryButton extends AbstractWidget {
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
         this.secondaryButtons = List.of(
-                new SecondaryButton(this.getX(), this.getY(), GuiUtil.twoSprite("inventory_button/forget"), Component.empty()),
-                new SecondaryButton(this.getX(), this.getY(), GuiUtil.twoSprite("inventory_button/rename"), Component.empty())
+                new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventory_button.forget"), () -> {}),
+                new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventory_button.rename"), () -> {})
         );
 
         this.applyPosition(true);
@@ -117,8 +117,8 @@ public class InventoryButton extends AbstractWidget {
     }
 
     private void showExtraButtons(boolean shouldShow) {
-        for (AbstractWidget secondary : this.secondaryButtons) {
-            secondary.visible = shouldShow;
+        for (SecondaryButton secondary : this.secondaryButtons) {
+            secondary.setVisible(shouldShow, this.getX(), this.getY());
         }
 
         if (shouldShow) {
