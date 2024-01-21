@@ -18,6 +18,7 @@ public class SecondaryButton extends AbstractWidget {
     private long startTweenTime = -1;
     private int startX = 0;
     private int startY = 0;
+    private int buttonIndex = 0;
 
     public SecondaryButton(WidgetSprites sprites, Component message, Runnable onClick) {
         super(0, 0, InventoryButton.SIZE, InventoryButton.SIZE, message); // pos updated in InventoryButton#applyPosition
@@ -27,15 +28,21 @@ public class SecondaryButton extends AbstractWidget {
         this.visible = false;
     }
 
+    // used to delay tweening and control z order
+    protected void setButtonIndex(int index) {
+        this.buttonIndex = index;
+    }
+
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation texture = sprites.get(this.isActive(), this.isHoveredOrFocused());
 
-        float factor = Mth.clamp((float) (Util.getMillis() - startTweenTime) / TWEEN_TIME, 0, 1);
+        long tweenTime = this.buttonIndex * TWEEN_TIME;
+        float factor = Mth.clamp((float) (Util.getMillis() - startTweenTime) / tweenTime, 0, 1);
         int x = Mth.lerpDiscrete(factor, this.startX - 1, this.getX() - 1);
         int y = Mth.lerpDiscrete(factor, this.startY - 1, this.getY() - 1);
 
-        graphics.blitSprite(texture, x, y, InventoryButton.Z_OFFSET - 10, InventoryButton.IMAGE_SIZE, InventoryButton.IMAGE_SIZE);
+        graphics.blitSprite(texture, x, y, InventoryButton.Z_OFFSET - 10 * buttonIndex, InventoryButton.IMAGE_SIZE, InventoryButton.IMAGE_SIZE);
     }
 
     @Override
