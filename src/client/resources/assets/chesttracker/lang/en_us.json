@@ -5,6 +5,10 @@
   "chesttracker.compatibility.brand": "Client-side preview via %s",
   "chesttracker.inventoryButton.rename": "Rename Container",
   "chesttracker.inventoryButton.forget": "Forget",
+  "chesttracker.inventoryButton.rememberContainer": "Remember Container: %s",
+  "chesttracker.inventoryButton.rememberContainer.always": "Always",
+  "chesttracker.inventoryButton.rememberContainer.default": "Use Memory Bank Settings",
+  "chesttracker.inventoryButton.rememberContainer.never": "Never",
 
   "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
   "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
