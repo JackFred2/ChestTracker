@@ -2,7 +2,7 @@ package red.jackf.chesttracker.gui.invbutton.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import red.jackf.chesttracker.gui.invbutton.ButtonPosition;
+import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import red.jackf.chesttracker.gui.invbutton.CTScreenDuck;
-import red.jackf.chesttracker.gui.invbutton.InventoryButton;
+import red.jackf.chesttracker.gui.invbutton.ui.InventoryButton;
 
 // adds mouse dragged and release callbacks for the inv button
 @Mixin(AbstractContainerScreen.class)

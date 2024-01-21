@@ -1,5 +1,10 @@
 package red.jackf.chesttracker.gui.invbutton;
 
+import red.jackf.chesttracker.gui.invbutton.ui.InventoryButton;
+
+/**
+ * Applied to AbstractContainerScreen to get the menu positions, and to add the button with a back reference to the screen.
+ */
 public interface CTScreenDuck {
     int chesttracker$getLeft();
 

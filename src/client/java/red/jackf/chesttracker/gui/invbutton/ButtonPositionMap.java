@@ -2,7 +2,9 @@ package red.jackf.chesttracker.gui.invbutton;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -11,6 +13,10 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles storage of button positions - both user preferences stored in 'chesttracker/user_button_positions.dat' and
+ * datapack positions
+ */
 public class ButtonPositionMap {
     private static final ButtonPosition FALLBACK_DEFAULT
             = new ButtonPosition(ButtonPosition.HorizontalAlignment.right, 14, ButtonPosition.VerticalAlignment.top, 5);
@@ -22,23 +28,32 @@ public class ButtonPositionMap {
     private static final Map<String, ButtonPosition> datapackPositions = new HashMap<>();
     private static final Map<String, ButtonPosition> userPositions = new HashMap<>();
 
+    /**
+     * Receive all positions defined by a datapack.
+     */
     public static void loadDatapackPositions(Map<String, ButtonPosition> datapack) {
         datapackPositions.clear();
         datapackPositions.putAll(datapack);
     }
 
+    /**
+     * Load all positions from the 'user_button_positions.dat' file.
+     */
     public static void loadUserPositions() {
         userPositions.clear();
 
         FileUtil.loadFromNbt(USER_CODEC, USER_PATH).ifPresent(userPositions::putAll);
     }
 
+    /**
+     * Returns the class name for a screen, mapped to intermediary if possible.
+     */
     private static String getClassString(AbstractContainerScreen<?> screen) {
         String className = screen.getClass().getCanonicalName();
 
         // prefer intermediary if we can in case we're in a dev env
 
-        var mapper = FabricLoader.getInstance().getMappingResolver();
+        MappingResolver mapper = FabricLoader.getInstance().getMappingResolver();
         if (!mapper.getCurrentRuntimeNamespace().equals("intermediary") && mapper.getNamespaces().contains("intermediary")) {
             className = mapper.unmapClassName("intermediary", className);
         }
@@ -46,15 +61,32 @@ public class ButtonPositionMap {
         return className;
     }
 
-    public static void setUser(AbstractContainerScreen<?> screen, ButtonPosition position) {
+    /**
+     * Save a given user preferred position and update the user preference file.
+     */
+    public static void saveUserPosition(AbstractContainerScreen<?> screen, ButtonPosition userPosition) {
         String className = getClassString(screen);
 
-        userPositions.put(className, position);
+        ButtonPosition datapackPosition = datapackPositions.getOrDefault(className, null);
+        if (userPosition.equals(datapackPosition)) { // if moved back to default, don't store
+            userPositions.remove(className);
+        } else {
+            userPositions.put(className, userPosition);
+        }
 
         FileUtil.saveToNbt(userPositions, USER_CODEC, USER_PATH);
     }
 
-    public static ButtonPosition getFor(AbstractContainerScreen<?> screen) {
+    /**
+     * Gets a button position for a given screen. Preference is:
+     * <ol>
+     *     <li>User Custom Position</li>
+     *     <li>Datapack Position</li>
+     *     <li>Datapack Fallback Position</li>
+     *     <li>{@link #FALLBACK_DEFAULT}</li>
+     * </ol>
+     */
+    public static ButtonPosition getPositionFor(AbstractContainerScreen<?> screen) {
         String className = getClassString(screen);
 
         if (userPositions.containsKey(className)) {
