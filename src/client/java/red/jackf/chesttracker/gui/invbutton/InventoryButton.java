@@ -52,6 +52,10 @@ public class InventoryButton extends AbstractWidget {
                 new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventory_button.rename"), () -> {})
         );
 
+        for (int i = 0; i < this.secondaryButtons.size(); i++) {
+            this.secondaryButtons.get(i).setButtonIndex(i + 1);
+        }
+
         this.applyPosition(true);
     }
 
