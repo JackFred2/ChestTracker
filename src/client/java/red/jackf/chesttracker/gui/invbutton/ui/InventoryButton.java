@@ -55,7 +55,8 @@ public class InventoryButton extends AbstractWidget {
 
         this.secondaryButtons = List.of(
                 new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}),
-                new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {})
+                new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}),
+                new RememberContainerButton()
         );
 
         for (int i = 0; i < this.secondaryButtons.size(); i++) {

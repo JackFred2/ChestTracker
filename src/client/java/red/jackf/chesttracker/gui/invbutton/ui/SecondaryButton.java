@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class SecondaryButton extends AbstractWidget {
     private static final long TWEEN_TIME = 100;
     private final WidgetSprites sprites;
-    private final Runnable onClick;
+    protected Runnable onClick;
     private long startTweenTime = -1;
     private int startX = 0;
     private int startY = 0;
@@ -36,7 +36,7 @@ public class SecondaryButton extends AbstractWidget {
         this.buttonIndex = index;
     }
 
-    private WidgetSprites getSprites() {
+    protected WidgetSprites getSprites() {
         return this.sprites;
     }
 
