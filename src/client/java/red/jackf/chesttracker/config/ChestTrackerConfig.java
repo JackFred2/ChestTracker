@@ -71,7 +71,7 @@ public class ChestTrackerConfig {
         public int gridHeight = GuiConstants.MIN_GRID_ROWS;
 
         @SerialEntry(comment = "Hide the Memory Bank ID from the edit GUIs, for example in case you want to hide an IP.")
-        public boolean hideMemoryIds = false;
+        public boolean hideMemoryIds = true;
 
         @SerialEntry(comment = "How to scale the text in-GUI, relative to Minecraft's GUI scale? Minimum of 1.")
         public int itemListTextScale = 0;
