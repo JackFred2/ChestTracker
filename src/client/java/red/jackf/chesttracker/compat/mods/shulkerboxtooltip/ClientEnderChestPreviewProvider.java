@@ -60,8 +60,7 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
     public List<Component> addTooltip(@NotNull PreviewContext context) {
         if (ShulkerBoxTooltipApi.getCurrentPreviewType(true) == PreviewType.FULL)
             return List.of(
-                    translatable("chesttracker.compatibility.brand").withStyle(ChatFormatting.GRAY)
-                                                                    .append(translatable("chesttracker.title").withStyle(ChatFormatting.GOLD))
+                    translatable("chesttracker.compatibility.brand", translatable("chesttracker.title").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY)
             );
         else
             return Collections.emptyList();

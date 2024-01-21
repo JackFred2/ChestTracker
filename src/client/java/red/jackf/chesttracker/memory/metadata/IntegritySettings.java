@@ -61,9 +61,9 @@ public class IntegritySettings {
     }
 
     public enum LifetimeCountMode {
-        REAL_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.real_time")),
-        WORLD_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.world_time")),
-        LOADED_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loaded_time"));
+        REAL_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.realTime")),
+        WORLD_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.worldTime")),
+        LOADED_TIME(Component.translatable("chesttracker.gui.editMemoryBank.integrity.lifetimeCountMode.loadedTime"));
 
         public final Component label;
 

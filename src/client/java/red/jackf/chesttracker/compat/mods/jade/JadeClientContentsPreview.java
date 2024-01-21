@@ -62,8 +62,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
         if (accessor.showDetails() && config.get(ChestTrackerJadePlugin.CONFIG_SHOW_TEXT)) {
             tooltip.add(
-                    translatable("chesttracker.compatibility.brand").withStyle(ChatFormatting.GRAY)
-                        .append(translatable("chesttracker.title").withStyle(ChatFormatting.GOLD)));
+                    translatable("chesttracker.compatibility.brand", translatable("chesttracker.title").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY)
+            );
         }
     }
 
