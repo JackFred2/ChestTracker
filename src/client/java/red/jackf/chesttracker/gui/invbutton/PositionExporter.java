@@ -54,7 +54,7 @@ public class PositionExporter {
 
     private static void sendErrorToast() {
         Toasts.INSTANCE.send(ToastBuilder.builder(ToastFormat.DARK, Component.translatable("chesttracker.title"))
-                .withImage(ImageSpec.modIcon("chesttracker"))
+                .withImage(ImageSpec.modIcon(ChestTracker.ID))
                 .addMessage(Component.translatable("chesttracker.inventoryButton.export.errorToast").withStyle(ChatFormatting.RED))
                 .progressShowsVisibleTime()
                 .build());
