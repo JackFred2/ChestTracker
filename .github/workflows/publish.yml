@@ -1,18 +1,41 @@
-name: Release
+name: Publish
+run-name: Publish Chest Tracker
 
 on:
   workflow_dispatch:
     inputs:
-      lastTag:
-        description: 'Previous Tag (ex: v2.0.0+1.20.2)'
-        required: true
-      newTag:
-        description: 'New Tag (ex: v2.0.1+1.20.3)'
-        required: true
-      publishToModDistributors:
-        description: 'Publish to Modrinth and CurseForge'
+      changelogHeader:
+        description: 'Message to place at the top of the changelog.'
+        required: false
+        type: string
+      lastTagOverride:
+        description: 'Override previous tag for changelog generation.'
+        required: false
+        type: string
+      createNewTag:
+        description: 'Create New Tag. May cause issues if below options are true and this is false.'
+        default: true
         required: true
         type: boolean
+      publishToMaven:
+        description: 'Publish to Maven'
+        default: true
+        required: true
+        type: boolean
+      publishToGitHub:
+        description: 'Publish as GitHub Release'
+        default: true
+        required: true
+        type: boolean
+      publishToModDistributors:
+        description: 'Publish to Modrinth and CurseForge'
+        default: false
+        required: true
+        type: boolean
+
+permissions:
+  # packages: write
+  contents: write
 
 jobs:
   publish:
@@ -25,48 +48,139 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Set up JDK${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+
+      - name: setup gradle
+        uses: gradle/gradle-build-action@v2.12.0
+        with:
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            loom-cache
+
+      - name: make gradle wrapper executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
+
+      # get new tag in the form vX.Y.Z, saved to new_tag=vX.Y.Z
+      - name: Pull Mod Version
+        id: pull-new-version
+        run: |
+          grep 'mod_version=' gradle.properties | sed 's/mod_version=/new_tag=v/g' >> $GITHUB_OUTPUT
+
+      # previous tag parsing
+      # we use an env variable here because it's easier than joining two step outputs I think
+      - name: Set previous tag from override
+        if: ${{ inputs.lastTagOverride != null }}
+        run: |
+          if git show-ref --tags --verify --quiet "refs/tags/${{ inputs.lastTagOverride }}"; then
+            echo "lastTagOverride exists"
+            exit 0
+          else
+            echo "lastTagOverride doesn't exist, failing"
+            exit 1
+          fi
+          echo "PREVIOUS_TAG=${{ inputs.lastTagOverride }}" >> "$GITHUB_ENV"
+
+      - name: Set previous tag from git history (creating new tag)
+        if: ${{ inputs.lastTagOverride == null && inputs.createNewTag == true }}
+        run: |
+          previous=`git describe --tags --abbrev=0`
+          if [ $previous ]; then
+            echo "PREVIOUS_TAG=$previous" >> "$GITHUB_ENV"
+          else
+            echo "PREVIOUS_TAG=NONE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set previous tag from git history (not creating new tag)
+        if: ${{ inputs.lastTagOverride == null && inputs.createNewTag == false }}
+        run: |
+          previous=`git describe --tags --abbrev=0 --exclude="$(git describe --abbrev=0 --tags)"`
+          if [ $previous ]; then
+            echo "PREVIOUS_TAG=$previous" >> "$GITHUB_ENV"
+          else
+            echo "PREVIOUS_TAG=NONE" >> "$GITHUB_ENV"
+          fi        
+
+      # new tag parsing and concat
+      # vX.Y.Z -> vX.Y.Z+1.20.4
+      - id: new-tag-generator
+        name: Format new tag from input and branch
+        run: |
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          newTag=${{ steps.pull-new-version.outputs.new_tag }}+$branch
+          echo "NEW_TAG=$newTag" >> "$GITHUB_ENV"
+          echo "NEW_TAG=$newTag" >> "$GITHUB_OUTPUT"
+
+      - name: Check new version doesn't exist
+        if: ${{ inputs.createNewTag == true }}
+        run: |
+          if git show-ref --tags --verify --quiet "refs/tags/${{ steps.new-tag-generator.outputs.NEW_TAG }}"; then
+            echo "newTag already exists, failing"
+            exit 1
+          else
+            echo "newTag doesn't exist"
+            exit 0
+          fi
+
+      - name: Output build spec
+        run: |
+          echo "Previous: $PREVIOUS_TAG"
+          echo "New: $NEW_TAG"
+
+      - name: build & run tests
+        run: ./gradlew check build
+
       - name: Create version tag
+        if: ${{ inputs.createNewTag == true }}
         uses: actions/github-script@v6
         with:
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ github.event.inputs.newTag }}",
+              ref: "refs/tags/${{ steps.new-tag-generator.outputs.NEW_TAG }}",
               sha: context.sha
             })
 
-      - name: Fetch tags
+      - name: Fetch new tag for changelog generation
+        if: ${{ inputs.createNewTag == true }}
         run: git fetch --tags
 
-      - name: Fetch repo data
-        run: git fetch origin
-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Publish to JackFredMaven and GitHub Release
-        run: ./gradlew build generateChangelog publish githubRelease -PlastTag="${{ github.event.inputs.lastTag }}" -PnewTag="${{ github.event.inputs.newTag }}"
+      - name: Publish to JackFred Maven
+        if: ${{ inputs.publishToMaven == true }}
+        run: ./gradlew generateChangelog publish -PchangelogHeaderAddon="${{ inputs.changelogHeader }}"
         env:
+          RELEASE: true
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JACKFRED_MAVEN_USER: ${{ secrets.JACKFRED_MAVEN_USER }}
+          JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
+
+      - name: Publish as GitHub Release
+        if: ${{ inputs.publishToGitHub == true }}
+        run: ./gradlew generateChangelog githubRelease -PchangelogHeaderAddon="${{ inputs.changelogHeader }}"
+        env:
+          RELEASE: true
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JACKFRED_MAVEN_USER: ${{ secrets.JACKFRED_MAVEN_USER }}
           JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
 
       - name: Publish to Modrinth and Curseforge
-        run: ./gradlew build generateChangelog publishMods -PlastTag="${{ github.event.inputs.lastTag }}" -PnewTag="${{ github.event.inputs.newTag }}"
-        if: ${{ github.event.inputs.publishToModDistributors == 'true' }}
+        run: ./gradlew generateChangelog publishMods
+        if: ${{ inputs.publishToModDistributors == true }}
         env:
+          RELEASE: true
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JACKFRED_MAVEN_USER: ${{ secrets.JACKFRED_MAVEN_USER }}
