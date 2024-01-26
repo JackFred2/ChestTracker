@@ -10,9 +10,9 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.gui.invbutton.data.ButtonPositionDataFile;
 import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.util.Constants;
-import red.jackf.jackfredlib.client.api.toasts.ImageSpec;
 import red.jackf.jackfredlib.client.api.toasts.ToastBuilder;
 import red.jackf.jackfredlib.client.api.toasts.ToastFormat;
+import red.jackf.jackfredlib.client.api.toasts.ToastIcon;
 import red.jackf.jackfredlib.client.api.toasts.Toasts;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class PositionExporter {
                 Files.createDirectories(path.getParent());
                 FileUtils.write(path.toFile(), json.get().toString(), StandardCharsets.UTF_8);
                 Toasts.INSTANCE.send(ToastBuilder.builder(ToastFormat.DARK, Component.translatable("chesttracker.title"))
-                        .withImage(ImageSpec.modIcon(ChestTracker.ID))
+                        .withIcon(ToastIcon.modIcon(ChestTracker.ID))
                         .addMessage(Component.translatable("chesttracker.inventoryButton.export.toast",
                                 Component.literal(path.toString()).withStyle(ChatFormatting.GOLD)))
                         .progressShowsVisibleTime()
@@ -54,7 +54,7 @@ public class PositionExporter {
 
     private static void sendErrorToast() {
         Toasts.INSTANCE.send(ToastBuilder.builder(ToastFormat.DARK, Component.translatable("chesttracker.title"))
-                .withImage(ImageSpec.modIcon(ChestTracker.ID))
+                .withIcon(ToastIcon.modIcon(ChestTracker.ID))
                 .addMessage(Component.translatable("chesttracker.inventoryButton.export.errorToast").withStyle(ChatFormatting.RED))
                 .progressShowsVisibleTime()
                 .build());

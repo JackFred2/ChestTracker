@@ -42,7 +42,7 @@ public class MemoryIntegrity {
     private static int lastEntryListIndex = 0;
     private static final Supplier<CustomToast> toast = Memoizer.of(() ->
             ToastBuilder.builder(ToastFormat.WHITE, Component.translatable("chesttracker.gui.editMemoryBank.integrity"))
-                    .withImage(ImageSpec.modIcon(ChestTracker.ID))
+                    .withIcon(ToastIcon.modIcon(ChestTracker.ID))
                     .addMessage(Component.literal("Initial"))
                     .expiresWhenProgressComplete(2500L)
                     .progressPuller(toast1 -> {
