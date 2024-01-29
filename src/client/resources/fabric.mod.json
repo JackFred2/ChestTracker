@@ -39,6 +39,16 @@
     }
   ],
   "accessWidener": "chesttracker.accesswidener",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/chest-tracker",
+        "modmenu.github_releases": "https://github.com/JackFred2/ChestTracker/releases",
+        "modmenu.modrinth": "https://modrinth.com/mod/chest-tracker",
+        "modmenu.wiki": "https://github.com/JackFred2/ChestTracker/wiki"
+      }
+    }
+  },
   "depends": {
     "fabricloader": ">=0.15.0",
     "minecraft": ">=1.20.2",
