@@ -62,7 +62,6 @@
 	"chesttracker.gui.editMemoryBank.markDefault": "Varsayılan Yap",
 	"chesttracker.gui.editMemoryBank.alreadyDefault": "Zaten Varsayılan",
 	"chesttracker.gui.editMemoryBank.markDefault.tooltip": "Bu Hafıza Bankasını mevcut bağlantı/dünya için varsayılan olarak işaretle.",
-	"chesttracker.gui.editMemoryBank.deleteKey.description": "Seçilen Hafıza Bankasından %s anahtarını sil.",
 	"chesttracker.gui.editMemoryBank.filtering": "Filtreleme",
 	"chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed": "Sadece İsimlendirilen",
 	"chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed.tooltip": "Sadece adlandırılmış konteynerleri hatırlayıp hatırlamamak.",
