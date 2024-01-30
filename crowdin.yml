@@ -1,3 +1,6 @@
 files:
   - source: src/client/resources/assets/chesttracker/lang/en_us.json
     translation: /src/client/resources/assets/chesttracker/lang/%locale_with_underscore%.json
+
+commit_message: "[translations] Update %language%"
+append_commit_message: false
