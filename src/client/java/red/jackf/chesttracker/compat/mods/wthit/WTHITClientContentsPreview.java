@@ -37,7 +37,7 @@ public enum WTHITClientContentsPreview implements IBlockComponentProvider {
         if (memory == null) return;
 
         // show items
-        var stacks = ItemStackUtil.flattenStacks(memory.items());
+        var stacks = ItemStackUtil.flattenStacks(memory.items(), true);
         if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_ICON))
             tooltip.setLine(ItemData.ID, new ItemListComponentWithChestTrackerIcon(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
         else

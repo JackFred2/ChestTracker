@@ -39,7 +39,7 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
         Memory memory = MemoryBank.getMemoryAt(accessor.getLevel(), accessor.getPosition());
         if (memory == null) return;
 
-        var stacks = ItemStackUtil.flattenStacks(memory.items());
+        var stacks = ItemStackUtil.flattenStacks(memory.items(), true);
 
         int max = config.getInt(accessor.showDetails() ? Identifiers.MC_ITEM_STORAGE_DETAILED_AMOUNT : Identifiers.MC_ITEM_STORAGE_NORMAL_AMOUNT);
         int perLine = config.getInt(Identifiers.MC_ITEM_STORAGE_ITEMS_PER_LINE);

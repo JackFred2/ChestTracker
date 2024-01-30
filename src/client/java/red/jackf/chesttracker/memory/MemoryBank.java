@@ -18,6 +18,7 @@ import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
+import red.jackf.chesttracker.util.ItemStackUtil;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -29,7 +30,6 @@ import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class MemoryBank {
     public static final Codec<Map<ResourceLocation, Map<BlockPos, Memory>>> MEMORIES_CODEC = JFLCodecs.mutableMap(
@@ -245,43 +245,35 @@ public class MemoryBank {
     }
 
     /**
-     * Returns a list of counts of items in a given key; used in the main screen. Not sorted in any particular order.
+     * Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.
      *
-     * @param key    Memory Key to count and return
-     * @param filter Filter to apply to memory entries before getting counted.
-     * @return Arbitrary order list of all items in a given memory key.
+     * @param key Memory key to pull from
+     * @param filter Filter that memories must pass to be counted
+     * @param stackMergeMode How to merge identical stacks
      */
-    public Map<LightweightStack, Integer> getCounts(
+    public List<ItemStack> getCounts(
             ResourceLocation key,
-            Predicate<Map.Entry<BlockPos, Memory>> filter) {
-        if (memories.containsKey(key))
-            return memories.get(key).entrySet().stream()
-                           .filter(filter)
-                           .flatMap(data -> data.getValue().items().stream())
-                           .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
-                                                                                   stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
-        else
-            return Collections.emptyMap();
+            Predicate<Map.Entry<BlockPos, Memory>> filter,
+            CountMergeMode stackMergeMode) {
+        if (memories.containsKey(key)) {
+            return switch (stackMergeMode) {
+                case ALL_CONTAINERS -> ItemStackUtil.flattenStacks(memories.get(key).entrySet().stream()
+                        .filter(filter)
+                        .flatMap(data -> data.getValue().items().stream())
+                        .toList(), false);
+                case WITHIN_CONTAINERS -> memories.get(key).entrySet().stream()
+                        .filter(filter)
+                        .flatMap(data -> ItemStackUtil.flattenStacks(data.getValue().items(), false).stream())
+                        .toList();
+                case NEVER -> memories.get(key).entrySet().stream()
+                        .filter(filter)
+                        .flatMap(data -> data.getValue().items().stream())
+                        .toList();
+            };
+        } else {
+            return Collections.emptyList();
+        }
     }
-
-    /*
-     * Returns a list of counts of items in a given key at most <code>maxDistance</code> blocks away; used in the main
-     * screen. Not sorted in any particular order.
-     *
-     * @param key Memory Key to count and return
-     * @return Arbitrary order list of all items in a given memory key.
-     */
-    /*public Map<LightweightStack, Integer> getCounts(ResourceLocation key, Vec3 origin, int maxDistance) {
-        long maxSquare = (long) maxDistance * maxDistance;
-        if (memories.containsKey(key))
-            return memories.get(key).entrySet().stream()
-                           .filter(entry -> entry.getKey().getCenter().distanceToSqr(origin) < maxSquare)
-                           .flatMap(data -> data.getValue().items().stream())
-                           .collect(Collectors.toMap(stack -> new LightweightStack(stack.getItem(),
-                                                                                   stack.getTag()), ItemStack::getCount, Integer::sum, HashMap::new));
-        else
-            return Collections.emptyMap();
-    }*/
 
     /**
      * Parse a Where Is It search-request and runs it through a given dimension's memories.
@@ -353,5 +345,11 @@ public class MemoryBank {
         var memoryKeys = MemoryBank.INSTANCE.getMemories(key);
         if (memoryKeys == null) return null;
         return memoryKeys.get(pos);
+    }
+
+    public enum CountMergeMode {
+        ALL_CONTAINERS,
+        WITHIN_CONTAINERS,
+        NEVER
     }
 }
