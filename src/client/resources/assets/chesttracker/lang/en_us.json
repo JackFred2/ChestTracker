@@ -147,7 +147,7 @@
   "chesttracker.config.memoryAndStorage": "Memory & Storage",
   "chesttracker.config.memory": "Memory Settings",
   "chesttracker.config.memory.noMemoryBankLoaded": "No Memory Bank currently loaded.",
-  "chesttracker.config.storage": "Storage Settings ",
+  "chesttracker.config.storage": "Storage Settings",
   "chesttracker.config.storage.openFolder": "Open Memory Folder",
   "chesttracker.config.storage.storageBackend": "Storage Backend",
   "chesttracker.config.storage.storageBackend.description": "Defines the format that Memory Banks are stored between worlds/sessions.",
