@@ -41,7 +41,7 @@ public class DragHandleWidget extends AbstractWidget {
         this.maxIndex = maxIndex;
         this.callback = callback;
 
-        this.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.reorder")));
+        this.setTooltip(Tooltip.create(Component.translatable("chesttracker.gui.editMemoryKeys.reorder")));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DragHandleWidget extends AbstractWidget {
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narration) {
-        narration.add(NarratedElementType.TITLE, Component.translatable("chesttracker.gui.reorder"));
+        narration.add(NarratedElementType.TITLE, Component.translatable("chesttracker.gui.editMemoryKeys.reorder"));
         narration.add(NarratedElementType.USAGE, Component.translatable("chesttracker.gui.narration.drag"));
     }
 
