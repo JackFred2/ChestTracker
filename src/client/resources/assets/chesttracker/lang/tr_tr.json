@@ -119,7 +119,6 @@
 	"chesttracker.config.gui.autofocusSearchBar": "Otomatik Odaklanma Arama Çubuğu",
 	"chesttracker.config.gui.autofocusSearchBar.description": "GUI açıldığında arama çubuğuna otomatik olarak odaklanıp odaklanmamak.",
 	"chesttracker.config.gui.showAutocomplete": "Arama Çubuğu İçin Otomatik Tamamlamayı Göster",
-
 	"chesttracker.config.gui.autocompleteShowsRegularNames": "İsimsiz Öğeleri Otomatik Tamamlamada Göster",
 	"chesttracker.config.gui.showResizeWidget": "Boyutlandırma Aracını Göster",
 	"chesttracker.config.gui.gridWidth": "Grid Genişliği",
