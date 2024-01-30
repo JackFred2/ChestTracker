@@ -41,16 +41,16 @@ Note: 1.x won't be recieving any new updates.
 
 Press Y to search by an Item Stack; this uses Where Is It's keybind.
 
-Press GRAVE ``` ` ``` to open the main GUI. It's the button above tab, to the left of the number row, also known as the
-Source Engine console key.
-
-In the GUI, click an item to search for it in your current dimension. Use the search bar and it's various filters
+Press GRAVE ``` ` ``` to open the main GUI. In the GUI, click an item to search for it in your current dimension. Use the search bar and it's various filters
 to narrow down your search.
 
-### Memory Bank Settings
+For more details on using the mod, see [the wiki](https://github.com/JackFred2/ChestTracker/wiki).
 
-Press the "Change Memory Bank Settings" to change how your memory bank functions. This includes integrity checks, which
-try to keep your data valid.
+## Translations
+
+[![Crowdin](https://badges.crowdin.net/chest-tracker/localized.svg)](https://crowdin.com/project/chest-tracker)
+
+Chest Tracker 2.0 is available on [Crowdin](https://crowdin.com/project/chest-tracker).
 
 ## License
 
@@ -64,9 +64,6 @@ Legacy Chest Tracker 1.x is licensed under MIT (with some EPL rendering code), a
 ## Core Mod
 
 Possibly move IO to a separate thread? not a problem right now
-
-Bring inventory icon back? maybe stretch goal, want to make a JFLib module for nice
-snapping around inventory menus
 
 ## Compat
 
