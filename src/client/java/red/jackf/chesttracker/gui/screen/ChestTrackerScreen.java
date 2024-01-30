@@ -23,7 +23,6 @@ import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
-import red.jackf.chesttracker.memory.LightweightStack;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
@@ -34,7 +33,6 @@ import red.jackf.chesttracker.util.StreamUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -306,7 +304,6 @@ public class ChestTrackerScreen extends Screen {
     private void updateItems() {
         if (MemoryBank.INSTANCE == null) return;
         int maxRange = MemoryBank.INSTANCE.getMetadata().getSearchSettings().itemListRange;
-        Map<LightweightStack, Integer> counts;
 
         Predicate<Map.Entry<BlockPos, Memory>> predicate = containerFilter.filter;
 
@@ -317,16 +314,10 @@ public class ChestTrackerScreen extends Screen {
             predicate = predicate.and(entry -> entry.getKey().getCenter().distanceToSqr(origin) < squareMaxRange);
         }
 
-        counts = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate);
-
-        this.items = counts.entrySet().stream()
-                           .sorted(itemSort.sort)
-                           .map(e -> { // lightweight stack -> full stacks
-                               var stack = new ItemStack(e.getKey().item());
-                               stack.setTag(e.getKey().tag());
-                               stack.setCount(e.getValue());
-                               return stack;
-                           }).collect(Collectors.toList());
+        this.items = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate, MemoryBank.CountMergeMode.WITHIN_CONTAINERS)
+                .stream()
+                .sorted(itemSort.sort)
+                .toList();
 
         filter(this.search.getValue());
     }
@@ -482,22 +473,22 @@ public class ChestTrackerScreen extends Screen {
     public enum ItemSort {
         COUNT_DESCENDING(GuiUtil.twoSprite("item_sort/count_descending"),
                          translatable("chesttracker.gui.itemSort.countDescending"),
-                         Comparator.<Map.Entry<LightweightStack, Integer>>comparingInt(Map.Entry::getValue).reversed()),
+                         Comparator.comparingInt(ItemStack::getCount).reversed()),
         COUNT_ASCENDING(GuiUtil.twoSprite("item_sort/count_ascending"),
                          translatable("chesttracker.gui.itemSort.countAscending"),
-                         Comparator.comparingInt(Map.Entry::getValue)),
+                         Comparator.comparingInt(ItemStack::getCount)),
         ALPHABETICAL_DESCENDING(GuiUtil.twoSprite("item_sort/alphabetical_descending"),
                                 translatable("chesttracker.gui.itemSort.alphabeticalDescending"),
-                                Comparator.comparing(entry -> entry.getKey().toStack().getDisplayName().getString().toLowerCase(Locale.ROOT))),
+                                Comparator.comparing(stack -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT))),
         ALPHABETICAL_ASCENDING(GuiUtil.twoSprite("item_sort/alphabetical_ascending"),
                                 translatable("chesttracker.gui.itemSort.alphabeticalAscending"),
-                                Comparator.<Map.Entry<LightweightStack, Integer>, String>comparing(entry -> entry.getKey().toStack().getDisplayName().getString().toLowerCase(Locale.ROOT)).reversed());
+                                Comparator.<ItemStack, String>comparing(stack -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT)).reversed());
 
         private final WidgetSprites sprites;
         private final Component tooltip;
-        private final Comparator<Map.Entry<LightweightStack, Integer>> sort;
+        private final Comparator<ItemStack> sort;
 
-        ItemSort(WidgetSprites sprites, Component tooltip, Comparator<Map.Entry<LightweightStack, Integer>> sort) {
+        ItemSort(WidgetSprites sprites, Component tooltip, Comparator<ItemStack> sort) {
             this.sprites = sprites;
             this.tooltip = tooltip;
             this.sort = sort;

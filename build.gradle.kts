@@ -202,7 +202,8 @@ dependencies {
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
-	// modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:${properties["clothconfig_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")

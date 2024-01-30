@@ -22,18 +22,19 @@ public class ItemStackUtil {
     /**
      * Combine and sort a list of ItemStacks in descending order of count
      */
-    public static List<ItemStack> flattenStacks(List<ItemStack> in) {
+    public static List<ItemStack> flattenStacks(List<ItemStack> in, boolean sortDescending) {
         var counts = new HashMap<LightweightStack, Integer>();
         for (ItemStack itemStack : in) {
             counts.merge(new LightweightStack(itemStack), itemStack.getCount(), Integer::sum);
         }
-        return counts.entrySet().stream()
+        var stream = counts.entrySet().stream()
                 .map(entry -> {
                     var stack = entry.getKey().toStack();
                     stack.setCount(entry.getValue());
                     return stack;
-                }).sorted(Comparator.comparingInt(ItemStack::getCount).reversed())
-                .toList();
+                });
+        if (sortDescending) stream = stream.sorted(Comparator.comparingInt(ItemStack::getCount).reversed());
+        return stream.toList();
     }
 
     private static boolean testLang(String key, String filter) {
