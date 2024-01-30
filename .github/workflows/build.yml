@@ -4,7 +4,11 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - 'I10n_*'
 
 jobs:
   build:
