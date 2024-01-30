@@ -103,6 +103,11 @@
   "chesttracker.gui.editMemoryBank.search.itemListRange": "Item List Range: %s",
   "chesttracker.gui.editMemoryBank.search.itemListRange.tooltip": "The maximum distance in blocks that the item list will display memories for.",
   "chesttracker.gui.editMemoryBank.search.searchRange": "Search Range: %s",
+  "chesttracker.gui.editMemoryBank.search.stackMergeMode": "Stack Merge Mode",
+  "chesttracker.gui.editMemoryBank.search.stackMergeMode.tooltip": "How different item stacks in containers are merged and displayed in the item list.",
+  "chesttracker.gui.editMemoryBank.search.stackMergeMode.all": "Merge All",
+  "chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers": "Within Containers",
+  "chesttracker.gui.editMemoryBank.search.stackMergeMode.never": "Never Merge",
 
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",

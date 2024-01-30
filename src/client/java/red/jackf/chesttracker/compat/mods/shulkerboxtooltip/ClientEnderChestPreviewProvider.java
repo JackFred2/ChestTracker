@@ -27,7 +27,7 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
     @Override
     public List<ItemStack> getInventory(@NotNull PreviewContext context) {
         if (MemoryBank.INSTANCE == null) return Collections.emptyList();
-        return MemoryBank.INSTANCE.getCounts(MemoryBank.ENDER_CHEST_KEY, m -> true, MemoryBank.CountMergeMode.NEVER);
+        return MemoryBank.INSTANCE.getCounts(MemoryBank.ENDER_CHEST_KEY, m -> true, MemoryBank.StackMergeMode.NEVER);
     }
 
     @Override

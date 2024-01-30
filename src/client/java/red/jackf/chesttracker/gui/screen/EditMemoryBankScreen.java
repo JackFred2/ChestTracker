@@ -514,6 +514,19 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                 EditMemoryBankScreen.this.memoryBank.metadata().getSearchSettings().searchRange = getSelected();
             }
         }, SettingsTab.SEARCH);
+
+        addSetting(CycleButton.<MemoryBank.StackMergeMode>builder(mode -> mode.label)
+                .withValues(MemoryBank.StackMergeMode.values())
+                .withTooltip(ignored -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode.tooltip")))
+                .withInitialValue(this.memoryBank.metadata().getSearchSettings().stackMergeMode)
+                .create(getSettingsX(0),
+                        getSettingsY(2),
+                        getSettingsWidth(2),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode"),
+                        ((cycleButton, stackMergeMode) -> this.memoryBank.metadata()
+                                .getSearchSettings().stackMergeMode = stackMergeMode)
+                ), SettingsTab.SEARCH);
     }
 
     ///////////
