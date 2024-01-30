@@ -4,6 +4,7 @@ import com.google.common.collect.Streams;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
@@ -25,10 +26,13 @@ public class SearchSettings {
                 RANGE_CODEC.optionalFieldOf("itemListRange")
                            .forGetter(settings -> Optional.of(settings.itemListRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.itemListRange))),
                 RANGE_CODEC.optionalFieldOf("searchRange")
-                           .forGetter(settings -> Optional.of(settings.searchRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.searchRange)))
-        ).apply(instance, (itemListRange, searchRange) -> new SearchSettings(
+                           .forGetter(settings -> Optional.of(settings.searchRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.searchRange))),
+                JFLCodecs.forEnum(MemoryBank.StackMergeMode.class).optionalFieldOf("stackMergeMode")
+                        .forGetter(settings -> Optional.of(settings.stackMergeMode))
+        ).apply(instance, (itemListRange, searchRange, stackMergeMode) -> new SearchSettings(
                 itemListRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.itemListRange))).orElse(def.itemListRange),
-                searchRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.searchRange))).orElse(def.searchRange)
+                searchRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.searchRange))).orElse(def.searchRange),
+                stackMergeMode.orElse(def.stackMergeMode)
         ));
     });
 
@@ -60,16 +64,18 @@ public class SearchSettings {
 
     public int itemListRange = 256;
     public int searchRange = 256;
+    public MemoryBank.StackMergeMode stackMergeMode = MemoryBank.StackMergeMode.ALL;
 
     SearchSettings() {
     }
 
-    public SearchSettings(int itemListRange, int searchRange) {
+    public SearchSettings(int itemListRange, int searchRange, MemoryBank.StackMergeMode stackMergeMode) {
         this.itemListRange = itemListRange;
         this.searchRange = searchRange;
+        this.stackMergeMode = stackMergeMode;
     }
 
     public SearchSettings copy() {
-        return new SearchSettings(itemListRange, searchRange);
+        return new SearchSettings(itemListRange, searchRange, stackMergeMode);
     }
 }

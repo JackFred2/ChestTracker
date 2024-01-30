@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -254,10 +255,10 @@ public class MemoryBank {
     public List<ItemStack> getCounts(
             ResourceLocation key,
             Predicate<Map.Entry<BlockPos, Memory>> filter,
-            CountMergeMode stackMergeMode) {
+            StackMergeMode stackMergeMode) {
         if (memories.containsKey(key)) {
             return switch (stackMergeMode) {
-                case ALL_CONTAINERS -> ItemStackUtil.flattenStacks(memories.get(key).entrySet().stream()
+                case ALL -> ItemStackUtil.flattenStacks(memories.get(key).entrySet().stream()
                         .filter(filter)
                         .flatMap(data -> data.getValue().items().stream())
                         .toList(), false);
@@ -347,9 +348,15 @@ public class MemoryBank {
         return memoryKeys.get(pos);
     }
 
-    public enum CountMergeMode {
-        ALL_CONTAINERS,
-        WITHIN_CONTAINERS,
-        NEVER
+    public enum StackMergeMode {
+        ALL(Component.translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode.all")),
+        WITHIN_CONTAINERS(Component.translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers")),
+        NEVER(Component.translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode.never"));
+
+        public final Component label;
+
+        StackMergeMode(Component label) {
+            this.label = label;
+        }
     }
 }

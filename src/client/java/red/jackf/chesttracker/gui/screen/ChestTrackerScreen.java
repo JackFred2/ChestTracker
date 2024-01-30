@@ -307,7 +307,7 @@ public class ChestTrackerScreen extends Screen {
 
         Predicate<Map.Entry<BlockPos, Memory>> predicate = getItemListFilter(maxRange);
 
-        this.items = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate, MemoryBank.CountMergeMode.WITHIN_CONTAINERS)
+        this.items = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate, MemoryBank.INSTANCE.getMetadata().getSearchSettings().stackMergeMode)
                 .stream()
                 .sorted(itemSort.sort)
                 .toList();
