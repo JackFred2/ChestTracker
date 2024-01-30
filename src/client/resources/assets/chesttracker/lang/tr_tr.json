@@ -27,8 +27,6 @@
 	"chesttracker.generic.day": "1 gün",
 	"chesttracker.generic.days": "%d gün",
 	"chesttracker.generic.blocks": "%d blok",
-	"chesttracker.gui.button.on": "Açık",
-	"chesttracker.gui.button.off": "Kapalı",
 	"chesttracker.gui.id": "ID",
 	"chesttracker.gui.open": "Aç",
 	"chesttracker.gui.resize": "GUI Boyutunu Değiştir",

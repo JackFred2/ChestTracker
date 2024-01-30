@@ -27,8 +27,6 @@
   "chesttracker.generic.day": "1 day",
   "chesttracker.generic.days": "%d days",
   "chesttracker.generic.blocks": "%d blocks",
-  "chesttracker.gui.button.on": "On",
-  "chesttracker.gui.button.off": "Off",
   "chesttracker.gui.id": "ID",
   "chesttracker.gui.open": "Open",
   "chesttracker.gui.resize": "Resize GUI",
