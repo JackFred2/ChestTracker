@@ -103,6 +103,11 @@
 	"chesttracker.gui.editMemoryBank.search.itemListRange": "Öğe Listesi Menzili: %s",
 	"chesttracker.gui.editMemoryBank.search.itemListRange.tooltip": "Öğe listesinin hafızaları gösterme maksimum mesafesi.",
 	"chesttracker.gui.editMemoryBank.search.searchRange": "Arama Menzili: %s",
+        "chesttracker.gui.editMemoryBank.search.stackMergeMode": "Yığınlama Birleştirme Modu",
+        "chesttracker.gui.editMemoryBank.search.stackMergeMode.tooltip": "Kutulardaki farklı öğe yığınlarının nasıl birleştirildiği ve öğe listesinde nasıl gösterildiği.",
+        "chesttracker.gui.editMemoryBank.search.stackMergeMode.all": "Hepsini Birleştir",
+        "chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers": "Kutular İçinde",
+        "chesttracker.gui.editMemoryBank.search.stackMergeMode.never": "Asla Birleştirme"
 
 	"chesttracker.gui.editMemoryKeys": "Hafıza Anahtarlarını Düzenle",
 	"chesttracker.gui.editMemoryKeys.hint": "Hafıza Anahtarı",
