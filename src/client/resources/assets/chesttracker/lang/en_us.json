@@ -30,7 +30,6 @@
   "chesttracker.gui.id": "ID",
   "chesttracker.gui.open": "Open",
   "chesttracker.gui.resize": "Resize GUI",
-  "chesttracker.gui.reorder": "Reorder Key",
   "chesttracker.gui.containerFilter": "Container: %s",
   "chesttracker.gui.containerFilter.all": "All",
   "chesttracker.gui.containerFilter.chests": "Chests",
@@ -46,7 +45,6 @@
   "chesttracker.gui.modSettings": "Change Mod Settings",
   "chesttracker.gui.openMemoryManager": "Open Memory Manager",
   "chesttracker.gui.memoryBankSettings": "Change Memory Bank Settings",
-  "chesttracker.gui.selectIcon": "Choose an icon",
   "chesttracker.gui.narration.drag": "Click and drag",
 
   "chesttracker.gui.memoryManager": "Manage Memory Banks",
@@ -110,6 +108,7 @@
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",
   "chesttracker.gui.editMemoryKeys.return": "Return",
+  "chesttracker.gui.editMemoryKeys.reorder": "Reorder Key",
   "chesttracker.gui.editMemoryKeys.setIcon": "Set Icon",
   "chesttracker.gui.editMemoryKeys.useDefaultIconOrdering": "Use Default Icon Ordering",
 

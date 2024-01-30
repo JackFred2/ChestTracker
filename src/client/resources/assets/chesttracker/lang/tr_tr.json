@@ -30,7 +30,6 @@
 	"chesttracker.gui.id": "ID",
 	"chesttracker.gui.open": "Aç",
 	"chesttracker.gui.resize": "GUI Boyutunu Değiştir",
-	"chesttracker.gui.reorder": "Anahtarı Yeniden Sırala",
 	"chesttracker.gui.containerFilter": "Kutu: %s",
 	"chesttracker.gui.containerFilter.all": "Hepsi",
 	"chesttracker.gui.containerFilter.chests": "Kutular",
@@ -46,7 +45,6 @@
 	"chesttracker.gui.modSettings": "Mod Ayarlarını Değiştir",
 	"chesttracker.gui.openMemoryManager": "Hafıza Yöneticisini Aç",
 	"chesttracker.gui.memoryBankSettings": "Hafıza Bankası Ayarlarını Değiştir",
-	"chesttracker.gui.selectIcon": "Bir ikon seç",
 	"chesttracker.gui.narration.drag": "Tıkla ve sürükleyerek",
 
 	"chesttracker.gui.memoryManager": "Hafıza Bankalarını Yönet",
@@ -110,6 +108,7 @@
 	"chesttracker.gui.editMemoryKeys": "Hafıza Anahtarlarını Düzenle",
 	"chesttracker.gui.editMemoryKeys.hint": "Hafıza Anahtarı",
 	"chesttracker.gui.editMemoryKeys.return": "Geri Dön",
+	"chesttracker.gui.editMemoryKeys.reorder": "Anahtarı Yeniden Sırala",
 	"chesttracker.gui.editMemoryKeys.setIcon": "İkonu Ayarla",
 	"chesttracker.gui.editMemoryKeys.useDefaultIconOrdering": "Varsayılan İkon Sıralamasını Kullan",
 
