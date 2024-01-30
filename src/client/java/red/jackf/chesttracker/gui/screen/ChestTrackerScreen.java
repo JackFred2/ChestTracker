@@ -305,6 +305,17 @@ public class ChestTrackerScreen extends Screen {
         if (MemoryBank.INSTANCE == null) return;
         int maxRange = MemoryBank.INSTANCE.getMetadata().getSearchSettings().itemListRange;
 
+        Predicate<Map.Entry<BlockPos, Memory>> predicate = getItemListFilter(maxRange);
+
+        this.items = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate, MemoryBank.CountMergeMode.WITHIN_CONTAINERS)
+                .stream()
+                .sorted(itemSort.sort)
+                .toList();
+
+        filter(this.search.getValue());
+    }
+
+    private Predicate<Map.Entry<BlockPos, Memory>> getItemListFilter(int maxRange) {
         Predicate<Map.Entry<BlockPos, Memory>> predicate = containerFilter.filter;
 
         // apply max range if necessary
@@ -313,13 +324,7 @@ public class ChestTrackerScreen extends Screen {
             Vec3 origin = Minecraft.getInstance().player.getEyePosition();
             predicate = predicate.and(entry -> entry.getKey().getCenter().distanceToSqr(origin) < squareMaxRange);
         }
-
-        this.items = MemoryBank.INSTANCE.getCounts(currentMemoryKey, predicate, MemoryBank.CountMergeMode.WITHIN_CONTAINERS)
-                .stream()
-                .sorted(itemSort.sort)
-                .toList();
-
-        filter(this.search.getValue());
+        return predicate;
     }
 
     /**
