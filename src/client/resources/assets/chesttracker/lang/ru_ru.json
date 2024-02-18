@@ -2,7 +2,7 @@
   "key.chesttracker.open_gui": "Open Chest Tracker GUI",
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via %s",
-  "chesttracker.inventoryButton.rename": "Rename Container",
+  "chesttracker.inventoryButton.rename": "Переименовать контейнер",
   "chesttracker.inventoryButton.forget": "Забыть",
   "chesttracker.inventoryButton.rememberContainer": "Запомнить контейнер: %s",
   "chesttracker.inventoryButton.rememberContainer.always": "Всегда",
