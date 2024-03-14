@@ -171,6 +171,8 @@ public class ChestTracker implements ClientModInitializer {
             else if (beData != null && beData.contains("CustomName"))
                 name = Component.Serializer.fromJson(beData.getString("CustomName"));
 
+            name = MemoryBank.INSTANCE.getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(name);
+
             if (items != null || name != null) {
                 var connected = ConnectedBlocksGrabber.getConnected(clientLevel, state, pos);
                 connected.forEach(connectedPos -> MemoryBank.INSTANCE.removeMemory(key, connectedPos));
