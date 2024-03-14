@@ -14,6 +14,8 @@ public class Metadata {
                     Codec.STRING.optionalFieldOf("name").forGetter(meta -> Optional.ofNullable(meta.name)),
                     ExtraCodecs.INSTANT_ISO8601.optionalFieldOf("lastModified").forGetter(meta -> Optional.of(meta.lastModified)),
                     Codec.LONG.fieldOf("loadedTime").forGetter(meta -> meta.loadedTime),
+                    CompatibilitySettings.CODEC.optionalFieldOf("compatibility")
+                            .forGetter(meta -> Optional.of(meta.compatibilitySettings)),
                     FilteringSettings.CODEC.optionalFieldOf("filtering")
                             .forGetter(meta -> Optional.of(meta.filteringSettings)),
                     IntegritySettings.CODEC.optionalFieldOf("integrity")
@@ -22,10 +24,11 @@ public class Metadata {
                             .forGetter(meta -> Optional.of(meta.searchSettings)),
                     VisualSettings.CODEC.optionalFieldOf("visual")
                             .forGetter(meta -> Optional.of(meta.visualSettings))
-            ).apply(instance, (name, lastModified, loadedTime, filtering, integrity, search, visual) -> new Metadata(
+            ).apply(instance, (name, lastModified, loadedTime, compatibility, filtering, integrity, search, visual) -> new Metadata(
                     name.orElse(null),
                     lastModified.orElse(Instant.now()),
                     loadedTime,
+                    compatibility.orElseGet(CompatibilitySettings::new),
                     filtering.orElseGet(FilteringSettings::new),
                     integrity.orElseGet(IntegritySettings::new),
                     search.orElseGet(SearchSettings::new),
@@ -37,6 +40,7 @@ public class Metadata {
     private String name;
     private Instant lastModified;
     private long loadedTime;
+    private final CompatibilitySettings compatibilitySettings;
     private final FilteringSettings filteringSettings;
     private final IntegritySettings integritySettings;
     private final SearchSettings searchSettings;
@@ -46,6 +50,7 @@ public class Metadata {
             @Nullable String name,
             Instant lastModified,
             long loadedTime,
+            CompatibilitySettings compatibilitySettings,
             FilteringSettings filteringSettings,
             IntegritySettings integritySettings,
             SearchSettings searchSettings,
@@ -53,6 +58,7 @@ public class Metadata {
         this.name = name;
         this.lastModified = lastModified;
         this.loadedTime = loadedTime;
+        this.compatibilitySettings = compatibilitySettings;
         this.filteringSettings = filteringSettings;
         this.integritySettings = integritySettings;
         this.searchSettings = searchSettings;
@@ -60,7 +66,15 @@ public class Metadata {
     }
 
     public static Metadata blank() {
-        return new Metadata(null, Instant.now(), 0L, new FilteringSettings(), new IntegritySettings(), new SearchSettings(), new VisualSettings());
+        return new Metadata(null,
+                Instant.now(),
+                0L,
+                new CompatibilitySettings(),
+                new FilteringSettings(),
+                new IntegritySettings(),
+                new SearchSettings(),
+                new VisualSettings()
+        );
     }
 
     public static Metadata blankWithName(String name) {
@@ -86,6 +100,10 @@ public class Metadata {
         return loadedTime;
     }
 
+    public CompatibilitySettings getCompatibilitySettings() {
+        return compatibilitySettings;
+    }
+
     public FilteringSettings getFilteringSettings() {
         return filteringSettings;
     }
@@ -103,7 +121,14 @@ public class Metadata {
     }
 
     public Metadata deepCopy() {
-        return new Metadata(name, lastModified, loadedTime, filteringSettings.copy(), integritySettings.copy(), searchSettings.copy(), visualSettings.copy());
+        return new Metadata(name,
+                lastModified,
+                loadedTime,
+                compatibilitySettings.copy(),
+                filteringSettings.copy(),
+                integritySettings.copy(),
+                searchSettings.copy(),
+                visualSettings.copy());
     }
 
     public void incrementLoadedTime() {

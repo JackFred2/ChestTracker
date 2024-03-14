@@ -19,6 +19,7 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.metadata.CompatibilitySettings;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.memory.metadata.SearchSettings;
@@ -216,6 +217,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                                                                   CommonComponents.EMPTY,
                                                                                   this::setSettingsTab));
         var selectorOptions = new LinkedHashMap<SettingsTab, Component>();
+        selectorOptions.put(SettingsTab.COMPATIBILITY, translatable("chesttracker.gui.editMemoryBank.compatibility"));
         selectorOptions.put(SettingsTab.FILTERING, translatable("chesttracker.gui.editMemoryBank.filtering"));
         selectorOptions.put(SettingsTab.INTEGRITY, translatable("chesttracker.gui.editMemoryBank.integrity"));
         if (isCurrentLoaded)
@@ -225,6 +227,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
         settingsTabSelector.setOptions(selectorOptions);
 
+        setupCompatibilitySettings();
         setupFilteringSettings();
         setupIntegritySettings();
         if (isCurrentLoaded) setupManagementSettings();
@@ -238,6 +241,26 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                     font).setColor(0x4040FF), SettingsTab.EMPTY);
 
         setSettingsTab(SettingsTab.FILTERING);
+    }
+
+    ///////////////////
+    // COMPATIBILITY //
+    ///////////////////
+
+    private void setupCompatibilitySettings() {
+        addSetting(CycleButton.<CompatibilitySettings.NameFilterMode>builder(mode -> mode.label)
+                .withTooltip(mode -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.tooltip")
+                        .append(CommonComponents.NEW_LINE).append(CommonComponents.NEW_LINE)
+                        .append(mode.tooltip)))
+                .withValues(CompatibilitySettings.NameFilterMode.values())
+                .withInitialValue(this.memoryBank.metadata().getCompatibilitySettings().nameFilterMode)
+                .create(getSettingsX(0),
+                        getSettingsY(0),
+                        getSettingsWidth(2),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.compatibility.nameFilterMode"),
+                        (cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().nameFilterMode = newValue
+                ), SettingsTab.COMPATIBILITY);
     }
 
     ///////////////
@@ -629,6 +652,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     }
 
     private enum SettingsTab {
+        COMPATIBILITY,
         FILTERING,
         INTEGRITY,
         MANAGE,
