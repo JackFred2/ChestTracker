@@ -296,11 +296,15 @@ public class MemoryBank {
                                        .findFirst();
                 if (matchedItem.isEmpty()) continue;
                 var offset = MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().otherPositions());
-                results.add(SearchResult.builder(entry.getKey())
-                                        .item(matchedItem.get())
-                                        .name(entry.getValue().name(), offset)
-                                        .otherPositions(entry.getValue().otherPositions())
-                                        .build());
+
+                SearchResult.Builder result = SearchResult.builder(entry.getKey())
+                                .item(matchedItem.get())
+                                .otherPositions(entry.getValue().otherPositions());
+
+                if (metadata.getCompatibilitySettings().displayContainerNames)
+                    result.name(entry.getValue().name(), offset);
+
+                results.add(result.build());
             }
             return results;
         } else {

@@ -14,7 +14,7 @@ public class NameRenderer {
 
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
-            if (MemoryBank.INSTANCE == null) return true;
+            if (MemoryBank.INSTANCE == null || !MemoryBank.INSTANCE.getMetadata().getCompatibilitySettings().displayContainerNames) return true;
             var currentKey = ProviderHandler.getCurrentKey();
             if (currentKey == null) return true;
             var named = MemoryBank.INSTANCE.getNamedMemories(currentKey);
