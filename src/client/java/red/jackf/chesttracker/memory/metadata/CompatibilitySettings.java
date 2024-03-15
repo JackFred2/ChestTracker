@@ -16,23 +16,29 @@ public class CompatibilitySettings {
         final var def = new CompatibilitySettings();
         return instance.group(
                 JFLCodecs.forEnum(NameFilterMode.class).optionalFieldOf("nameFilterMode")
-                        .forGetter(settings -> Optional.of(settings.nameFilterMode))
-        ).apply(instance, (nameFilterMode) -> new CompatibilitySettings(
-                nameFilterMode.orElse(def.nameFilterMode)
+                        .forGetter(settings -> Optional.of(settings.nameFilterMode)),
+                Codec.BOOL.optionalFieldOf("displayContainerNames")
+                        .forGetter(settings -> Optional.of(settings.displayContainerNames))
+        ).apply(instance, (nameFilterMode, displayContainerNames) -> new CompatibilitySettings(
+                nameFilterMode.orElse(def.nameFilterMode),
+                displayContainerNames.orElse(def.displayContainerNames)
         ));
     });
 
     public NameFilterMode nameFilterMode = NameFilterMode.NO_FILTER;
+    public boolean displayContainerNames = true;
 
     protected CompatibilitySettings() {}
 
-    protected CompatibilitySettings(NameFilterMode nameFilterMode) {
+    protected CompatibilitySettings(NameFilterMode nameFilterMode, boolean displayContainerNames) {
         this.nameFilterMode = nameFilterMode;
+        this.displayContainerNames = displayContainerNames;
     }
 
     public CompatibilitySettings copy() {
         return new CompatibilitySettings(
-                this.nameFilterMode
+                this.nameFilterMode,
+                this.displayContainerNames
         );
     }
 

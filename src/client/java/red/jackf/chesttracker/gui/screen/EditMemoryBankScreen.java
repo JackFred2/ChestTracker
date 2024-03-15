@@ -261,6 +261,15 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         translatable("chesttracker.gui.editMemoryBank.compatibility.nameFilterMode"),
                         (cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().nameFilterMode = newValue
                 ), SettingsTab.COMPATIBILITY);
+
+        addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getCompatibilitySettings().displayContainerNames)
+                .create(getSettingsX(0),
+                        getSettingsY(1),
+                        getSettingsWidth(2),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.compatibility.displayContainerNames"),
+                        ((cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().displayContainerNames = newValue)
+                ), SettingsTab.COMPATIBILITY);
     }
 
     ///////////////
