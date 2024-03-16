@@ -70,7 +70,7 @@
   "chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.ascii": "ASCII only",
   "chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.ascii.tooltip": "Only allow ASCII characters in container names.",
   "chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.basicUnicode": "Basic Unicode",
-  "chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.basicUnicode.tooltip": "Only allow unicode characters up to \\u33FF. This includes most European, African and American scripts and symbols, but excludes Chinese, Korean, Japanese and others.",
+  "chesttracker.gui.editMemoryBank.compatibility.nameFilterMode.basicUnicode.tooltip": "Only allow Unicode characters up to \\u33FF. This includes most European, African and American scripts and symbols, but excludes Chinese, Korean, Japanese and others.",
   "chesttracker.gui.editMemoryBank.compatibility.displayContainerNames": "Display Container Names",
   "chesttracker.gui.editMemoryBank.filtering": "Filtering",
   "chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed": "Only Named",
