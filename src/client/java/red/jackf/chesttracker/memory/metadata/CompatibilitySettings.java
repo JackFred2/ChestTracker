@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class CompatibilitySettings {
     });
 
     public NameFilterMode nameFilterMode = NameFilterMode.NO_FILTER;
-    public boolean displayContainerNames = true;
+    public boolean displayContainerNames = ChestTrackerConfig.INSTANCE.instance().rendering.displayContainerNames;
 
     protected CompatibilitySettings() {}
 
