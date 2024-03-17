@@ -292,6 +292,16 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.instance().rendering.nameRange,
                                 i -> instance.instance().rendering.nameRange = i
                         ).build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.rendering.displayContainerNames"))
+                        .description(OptionDescription.of(translatable("chesttracker.config.rendering.displayContainerNames.description")))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter())
+                        .binding(
+                                instance.defaults().rendering.displayContainerNames,
+                                () -> instance.instance().rendering.displayContainerNames,
+                                b -> instance.instance().rendering.displayContainerNames = b
+                        ).build())
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.config.whereisit"))
                         .description(OptionDescription.of(translatable("chesttracker.config.whereisit.description")))
