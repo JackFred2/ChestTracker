@@ -137,6 +137,8 @@
   "chesttracker.config.inventoryButton.export.description": "Whether to show an export button for custom button positions. Files get placed in %s.",
   "chesttracker.config.rendering": "Rendering",
   "chesttracker.config.rendering.nameRenderRange": "Name Render Range",
+  "chesttracker.config.rendering.displayContainerNames": "Show Container Names",
+  "chesttracker.config.rendering.displayContainerNames.description": "Whether to show names above containers in the world. This can be overridden per memory bank, under Compatibility.",
   "chesttracker.config.dev": "Developer Utils",
   "chesttracker.config.dev.showDevHud": "Show Developer Hud",
   "chesttracker.config.dev.showDevHud.description": "Show Developer Hud",
