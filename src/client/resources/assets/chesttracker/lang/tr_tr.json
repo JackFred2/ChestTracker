@@ -137,6 +137,8 @@
   "chesttracker.config.inventoryButton.export.description": "Özel düğme pozisyonları için bir dışa aktarma düğmesi gösterip göstermemek. Dosyalar %s içine yerleştirilir.",
   "chesttracker.config.rendering": "Renderleme",
   "chesttracker.config.rendering.nameRenderRange": "İsim Render Aralığı",
+  "chesttracker.config.rendering.displayContainerNames": "Show Container Names",
+  "chesttracker.config.rendering.displayContainerNames.description": "Whether to show names above containers in the world. This can be overridden per memory bank, under Compatibility.",
   "chesttracker.config.dev": "Geliştirici Araçları",
   "chesttracker.config.dev.showDevHud": "Geliştirici HUD'u Göster",
   "chesttracker.config.dev.showDevHud.description": "Geliştirici HUD'u Göster",
