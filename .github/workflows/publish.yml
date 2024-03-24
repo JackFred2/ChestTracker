@@ -177,7 +177,7 @@ jobs:
           JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
 
       - name: Publish to Modrinth and Curseforge
-        run: ./gradlew generateChangelog publishMods
+        run: ./gradlew generateChangelog publishMods -PchangelogHeaderAddon="${{ inputs.changelogHeader }}"
         if: ${{ inputs.publishToModDistributors == true }}
         env:
           RELEASE: true
