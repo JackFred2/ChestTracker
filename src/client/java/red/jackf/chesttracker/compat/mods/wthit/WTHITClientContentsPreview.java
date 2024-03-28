@@ -1,12 +1,10 @@
 package red.jackf.chesttracker.compat.mods.wthit;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IBlockComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.*;
 import mcp.mobius.waila.api.component.ItemListComponent;
 import mcp.mobius.waila.api.data.ItemData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -20,6 +18,8 @@ import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
 import red.jackf.chesttracker.util.ItemStackUtil;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
+
+import static net.minecraft.network.chat.Component.translatable;
 
 /**
  * Lookup the position in the current memory bank, and display if any are present
@@ -38,10 +38,20 @@ public enum WTHITClientContentsPreview implements IBlockComponentProvider {
 
         // show items
         var stacks = ItemStackUtil.flattenStacks(memory.items(), true);
-        if (config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_ICON))
-            tooltip.setLine(ItemData.ID, new ItemListComponentWithChestTrackerIcon(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
-        else
-            tooltip.setLine(ItemData.ID, new ItemListComponent(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
+        tooltip.setLine(ItemData.ID, new ItemListComponent(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
+
+        if (Screen.hasShiftDown() && config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_TEXT)) {
+            tooltip.addLine(translatable("chesttracker.compatibility.brand", translatable("chesttracker.title").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY));
+        }
+
+        // add name
+        var formatter = IWailaConfig.get().getFormatter();
+        if (tooltip.getLine(WailaConstants.OBJECT_NAME_TAG) == null && memory.name() != null) {
+            tooltip.setLine(WailaConstants.OBJECT_NAME_TAG, formatter.blockName(memory.name().getString()
+                    + " ("
+                    + accessor.getBlock().getName().getString()
+                    + ")"));
+        }
 
         // debug lines
         if (ProviderHandler.INSTANCE != null && config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_KEY_AND_LOCATION)) {

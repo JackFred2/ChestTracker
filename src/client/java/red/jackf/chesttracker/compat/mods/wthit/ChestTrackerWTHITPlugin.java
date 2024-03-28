@@ -11,7 +11,7 @@ public class ChestTrackerWTHITPlugin implements IWailaPlugin {
     // call after WTHIT's default handler, so we can skip lookup if installed on server
     private static final int PRIORITY = 1550 + 25;
 
-    protected static final ResourceLocation CONFIG_SHOW_ICON = ChestTracker.id("show_icon");
+    protected static final ResourceLocation CONFIG_SHOW_TEXT = ChestTracker.id("show_text");
     protected static final ResourceLocation CONFIG_SHOW_KEY_AND_LOCATION = ChestTracker.id("show_key_and_location");
 
     @Override
@@ -19,7 +19,7 @@ public class ChestTrackerWTHITPlugin implements IWailaPlugin {
         //possiblyFixWTHITTransferAPICauldronFluidRaceCondition();
         registrar.addComponent(WTHITClientContentsPreview.INSTANCE, TooltipPosition.BODY, Block.class, PRIORITY);
 
-        registrar.addConfig(CONFIG_SHOW_ICON, true);
+        registrar.addConfig(CONFIG_SHOW_TEXT, true);
         registrar.addConfig(CONFIG_SHOW_KEY_AND_LOCATION, false);
     }
 
