@@ -14,6 +14,7 @@ import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.Identifiers;
 import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.theme.IThemeHelper;
 import snownee.jade.api.ui.Direction2D;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
@@ -32,8 +33,10 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         if (config.get(Identifiers.UNIVERSAL_ITEM_STORAGE) && accessor.getServerData().contains("JadeItemStorage"))
             return; // don't do it if jade is handling it
-        if (config.get(Identifiers.MC_FURNACE) && accessor.getBlock() instanceof AbstractFurnaceBlock && accessor.getServerData()
-                                                                                                                 .contains("furnace", Tag.TAG_LIST))
+        if (config.get(Identifiers.MC_FURNACE)
+                && accessor.getBlock() instanceof AbstractFurnaceBlock
+                && accessor.getServerData()
+                .contains("furnace", Tag.TAG_LIST))
             return; // don't do furnaces if done
 
         Memory memory = MemoryBank.getMemoryAt(accessor.getLevel(), accessor.getPosition());
@@ -58,6 +61,11 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
         for (int i = 0; i < lines.size(); i++) {
             tooltip.add(lines.get(i));
             if (i < lines.size() - 1) tooltip.setLineMargin(-1, Direction2D.DOWN, -1);
+        }
+
+        if (memory.name() != null) {
+            tooltip.remove(Identifiers.CORE_OBJECT_NAME);
+            tooltip.add(0, IThemeHelper.get().title(memory.name()), Identifiers.CORE_OBJECT_NAME);
         }
 
         if (accessor.showDetails() && config.get(ChestTrackerJadePlugin.CONFIG_SHOW_TEXT)) {
