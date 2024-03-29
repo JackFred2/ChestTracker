@@ -30,7 +30,9 @@ public class WidgetZOffsetWrapper<T extends AbstractWidget> extends AbstractWidg
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {
-        ((AbstractWidgetAccessor) baseWidget).updateWidgetNarration(output);
+        // TODO try fix
+        // this crashes with a non-descriptive IllegalAccessException when used on AutoComplete
+        // ((AbstractWidgetAccessor) baseWidget).updateWidgetNarration(output);
     }
 
     @Override
