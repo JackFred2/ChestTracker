@@ -15,10 +15,10 @@ import java.util.function.Consumer;
 
 public class VerticalScrollWidget extends AbstractWidget {
     private static final GuiUtil.NinePatch BACKGROUND = new GuiUtil.NinePatch("nine_patch/scroll_bar", 2, 9, 9);
-    private static final SpriteSet HANDLE_TEXTURE = new SpriteSet(GuiUtil.sprite("widgets/scroll_bar/handle"),
-                                                                          GuiUtil.sprite("widgets/scroll_bar/handle_disabled"),
-                                                                          GuiUtil.sprite("widgets/scroll_bar/handle"),
-                                                                          GuiUtil.sprite("widgets/scroll_bar/handle_disabled"));
+    private static final SpriteSet HANDLE_TEXTURE = new SpriteSet(GuiUtil.png("widgets/scroll_bar/handle"),
+                                                                          GuiUtil.png("widgets/scroll_bar/handle_disabled"),
+                                                                          GuiUtil.png("widgets/scroll_bar/handle"),
+                                                                          GuiUtil.png("widgets/scroll_bar/handle_disabled"));
     private static final int HANDLE_WIDTH = 10;
     private static final int HANDLE_HEIGHT = 11;
     private static final int INSET = 1;

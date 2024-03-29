@@ -1,2 +1,3 @@
 accessWidener	v2	named
 accessible method net/minecraft/client/gui/components/tabs/TabNavigationBar currentTabIndex ()I
+accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lnet/minecraft/resources/ResourceLocation;IIIIIFFFF)V

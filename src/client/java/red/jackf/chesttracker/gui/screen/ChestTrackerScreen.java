@@ -357,6 +357,7 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
+        this.renderBackground(graphics);
         this.itemList.setHideTooltip(this.search.isFocused() && ifSearchables(a -> a.isMouseOver(mouseX, mouseY)));
         super.render(graphics, mouseX, mouseY, tickDelta); // widgets
         graphics.drawString(this.font, this.title, left + TITLE_LEFT, top + TITLE_TOP, TextColours.getLabelColour(), false); // title

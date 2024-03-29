@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ItemListWidget extends AbstractWidget {
-    private static final ResourceLocation BACKGROUND_SPRITE = GuiUtil.sprite("widgets/slot_background");
+    private static final ResourceLocation BACKGROUND_SPRITE = GuiUtil.png("widgets/slot_background");
     private static final ItemStack DUMMY_ITEM_FOR_COUNT = new ItemStack(Items.EMERALD);
 
     private final int gridWidth;
@@ -80,7 +80,7 @@ public class ItemListWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        GuiUtil.blit(graphics, BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
+        GuiUtil.blitRepeating(graphics, BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight(), 18, 18); // background
         this.renderItems(graphics); // item models
         this.renderItemDecorations(graphics); // stack size and durability
         this.renderAdditional(graphics, mouseX, mouseY); // tooltips
