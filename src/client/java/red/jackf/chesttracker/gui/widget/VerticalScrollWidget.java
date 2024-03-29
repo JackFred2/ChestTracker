@@ -2,13 +2,12 @@ package red.jackf.chesttracker.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.function.Consumer;

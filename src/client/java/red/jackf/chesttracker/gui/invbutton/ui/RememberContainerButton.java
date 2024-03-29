@@ -2,8 +2,8 @@ package red.jackf.chesttracker.gui.invbutton.ui;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
-import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.network.chat.Component;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
 

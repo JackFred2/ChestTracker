@@ -4,12 +4,12 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.util.GuiUtil;
 import red.jackf.chesttracker.util.Misc;
 

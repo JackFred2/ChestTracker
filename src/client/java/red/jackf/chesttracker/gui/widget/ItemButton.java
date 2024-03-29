@@ -3,10 +3,10 @@ package red.jackf.chesttracker.gui.widget;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.util.GuiUtil;
 
 public class ItemButton extends Button {

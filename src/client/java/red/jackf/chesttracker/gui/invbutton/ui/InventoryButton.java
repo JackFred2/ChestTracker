@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -20,6 +19,7 @@ import red.jackf.chesttracker.gui.invbutton.PositionExporter;
 import red.jackf.chesttracker.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.gui.invbutton.position.PositionUtils;
 import red.jackf.chesttracker.gui.invbutton.position.RectangleUtils;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.util.GuiUtil;
 
 import java.util.ArrayList;
