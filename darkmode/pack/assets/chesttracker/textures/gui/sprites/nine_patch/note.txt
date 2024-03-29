@@ -1,0 +1,12 @@
+Using new sprite system (1.20.2+):
+- background.png
+- background.png.mcmeta
+- scroll_bar.png
+- scroll_bar.png.mcmeta
+- search_bar.png
+= search_bar.png.mcmeta
+
+Using old system (1.20.1 & below):
+- background_1.20.1.png
+- scroll_bar_1.20.1.png
+- search_bar_1.20.1.png
