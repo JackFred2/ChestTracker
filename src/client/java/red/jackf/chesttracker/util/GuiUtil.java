@@ -10,8 +10,8 @@ import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.gui.widget.SpriteButton;
 
 public class GuiUtil {
-    public static final NinePatch BACKGROUND_SPRITE = new GuiUtil.NinePatch("nine_patch/background", 6, 30, 30);
-    public static final NinePatch SEARCH_BAR_SPRITE = new GuiUtil.NinePatch("nine_patch/search_bar", 2, 12, 12);
+    public static final NinePatch BACKGROUND_SPRITE = new GuiUtil.NinePatch("nine_patch/background_1.20.1", 6, 30, 30);
+    public static final NinePatch SEARCH_BAR_SPRITE = new GuiUtil.NinePatch("nine_patch/search_bar_1.20.1", 2, 12, 12);
 
     public static ResourceLocation sprite(String path) {
         return new ResourceLocation(ChestTracker.ID, path);

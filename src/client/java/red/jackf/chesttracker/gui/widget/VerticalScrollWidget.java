@@ -14,7 +14,7 @@ import red.jackf.chesttracker.util.GuiUtil;
 import java.util.function.Consumer;
 
 public class VerticalScrollWidget extends AbstractWidget {
-    private static final GuiUtil.NinePatch BACKGROUND = new GuiUtil.NinePatch("nine_patch/scroll_bar", 2, 9, 9);
+    private static final GuiUtil.NinePatch BACKGROUND = new GuiUtil.NinePatch("nine_patch/scroll_bar_1.20.1", 2, 9, 9);
     private static final SpriteSet HANDLE_TEXTURE = new SpriteSet(GuiUtil.png("widgets/scroll_bar/handle"),
                                                                           GuiUtil.png("widgets/scroll_bar/handle_disabled"),
                                                                           GuiUtil.png("widgets/scroll_bar/handle"),
