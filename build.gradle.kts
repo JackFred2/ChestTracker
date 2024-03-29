@@ -44,6 +44,8 @@ base {
 }
 
 repositories {
+	mavenCentral()
+
 	// Parchment Mappings
 	maven {
 		name = "ParchmentMC"
@@ -80,6 +82,15 @@ repositories {
 		content {
 			includeGroup("dev.isxander.yacl")
 			includeGroupAndSubgroups("org.quiltmc")
+		}
+	}
+
+	// YACL Dependencies
+	maven {
+		name = "Sonatype"
+		url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+		content {
+			includeGroupAndSubgroups("com.twelvemonkeys")
 		}
 	}
 
