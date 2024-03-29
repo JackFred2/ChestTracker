@@ -1,5 +1,5 @@
 {
-  "key.chesttracker.open_gui": "Open Chest Tracker GUI",
+  "key.chesttracker.open_gui": "Открыть меню",
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via %s",
   "chesttracker.inventoryButton.rename": "Переименовать контейнер",
@@ -24,8 +24,8 @@
   "chesttracker.generic.days": "%d дней",
   "chesttracker.generic.blocks": "%d blocks",
   "chesttracker.gui.id": "ID",
-  "chesttracker.gui.open": "Open",
-  "chesttracker.gui.resize": "Resize GUI",
+  "chesttracker.gui.open": "Открыть",
+  "chesttracker.gui.resize": "Изменить размер",
   "chesttracker.gui.containerFilter": "Container: %s",
   "chesttracker.gui.containerFilter.all": "Все",
   "chesttracker.gui.containerFilter.chests": "Сундуки",
