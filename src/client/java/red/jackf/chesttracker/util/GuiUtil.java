@@ -1,16 +1,18 @@
 package red.jackf.chesttracker.util;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.gui.util.SpriteSet;
+import red.jackf.chesttracker.gui.widget.SpriteButton;
 
 public class GuiUtil {
-    public static final ResourceLocation BACKGROUND_SPRITE = sprite("nine_patch/background");
-    public static final ResourceLocation SEARCH_BAR_SPRITE = sprite("nine_patch/search_bar");
+    public static final NinePatch BACKGROUND_SPRITE = new GuiUtil.NinePatch("nine_patch/background", 6, 30, 30);
+    public static final NinePatch SEARCH_BAR_SPRITE = new GuiUtil.NinePatch("nine_patch/search_bar", 2, 12, 12);
 
     public static ResourceLocation sprite(String path) {
         return new ResourceLocation(ChestTracker.ID, path);
@@ -20,14 +22,41 @@ public class GuiUtil {
         return new ResourceLocation(ChestTracker.ID, "textures/gui/sprites/" + path + ".png");
     }
 
-    public static WidgetSprites twoSprite(String path) {
-        return new WidgetSprites(sprite("widgets/" + path),
+    public static SpriteSet twoSprite(String path) {
+        return new SpriteSet(sprite("widgets/" + path),
                                  sprite("widgets/" + path + "_highlighted"));
     }
 
-    public static ImageButton close(int x, int y, Button.OnPress callback) {
-        var button = new ImageButton(x, y, 12, 12, twoSprite("close/button"), callback);
+    public static SpriteButton close(int x, int y, Button.OnPress callback) {
+        var button = new SpriteButton(x, y, 12, 12, twoSprite("close/button"), callback);
         button.setTooltip(Tooltip.create(Component.translatable("mco.selectServer.close")));
         return button;
+    }
+
+    public static void blit(GuiGraphics graphics, ResourceLocation texture, int x, int y, int z, int width, int height) {
+        graphics.blit(texture,
+                x,
+                y,
+                z,
+                0,
+                0,
+                width,
+                height,
+                width,
+                height);
+    }
+
+    public static void blit(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height) {
+        blit(graphics, texture, x, y, 0, width, height);
+    }
+
+    public record NinePatch(ResourceLocation texture, int border, int textureWidth, int textureHeight) {
+        public NinePatch(String path, int border, int textureWidth, int textureHeight) {
+            this(sprite(path), border, textureWidth, textureHeight);
+        }
+
+        public void blit(GuiGraphics graphics, int x, int y, int width, int height) {
+            graphics.blitNineSliced(this.texture, x, y, width, height, this.border, 0, 0, this.textureWidth, this.textureHeight);
+        }
     }
 }

@@ -80,7 +80,7 @@ public class ItemListWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
+        GuiUtil.blit(graphics, BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
         this.renderItems(graphics); // item models
         this.renderItemDecorations(graphics); // stack size and durability
         this.renderAdditional(graphics, mouseX, mouseY); // tooltips

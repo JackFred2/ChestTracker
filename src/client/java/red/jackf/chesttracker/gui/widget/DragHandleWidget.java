@@ -3,7 +3,7 @@ package red.jackf.chesttracker.gui.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Handle for reordering memory key icons in the edit keys screen.
  */
 public class DragHandleWidget extends AbstractWidget {
-    private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("drag_handle/handle");
+    private static final SpriteSet TEXTURE = GuiUtil.twoSprite("drag_handle/handle");
     private static final int HIGHLIGHT_COLOUR = 0xFF_FF0000;
     public static final int WIDTH = 10;
     public static final int HEIGHT = 20;
@@ -46,7 +46,7 @@ public class DragHandleWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(this.isHoveredOrFocused() ? TEXTURE.enabledFocused() : TEXTURE.enabled(), this.getX(), this.getY(), WIDTH, HEIGHT);
+        GuiUtil.blit(graphics, this.isHoveredOrFocused() ? TEXTURE.focused() : TEXTURE.enabled(), this.getX(), this.getY(), WIDTH, HEIGHT);
 
         if (this.target != null) {
             int y = this.highlightStartY + yHeight * this.target;

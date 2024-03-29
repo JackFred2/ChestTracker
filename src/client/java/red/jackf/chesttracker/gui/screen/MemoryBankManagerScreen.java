@@ -15,6 +15,7 @@ import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
+import red.jackf.chesttracker.gui.widget.SpriteButton;
 import red.jackf.chesttracker.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.gui.widget.TextWidget;
 import red.jackf.chesttracker.memory.MemoryBank;
@@ -94,7 +95,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
 
         if (inGame) {
             // button to create a new memory; not shown if not ingame
-            this.addRenderableWidget(new ImageButton(
+            this.addRenderableWidget(new SpriteButton(
                             this.left + menuWidth - BUTTON_SIZE - GuiConstants.SMALL_MARGIN,
                             this.top + SEARCH_TOP,
                             BUTTON_SIZE,

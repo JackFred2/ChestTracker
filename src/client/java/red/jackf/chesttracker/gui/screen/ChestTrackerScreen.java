@@ -21,6 +21,7 @@ import red.jackf.chesttracker.compat.mods.searchables.SearchablesUtil;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.config.ChestTrackerConfigScreenBuilder;
 import red.jackf.chesttracker.gui.GuiConstants;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.Memory;
@@ -157,7 +158,7 @@ public class ChestTrackerScreen extends Screen {
                     button -> this.onClose()));
 
         // mod settings
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(new SpriteButton(
                     this.left + this.menuWidth - 2 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
@@ -167,7 +168,7 @@ public class ChestTrackerScreen extends Screen {
             .setTooltip(Tooltip.create(translatable("chesttracker.gui.modSettings")));
 
         // change memory bank
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(new SpriteButton(
                     this.left + this.menuWidth - 3 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
@@ -177,7 +178,7 @@ public class ChestTrackerScreen extends Screen {
             .setTooltip(Tooltip.create(translatable("chesttracker.gui.openMemoryManager")));
 
         // memory bank settings
-        this.addRenderableWidget(new ImageButton(
+        this.addRenderableWidget(new SpriteButton(
                     this.left + this.menuWidth - 4 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
@@ -187,25 +188,23 @@ public class ChestTrackerScreen extends Screen {
             .setTooltip(Tooltip.create(translatable("chesttracker.gui.memoryBankSettings")));
 
         // filtering
-        this.addRenderableWidget(new ChangeableImageButton(
+        this.addRenderableWidget(new SpriteButton(
                     this.left + this.menuWidth - 5 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
                     containerFilter.sprites,
-                    CommonComponents.EMPTY,
-                    this::cycleContainerFilter))
+                    b -> ChestTrackerScreen.this.cycleContainerFilter((SpriteButton) b)))
             .setTooltip(this.getContainerFilterTooltip());
 
         // item sort
-        this.addRenderableWidget(new ChangeableImageButton(
+        this.addRenderableWidget(new SpriteButton(
                     this.left + this.menuWidth - 6 * (3 + BUTTON_SIZE),
                     this.top + GuiConstants.SMALL_MARGIN,
                     BUTTON_SIZE,
                     BUTTON_SIZE,
                     itemSort.sprites,
-                    CommonComponents.EMPTY,
-                    this::cycleItemSort))
+                    b -> ChestTrackerScreen.this.cycleItemSort((SpriteButton) b)))
             .setTooltip(this.getItemSortTooltip());
 
         // resize
@@ -271,7 +270,7 @@ public class ChestTrackerScreen extends Screen {
         }
     }
 
-    private void cycleItemSort(ChangeableImageButton button) {
+    private void cycleItemSort(SpriteButton button) {
         itemSort = Enums.next(itemSort);
         button.setTooltip(getItemSortTooltip());
         button.setSprites(itemSort.sprites);
@@ -286,7 +285,7 @@ public class ChestTrackerScreen extends Screen {
         return Tooltip.create(translatable("chesttracker.gui.containerFilter", containerFilter.tooltip));
     }
 
-    private void cycleContainerFilter(ChangeableImageButton button) {
+    private void cycleContainerFilter(SpriteButton button) {
         containerFilter = Enums.next(containerFilter);
         button.setTooltip(getContainerFilterTooltip());
         button.setSprites(containerFilter.sprites);
@@ -364,10 +363,10 @@ public class ChestTrackerScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
-        super.renderBackground(graphics, i, j, f);
-        graphics.blitSprite(GuiUtil.BACKGROUND_SPRITE, left, top, menuWidth, menuHeight);
-        ifSearchables(() -> graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight()));
+    public void renderBackground(@NotNull GuiGraphics graphics) {
+        super.renderBackground(graphics);
+        GuiUtil.BACKGROUND_SPRITE.blit(graphics, left, top, menuWidth, menuHeight);
+        ifSearchables(() -> GuiUtil.SEARCH_BAR_SPRITE.blit(graphics, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight()));
     }
 
     @Override
@@ -397,16 +396,16 @@ public class ChestTrackerScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         // Searchables Edit Box Support
-        double finalDelta = deltaY;
-        if (search.isFocused() && ifSearchables(a -> a.mouseScrolled(mouseX, mouseY, deltaX, finalDelta))) {
+        double finalDelta = delta;
+        if (search.isFocused() && ifSearchables(a -> a.mouseScrolled(mouseX, mouseY, finalDelta))) {
             return true;
         } else if (itemList.isMouseOver(mouseX, mouseY) || scroll.isMouseOver(mouseX, mouseY)) {
-            deltaY /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.instance().gui.gridHeight);
-            return scroll.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+            delta /= Math.max(1, itemList.getRows() - ChestTrackerConfig.INSTANCE.instance().gui.gridHeight);
+            return scroll.mouseScrolled(mouseX, mouseY, delta);
         }
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
@@ -464,11 +463,11 @@ public class ChestTrackerScreen extends Screen {
                  translatable("chesttracker.gui.containerFilter.furnaces"),
                  memory -> memory.getValue().container().map(b -> b instanceof AbstractFurnaceBlock).orElse(false));
 
-        private final WidgetSprites sprites;
+        private final SpriteSet sprites;
         private final Component tooltip;
         private final Predicate<Map.Entry<BlockPos, Memory>> filter;
 
-        ContainerFilter(WidgetSprites sprites, Component tooltip, Predicate<Map.Entry<BlockPos, Memory>> filter) {
+        ContainerFilter(SpriteSet sprites, Component tooltip, Predicate<Map.Entry<BlockPos, Memory>> filter) {
             this.sprites = sprites;
             this.tooltip = tooltip;
             this.filter = filter;
@@ -489,11 +488,11 @@ public class ChestTrackerScreen extends Screen {
                                 translatable("chesttracker.gui.itemSort.alphabeticalAscending"),
                                 Comparator.<ItemStack, String>comparing(stack -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT)).reversed());
 
-        private final WidgetSprites sprites;
+        private final SpriteSet sprites;
         private final Component tooltip;
         private final Comparator<ItemStack> sort;
 
-        ItemSort(WidgetSprites sprites, Component tooltip, Comparator<ItemStack> sort) {
+        ItemSort(SpriteSet sprites, Component tooltip, Comparator<ItemStack> sort) {
             this.sprites = sprites;
             this.tooltip = tooltip;
             this.sort = sort;

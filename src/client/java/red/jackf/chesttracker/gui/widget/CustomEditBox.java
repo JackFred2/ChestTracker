@@ -19,7 +19,7 @@ public class CustomEditBox extends EditBox {
 
     @Override
     public void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(GuiUtil.SEARCH_BAR_SPRITE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        GuiUtil.SEARCH_BAR_SPRITE.blit(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight());
         graphics.pose().translate(2, 2, 0);
         super.renderWidget(graphics, mouseX, mouseY, partialTick);
         graphics.pose().translate(-2, -2, 0);

@@ -15,7 +15,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.Identifiers;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.theme.IThemeHelper;
-import snownee.jade.api.ui.Direction2D;
+//import snownee.jade.api.ui.Direction2D;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 
@@ -60,7 +60,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
         if (!currentLine.isEmpty()) lines.add(currentLine);
         for (int i = 0; i < lines.size(); i++) {
             tooltip.add(lines.get(i));
-            if (i < lines.size() - 1) tooltip.setLineMargin(-1, Direction2D.DOWN, -1);
+            // TODO sort
+            //if (i < lines.size() - 1) tooltip.setLineMargin(-1, Direction2D.DOWN, -1);
         }
 
         if (memory.name() != null) {

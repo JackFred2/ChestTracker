@@ -31,9 +31,9 @@ public abstract class BaseUtilScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
-        super.renderBackground(graphics, i, j, f);
-        graphics.blitSprite(GuiUtil.BACKGROUND_SPRITE, this.left, this.top, this.menuWidth, this.menuHeight);
+    public void renderBackground(@NotNull GuiGraphics graphics) {
+        super.renderBackground(graphics);
+        GuiUtil.BACKGROUND_SPRITE.blit(graphics, this.left, this.top, this.menuWidth, this.menuHeight);
     }
 
     @Override

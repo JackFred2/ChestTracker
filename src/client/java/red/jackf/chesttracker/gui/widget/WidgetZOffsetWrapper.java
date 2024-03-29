@@ -39,8 +39,8 @@ public class WidgetZOffsetWrapper<T extends AbstractWidget> extends AbstractWidg
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        return baseWidget.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return baseWidget.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

@@ -4,26 +4,28 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.Misc;
 
 /**
  * Secondary feature button. Only appears when the primary Chest Tracker button is hovered.
  */
 public class SecondaryButton extends AbstractWidget {
     private static final long TWEEN_TIME = 100;
-    private final WidgetSprites sprites;
+    private final SpriteSet sprites;
     protected Runnable onClick;
     private long startTweenTime = -1;
     private int startX = 0;
     private int startY = 0;
     private int buttonIndex = 0;
 
-    public SecondaryButton(WidgetSprites sprites, Component message, Runnable onClick) {
+    public SecondaryButton(SpriteSet sprites, Component message, Runnable onClick) {
         super(0, 0, InventoryButton.SIZE, InventoryButton.SIZE, message); // pos updated in InventoryButton#applyPosition
         this.onClick = onClick;
         this.setTooltip(Tooltip.create(message));
@@ -36,7 +38,7 @@ public class SecondaryButton extends AbstractWidget {
         this.buttonIndex = index;
     }
 
-    protected WidgetSprites getSprites() {
+    protected SpriteSet getSprites() {
         return this.sprites;
     }
 
@@ -46,10 +48,10 @@ public class SecondaryButton extends AbstractWidget {
 
         long tweenTime = this.buttonIndex * TWEEN_TIME;
         float factor = Mth.clamp((float) (Util.getMillis() - startTweenTime) / tweenTime, 0, 1);
-        int x = Mth.lerpDiscrete(factor, this.startX - 1, this.getX() - 1);
-        int y = Mth.lerpDiscrete(factor, this.startY - 1, this.getY() - 1);
+        int x = Misc.lerpDiscrete(factor, this.startX - 1, this.getX() - 1);
+        int y = Misc.lerpDiscrete(factor, this.startY - 1, this.getY() - 1);
 
-        graphics.blitSprite(texture, x, y, InventoryButton.Z_OFFSET - 10 * buttonIndex, InventoryButton.IMAGE_SIZE, InventoryButton.IMAGE_SIZE);
+        GuiUtil.blit(graphics, texture, x, y, InventoryButton.Z_OFFSET - 10 * buttonIndex, InventoryButton.IMAGE_SIZE, InventoryButton.IMAGE_SIZE);
     }
 
     @Override

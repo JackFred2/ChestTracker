@@ -7,4 +7,8 @@ public class Misc {
         op.accept(obj);
         return obj;
     }
+
+    public static int lerpDiscrete(float factor, int a, int b) {
+        return (int) (a + (b - a) * factor);
+    }
 }

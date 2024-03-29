@@ -2,7 +2,7 @@ package red.jackf.chesttracker.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.WidgetSprites;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +14,8 @@ import red.jackf.chesttracker.util.GuiUtil;
 import java.util.function.Consumer;
 
 public class VerticalScrollWidget extends AbstractWidget {
-    private static final ResourceLocation BACKGROUND = GuiUtil.sprite("nine_patch/scroll_bar");
-    private static final WidgetSprites HANDLE_TEXTURE = new WidgetSprites(GuiUtil.sprite("widgets/scroll_bar/handle"),
+    private static final GuiUtil.NinePatch BACKGROUND = new GuiUtil.NinePatch("nine_patch/scroll_bar", 2, 9, 9);
+    private static final SpriteSet HANDLE_TEXTURE = new SpriteSet(GuiUtil.sprite("widgets/scroll_bar/handle"),
                                                                           GuiUtil.sprite("widgets/scroll_bar/handle_disabled"),
                                                                           GuiUtil.sprite("widgets/scroll_bar/handle"),
                                                                           GuiUtil.sprite("widgets/scroll_bar/handle_disabled"));
@@ -48,10 +48,11 @@ public class VerticalScrollWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(BACKGROUND, getX(), getY(), width, height);
+        BACKGROUND.blit(graphics, getX(), getY(), width, height);
 
         int handleY = (int) ((this.height - HANDLE_HEIGHT - 2 * INSET) * progress);
-        graphics.blitSprite(disabled ? HANDLE_TEXTURE.disabled() : HANDLE_TEXTURE.enabled(),
+        GuiUtil.blit(graphics,
+                disabled ? HANDLE_TEXTURE.disabled() : HANDLE_TEXTURE.enabled(),
                 this.getX() + INSET,
                 this.getY() + INSET + handleY,
                 HANDLE_WIDTH,
@@ -73,12 +74,12 @@ public class VerticalScrollWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (this.visible && !this.disabled) {
-            setProgress((float) (this.progress - deltaY));
+            setProgress((float) (this.progress - delta));
             return true;
         } else {
-            return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+            return super.mouseScrolled(mouseX, mouseY, delta);
         }
     }
 

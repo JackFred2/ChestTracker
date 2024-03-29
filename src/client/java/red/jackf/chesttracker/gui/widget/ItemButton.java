@@ -3,7 +3,7 @@ package red.jackf.chesttracker.gui.widget;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.WidgetSprites;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import red.jackf.chesttracker.util.GuiUtil;
 
 public class ItemButton extends Button {
     public static final int SIZE = 20;
-    private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("memory_key_background/background");
+    private static final SpriteSet TEXTURE = GuiUtil.twoSprite("memory_key_background/background");
     private final ItemStack stack;
     private final Background background;
     private boolean highlighted = false;
@@ -30,11 +30,12 @@ public class ItemButton extends Button {
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         switch (background) {
             case VANILLA -> super.renderWidget(graphics, mouseX, mouseY, partialTick);
-            case CUSTOM -> graphics.blitSprite(this.highlighted || this.isHovered() ? TEXTURE.enabledFocused() : TEXTURE.enabled(),
-                                           getX(),
-                                           getY(),
-                                           SIZE,
-                                           SIZE);
+            case CUSTOM -> GuiUtil.blit(graphics,
+                                        this.highlighted || this.isHovered() ? TEXTURE.focused() : TEXTURE.enabled(),
+                                        getX(),
+                                        getY(),
+                                        SIZE,
+                                        SIZE);
         }
         graphics.renderItem(stack, this.getX() + 2, this.getY() + 2);
     }

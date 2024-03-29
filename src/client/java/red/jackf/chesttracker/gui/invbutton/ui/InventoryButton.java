@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
+import red.jackf.chesttracker.gui.util.SpriteSet;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * Main Chest Tracker button.
  */
 public class InventoryButton extends AbstractWidget {
-    private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
+    private static final SpriteSet TEXTURE = GuiUtil.twoSprite("inventory_button/button");
     static final int Z_OFFSET = 400;
     private static final int MS_BEFORE_DRAG_START = 200;
     private static final int EXPANDED_HOVER_INFLATE = 5;
@@ -90,7 +90,7 @@ public class InventoryButton extends AbstractWidget {
         // NOTE: texture is 11x11 while button is 9x9
 
         ResourceLocation texture = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
-        graphics.blitSprite(texture, this.getX() - 1, this.getY() - 1, Z_OFFSET, IMAGE_SIZE, IMAGE_SIZE);
+        GuiUtil.blit(graphics, texture, this.getX() - 1, this.getY() - 1, Z_OFFSET, IMAGE_SIZE, IMAGE_SIZE);
 
         for (AbstractWidget secondary : this.secondaryButtons) {
             secondary.render(graphics, mouseX, mouseY, partialTick);
