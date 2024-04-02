@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.api.events;
+package red.jackf.chesttracker.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

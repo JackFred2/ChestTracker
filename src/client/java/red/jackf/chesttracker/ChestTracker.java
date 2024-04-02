@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.api.events.AfterPlayerPlaceBlock;
+import red.jackf.chesttracker.events.AfterPlayerPlaceBlock;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.compat.mods.ShareEnderChestIntegration;
@@ -142,6 +142,7 @@ public class ChestTracker implements ClientModInitializer {
 
         // auto add placed blocks with data, such as shulker boxes
         // TODO after fabric#3367 is merged: replace with that
+        // fabric-events-interaction-v0-client/ClientPlayerBlockBreakEvents
         AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) -> {
             if (ProviderHandler.INSTANCE == null || MemoryBank.INSTANCE == null) return;
 
