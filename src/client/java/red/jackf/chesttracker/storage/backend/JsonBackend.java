@@ -4,15 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.ChestTracker;
-import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.key.MemoryKey;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
@@ -60,7 +59,7 @@ public class JsonBackend extends FileBasedBackend {
             }
             return null;
         });
-        Map<ResourceLocation, Map<BlockPos, Memory>> data = result.getFirst() == null ? new HashMap<>() : result.getFirst();
+        Map<ResourceLocation, MemoryKey> data = result.getFirst() == null ? new HashMap<>() : result.getFirst();
         LOGGER.debug("Loaded {} in {}ns", dataPath, result.getSecond());
         return new MemoryBank(metadata.get(), data);
     }

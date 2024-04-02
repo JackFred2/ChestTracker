@@ -3,15 +3,14 @@ package red.jackf.chesttracker.gui.screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.key.MemoryKey;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * View of a memory bank for management purposes
@@ -23,7 +22,7 @@ public interface MemoryBankView {
 
     List<ResourceLocation> keys();
 
-    @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey);
+    @Nullable MemoryKey getMemories(ResourceLocation memoryKey);
 
     void removeKey(ResourceLocation id);
 
@@ -52,7 +51,7 @@ public interface MemoryBankView {
             }
 
             @Override
-            public @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey) {
+            public @Nullable MemoryKey getMemories(ResourceLocation memoryKey) {
                 return bank.getMemories(memoryKey);
             }
 
@@ -94,7 +93,7 @@ public interface MemoryBankView {
             }
 
             @Override
-            public @Nullable Map<BlockPos, Memory> getMemories(ResourceLocation memoryKey) {
+            public @Nullable MemoryKey getMemories(ResourceLocation memoryKey) {
                 return null;
             }
 

@@ -7,6 +7,7 @@ import red.jackf.chesttracker.api.provider.Provider;
 import red.jackf.chesttracker.compat.servers.hypixel.HypixelProvider;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.key.MemoryKey;
 import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
@@ -44,9 +45,9 @@ public class DeveloperOverlay {
                 if (level != null) {
                     lines.add("Current key: " + currentKey);
                     if (currentKey != null) {
-                        var currentLevelMemories = MemoryBank.INSTANCE.getMemories(currentKey);
-                        if (currentLevelMemories != null)
-                            lines.add("Memories in current dimension: " + currentLevelMemories.size());
+                        MemoryKey currentMemoryKey = MemoryBank.INSTANCE.getMemories(currentKey);
+                        if (currentMemoryKey != null)
+                            lines.add("Memories in current dimension: " + currentMemoryKey.memories().size());
                         else
                             lines.add("No memories in current dimension");
                     }

@@ -85,7 +85,7 @@ public class MemoryIntegrity {
                 var current = MemoryBank.INSTANCE.getMemories(currentEntryKey);
                 if (current != null && !current.isEmpty()) {
                     LOGGER.debug("Refreshing entry list <{}> @ {}", currentEntryKey, level.getGameTime());
-                    currentEntryList.addAll(current.entrySet());
+                    currentEntryList.addAll(current.memories().entrySet());
                     if (ChestTrackerConfig.INSTANCE.instance().debug.showDevHud) {
                         toast.get().setTitle(Component.literal("Integrity: " + currentEntryKey));
                         toast.get().setProgress(0f);

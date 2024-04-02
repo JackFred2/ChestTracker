@@ -19,6 +19,7 @@ import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.gui.util.TextColours;
 import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.MemoryBank;
+import red.jackf.chesttracker.memory.key.MemoryKey;
 import red.jackf.chesttracker.memory.metadata.CompatibilitySettings;
 import red.jackf.chesttracker.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.memory.metadata.IntegritySettings;
@@ -437,13 +438,13 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
     private void highlightAll() {
         var currentKey = ProviderHandler.getCurrentKey();
         if (currentKey == null) return;
-        var currentMemories = memoryBank.getMemories(currentKey);
+        MemoryKey currentMemories = memoryBank.getMemories(currentKey);
         if (currentMemories == null) return;
 
         // TODO make this not an internal hack
         WhereIsItClient.closedScreenThisSearch = false;
         Rendering.resetSearchTime();
-        WhereIsItClient.recieveResults(currentMemories.entrySet().stream()
+        WhereIsItClient.recieveResults(currentMemories.memories().entrySet().stream()
                                                       .map(e -> SearchResult.builder(e.getKey())
                                                                             .name(e.getValue().name(), null)
                                                                             .otherPositions(e.getValue().otherPositions())
@@ -476,7 +477,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
         final Vec3 origin = Minecraft.getInstance().player.getEyePosition();
         Set<BlockPos> within = new HashSet<>();
         Set<BlockPos> outside = new HashSet<>();
-        for (BlockPos pos : currentMemories.keySet()) {
+        for (BlockPos pos : currentMemories.memories().keySet()) {
             if (origin.distanceToSqr(pos.getCenter()) < squareRange) {
                 within.add(pos);
             } else {
