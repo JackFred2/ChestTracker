@@ -57,14 +57,12 @@ public class InventoryButton extends AbstractWidget {
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
-        /*
         // TODO only add ones relevant to the current screen - memory existing, etc.
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra) {
-
-            this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
-            this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
+            //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
+            //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
             this.secondaryButtons.add(new RememberContainerButton());
-        }*/
+        }
 
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExport) {
             this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/export"), Component.translatable("chesttracker.inventoryButton.export"), () ->

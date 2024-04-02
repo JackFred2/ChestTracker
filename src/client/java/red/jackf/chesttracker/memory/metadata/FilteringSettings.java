@@ -18,6 +18,8 @@ public class FilteringSettings {
     protected static final Codec<FilteringSettings> CODEC = RecordCodecBuilder.create(instance -> {
         final var def = new FilteringSettings();
         return instance.group(
+                Codec.BOOL.optionalFieldOf("manualMode")
+                        .forGetter(settings -> Optional.of(settings.manualMode)),
                 Codec.BOOL.optionalFieldOf("onlyRememberNamed")
                         .forGetter(settings -> Optional.of(settings.onlyRememberNamed)),
                 JFLCodecs.forEnum(RememberedContainers.class).optionalFieldOf("rememberedContainers")
@@ -26,7 +28,8 @@ public class FilteringSettings {
                         .forGetter(settings -> Optional.of(settings.rememberEnderChests)),
                 JFLCodecs.forEnum(AutoAddPlacedBlocks.class).optionalFieldOf("autoAddPlacedBlocks")
                         .forGetter(settings -> Optional.of(settings.autoAddPlacedBlocks))
-        ).apply(instance, (onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks) -> new FilteringSettings(
+        ).apply(instance, (manualMode, onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks) -> new FilteringSettings(
+                manualMode.orElse(def.manualMode),
                 onlyRememberNamed.orElse(def.onlyRememberNamed),
                 rememberedContainers.orElse(def.rememberedContainers),
                 rememberEnderChests.orElse(def.rememberEnderChests),
@@ -34,6 +37,7 @@ public class FilteringSettings {
         ));
     });
 
+    public boolean manualMode = false;
     public boolean onlyRememberNamed = false;
     public RememberedContainers rememberedContainers = RememberedContainers.ALL;
     public boolean rememberEnderChests = true;
@@ -41,7 +45,12 @@ public class FilteringSettings {
 
     protected FilteringSettings() {}
 
-    public FilteringSettings(boolean onlyRememberNamed, RememberedContainers rememberedContainers, boolean rememberEnderChests, AutoAddPlacedBlocks autoAddPlacedBlocks) {
+    public FilteringSettings(boolean manualMode,
+                             boolean onlyRememberNamed,
+                             RememberedContainers rememberedContainers,
+                             boolean rememberEnderChests,
+                             AutoAddPlacedBlocks autoAddPlacedBlocks) {
+        this.manualMode = manualMode;
         this.onlyRememberNamed = onlyRememberNamed;
         this.rememberedContainers = rememberedContainers;
         this.rememberEnderChests = rememberEnderChests;
@@ -49,7 +58,7 @@ public class FilteringSettings {
     }
 
     public FilteringSettings copy() {
-        return new FilteringSettings(onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks);
+        return new FilteringSettings(manualMode, onlyRememberNamed, rememberedContainers, rememberEnderChests, autoAddPlacedBlocks);
     }
 
     public enum RememberedContainers {

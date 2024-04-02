@@ -7,14 +7,16 @@ import net.minecraft.network.chat.Component;
 import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
 
+import java.util.function.Supplier;
+
 public class RememberContainerButton extends SecondaryButton {
-    private State state = State.DEFAULT;
+    private State state = State.REMEMBER;
 
     public RememberContainerButton() {
-        super(State.DEFAULT.sprites, State.DEFAULT.tooltip, () -> {});
+        super(State.REMEMBER.sprites, State.REMEMBER.tooltip.get(), () -> {});
         this.onClick = this::cycleState;
 
-        this.setState(State.DEFAULT);
+        this.setState(State.REMEMBER);
     }
 
     @Override
@@ -28,23 +30,21 @@ public class RememberContainerButton extends SecondaryButton {
 
     private void setState(State state) {
         this.state = state;
-        Component message = Component.translatable("chesttracker.inventoryButton.rememberContainer", state.tooltip);
+        Component message = state.tooltip.get();
         this.setMessage(message);
         this.setTooltip(Tooltip.create(message));
     }
 
     public enum State {
-        ALWAYS(GuiUtil.twoSprite("inventory_button/remember_container/always"),
-                Component.translatable("chesttracker.inventoryButton.rememberContainer.always").withStyle(ChatFormatting.GREEN)),
-        DEFAULT(GuiUtil.twoSprite("inventory_button/remember_container/default"),
-                Component.translatable("chesttracker.inventoryButton.rememberContainer.default").withStyle(ChatFormatting.GOLD)),
-        NEVER(GuiUtil.twoSprite("inventory_button/remember_container/never"),
-                Component.translatable("chesttracker.inventoryButton.rememberContainer.never").withStyle(ChatFormatting.RED));
+        REMEMBER(GuiUtil.twoSprite("inventory_button/remember_container/always"),
+                () -> Component.translatable("chesttracker.inventoryButton.rememberContainer.remember").withStyle(ChatFormatting.GREEN)),
+        BLOCK(GuiUtil.twoSprite("inventory_button/remember_container/never"),
+                () -> Component.translatable("chesttracker.inventoryButton.rememberContainer.block").withStyle(ChatFormatting.RED));
 
         private final WidgetSprites sprites;
-        private final Component tooltip;
+        private final Supplier<Component> tooltip;
 
-        State(WidgetSprites sprites, Component tooltip) {
+        State(WidgetSprites sprites, Supplier<Component> tooltip) {
             this.sprites = sprites;
             this.tooltip = tooltip;
         }
