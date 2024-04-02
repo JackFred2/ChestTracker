@@ -35,7 +35,7 @@ public class MemoryBank {
     public static final Codec<Map<ResourceLocation, MemoryKey>> MEMORIES_CODEC = JFLCodecs.mutableMap(
             Codec.unboundedMap(
                     ResourceLocation.CODEC,
-                    MemoryKey.Codecs.KEY
+                    MemoryKey.Codecs.MAIN
             ));
 
     public static final ResourceLocation ENDER_CHEST_KEY = ChestTracker.id("ender_chest");

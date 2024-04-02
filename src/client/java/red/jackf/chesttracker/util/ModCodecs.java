@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Codecs for classes that aren't ours
@@ -72,5 +72,9 @@ public class ModCodecs {
      */
     public static <T> Codec<T> singular(Codec<T> typeCodec, T value) {
         return JFLCodecs.oneOf(typeCodec, Collections.singleton(value));
+    }
+
+    public static <T> Codec<Set<T>> set(Codec<T> base) {
+        return base.listOf().xmap(Set::copyOf, List::copyOf);
     }
 }

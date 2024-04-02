@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.memory.key;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,7 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.ItemStackUtil;
 import red.jackf.chesttracker.util.MemoryUtil;
 import red.jackf.chesttracker.util.ModCodecs;
+import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
@@ -32,9 +34,11 @@ public class MemoryKey {
      */
     private final Map<BlockPos, BlockPos> connected = new HashMap<>();
 
+    private final Set<BlockPos> ignored = new HashSet<>();
+
     public MemoryKey() {}
 
-    public MemoryKey(Map<BlockPos, Memory> memories) {
+    public MemoryKey(Map<BlockPos, Memory> memories, Set<BlockPos> ignored) {
         this.memories.putAll(memories);
 
         for (Map.Entry<BlockPos, Memory> entry : memories.entrySet()) {
@@ -44,6 +48,8 @@ public class MemoryKey {
             for (BlockPos otherPosition : memory.otherPositions())
                 this.connected.put(otherPosition, entry.getKey());
         }
+
+        this.ignored.addAll(ignored);
     }
 
     public boolean isEmpty() {
@@ -56,6 +62,10 @@ public class MemoryKey {
 
     public Map<BlockPos, Memory> namedMemories() {
         return this.namedMemories;
+    }
+
+    public Set<BlockPos> ignored() {
+        return this.ignored;
     }
 
     public void addMemory(MemoryBuilder.Entry entry, MemoryBuildContext context) {
@@ -142,10 +152,25 @@ public class MemoryKey {
         return results;
     }
 
-    public interface Codecs {
-        Codec<MemoryKey> KEY = Codec.unboundedMap(
+    public static class Codecs {
+        private static final Codec<Map<BlockPos, Memory>> MEMORY_MAP = Codec.unboundedMap(
                 ModCodecs.BLOCK_POS_STRING,
                 Memory.CODEC
-        ).xmap(MemoryKey::new, MemoryKey::memories);
+        );
+
+        // v2.3.3 and below
+        // just a map of positions to memories
+        private static final Codec<MemoryKey> V2_3_3 = MEMORY_MAP.xmap(map -> new MemoryKey(map, Collections.emptySet()), MemoryKey::memories);
+
+        // v2.4.0 and up
+        // moved to record; adds blocked set
+        private static final Codec<MemoryKey> LATEST = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        MEMORY_MAP.fieldOf("memories").forGetter(MemoryKey::memories),
+                        ModCodecs.set(ModCodecs.BLOCK_POS_STRING).fieldOf("blocked").forGetter(MemoryKey::ignored)
+                ).apply(instance, MemoryKey::new)
+        );
+
+        public static final Codec<MemoryKey> MAIN = JFLCodecs.firstInList(LATEST, V2_3_3);
     }
 }
