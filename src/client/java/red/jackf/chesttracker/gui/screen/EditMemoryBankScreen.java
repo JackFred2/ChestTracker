@@ -28,7 +28,7 @@ import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.storage.ConnectionSettings;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.GuiUtil;
-import red.jackf.chesttracker.util.I18nUtil;
+import red.jackf.chesttracker.util.I18n;
 import red.jackf.chesttracker.util.Misc;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.SearchResult;
@@ -426,7 +426,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                        SearchSettings.SEARCH_RANGES_NO_INFINITE,
                                        manageWorkingRange,
                                        range -> translatable("chesttracker.gui.editMemoryBank.manage.workingRange",
-                                                             I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+                                                             I18n.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
 
             @Override
             protected void applyValue() {
@@ -537,7 +537,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                                 SearchSettings.SEARCH_RANGES,
                                                 this.memoryBank.metadata().getSearchSettings().itemListRange,
                                                 range -> translatable("chesttracker.gui.editMemoryBank.search.itemListRange",
-                                                                      I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+                                                                      I18n.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
 
             @Override
             protected void applyValue() {
@@ -552,7 +552,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                        SearchSettings.SEARCH_RANGES,
                                        this.memoryBank.metadata().getSearchSettings().searchRange,
                                        range -> translatable("chesttracker.gui.editMemoryBank.search.searchRange",
-                                                             I18nUtil.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
+                                                             I18n.blocks(range == Integer.MAX_VALUE ? translatable("effect.duration.infinite") : range))) {
             @Override
             protected void applyValue() {
                 EditMemoryBankScreen.this.memoryBank.metadata().getSearchSettings().searchRange = getSelected();

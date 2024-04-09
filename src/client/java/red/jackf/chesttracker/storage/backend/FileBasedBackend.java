@@ -12,7 +12,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
-import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.Strings;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ public abstract class FileBasedBackend implements Backend {
         if (!Files.isDirectory(Constants.STORAGE_DIR)) return Collections.emptyList();
         try (var stream = Files.walk(Constants.STORAGE_DIR)) {
             return stream.filter(path -> path.getFileName().toString().endsWith(metadataExtension()))
-                    .map(path -> StringUtil.formatPath(Constants.STORAGE_DIR.relativize(path)))
+                    .map(path -> Strings.formatPath(Constants.STORAGE_DIR.relativize(path)))
                     .map(s -> s.substring(0, s.length() - metadataExtension().length()))
                     .toList();
         } catch (IOException e) {
@@ -101,7 +101,7 @@ public abstract class FileBasedBackend implements Backend {
     @Override
     public Component getDescriptionLabel(String memoryBankId) {
         long size = getRelevantPaths(memoryBankId).stream().mapToLong(FileBasedBackend::getSizeIfPresent).sum();
-        return translatable("chesttracker.storage.json.fileSize", StringUtil.magnitudeSpace(size, 2) + "B");
+        return translatable("chesttracker.storage.json.fileSize", Strings.magnitudeSpace(size, 2) + "B");
     }
 
     public abstract String extension();

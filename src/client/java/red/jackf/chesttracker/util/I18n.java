@@ -4,7 +4,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 import static net.minecraft.network.chat.Component.translatable;
 
-public class I18nUtil {
+public class I18n {
     public static MutableComponent colon(Object key, Object value) {
         return translatable("options.generic_value", key, value);
     }

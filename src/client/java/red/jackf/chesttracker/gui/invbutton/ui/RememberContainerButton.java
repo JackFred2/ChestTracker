@@ -4,8 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
+import red.jackf.chesttracker.util.Misc;
 
 import java.util.function.Supplier;
 
@@ -25,7 +25,7 @@ public class RememberContainerButton extends SecondaryButton {
     }
 
     private void cycleState() {
-        setState(Enums.next(this.state));
+        setState(Misc.next(this.state));
     }
 
     private void setState(State state) {

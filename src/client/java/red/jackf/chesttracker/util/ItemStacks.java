@@ -1,24 +1,29 @@
 package red.jackf.chesttracker.util;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.StringUtils;
-import red.jackf.chesttracker.memory.LightweightStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
-public class ItemStackUtil {
+public class ItemStacks {
     /**
      * Combine and sort a list of ItemStacks in descending order of count
      */
@@ -139,5 +144,30 @@ public class ItemStackUtil {
         }
 
         return false;
+    }
+
+    /**
+     * Fake itemstack that has no count, and so easier equality check
+     */
+    public record LightweightStack(Item item, @Nullable CompoundTag tag) {
+        public static final Codec<LightweightStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                BuiltInRegistries.ITEM.byNameCodec().fieldOf("id").forGetter(LightweightStack::item),
+                CompoundTag.CODEC.optionalFieldOf("tag").forGetter(stack -> Optional.ofNullable(stack.tag()))
+        ).apply(instance, LightweightStack::new));
+
+        public LightweightStack(ItemStack stack) {
+            this(stack.getItem(), stack.getTag());
+        }
+
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        private LightweightStack(Item item, Optional<CompoundTag> tag) {
+            this(item, tag.orElse(null));
+        }
+
+        public ItemStack toStack() {
+            var stack = new ItemStack(item);
+            stack.setTag(tag);
+            return stack;
+        }
     }
 }

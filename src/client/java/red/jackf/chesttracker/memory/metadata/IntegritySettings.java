@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.util.I18nUtil;
+import red.jackf.chesttracker.util.I18n;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Optional;
@@ -77,20 +77,20 @@ public class IntegritySettings {
     }
 
     public enum MemoryLifetime {
-        TEN_SECONDS(10L, I18nUtil.colon(lifetimePrefix(), I18nUtil.seconds(10))),
-        FIVE_MINUTES(60L * 5L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(5))),
-        TWENTY_MINUTES(60L * 15L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(15))),
-        FORTY_MINUTES(60L * 30L, I18nUtil.colon(lifetimePrefix(), I18nUtil.minutes(30))),
-        ONE_HOUR(60L * 60L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(1))),
-        TWO_HOURS(60L * 60L * 2L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(2))),
-        FOUR_HOURS(60L * 60L * 4L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(4))),
-        SIX_HOURS(60L * 60L * 6L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(6))),
-        TWELVE_HOURS(60L * 60L * 12L, I18nUtil.colon(lifetimePrefix(), I18nUtil.hours(12))),
-        ONE_DAY(60L * 60L * 24L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(1))),
-        TWO_DAYS(60L * 60L * 24L * 2L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(2))),
-        FIVE_DAYS(60L * 60L * 24L * 5L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(5))),
-        SEVEN_DAYS(60L * 60L * 24L * 7L, I18nUtil.colon(lifetimePrefix(), I18nUtil.days(7))),
-        NEVER(null, I18nUtil.colon(lifetimePrefix(), Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never")));
+        TEN_SECONDS(10L, I18n.colon(lifetimePrefix(), I18n.seconds(10))),
+        FIVE_MINUTES(60L * 5L, I18n.colon(lifetimePrefix(), I18n.minutes(5))),
+        TWENTY_MINUTES(60L * 15L, I18n.colon(lifetimePrefix(), I18n.minutes(15))),
+        FORTY_MINUTES(60L * 30L, I18n.colon(lifetimePrefix(), I18n.minutes(30))),
+        ONE_HOUR(60L * 60L, I18n.colon(lifetimePrefix(), I18n.hours(1))),
+        TWO_HOURS(60L * 60L * 2L, I18n.colon(lifetimePrefix(), I18n.hours(2))),
+        FOUR_HOURS(60L * 60L * 4L, I18n.colon(lifetimePrefix(), I18n.hours(4))),
+        SIX_HOURS(60L * 60L * 6L, I18n.colon(lifetimePrefix(), I18n.hours(6))),
+        TWELVE_HOURS(60L * 60L * 12L, I18n.colon(lifetimePrefix(), I18n.hours(12))),
+        ONE_DAY(60L * 60L * 24L, I18n.colon(lifetimePrefix(), I18n.days(1))),
+        TWO_DAYS(60L * 60L * 24L * 2L, I18n.colon(lifetimePrefix(), I18n.days(2))),
+        FIVE_DAYS(60L * 60L * 24L * 5L, I18n.colon(lifetimePrefix(), I18n.days(5))),
+        SEVEN_DAYS(60L * 60L * 24L * 7L, I18n.colon(lifetimePrefix(), I18n.days(7))),
+        NEVER(null, I18n.colon(lifetimePrefix(), Component.translatable("chesttracker.gui.editMemoryBank.integrity.memoryLifetime.never")));
 
         public final Long seconds;
         public final Component label;

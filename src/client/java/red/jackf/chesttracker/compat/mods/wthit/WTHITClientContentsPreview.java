@@ -16,7 +16,7 @@ import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
 import red.jackf.chesttracker.util.CachedClientBlockSource;
-import red.jackf.chesttracker.util.ItemStackUtil;
+import red.jackf.chesttracker.util.ItemStacks;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -37,7 +37,7 @@ public enum WTHITClientContentsPreview implements IBlockComponentProvider {
         if (memory == null) return;
 
         // show items
-        var stacks = ItemStackUtil.flattenStacks(memory.items(), true);
+        var stacks = ItemStacks.flattenStacks(memory.items(), true);
         tooltip.setLine(ItemData.ID, new ItemListComponent(stacks, config.getInt(ItemData.CONFIG_MAX_HEIGHT)));
 
         if (Screen.hasShiftDown() && config.getBoolean(ChestTrackerWTHITPlugin.CONFIG_SHOW_TEXT)) {

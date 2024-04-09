@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.widget.CustomEditBox;
 import red.jackf.chesttracker.gui.widget.WidgetZOffsetWrapper;
-import red.jackf.chesttracker.util.ItemStackUtil;
+import red.jackf.chesttracker.util.ItemStacks;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,16 +25,16 @@ public class SearchablesUtil {
 
     private static SearchableType<ItemStack> buildType() {
         return new SearchableType.Builder<ItemStack>()
-                .defaultComponent(SearchableComponent.create("text", ItemStackUtil::defaultPredicate))
-                .component(SearchableComponent.create("name", SearchablesUtil::stackNameSuggestions, ItemStackUtil::namePredicate))
-                .component(SearchableComponent.create("tooltip", ItemStackUtil::tooltipPredicate))
+                .defaultComponent(SearchableComponent.create("text", ItemStacks::defaultPredicate))
+                .component(SearchableComponent.create("name", SearchablesUtil::stackNameSuggestions, ItemStacks::namePredicate))
+                .component(SearchableComponent.create("tooltip", ItemStacks::tooltipPredicate))
                 .component(SearchableComponent.create("id", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem())
                         .getPath())))
-                .component(SearchableComponent.create("tag", ItemStackUtil::tagPredicate))
+                .component(SearchableComponent.create("tag", ItemStacks::tagPredicate))
                 .component(SearchableComponent.create("mod", stack -> Optional.of(BuiltInRegistries.ITEM.getKey(stack.getItem()))
                         .map(ResourceLocation::getNamespace)))
-                .component(SearchableComponent.create("enchantment", ItemStackUtil::enchantmentPredicate))
-                .component(SearchableComponent.create("potion", ItemStackUtil::potionOrEffectPredicate))
+                .component(SearchableComponent.create("enchantment", ItemStacks::enchantmentPredicate))
+                .component(SearchableComponent.create("potion", ItemStacks::potionOrEffectPredicate))
                 .build();
     }
 

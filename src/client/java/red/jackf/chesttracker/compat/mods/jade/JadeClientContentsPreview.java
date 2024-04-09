@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.util.ItemStackUtil;
+import red.jackf.chesttracker.util.ItemStacks;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -18,7 +18,6 @@ import snownee.jade.api.theme.IThemeHelper;
 import snownee.jade.api.ui.Direction2D;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
-import snownee.jade.impl.ui.TextElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
         Memory memory = MemoryBank.getMemoryAt(accessor.getLevel(), accessor.getPosition());
         if (memory == null) return;
 
-        var stacks = ItemStackUtil.flattenStacks(memory.items(), true);
+        var stacks = ItemStacks.flattenStacks(memory.items(), true);
 
         int max = config.getInt(accessor.showDetails() ? Identifiers.MC_ITEM_STORAGE_DETAILED_AMOUNT : Identifiers.MC_ITEM_STORAGE_NORMAL_AMOUNT);
         int perLine = config.getInt(Identifiers.MC_ITEM_STORAGE_ITEMS_PER_LINE);

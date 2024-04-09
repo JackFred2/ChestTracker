@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.config.ChestTrackerConfig;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.util.GuiUtil;
-import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.Strings;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
@@ -132,7 +132,7 @@ public class ItemListWidget extends AbstractWidget {
             graphics.pose().scale(scaleFactor, scaleFactor, 1f);
 
             // render count text scaled down
-            String text = StringUtil.magnitude(item.getCount(), 0);
+            String text = Strings.magnitude(item.getCount(), 0);
             graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
             graphics.pose().popPose();
         }
@@ -152,7 +152,7 @@ public class ItemListWidget extends AbstractWidget {
         if (!this.hideTooltip) {
             var stack = items.get(index);
             var lines = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
-            if (stack.getCount() > 999) lines.add(Component.literal(StringUtil.commaSeparated(stack.getCount()))
+            if (stack.getCount() > 999) lines.add(Component.literal(Strings.commaSeparated(stack.getCount()))
                     .withStyle(ChatFormatting.GREEN));
             var image = stack.getTooltipImage();
             graphics.pose().pushPose();

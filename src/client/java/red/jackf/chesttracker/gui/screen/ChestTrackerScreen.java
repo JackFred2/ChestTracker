@@ -26,10 +26,9 @@ import red.jackf.chesttracker.gui.widget.*;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.provider.ProviderHandler;
-import red.jackf.chesttracker.util.Enums;
 import red.jackf.chesttracker.util.GuiUtil;
-import red.jackf.chesttracker.util.ItemStackUtil;
-import red.jackf.chesttracker.util.StreamUtil;
+import red.jackf.chesttracker.util.ItemStacks;
+import red.jackf.chesttracker.util.Misc;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -227,7 +226,7 @@ public class ChestTrackerScreen extends Screen {
                                                                             .getOrCreateIcon(loc));
 
             var todo = MemoryBank.INSTANCE.getKeys().stream()
-                                          .sorted(StreamUtil.bringToFront(MemoryBank.INSTANCE.getMetadata()
+                                          .sorted(Misc.bringToFront(MemoryBank.INSTANCE.getMetadata()
                                                                                              .getVisualSettings()
                                                                                              .getKeyOrder())).toList();
             Map<ResourceLocation, ItemButton> buttons = new HashMap<>();
@@ -272,7 +271,7 @@ public class ChestTrackerScreen extends Screen {
     }
 
     private void cycleItemSort(ChangeableImageButton button) {
-        itemSort = Enums.next(itemSort);
+        itemSort = Misc.next(itemSort);
         button.setTooltip(getItemSortTooltip());
         button.setSprites(itemSort.sprites);
         updateItems();
@@ -287,7 +286,7 @@ public class ChestTrackerScreen extends Screen {
     }
 
     private void cycleContainerFilter(ChangeableImageButton button) {
-        containerFilter = Enums.next(containerFilter);
+        containerFilter = Misc.next(containerFilter);
         button.setTooltip(getContainerFilterTooltip());
         button.setSprites(containerFilter.sprites);
         updateItems();
@@ -335,7 +334,7 @@ public class ChestTrackerScreen extends Screen {
         if (Compatibility.SEARCHABLES) {
             filtered = SearchablesUtil.ITEM_STACK.filterEntries(this.items, filter.toLowerCase());
         } else {
-            filtered = this.items.stream().filter(stack -> ItemStackUtil.defaultPredicate(stack, filter.toLowerCase())).toList();
+            filtered = this.items.stream().filter(stack -> ItemStacks.defaultPredicate(stack, filter.toLowerCase())).toList();
         }
         this.itemList.setItems(filtered);
         var guiConfig = ChestTrackerConfig.INSTANCE.instance().gui;

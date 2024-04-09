@@ -14,7 +14,7 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.storage.Storage;
 import red.jackf.chesttracker.util.GuiUtil;
-import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.Strings;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.nio.file.InvalidPathException;
@@ -54,7 +54,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
     }
 
     private String makeUserId(String id) {
-        return "user/" + StringUtil.sanitizeForPath(id);
+        return "user/" + Strings.sanitizeForPath(id);
     }
 
     @Override
@@ -159,11 +159,11 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
             var path = Path.of(in);
             var builder = new ArrayList<String>();
             for (var segment : path) {
-                builder.add(StringUtil.sanitizeForPath(segment.toString()));
+                builder.add(Strings.sanitizeForPath(segment.toString()));
             }
             return String.join("/", builder);
         } catch (InvalidPathException ex) {
-            return StringUtil.sanitizeForPath(in);
+            return Strings.sanitizeForPath(in);
         }
     }
 

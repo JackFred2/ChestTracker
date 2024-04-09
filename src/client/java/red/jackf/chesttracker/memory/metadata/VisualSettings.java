@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.gui.MemoryKeyIcon;
 import red.jackf.chesttracker.gui.GuiConstants;
 import red.jackf.chesttracker.provider.ProviderHandler;
-import red.jackf.chesttracker.util.StreamUtil;
+import red.jackf.chesttracker.util.Misc;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class VisualSettings {
         var iconKeys = ProviderHandler.INSTANCE.getDefaultIcons().stream().map(MemoryKeyIcon::id).toList();
 
         this.icons = this.icons.stream()
-                .sorted(Comparator.comparing(MemoryKeyIcon::id, StreamUtil.bringToFront(iconKeys)))
+                .sorted(Comparator.comparing(MemoryKeyIcon::id, Misc.bringToFront(iconKeys)))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

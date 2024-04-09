@@ -9,8 +9,8 @@ import red.jackf.chesttracker.api.provider.MemoryBuildContext;
 import red.jackf.chesttracker.api.provider.MemoryBuilder;
 import red.jackf.chesttracker.memory.Memory;
 import red.jackf.chesttracker.memory.MemoryBank;
-import red.jackf.chesttracker.util.ItemStackUtil;
-import red.jackf.chesttracker.util.MemoryUtil;
+import red.jackf.chesttracker.util.ItemStacks;
+import red.jackf.chesttracker.util.Misc;
 import red.jackf.chesttracker.util.ModCodecs;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import red.jackf.whereisit.api.SearchRequest;
@@ -109,13 +109,13 @@ public class MemoryKey {
 
     public List<ItemStack> getCounts(Predicate<Map.Entry<BlockPos, Memory>> filter, MemoryBank.StackMergeMode mergeMode) {
         return switch (mergeMode) {
-            case ALL -> ItemStackUtil.flattenStacks(this.memories.entrySet().stream()
+            case ALL -> ItemStacks.flattenStacks(this.memories.entrySet().stream()
                     .filter(filter)
                     .flatMap(data -> data.getValue().items().stream())
                     .toList(), false);
             case WITHIN_CONTAINERS -> this.memories.entrySet().stream()
                     .filter(filter)
-                    .flatMap(data -> ItemStackUtil.flattenStacks(data.getValue().items(), false).stream())
+                    .flatMap(data -> ItemStacks.flattenStacks(data.getValue().items(), false).stream())
                     .toList();
             case NEVER -> this.memories.entrySet().stream()
                     .filter(filter)
@@ -143,7 +143,7 @@ public class MemoryKey {
             if (context.metadata().getCompatibilitySettings().displayContainerNames)
                 result.name(
                         entry.getValue().name(),
-                        MemoryUtil.getAverageNameOffset(entry.getKey(), entry.getValue().otherPositions())
+                        Misc.getAverageOffsetFrom(entry.getKey(), entry.getValue().otherPositions())
                 );
 
             results.add(result.build());

@@ -12,7 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Codecs for classes that aren't ours
@@ -35,11 +37,14 @@ public class ModCodecs {
                         return DataResult.error(() -> "Invalid integer in key");
                     }
                 } else {
-                    return DataResult.error(() -> "Unknown number of coordinates: " + split.length);
+                    return DataResult.error(() -> "Invalid number of coordinates: " + split.length);
                 }
             }, pos -> "%d,%d,%d".formatted(pos.getX(), pos.getY(), pos.getZ())
     );
 
+    /**
+     * Compact codec for an ItemStack. Ignores the count on both serialization and deserialization
+     */
     public static final Codec<ItemStack> ITEM_STACK_IGNORE_COUNT = ExtraCodecs.xor(
             Codec.pair(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("id").codec(),

@@ -7,7 +7,7 @@ import red.jackf.chesttracker.ChestTracker;
 import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
-import red.jackf.chesttracker.util.Timer;
+import red.jackf.chesttracker.util.Misc;
 
 import java.util.HashMap;
 
@@ -19,7 +19,7 @@ public class NbtBackend extends FileBasedBackend {
         var meta = loadMetadata(id);
         if (meta.isEmpty()) return null;
         var path = Constants.STORAGE_DIR.resolve(id + extension());
-        var result = Timer.time(() -> FileUtil.loadFromNbt(MemoryBank.MEMORIES_CODEC, path));
+        var result = Misc.time(() -> FileUtil.loadFromNbt(MemoryBank.MEMORIES_CODEC, path));
         if (result.getFirst().isPresent()) {
             LOGGER.debug("Loaded {} in {}ns", path, result.getSecond());
             return new MemoryBank(meta.get(), result.getFirst().get());

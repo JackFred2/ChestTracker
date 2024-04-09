@@ -15,7 +15,7 @@ import red.jackf.chesttracker.memory.key.MemoryKey;
 import red.jackf.chesttracker.memory.metadata.Metadata;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.FileUtil;
-import red.jackf.chesttracker.util.Timer;
+import red.jackf.chesttracker.util.Misc;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +40,7 @@ public class JsonBackend extends FileBasedBackend {
         Optional<Metadata> metadata = loadMetadata(id);
         if (metadata.isEmpty()) return null;
         Path dataPath = Constants.STORAGE_DIR.resolve(id + extension());
-        var result = Timer.time(() -> {
+        var result = Misc.time(() -> {
             if (Files.isRegularFile(dataPath)) {
                 try {
                     var str = FileUtils.readFileToString(dataPath.toFile(), StandardCharsets.UTF_8);

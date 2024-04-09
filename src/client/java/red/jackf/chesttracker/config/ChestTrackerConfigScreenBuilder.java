@@ -23,7 +23,7 @@ import red.jackf.chesttracker.memory.MemoryBank;
 import red.jackf.chesttracker.storage.backend.Backend;
 import red.jackf.chesttracker.util.Constants;
 import red.jackf.chesttracker.util.GuiUtil;
-import red.jackf.chesttracker.util.StringUtil;
+import red.jackf.chesttracker.util.Strings;
 import red.jackf.whereisit.client.WhereIsItConfigScreenBuilder;
 
 import java.nio.file.Files;
@@ -74,7 +74,7 @@ public class ChestTrackerConfigScreenBuilder {
         long size = 0;
         if (Files.isDirectory(Constants.STORAGE_DIR))
             size = FileUtils.sizeOfDirectory(Constants.STORAGE_DIR.toFile());
-        return StringUtil.magnitudeSpace(size, 2) + "B";
+        return Strings.magnitudeSpace(size, 2) + "B";
     }
 
     private static Component requiresRestart() {

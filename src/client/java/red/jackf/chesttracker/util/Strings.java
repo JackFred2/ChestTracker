@@ -5,7 +5,7 @@ import net.minecraft.SharedConstants;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-public class StringUtil {
+public class Strings {
     private static final Character[] siSuffixes = new Character[]{'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'};
     private static final Pattern RESERVED_WINDOWS_FILENAMES = Pattern.compile(".*\\.|(?:COM|CLOCK\\$|CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\\..*)?", Pattern.CASE_INSENSITIVE);
 
