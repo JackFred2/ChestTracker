@@ -1,6 +1,6 @@
 {
   "chesttracker:wthit": {
-    "initializer": "red.jackf.chesttracker.compat.mods.wthit.ChestTrackerWTHITPlugin",
+    "initializer": "red.jackf.chesttracker.impl.compat.mods.wthit.ChestTrackerWTHITPlugin",
     "side": "client"
   }
 }

@@ -16,8 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import red.jackf.chesttracker.api.provider.Provider;
-import red.jackf.chesttracker.provider.ProviderHandler;
+import red.jackf.chesttracker.api.providers.ProviderUtils;
 
 @Debug(export = true)
 @Mixin(ClientPacketListener.class)
@@ -43,9 +42,10 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     private void pushRespawnEvent(ClientboundRespawnPacket packet,
                                   CallbackInfo ci,
                                   @Share("ct_result") LocalRef<Pair<ResourceKey<Level>, ResourceKey<Level>>> resultShare) {
-        Provider provider = ProviderHandler.INSTANCE;
         Pair<ResourceKey<Level>, ResourceKey<Level>> result = resultShare.get();
-        if (provider == null ||result == null) return;
-        provider.onRespawn(result.getFirst(), result.getSecond());
+        if (result == null) return;
+        ProviderUtils.getCurrentProvider().ifPresent(provider -> {
+            provider.onRespawn(result.getFirst(), result.getSecond());
+        });
     }
 }
