@@ -29,7 +29,7 @@
   "chesttracker.gui.containerFilter": "容器:%s",
   "chesttracker.gui.containerFilter.all": "全部",
   "chesttracker.gui.containerFilter.chests": "箱子",
-  "chesttracker.gui.containerFilter.barrels": "Barrels",
+  "chesttracker.gui.containerFilter.barrels": "桶",
   "chesttracker.gui.containerFilter.shulkerBoxes": "潜影盒",
   "chesttracker.gui.containerFilter.hoppers": "hoppers",
   "chesttracker.gui.containerFilter.furnaces": "Furnaces",
