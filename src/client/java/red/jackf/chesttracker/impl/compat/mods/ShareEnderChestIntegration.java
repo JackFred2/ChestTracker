@@ -11,7 +11,7 @@ public class ShareEnderChestIntegration {
     public static final ResourceLocation MEMORY_KEY = new ResourceLocation("shareenderchest", "contents");
 
     public static void setup() {
-        DefaultProviderScreenClose.EVENT.register(context -> {
+        DefaultProviderScreenClose.EVENT.register((provider, context) -> {
             if (context.getScreen().getTitle().getContents() instanceof PlainTextContents.LiteralContents literal
                 && literal.text().equals("Shared Ender Chest")) {
                 var items = context.getItems();

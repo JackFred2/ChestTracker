@@ -35,7 +35,7 @@ public class NameRenderer {
             if (alreadyRendering.contains(entry.getKey())) continue;
             if (entry.getKey().distToCenterSqr(context.camera().getPosition()) < maxRangeSq) {
                 Component filteredLabel = bank.getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(entry.getValue().name());
-                RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()), filteredLabel);
+                RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(0, 1, 0), filteredLabel);
             }
         }
     }

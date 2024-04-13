@@ -8,6 +8,7 @@ import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.InteractionTracker;
 import red.jackf.chesttracker.api.providers.ScreenCloseContext;
+import red.jackf.chesttracker.api.providers.ServerProvider;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
@@ -22,9 +23,9 @@ public interface DefaultProviderScreenClose {
      * to allow for overridable defaults; if this isn't enough use {@link Event#addPhaseOrdering(ResourceLocation, ResourceLocation)}
      * with your own.
      */
-    Event<DefaultProviderScreenClose> EVENT = EventFactory.createWithPhases(DefaultProviderScreenClose.class, listeners -> context -> {
+    Event<DefaultProviderScreenClose> EVENT = EventFactory.createWithPhases(DefaultProviderScreenClose.class, listeners -> (provider, context) -> {
         for (DefaultProviderScreenClose listener : listeners) {
-            var result = listener.createMemory(context);
+            var result = listener.createMemory(provider, context);
             if (result.shouldTerminate()) {
                 return result;
             }
@@ -41,17 +42,19 @@ public interface DefaultProviderScreenClose {
      * <p><b>If this callback does handle the given context</b>, it should return a {@link ResultHolder#value(Object)} containing
      * a given Memory built from the screen. If there is no memory to be created, it should return {@link ResultHolder#empty()}.</p>
      *
-     * @see InteractionTracker#INSTANCE
-     * @param context Screen closing context
+     * @param provider
+     * @param context  Screen closing context
      * @return A result holder possibly containing a given memory.
+     * @see InteractionTracker#INSTANCE
      */
-    ResultHolder<Result> createMemory(ScreenCloseContext context);
+    ResultHolder<Result> createMemory(ServerProvider provider, ScreenCloseContext context);
 
     /**
+     * Result holder for use when adding memories to a memory bank.
      *
-     * @param key
-     * @param position
-     * @param memory
+     * @param key      Memory key to place the memory in
+     * @param position Position in the key to place the memory
+     * @param memory   Memory to add
      */
     record Result(ResourceLocation key, BlockPos position, Memory memory) {}
 }

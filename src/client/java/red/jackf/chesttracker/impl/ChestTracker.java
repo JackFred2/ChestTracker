@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,12 +16,11 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import red.jackf.chesttracker.api.ChestTrackerPlugin;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.providers.ScreenCloseContext;
-import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.DeveloperOverlay;
-import red.jackf.chesttracker.impl.gui.GuiApiDefaults;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.impl.gui.invbutton.InventoryButtonFeature;
 import red.jackf.chesttracker.impl.gui.screen.ChestTrackerScreen;
@@ -110,10 +111,12 @@ public class ChestTracker implements ClientModInitializer {
         ImagePixelReader.setup();
         Storage.setup();
         DeveloperOverlay.setup();
-        GuiApiDefaults.setup();
-        ShareEnderChestIntegration.setup();
-
         ConnectionSettings.load();
         ButtonPositionMap.loadUserPositions();
+
+        for (EntrypointContainer<ChestTrackerPlugin> container : FabricLoader.getInstance().getEntrypointContainers("chesttracker", ChestTrackerPlugin.class)) {
+            LOGGER.debug("Loading entrypoint from mod {}", container.getProvider().getMetadata().getId());
+            container.getEntrypoint().load();
+        }
     }
 }

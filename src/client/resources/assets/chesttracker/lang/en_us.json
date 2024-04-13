@@ -73,7 +73,7 @@
   "chesttracker.gui.editMemoryBank.compatibility.displayContainerNames": "Display Container Names",
   "chesttracker.gui.editMemoryBank.filtering": "Filtering",
   "chesttracker.gui.editMemoryBank.filtering.manualMode": "Manual Mode",
-  "chesttracker.gui.editMemoryBank.filtering.manualMode.tooltip": "Whether container need to be manually added to Chest Tracker.",
+  "chesttracker.gui.editMemoryBank.filtering.manualMode.tooltip": "Whether containers need to be manually added to Chest Tracker.",
   "chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed": "Only Named",
   "chesttracker.gui.editMemoryBank.filtering.onlyRemembedNamed.tooltip": "Whether to only remember named containers.",
   "chesttracker.gui.editMemoryBank.filtering.rememberedContainers.all": "All Containers",

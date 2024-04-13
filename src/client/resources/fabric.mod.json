@@ -22,6 +22,9 @@
     "client": [
       "red.jackf.chesttracker.impl.ChestTracker"
     ],
+    "chesttracker": [
+      "red.jackf.chesttracker.impl.DefaultChestTrackerPlugin"
+    ],
     "modmenu": [
       "red.jackf.chesttracker.impl.compat.mods.ChestTrackerModMenu"
     ],

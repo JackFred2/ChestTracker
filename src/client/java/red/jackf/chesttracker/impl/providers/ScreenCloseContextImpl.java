@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.impl;
+package red.jackf.chesttracker.impl.providers;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -19,7 +19,7 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     @Override
     public List<ItemStack> getItems() {
         return screen.getMenu().slots.stream()
-                .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && !slot.hasItem())
+                .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && slot.hasItem())
                 .map(Slot::getItem)
                 .toList();
     }
@@ -32,7 +32,7 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     @Override
     public List<Pair<Integer, ItemStack>> getItemsAndSlots() {
         return screen.getMenu().slots.stream()
-                .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && !slot.hasItem())
+                .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && slot.hasItem())
                 .map(slot -> Pair.of(slot.index, slot.getItem()))
                 .toList();
     }

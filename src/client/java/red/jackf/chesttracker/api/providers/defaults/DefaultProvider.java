@@ -23,7 +23,14 @@ import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * <p>The default provider used by Chest Tracker in normal worlds. This is loaded when no other provider is available.</p>
+ */
 public class DefaultProvider extends ServerProvider {
+    /**
+     * The default instance of this provider. This is free for use by other providers to delegate to if vanilla behavior
+     * makes more sense at the time.
+     */
     public static final DefaultProvider INSTANCE = new DefaultProvider();
 
     @Override
@@ -44,7 +51,7 @@ public class DefaultProvider extends ServerProvider {
     @Override
     public void onScreenClose(ScreenCloseContext context) {
         MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
-            ResultHolder<DefaultProviderScreenClose.Result> memory = DefaultProviderScreenClose.EVENT.invoker().createMemory(context);
+            ResultHolder<DefaultProviderScreenClose.Result> memory = DefaultProviderScreenClose.EVENT.invoker().createMemory(this, context);
 
             if (memory.hasValue()) {
                 bank.addMemory(memory.get().key(), memory.get().position(), memory.get().memory());

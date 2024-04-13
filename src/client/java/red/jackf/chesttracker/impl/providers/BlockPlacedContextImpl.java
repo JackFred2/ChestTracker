@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.impl;
+package red.jackf.chesttracker.impl.providers;
 
 import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.ClientBlockSource;

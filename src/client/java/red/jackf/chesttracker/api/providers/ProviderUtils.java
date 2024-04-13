@@ -4,7 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import red.jackf.chesttracker.api.ClientBlockSource;
+import red.jackf.chesttracker.api.memory.MemoryBankAccess;
 import red.jackf.chesttracker.api.providers.defaults.DefaultIcons;
+import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.providers.ProviderHandler;
 
 import java.util.List;
@@ -48,6 +51,29 @@ public interface ProviderUtils {
         return DefaultIcons.getDefaultIcons();
     }
 
+    /**
+     * Test whether, given the current memory bank settings, the given block source would be remembered by the default
+     * provider.
+     *
+     * @param cbs Block source to test against.
+     * @return Whether the default provider would remember the given block source.
+     */
+    static boolean defaultShouldRemember(ClientBlockSource cbs) {
+        return MemoryBankAccessImpl.ACCESS.getLoadedInternal().map(bank -> bank.getMetadata()
+                    .getFilteringSettings()
+                    .rememberedContainers
+                    .predicate
+                    .test(cbs.blockState()))
+                .orElse(false);
+    }
+
+    /**
+     * Utility method for {@link ServerProvider#onScreenClose(ScreenCloseContext)}; tests whether a given slot is part of
+     * a player's inventory (and usually ignored).
+     *
+     * @param slot Slot to test
+     * @return Whether the given slot is backed by the player's inventory.
+     */
     static boolean isPlayerSlot(Slot slot) {
         return slot.container instanceof Inventory;
     }

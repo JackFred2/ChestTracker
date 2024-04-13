@@ -3,7 +3,7 @@ package red.jackf.chesttracker.api.providers;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.ClientBlockSource;
-import red.jackf.chesttracker.impl.BlockPlacedContextImpl;
+import red.jackf.chesttracker.impl.providers.BlockPlacedContextImpl;
 
 /**
  * Context for when the local player places a block.
