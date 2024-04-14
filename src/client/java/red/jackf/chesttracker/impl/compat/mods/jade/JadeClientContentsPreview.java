@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
-import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.util.ItemStacks;
 import snownee.jade.api.BlockAccessor;
@@ -42,7 +41,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
             return; // don't do furnaces if done
 
         MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
-            Optional<Memory> memory = bank.getMemory(ProviderUtils.getPlayersCurrentKey(), accessor.getPosition());
+            // TODO ServerProvider#getMemoryKeyOverride and for WTHIT too
+            Optional<Memory> memory = bank.getMemory(accessor.getLevel(), accessor.getPosition());
             if (memory.isEmpty()) return;
 
             var stacks = ItemStacks.flattenStacks(memory.get().items(), true);

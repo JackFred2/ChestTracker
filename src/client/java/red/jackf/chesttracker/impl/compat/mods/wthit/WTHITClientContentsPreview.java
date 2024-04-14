@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
-import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.util.ItemStacks;
 
@@ -28,7 +27,7 @@ public enum WTHITClientContentsPreview implements IBlockComponentProvider {
         if (tooltip.getLine(ItemData.ID) != null) return;
 
         MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
-            Optional<Memory> memory = bank.getMemory(ProviderUtils.getPlayersCurrentKey(), accessor.getPosition());
+            Optional<Memory> memory = bank.getMemory(accessor.getWorld(), accessor.getPosition());
             if (memory.isEmpty()) return;
 
             // show items

@@ -18,7 +18,6 @@ import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class MemoryKeyImpl implements MemoryKey {
     private final Map<BlockPos, Memory> memories = new HashMap<>();
@@ -110,7 +109,7 @@ public class MemoryKeyImpl implements MemoryKey {
     }
 
     public Optional<Memory> get(BlockPos pos) {
-        return Optional.ofNullable(this.memories.get(pos));
+        return Optional.ofNullable(this.memories.get(this.connected.getOrDefault(pos, pos)));
     }
 
     @Override

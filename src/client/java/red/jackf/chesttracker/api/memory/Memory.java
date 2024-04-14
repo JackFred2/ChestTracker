@@ -3,7 +3,6 @@ package red.jackf.chesttracker.api.memory;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -108,7 +107,7 @@ public final class Memory {
 
     /**
      * <p>A custom name for this memory usually obtained from renaming in an anvil. Null if no custom name is present.
-     * Gets rendered in-world if {@link red.jackf.chesttracker.api.providers.ServerProvider#getPlayersCurrentKey(ClientLevel, LocalPlayer)}
+     * Gets rendered in-world if {@link red.jackf.chesttracker.api.providers.ServerProvider#getPlayersCurrentKey(net.minecraft.world.level.Level, LocalPlayer)}
      * is the same as this memory's key.</p>
      *
      * <p>This is usually obtained from the {@link red.jackf.chesttracker.api.gui.GetCustomName} event, which filters out

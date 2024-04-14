@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.providers.*;
+import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryKeyOverride;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
@@ -41,6 +43,14 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         DefaultProviderScreenClose.EVENT.register(EventPhases.FALLBACK_PHASE, DefaultChestTrackerPlugin::defaultMemoryCreator);
 
         DefaultProviderScreenClose.EVENT.register(EventPhases.DEFAULT_PHASE, DefaultChestTrackerPlugin::enderChestMemoryCreator);
+
+        DefaultProviderMemoryKeyOverride.EVENT.register(cbs -> {
+            if (cbs.blockState().getBlock() == Blocks.ENDER_CHEST) {
+                return ResultHolder.value(Pair.of(MemoryBankImpl.ENDER_CHEST_KEY, BlockPos.ZERO));
+            }
+
+            return ResultHolder.pass();
+        });
 
         ShareEnderChestIntegration.setup();
     }

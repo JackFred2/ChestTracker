@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl.memory;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -7,12 +8,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.impl.ChestTracker;
+import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBank;
 import red.jackf.chesttracker.api.memory.MemoryKey;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
+import red.jackf.chesttracker.api.providers.ProviderUtils;
+import red.jackf.chesttracker.api.providers.ServerProvider;
+import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
 import red.jackf.chesttracker.impl.memory.metadata.Metadata;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -20,14 +24,9 @@ import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class MemoryBankImpl implements MemoryBank {
-    public static final Codec<Map<ResourceLocation, MemoryKeyImpl>> MEMORIES_CODEC = JFLCodecs.mutableMap(
-            Codec.unboundedMap(
-                    ResourceLocation.CODEC,
-                    MemoryKeyImpl.Codecs.MAIN
-            ));
+    public static final Codec<Map<ResourceLocation, MemoryKeyImpl>> MEMORIES_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(ResourceLocation.CODEC, MemoryKeyImpl.Codecs.MAIN));
 
     public static final ResourceLocation ENDER_CHEST_KEY = ChestTracker.id("ender_chest");
 
@@ -45,12 +44,12 @@ public class MemoryBankImpl implements MemoryBank {
         this.memoryKeys.values().forEach(key -> key.setMemoryBank(this));
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Metadata getMetadata() {
@@ -95,14 +94,11 @@ public class MemoryBankImpl implements MemoryBank {
     /**
      * Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.
      *
-     * @param key Memory key to pull from
-     * @param filter Filter that memories must pass to be counted
+     * @param key            Memory key to pull from
+     * @param filter         Filter that memories must pass to be counted
      * @param stackMergeMode How to merge identical stacks
      */
-    public List<ItemStack> getCounts(
-            ResourceLocation key,
-            CountingPredicate filter,
-            StackMergeMode stackMergeMode) {
+    public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode) {
         if (this.memoryKeys.containsKey(key)) {
             return this.memoryKeys.get(key).getCounts(filter, stackMergeMode);
         } else {
@@ -124,11 +120,7 @@ public class MemoryBankImpl implements MemoryBank {
         final Vec3 startPos = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.position() : null;
         if (startPos == null) return Collections.emptyList();
 
-        return memoryKey.doSearch(new SearchContext(
-                request,
-                startPos,
-                this.metadata
-        ));
+        return memoryKey.doSearch(new SearchContext(request, startPos, this.metadata));
     }
 
     /**
@@ -146,6 +138,28 @@ public class MemoryBankImpl implements MemoryBank {
     @Override
     public Map<ResourceLocation, MemoryKey> getAllMemories() {
         return Map.copyOf(this.memoryKeys);
+    }
+
+    @Override
+    public Optional<Memory> getMemory(ClientBlockSource cbs) {
+        Optional<ServerProvider> provider = ProviderUtils.getCurrentProvider();
+        if (provider.isEmpty()) return Optional.empty();
+
+        Optional<Pair<ResourceLocation, BlockPos>> override = provider.get().getMemoryKeyOverride(cbs);
+        Optional<ResourceLocation> current = ProviderUtils.getPlayersCurrentKey();
+        ResourceLocation key;
+        BlockPos position;
+        if (override.isPresent()) {
+            key = override.get().getFirst();
+            position = override.get().getSecond();
+        } else if (current.isPresent()) {
+            key = current.get();
+            position = cbs.pos();
+        } else {
+            return Optional.empty();
+        }
+
+        return this.getMemory(key, position);
     }
 
     @Override

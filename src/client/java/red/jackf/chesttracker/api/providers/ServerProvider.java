@@ -1,7 +1,6 @@
 package red.jackf.chesttracker.api.providers;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -144,7 +143,7 @@ public abstract class ServerProvider {
      * @return An optional containing the local player's current memory key, or an empty optional if not in a key.
      */
     @ApiStatus.OverrideOnly
-    public Optional<ResourceLocation> getPlayersCurrentKey(ClientLevel level, LocalPlayer player) {
+    public Optional<ResourceLocation> getPlayersCurrentKey(Level level, LocalPlayer player) {
         return Optional.of(level.dimension().location());
     }
 

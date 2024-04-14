@@ -39,8 +39,8 @@ public interface MemoryKey {
     Map<BlockPos, Memory> getNamedMemories();
 
     /**
-     * Returns a memory at a given position, or an empty optional if none is present. Does not consider connected blocks
-     * TODO: consider them; maybe add the memory pos as a field then loop through all on memory bank load as a 'post-pass'
+     * Returns a memory at a given position, or an empty optional if none is present. Considers connected blocks from
+     * {@link  Memory#otherPositions()}.
      *
      * @param position Position to look for memories at.
      * @return An optional containing the memory at the given position, or null if none present.

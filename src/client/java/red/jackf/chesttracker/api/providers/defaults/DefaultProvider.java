@@ -1,14 +1,17 @@
 package red.jackf.chesttracker.api.providers.defaults;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
 import red.jackf.chesttracker.api.providers.BlockPlacedContext;
@@ -22,6 +25,7 @@ import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>The default provider used by Chest Tracker in normal worlds. This is loaded when no other provider is available.</p>
@@ -105,5 +109,10 @@ public class DefaultProvider extends ServerProvider {
                 bank.addMemory(currentKey, rootPos, memory);
             }
         }));
+    }
+
+    @Override
+    public Optional<Pair<ResourceLocation, BlockPos>> getMemoryKeyOverride(ClientBlockSource cbs) {
+        return Optional.ofNullable(DefaultProviderMemoryKeyOverride.EVENT.invoker().getOverride(cbs).getNullable());
     }
 }
