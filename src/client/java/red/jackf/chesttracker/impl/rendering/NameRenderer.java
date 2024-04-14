@@ -34,8 +34,9 @@ public class NameRenderer {
         for (var entry : named.entrySet()) {
             if (alreadyRendering.contains(entry.getKey())) continue;
             if (entry.getKey().distToCenterSqr(context.camera().getPosition()) < maxRangeSq) {
-                Component filteredLabel = bank.getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(entry.getValue().name());
-                RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(0, 1, 0), filteredLabel);
+                Component name = entry.getValue().renderName();
+                if (name == null) continue;
+                RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(0, 1, 0), entry.getValue().renderName());
             }
         }
     }

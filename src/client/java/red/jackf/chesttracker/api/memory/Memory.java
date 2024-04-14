@@ -3,7 +3,6 @@ package red.jackf.chesttracker.api.memory;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -15,6 +14,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.providers.MemoryBuilder;
+import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
+import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.util.Misc;
 import red.jackf.chesttracker.impl.util.ModCodecs;
 
@@ -106,17 +107,39 @@ public final class Memory {
     }
 
     /**
-     * <p>A custom name for this memory usually obtained from renaming in an anvil. Null if no custom name is present.
-     * Gets rendered in-world if {@link red.jackf.chesttracker.api.providers.ServerProvider#getPlayersCurrentKey(net.minecraft.world.level.Level, LocalPlayer)}
-     * is the same as this memory's key.</p>
-     *
-     * <p>This is usually obtained from the {@link red.jackf.chesttracker.api.gui.GetCustomName} event, which filters out
-     * any screen titles with translatable components.</p>
+     * <p>The display name for this memory. This is usually obtained from renaming in an anvil, but can also be manually
+     * edited by the user. This method should be used if the user is seeing this name, as it considers the user-supplied
+     * name and the memory bank filters.
      *
      * @return The custom name associated with this memory, or null if no custom name.
      */
-    public @Nullable Component name() {
+    public @Nullable Component renderName() {
+        if (name == null) return null;
+        Optional<MemoryBankImpl> bank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
+        if (bank.isEmpty()) return name;
+        Component filtered = bank.get().getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(name);
+        if (filtered.getString().isBlank()) return null;
+        return filtered;
+    }
+
+    /**
+     * Returns the unfiltered name for this memory. This is usually filtered from the in-game screen title.
+     *
+     * @return The name as saved from the screen, or null if no custom name.
+     */
+    public @Nullable Component savedName() {
         return name;
+    }
+
+    /**
+     * <p>Returns whether this memory has a custom name, either screen-obtained or user-supplied.</p>
+     *
+     * <p><b>This does not mean that {@link #renderName()} won't be null! It may get filtered by the memory bank settings.</b></p>
+     *
+     * @return Whether this memory has a custom name.
+     */
+    public boolean hasCustomName() {
+        return this.name != null;
     }
 
     /**

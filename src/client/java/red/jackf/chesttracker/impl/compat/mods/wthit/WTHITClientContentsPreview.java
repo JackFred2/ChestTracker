@@ -40,8 +40,8 @@ public enum WTHITClientContentsPreview implements IBlockComponentProvider {
 
             // add name
             var formatter = IWailaConfig.get().getFormatter();
-            if (tooltip.getLine(WailaConstants.OBJECT_NAME_TAG) == null && memory.get().name() != null) {
-                tooltip.setLine(WailaConstants.OBJECT_NAME_TAG, formatter.blockName(memory.get().name().getString()
+            if (tooltip.getLine(WailaConstants.OBJECT_NAME_TAG) == null && memory.get().renderName() != null) {
+                tooltip.setLine(WailaConstants.OBJECT_NAME_TAG, formatter.blockName(memory.get().renderName().getString()
                         + " ("
                         + accessor.getBlock().getName().getString()
                         + ")"));

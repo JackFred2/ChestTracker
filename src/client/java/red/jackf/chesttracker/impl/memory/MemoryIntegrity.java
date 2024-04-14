@@ -123,7 +123,7 @@ public class MemoryIntegrity {
 
             // check if time has expired
             // exempt named from the check
-            if (!integrity.preserveNamed || currentMemory.name() == null) {
+            if (!integrity.preserveNamed || !currentMemory.hasCustomName()) {
                 final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
                     final long secondsPastExpiry = switch (integrity.lifetimeCountMode) {

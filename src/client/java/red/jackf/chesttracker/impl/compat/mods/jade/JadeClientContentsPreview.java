@@ -2,6 +2,7 @@ package red.jackf.chesttracker.impl.compat.mods.jade;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
@@ -66,8 +67,9 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
                 if (i < lines.size() - 1) tooltip.setLineMargin(-1, Direction2D.DOWN, -1);
             }
 
-            if (memory.get().name() != null) {
-                tooltip.replace(Identifiers.CORE_OBJECT_NAME, IThemeHelper.get().title(memory.get().name()));
+            Component name = memory.get().renderName();
+            if (name != null) {
+                tooltip.replace(Identifiers.CORE_OBJECT_NAME, IThemeHelper.get().title(name));
             }
 
             if (accessor.showDetails() && config.get(ChestTrackerJadePlugin.CONFIG_SHOW_TEXT)) {

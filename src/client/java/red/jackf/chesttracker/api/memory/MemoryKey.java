@@ -32,7 +32,10 @@ public interface MemoryKey {
     Map<BlockPos, Memory> getMemories();
 
     /**
-     * Returns an immutable map of all memories contained in this memory key <b>that have a custom name</b>.
+     * <p>Returns an immutable map of all memories contained in this memory key that have a saved name, either user-supplied
+     * or custom.</p>
+     *
+     * <p><b>This does not mean that all memories have a renderable name! It may get filtered by the memory bank settings.</b></p>
      *
      * @return All memories contained in this memory key with custom names.
      */

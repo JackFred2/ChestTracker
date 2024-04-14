@@ -457,7 +457,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
             Rendering.resetSearchTime();
             WhereIsItClient.recieveResults(currentMemories.getMemories().entrySet().stream()
                                                           .map(e -> SearchResult.builder(e.getKey())
-                                                                                .name(e.getValue().name(), null)
+                                                                                .name(e.getValue().renderName(), null)
                                                                                 .otherPositions(e.getValue().otherPositions())
                                                                                 .build())
                                                           .toList());

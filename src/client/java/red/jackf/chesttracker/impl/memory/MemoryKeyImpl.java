@@ -41,7 +41,7 @@ public class MemoryKeyImpl implements MemoryKey {
 
         for (Map.Entry<BlockPos, Memory> entry : memories.entrySet()) {
             Memory memory = entry.getValue();
-            if (memory.name() != null)
+            if (memory.hasCustomName())
                 this.namedMemories.put(entry.getKey(), memory);
             for (BlockPos otherPosition : memory.otherPositions())
                 this.connected.put(otherPosition, entry.getKey());
@@ -75,13 +75,13 @@ public class MemoryKeyImpl implements MemoryKey {
     @Override
     public void add(BlockPos position, Memory memory) {
         // if no name and we require names, remove instead
-        if (this.memoryBank.getMetadata().getFilteringSettings().onlyRememberNamed && memory.name() == null) {
+        if (this.memoryBank.getMetadata().getFilteringSettings().onlyRememberNamed && !memory.hasCustomName()) {
             remove(position);
             return;
         }
 
         // if empty and no name (or we don't care about names), remove instead
-        if (memory.isEmpty() && (memory.name() == null || !this.memoryBank.getMetadata().getIntegritySettings().preserveNamed)) {
+        if (memory.isEmpty() && (!memory.hasCustomName() || !this.memoryBank.getMetadata().getIntegritySettings().preserveNamed)) {
             remove(position);
             return;
         }
@@ -92,7 +92,7 @@ public class MemoryKeyImpl implements MemoryKey {
         memory.otherPositions().forEach(this::remove);
 
         this.memories.put(position, memory);
-        if (memory.name() != null)
+        if (memory.hasCustomName())
             this.namedMemories.put(position, memory);
         for (BlockPos otherPosition : memory.otherPositions())
             this.connected.put(otherPosition, position);
@@ -148,7 +148,7 @@ public class MemoryKeyImpl implements MemoryKey {
 
             if (context.metadata().getCompatibilitySettings().displayContainerNames)
                 result.name(
-                        entry.getValue().name(),
+                        entry.getValue().renderName(),
                         Misc.getAverageOffsetFrom(entry.getKey(), entry.getValue().otherPositions()).add(0, 1, 0)
                 );
 
