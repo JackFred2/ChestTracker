@@ -3,19 +3,18 @@ package red.jackf.chesttracker.impl.providers;
 import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.MemoryKeyIcon;
-import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 
 import java.util.List;
 
 public class DefaultIconsImpl {
     private static final List<MemoryKeyIcon> ICONS = Lists.newArrayList(
-            new MemoryKeyIcon(MemoryBankImpl.ENDER_CHEST_KEY, Items.ENDER_CHEST.getDefaultInstance()),
+            new MemoryKeyIcon(CommonKeys.ENDER_CHEST_KEY, Items.ENDER_CHEST.getDefaultInstance()),
 
-            new MemoryKeyIcon(Level.OVERWORLD.location(), Items.GRASS_BLOCK.getDefaultInstance()),
-            new MemoryKeyIcon(Level.NETHER.location(), Items.NETHERRACK.getDefaultInstance()),
-            new MemoryKeyIcon(Level.END.location(), Items.END_STONE.getDefaultInstance())
+            new MemoryKeyIcon(CommonKeys.OVERWORLD, Items.GRASS_BLOCK.getDefaultInstance()),
+            new MemoryKeyIcon(CommonKeys.THE_NETHER, Items.NETHERRACK.getDefaultInstance()),
+            new MemoryKeyIcon(CommonKeys.THE_END, Items.END_STONE.getDefaultInstance())
     );
 
     public static List<MemoryKeyIcon> getDefaultIcons() {

@@ -9,8 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
+import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
@@ -38,7 +38,7 @@ public class MemoryIntegrity {
     private static final List<Map.Entry<BlockPos, Memory>> currentEntryList = new ArrayList<>();
     private static long lastEntryCheckCompleteTick = -1L;
     private static int currentEntryKeyIndex = 0;
-    private static ResourceLocation currentMemoryKeyId = Level.OVERWORLD.location();
+    private static ResourceLocation currentMemoryKeyId = CommonKeys.OVERWORLD;
     private static int lastEntryListIndex = 0;
     private static final Supplier<CustomToast> toast = Memoizer.of(() ->
             ToastBuilder.builder(ToastFormat.WHITE, Component.translatable("chesttracker.gui.editMemoryBank.integrity"))

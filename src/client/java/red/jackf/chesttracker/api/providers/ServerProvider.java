@@ -16,8 +16,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Server providers allow for custom Chest Tracker behavior when connected to a server. This allows for more specialized handling,
- * such as when or if to load different memory banks, and for more consistent multi-world support.
+ * <p>Server providers allow for custom Chest Tracker behavior when connected to a server. This allows for more specialized
+ * handling, such as when or if to load different memory banks, and for more consistent multi-world support.</p>
+ *
+ * <p>In addition to the connection details, JackFredLib's GPS module provides some utilities for getting data from the
+ * in-game tab list and scoreboard. This may be useful if a more refined area indicator is available there.</p>
+ *
+ * @see InteractionTracker
+ * @see Coordinate
+ * @see red.jackf.jackfredlib.client.api.gps.PlayerListSnapshot
+ * @see red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot
  */
 @ApiStatus.AvailableSince("2.4.0")
 public abstract class ServerProvider {
@@ -152,7 +160,7 @@ public abstract class ServerProvider {
      * Chest Tracker screen for different keys / dimensions, and will show up in the order of the supply list (unless
      * manually reordered by the user).</p>
      *
-     * <p>You may find it useful to append the default icons in some order from {@link DefaultIcons()}.</p>
+     * <p>You may find it useful to append the default icons in some order from {@link DefaultIcons}.</p>
      *
      * @return A list of memory key icons used by this provider.
      */

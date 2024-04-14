@@ -11,11 +11,11 @@ import red.jackf.chesttracker.api.ChestTrackerPlugin;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
+import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryKeyOverride;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
-import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
@@ -46,7 +46,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
 
         DefaultProviderMemoryKeyOverride.EVENT.register(cbs -> {
             if (cbs.blockState().getBlock() == Blocks.ENDER_CHEST) {
-                return ResultHolder.value(Pair.of(MemoryBankImpl.ENDER_CHEST_KEY, BlockPos.ZERO));
+                return ResultHolder.value(Pair.of(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
             }
 
             return ResultHolder.pass();
@@ -94,6 +94,6 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
 
         return ResultHolder.value(MemoryBuilder.create(context.getItems())
                 .inContainer(Blocks.ENDER_CHEST)
-                .toResult(MemoryBankImpl.ENDER_CHEST_KEY, BlockPos.ZERO));
+                .toResult(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
     }
 }

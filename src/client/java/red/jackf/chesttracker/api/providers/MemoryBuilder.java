@@ -13,7 +13,7 @@ import red.jackf.chesttracker.impl.providers.MemoryBuilderImpl;
 import java.util.List;
 
 /**
- * A partially built Memory to be added to the current Memory Bank.
+ * A builder for creating memories to submit to a memory bank.
  */
 public interface MemoryBuilder {
     /**
@@ -63,7 +63,8 @@ public interface MemoryBuilder {
 
     /**
      * Build the memory from the given data.
-     * @return
+     *
+     * @return A built memory with the supplied data.
      */
     Memory build();
 }

@@ -16,7 +16,6 @@ import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.api.providers.ServerProvider;
-import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
 import red.jackf.chesttracker.impl.memory.metadata.Metadata;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -27,8 +26,6 @@ import java.util.*;
 
 public class MemoryBankImpl implements MemoryBank {
     public static final Codec<Map<ResourceLocation, MemoryKeyImpl>> MEMORIES_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(ResourceLocation.CODEC, MemoryKeyImpl.Codecs.MAIN));
-
-    public static final ResourceLocation ENDER_CHEST_KEY = ChestTracker.id("ender_chest");
 
     ////////////
     // OBJECT //
