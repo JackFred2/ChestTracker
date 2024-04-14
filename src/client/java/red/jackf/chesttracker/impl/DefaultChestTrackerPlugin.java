@@ -13,6 +13,7 @@ import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.*;
+import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryKeyOverride;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
@@ -39,6 +40,8 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
                 EffectRenderingInventoryScreen.class,
                 BeaconScreen.class
         );
+
+        ProviderUtils.registerProvider(DefaultProvider.INSTANCE);
 
         DefaultProviderScreenClose.EVENT.register(EventPhases.FALLBACK_PHASE, DefaultChestTrackerPlugin::defaultMemoryCreator);
 

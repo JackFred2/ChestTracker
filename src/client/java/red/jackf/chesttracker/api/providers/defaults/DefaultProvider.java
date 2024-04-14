@@ -94,8 +94,6 @@ public class DefaultProvider extends ServerProvider {
             else if (stackBeData != null && stackBeData.contains("CustomName"))
                 name = Component.Serializer.fromJson(stackBeData.getString("CustomName"));
 
-            name = bank.getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(name);
-
             if (items != null || name != null) {
                 List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(
                         context.getBlockSource().level(),

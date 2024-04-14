@@ -1,28 +1,32 @@
 package red.jackf.chesttracker.impl.providers;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.providers.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.impl.events.AfterPlayerPlaceBlock;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.util.CachedClientBlockSource;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ProviderHandler {
     public static final ProviderHandler INSTANCE = new ProviderHandler();
-    private final List<ServerProvider> REGISTERED_PROVIDERS = Lists.newArrayList(new DefaultProvider());
+    private final Set<ServerProvider> REGISTERED_PROVIDERS = Sets.newHashSet();
     private ServerProvider currentProvider = null;
 
     private ProviderHandler() {
+    }
+
+    public <T extends ServerProvider> T register(T provider) {
+        this.REGISTERED_PROVIDERS.add(provider);
+        return provider;
     }
 
     private void load(Coordinate coordinate) {

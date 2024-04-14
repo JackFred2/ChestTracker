@@ -16,6 +16,17 @@ import java.util.Optional;
  * Utilities for working with the currently loaded provider.
  */
 public interface ProviderUtils {
+    /**
+     * Register a new server provider.
+     *
+     * @param provider Provider to register.
+     * @return <code>provider</code>
+     * @param <T> Type of provider being registered
+     */
+    static <T extends ServerProvider> T registerProvider(T provider) {
+        return ProviderHandler.INSTANCE.register(provider);
+    }
+
 
     /**
      * Returns the key that the player is currently in, according to the provider. This is usually the same as the current
