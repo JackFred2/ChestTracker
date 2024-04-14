@@ -18,6 +18,7 @@ import red.jackf.chesttracker.api.providers.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.MemoryBuilder;
 import red.jackf.chesttracker.api.providers.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
+import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
@@ -40,6 +41,11 @@ public class DefaultProvider extends ServerProvider {
     @Override
     public int getPriority() {
         return -100;
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ChestTracker.id("default_provider");
     }
 
     @Override
@@ -69,7 +75,7 @@ public class DefaultProvider extends ServerProvider {
         if (this.getMemoryKeyOverride(context.getBlockSource()).isPresent())
             return;
 
-        MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank ->
+        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank ->
                 this.getPlayersCurrentKey(context.getBlockSource().level(), Minecraft.getInstance().player).ifPresent(currentKey -> {
             List<ItemStack> items = null;
             Component name = null;

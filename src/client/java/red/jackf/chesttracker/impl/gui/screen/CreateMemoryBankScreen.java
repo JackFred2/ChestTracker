@@ -205,7 +205,7 @@ public class CreateMemoryBankScreen extends BaseUtilScreen {
 
     private void createAndLoad(Button button) {
         this.id = sanitize(this.id);
-        MemoryBankAccessImpl.ACCESS.loadOrCreate(this.id, this.name.isEmpty() ? getNameFromId(this.id) : this.name);
+        MemoryBankAccessImpl.INSTANCE.loadOrCreate(this.id, this.name.isEmpty() ? getNameFromId(this.id) : this.name);
         this.afterBankLoaded.run();
     }
 

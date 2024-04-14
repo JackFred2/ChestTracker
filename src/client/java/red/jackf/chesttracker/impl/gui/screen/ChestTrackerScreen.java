@@ -77,7 +77,7 @@ public class ChestTrackerScreen extends Screen {
 
     @Override
     protected void init() {
-        MemoryBankImpl bank = MemoryBankAccessImpl.ACCESS.getLoadedInternal().orElse(null);
+        MemoryBankImpl bank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal().orElse(null);
 
         // ask for a memory to be loaded if not available
         if (bank == null) {
@@ -288,7 +288,7 @@ public class ChestTrackerScreen extends Screen {
      * Update the cached item list from the current Memory Bank, then runs a filter operation..
      */
     private void updateItems() {
-        MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank -> {
+        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
             int maxRange = bank.getMetadata().getSearchSettings().itemListRange;
 
             CountingPredicate predicate = getItemListFilter(maxRange);
@@ -416,14 +416,14 @@ public class ChestTrackerScreen extends Screen {
 
     private void openMemoryManager(Button ignored) {
         Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(
-                () -> MemoryBankAccessImpl.ACCESS.getLoadedInternal().isEmpty() ? parent : this,
+                () -> MemoryBankAccessImpl.INSTANCE.getLoadedInternal().isEmpty() ? parent : this,
                 // return to this screen unless the memories have been unloaded, in which case go to the parent
                 () -> Minecraft.getInstance().setScreen(this)
         ));
     }
 
     private void openMemoryBankSettings(Button button) {
-        MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank -> {
+        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
             Minecraft.getInstance().setScreen(new EditMemoryBankScreen(
                     this,
                     this::updateItems,

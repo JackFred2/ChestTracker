@@ -25,9 +25,9 @@ public class DeveloperOverlay {
             lines.add("");
             lines.add("Coordinate: " + Coordinate.getCurrent().orElse(null));
             lines.add("");
-            lines.add("Provider: " + (provider != null ? provider.getClass().getSimpleName() : "<none>"));
+            lines.add("Provider: " + (provider != null ? provider.id() : "<none>"));
             lines.add("");
-            MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresentOrElse(bank -> {
+            MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresentOrElse(bank -> {
                 var currentKey = ProviderUtils.getPlayersCurrentKey();
                 lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
                 var loadedStr = "Loaded: " + bank.getId();

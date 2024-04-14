@@ -43,7 +43,7 @@ public class ProviderHandler {
     private void unload() {
         if (this.currentProvider == null) return;
         this.currentProvider.onDisconnect();
-        MemoryBankAccessImpl.ACCESS.unload();
+        MemoryBankAccessImpl.INSTANCE.unload();
     }
 
     public Optional<ServerProvider> getCurrentProvider() {
@@ -64,7 +64,7 @@ public class ProviderHandler {
 
         AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) ->
             getCurrentProvider().ifPresent(provider ->
-                MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank -> {
+                MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
                     // if we don't auto add blocks dont run
                     if (!bank.getMetadata().getFilteringSettings().autoAddPlacedBlocks.blockPredicate.test(state))
                         return;

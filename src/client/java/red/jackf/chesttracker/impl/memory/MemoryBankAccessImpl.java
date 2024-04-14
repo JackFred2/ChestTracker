@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class MemoryBankAccessImpl implements MemoryBankAccess {
-    public static final MemoryBankAccessImpl ACCESS = new MemoryBankAccessImpl();
+    public static final MemoryBankAccessImpl INSTANCE = new MemoryBankAccessImpl();
     @Nullable
-    private static MemoryBankImpl INSTANCE = null;
+    private static MemoryBankImpl loaded = null;
 
     private MemoryBankAccessImpl() {}
 
@@ -22,36 +22,36 @@ public class MemoryBankAccessImpl implements MemoryBankAccess {
 
     @Override
     public boolean loadOrCreate(String memoryBankId, String creationName) {
-        ACCESS.unload();
-        INSTANCE = Storage.load(memoryBankId).orElseGet(() -> {
+        INSTANCE.unload();
+        loaded = Storage.load(memoryBankId).orElseGet(() -> {
             var bank = new MemoryBankImpl(Metadata.blankWithName(creationName), new HashMap<>());
             bank.setId(memoryBankId);
             return bank;
         });
-        ACCESS.save();
+        INSTANCE.save();
 
         return true;
     }
 
     public boolean unload() {
-        if (INSTANCE == null) return false;
+        if (loaded == null) return false;
         save();
-        INSTANCE = null;
+        loaded = null;
         return true;
     }
 
     @Override
     public Optional<MemoryBank> getLoaded() {
-        return Optional.ofNullable(INSTANCE);
+        return Optional.ofNullable(loaded);
     }
 
     public Optional<MemoryBankImpl> getLoadedInternal() {
-        return Optional.ofNullable(INSTANCE);
+        return Optional.ofNullable(loaded);
     }
 
     public void save() {
-        if (INSTANCE == null) return;
-        Storage.save(INSTANCE);
+        if (loaded == null) return;
+        Storage.save(loaded);
     }
 
     // Internal

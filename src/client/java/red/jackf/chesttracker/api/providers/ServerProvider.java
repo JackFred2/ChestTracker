@@ -47,6 +47,13 @@ public abstract class ServerProvider {
     }
 
     /**
+     * An identifier for this provider. This is used for integrity and debugging purposes.
+     *
+     * @return An (ideally unique) identifier for this provider.
+     */
+    public abstract ResourceLocation id();
+
+    /**
      * Whether this provider should apply to a given connection. Commonly used to filter by server IPs:
      * <pre>
      * {@code

@@ -55,7 +55,7 @@ public class MemoryIntegrity {
     }
 
     public static void setup() {
-        AfterPlayerDestroyBlock.EVENT.register(cbs -> MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank -> {
+        AfterPlayerDestroyBlock.EVENT.register(cbs -> MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
             // Called when a player breaks a block, to remove memories that would be contained there
             if (bank.getMetadata().getIntegritySettings().removeOnPlayerBlockBreak) {
                 ProviderUtils.getPlayersCurrentKey().ifPresent(currentKey -> {
@@ -66,7 +66,7 @@ public class MemoryIntegrity {
         }));
 
         ClientTickEvents.END_WORLD_TICK.register(level -> {
-            MemoryBankImpl memoryBank = MemoryBankAccessImpl.ACCESS.getLoadedInternal().orElse(null);
+            MemoryBankImpl memoryBank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal().orElse(null);
 
             if (memoryBank == null) {
                 lastEntryCheckCompleteTick = -1;

@@ -345,7 +345,7 @@ public class ChestTrackerConfigScreenBuilder {
                         }))
                         .build());
 
-        if (MemoryBankAccessImpl.ACCESS.getLoadedInternal().isEmpty())
+        if (MemoryBankAccessImpl.INSTANCE.getLoadedInternal().isEmpty())
             builder.option(LabelOption.create(translatable("chesttracker.config.memory.noMemoryBankLoaded")));
 
         return builder.build();
@@ -399,7 +399,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.instance().storage.readableJsonMemories,
                                 b -> {
                                     instance.instance().storage.readableJsonMemories = b;
-                                    MemoryBankAccessImpl.ACCESS.save();
+                                    MemoryBankAccessImpl.INSTANCE.save();
                                     refreshConfigScreen(parent);
                                 })
                         .build());

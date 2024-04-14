@@ -150,7 +150,7 @@ public class MemoryBankManagerScreen extends BaseUtilScreen {
                 CommonComponents.EMPTY,
                 id -> openEditScreen(afterBankLoaded, id)
         ));
-        this.memoryBankList.setHighlight(MemoryBankAccessImpl.ACCESS.getLoadedInternal().map(MemoryBankImpl::getId).orElse(null));
+        this.memoryBankList.setHighlight(MemoryBankAccessImpl.INSTANCE.getLoadedInternal().map(MemoryBankImpl::getId).orElse(null));
 
         this.search.setValue("");
     }

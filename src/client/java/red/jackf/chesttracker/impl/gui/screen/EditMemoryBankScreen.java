@@ -80,7 +80,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
             this.isCurrentLoaded = false;
             this.memoryBank = MemoryBankView.empty();
         } else {
-            this.isCurrentLoaded = memoryBank == MemoryBankAccessImpl.ACCESS.getLoadedInternal().orElse(null);
+            this.isCurrentLoaded = memoryBank == MemoryBankAccessImpl.INSTANCE.getLoadedInternal().orElse(null);
             this.memoryBank = MemoryBankView.of(memoryBank);
         }
     }
@@ -644,13 +644,13 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
 
     // Load a memory bank, then run the load callback.
     private void load(Button button) {
-        MemoryBankAccessImpl.ACCESS.loadOrCreate(this.memoryBank.id(), this.memoryBank.metadata().getName());
+        MemoryBankAccessImpl.INSTANCE.loadOrCreate(this.memoryBank.id(), this.memoryBank.metadata().getName());
         afterBankLoaded.run();
     }
 
     // Delete the selected memory bank, and close the GUI.
     private void delete(HoldToConfirmButton button) {
-        if (isCurrentLoaded) MemoryBankAccessImpl.ACCESS.unload();
+        if (isCurrentLoaded) MemoryBankAccessImpl.INSTANCE.unload();
         Storage.delete(this.memoryBank.id());
         this.onClose();
     }

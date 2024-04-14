@@ -14,7 +14,7 @@ public class ChestTrackerWhereIsItPlugin implements WhereIsItClientPlugin {
             if (currentKey.isEmpty())
                 return false;
 
-            var bank = MemoryBankAccessImpl.ACCESS.getLoadedInternal();
+            var bank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
             if (bank.isEmpty())
                 return false;
 

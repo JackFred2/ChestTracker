@@ -58,7 +58,7 @@ public interface ProviderUtils {
      * @return Whether the default provider would remember the given block source.
      */
     static boolean defaultShouldRemember(ClientBlockSource cbs) {
-        return MemoryBankAccessImpl.ACCESS.getLoadedInternal().map(bank -> bank.getMetadata()
+        return MemoryBankAccessImpl.INSTANCE.getLoadedInternal().map(bank -> bank.getMetadata()
                     .getFilteringSettings()
                     .rememberedContainers
                     .predicate

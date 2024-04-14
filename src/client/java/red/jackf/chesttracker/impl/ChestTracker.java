@@ -69,7 +69,7 @@ public class ChestTracker implements ClientModInitializer {
                     openInGame(client, null);
         });
 
-        ClientTickEvents.START_WORLD_TICK.register(ignored -> MemoryBankAccessImpl.ACCESS.getLoadedInternal().ifPresent(bank -> {
+        ClientTickEvents.START_WORLD_TICK.register(ignored -> MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
             bank.getMetadata().incrementLoadedTime();
         }));
 

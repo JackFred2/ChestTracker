@@ -34,7 +34,7 @@ public class Storage {
 
         // on pause
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof PauseScreen) MemoryBankAccessImpl.ACCESS.save();
+            if (screen instanceof PauseScreen) MemoryBankAccessImpl.INSTANCE.save();
         });
     }
 
@@ -43,7 +43,7 @@ public class Storage {
     /////////
 
     public static Optional<Metadata> loadMetadata(String id) {
-        Optional<MemoryBankImpl> existing = MemoryBankAccessImpl.ACCESS.getLoadedInternal();
+        Optional<MemoryBankImpl> existing = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
         if (existing.isPresent() && id.equals(existing.get().getId()))
             return Optional.of(existing.get().getMetadata().deepCopy());
         LOGGER.debug("Loading {} metadata using {}", id, backend.getClass().getSimpleName());
@@ -67,7 +67,7 @@ public class Storage {
     }
 
     public static Optional<MemoryBankImpl> load(String id) {
-        Optional<MemoryBankImpl> existing = MemoryBankAccessImpl.ACCESS.getLoadedInternal();
+        Optional<MemoryBankImpl> existing = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
         if (existing.isPresent() && id.equals(existing.get().getId()))
             return existing;
         LOGGER.debug("Loading {} using {}", id, backend.getClass().getSimpleName());

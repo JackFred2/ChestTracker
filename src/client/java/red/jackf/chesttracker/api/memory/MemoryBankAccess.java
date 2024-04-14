@@ -12,7 +12,7 @@ public interface MemoryBankAccess {
     /**
      * The current instance of memory bank access.
      */
-    MemoryBankAccess INSTANCE = MemoryBankAccessImpl.ACCESS;
+    MemoryBankAccess INSTANCE = MemoryBankAccessImpl.INSTANCE;
 
     /**
      * Tries to load a memory bank by the given ID, or creates one if none exist.
@@ -32,7 +32,8 @@ public interface MemoryBankAccess {
 
     /**
      * Returns an optional possibly containing the current memory bank.
-     * @return
+     *
+     * @return The currently loaded memory bank, or an empty optional if none loaded.
      */
     Optional<MemoryBank> getLoaded();
 }

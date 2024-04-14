@@ -95,7 +95,7 @@ public interface Backend {
         }
 
         public void load() {
-            MemoryBankAccessImpl.ACCESS.unload();
+            MemoryBankAccessImpl.INSTANCE.unload();
             Storage.setBackend(instance);
         }
     }
