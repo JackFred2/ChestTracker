@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.util.Mth;
-import red.jackf.chesttracker.impl.gui.invbutton.CTScreenDuck;
+import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
@@ -18,7 +18,7 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
             ).apply(instance, ButtonPosition::new));
 
     public int getX(AbstractContainerScreen<?> screen) {
-        int left = ((CTScreenDuck) screen).chesttracker$getLeft();
+        int left = ((CTButtonScreenDuck) screen).chesttracker$getLeft();
         int recipeWidth = PositionUtils.getRecipeComponentWidth(screen);
 
         return Mth.clamp(switch (xAlign) {
@@ -26,18 +26,18 @@ public record ButtonPosition(HorizontalAlignment xAlign, int xOffset, VerticalAl
             case screen_right -> screen.width - xOffset;
             case left_with_recipe -> left - recipeWidth + xOffset;
             case left -> left + xOffset;
-            case right -> left + ((CTScreenDuck) screen).chesttracker$getWidth() - xOffset;
+            case right -> left + ((CTButtonScreenDuck) screen).chesttracker$getWidth() - xOffset;
         }, RectangleUtils.SCREEN_MARGIN, screen.width - RectangleUtils.SCREEN_MARGIN - InventoryButton.SIZE);
     }
 
     public int getY(AbstractContainerScreen<?> screen) {
-        int top = ((CTScreenDuck) screen).chesttracker$getTop();
+        int top = ((CTButtonScreenDuck) screen).chesttracker$getTop();
 
         return Mth.clamp(switch (yAlign) {
             case screen_top -> yOffset;
             case screen_bottom -> screen.height - yOffset;
             case top -> top + yOffset;
-            case bottom -> top + ((CTScreenDuck) screen).chesttracker$getHeight() - yOffset;
+            case bottom -> top + ((CTButtonScreenDuck) screen).chesttracker$getHeight() - yOffset;
         }, RectangleUtils.SCREEN_MARGIN, screen.height - RectangleUtils.SCREEN_MARGIN - InventoryButton.SIZE);
     }
 

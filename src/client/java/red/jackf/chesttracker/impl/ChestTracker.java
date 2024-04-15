@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.ChestTrackerPlugin;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
-import red.jackf.chesttracker.api.providers.ScreenCloseContext;
+import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.DeveloperOverlay;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
@@ -87,6 +87,8 @@ public class ChestTracker implements ClientModInitializer {
                         openInGame(client, parent);
                     }
                 });
+
+                InventoryButtonFeature.onScreenOpen(client, screen, scaledWidth, scaledHeight);
 
                 // counting items after screen close
                 if (!ScreenBlacklist.isBlacklisted(screen.getClass()))

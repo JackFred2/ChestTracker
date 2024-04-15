@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
-import red.jackf.chesttracker.impl.gui.invbutton.CTScreenDuck;
+import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
 
 import java.util.Optional;
@@ -44,12 +44,12 @@ public interface PositionUtils {
      * snaps around the GUI borders and various elements. Returns an empty optional if none could be found.
      */
     static Optional<ButtonPosition> calculate(AbstractContainerScreen<?> screen, int mouseX, int mouseY) {
-        final int width = ((CTScreenDuck) screen).chesttracker$getWidth();
+        final int width = ((CTButtonScreenDuck) screen).chesttracker$getWidth();
         final int recipeWidth = getRecipeComponentWidth(screen);
-        final int height = ((CTScreenDuck) screen).chesttracker$getHeight();
+        final int height = ((CTButtonScreenDuck) screen).chesttracker$getHeight();
 
-        final int left = ((CTScreenDuck) screen).chesttracker$getLeft();
-        final int top = ((CTScreenDuck) screen).chesttracker$getTop();
+        final int left = ((CTButtonScreenDuck) screen).chesttracker$getLeft();
+        final int top = ((CTButtonScreenDuck) screen).chesttracker$getTop();
 
         // so we're dragging the center of the button
         mouseX -= InventoryButton.SIZE / 2;

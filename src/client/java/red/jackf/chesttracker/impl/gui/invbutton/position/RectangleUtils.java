@@ -5,7 +5,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import red.jackf.chesttracker.impl.gui.invbutton.CTScreenDuck;
+import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 
 import java.util.*;
 
@@ -75,12 +75,12 @@ public interface RectangleUtils {
      * Returns a list of screen rectangles that count as occupied positions for snapping purposes.
      */
     static Set<ScreenRectangle> getCollidersFor(AbstractContainerScreen<?> screen) {
-        final int width = ((CTScreenDuck) screen).chesttracker$getWidth();
+        final int width = ((CTButtonScreenDuck) screen).chesttracker$getWidth();
         final int recipeWidth = PositionUtils.getRecipeComponentWidth(screen);
-        final int height = ((CTScreenDuck) screen).chesttracker$getHeight();
+        final int height = ((CTButtonScreenDuck) screen).chesttracker$getHeight();
 
-        final int left = ((CTScreenDuck) screen).chesttracker$getLeft();
-        final int top = ((CTScreenDuck) screen).chesttracker$getTop();
+        final int left = ((CTButtonScreenDuck) screen).chesttracker$getLeft();
+        final int top = ((CTButtonScreenDuck) screen).chesttracker$getTop();
 
         final int twiceMargin = 2 * GUI_MARGIN;
         final int twiceBorderExt = 2 * GUI_BORDER_EXTENSION;

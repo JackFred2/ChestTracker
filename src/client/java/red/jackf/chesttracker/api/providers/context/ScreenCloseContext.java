@@ -1,10 +1,11 @@
-package red.jackf.chesttracker.api.providers;
+package red.jackf.chesttracker.api.providers.context;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+import red.jackf.chesttracker.api.providers.ServerProvider;
 import red.jackf.chesttracker.impl.providers.ScreenCloseContextImpl;
 
 import java.util.List;

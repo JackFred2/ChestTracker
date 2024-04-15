@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.InteractionTracker;
-import red.jackf.chesttracker.api.providers.ScreenCloseContext;
+import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 

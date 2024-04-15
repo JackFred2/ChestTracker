@@ -8,12 +8,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import red.jackf.chesttracker.impl.gui.invbutton.CTScreenDuck;
+import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
 
 // adds mouse dragged and release callbacks for the inv button
 @Mixin(AbstractContainerScreen.class)
-public abstract class AbstractContainerScreenMixin implements CTScreenDuck {
+public abstract class AbstractContainerScreenMixin implements CTButtonScreenDuck {
     @Unique
     @Nullable
     private InventoryButton ctButton = null;

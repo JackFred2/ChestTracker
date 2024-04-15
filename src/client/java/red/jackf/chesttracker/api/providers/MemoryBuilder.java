@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.memory.Memory;
+import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.providers.MemoryBuilderImpl;
 

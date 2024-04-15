@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
-import red.jackf.chesttracker.api.providers.ScreenCloseContext;
+import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 
 import java.util.List;
 import java.util.function.Predicate;

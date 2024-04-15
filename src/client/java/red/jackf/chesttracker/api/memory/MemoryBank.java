@@ -113,7 +113,7 @@ public interface MemoryBank {
     }
 
     /**
-     * Adds or update a memory in this memory bank.
+     * Adds or updates a memory in this memory bank.
      *
      * @param keyId    Memory key ID that this memory should be added to.
      * @param location Location of the memory in the given key to save at.

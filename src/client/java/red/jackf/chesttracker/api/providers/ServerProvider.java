@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.ClientBlockSource;
+import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
+import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultIcons;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 

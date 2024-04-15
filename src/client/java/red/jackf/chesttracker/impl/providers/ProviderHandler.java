@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import red.jackf.chesttracker.api.ClientBlockSource;
-import red.jackf.chesttracker.api.providers.BlockPlacedContext;
+import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
 import red.jackf.chesttracker.impl.events.AfterPlayerPlaceBlock;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
