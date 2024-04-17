@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl;
 
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.BlockPos;
@@ -37,6 +38,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         }));
 
         ScreenBlacklist.add(
+                AnvilScreen.class,
                 EffectRenderingInventoryScreen.class,
                 BeaconScreen.class
         );

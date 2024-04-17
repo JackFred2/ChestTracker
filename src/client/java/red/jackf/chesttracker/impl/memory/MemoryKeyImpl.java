@@ -153,8 +153,8 @@ public class MemoryKeyImpl implements MemoryKey {
 
     public List<SearchResult> doSearch(SearchContext context) {
         List<SearchResult> results = new ArrayList<>();
-        final int rangeSquared = context.metadata().getSearchSettings().searchRange
-                * context.metadata().getSearchSettings().searchRange;
+        final long rangeSquared = (long) context.metadata().getSearchSettings().searchRange
+                                * (long) context.metadata().getSearchSettings().searchRange;
 
         for (Map.Entry<BlockPos, Memory> entry : this.memories.entrySet()) {
             if (entry.getKey().distToCenterSqr(context.rootPosition()) > rangeSquared) continue;
