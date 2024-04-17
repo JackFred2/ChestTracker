@@ -31,8 +31,8 @@ public interface ProviderUtils {
 
     /**
      * Returns the key that the player is currently in, according to the provider. This is usually the same as the current
-     * level's dimension (minecraft:the_nether), but can be different or empty on custom providers
-     * .
+     * level's dimension (minecraft:the_nether), but can be different or empty on custom providers.
+     *
      * @return The player's current memory key.
      */
     static Optional<ResourceLocation> getPlayersCurrentKey() {
@@ -42,6 +42,17 @@ public interface ProviderUtils {
             if (level == null || player == null) return Optional.empty();
             return provider.getPlayersCurrentKey(level, player);
         });
+    }
+
+    /**
+     * Returns a memory key and position for a given client block source. This checks for an override from the current
+     * provider, or the current memory key and last interacted position otherwise. If not possible, an empty optional.
+     *
+     * @param cbs Client block source to get a memory key and position from
+     * @return A pair of a memory key and position, or an empty optional if none present.
+     */
+    static Optional<MemoryLocation> getLocationFor(ClientBlockSource cbs) {
+        return getCurrentProvider().flatMap(provider -> provider.getMemoryLocation(cbs));
     }
 
     /**

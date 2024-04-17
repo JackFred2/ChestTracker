@@ -60,20 +60,4 @@ public interface MemoryKey {
      * @return A list of ItemStacks that pass the predicate in this memory key, merged according to stackMergeMode.
      */
     List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode);
-
-    /**
-     * Adds a memory to this memory key. This will overwrite any old memory at the given position, and update the timestamps.
-     *
-     * @param position Position to add the memory.
-     * @param memory Memory to add at the given position.
-     */
-    void add(BlockPos position, Memory memory);
-
-    /**
-     * Remove a memory from this memory key if one is present. Considers connected blocks from {@link Memory#otherPositions()}.
-     *
-     * @param position BlockPos to remove a memory from.
-     * @return Whether a memory was successfully removed from the given position.
-     */
-    boolean remove(BlockPos position);
 }

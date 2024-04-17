@@ -12,7 +12,7 @@
  *
  * <p>Often times, memories get queried from just a level and position. This may require an override in order to provide
  * a more accurate result such as an Ender Chest - this is handled in
- * {@link red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryKeyOverride}.</p>
+ * {@link red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryLocation}.</p>
  *
  * <p>The icons for Chest Tracker's sidebar are obtained from the default provider in
  * {@link red.jackf.chesttracker.api.providers.defaults.DefaultProvider#getMemoryKeyIcons()}. If you want to add to the

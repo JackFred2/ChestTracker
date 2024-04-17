@@ -83,11 +83,11 @@ public class MemoryIntegrity {
                 if (keys.isEmpty()) return;
                 if (currentEntryKeyIndex >= keys.size()) currentEntryKeyIndex = 0;
                 currentMemoryKeyId = keys.get(currentEntryKeyIndex++);
-                MemoryKeyImpl currentKey = memoryBank.getMemories(currentMemoryKeyId);
+                Optional<MemoryKeyImpl> currentKey = memoryBank.getKeyInternal(currentMemoryKeyId);
 
-                if (currentKey != null && !currentKey.isEmpty()) {
+                if (currentKey.isPresent() && !currentKey.get().isEmpty()) {
                     LOGGER.debug("Refreshing entry list <{}> @ {}", currentMemoryKeyId, level.getGameTime());
-                    currentEntryList.addAll(currentKey.getMemories().entrySet());
+                    currentEntryList.addAll(currentKey.get().getMemories().entrySet());
                     if (ChestTrackerConfig.INSTANCE.instance().debug.showDevHud) {
                         toast.get().setTitle(Component.literal("Integrity: " + currentMemoryKeyId));
                         toast.get().setProgress(0f);

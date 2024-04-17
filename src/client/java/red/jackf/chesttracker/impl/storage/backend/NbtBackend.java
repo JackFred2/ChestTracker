@@ -19,7 +19,7 @@ public class NbtBackend extends FileBasedBackend {
         var meta = loadMetadata(id);
         if (meta.isEmpty()) return null;
         var path = Constants.STORAGE_DIR.resolve(id + extension());
-        var result = Misc.time(() -> FileUtil.loadFromNbt(MemoryBankImpl.MEMORIES_CODEC, path));
+        var result = Misc.time(() -> FileUtil.loadFromNbt(MemoryBankImpl.DATA_CODEC, path));
         if (result.getFirst().isPresent()) {
             LOGGER.debug("Loaded {} in {}ns", path, result.getSecond());
             return new MemoryBankImpl(meta.get(), result.getFirst().get());
@@ -33,7 +33,7 @@ public class NbtBackend extends FileBasedBackend {
         LOGGER.debug("Saving {}", memoryBank.getId());
         memoryBank.getMetadata().updateModified();
         if (!saveMetadata(memoryBank.getId(), memoryBank.getMetadata())) return false;
-        return FileUtil.saveToNbt(memoryBank.getMemories(), MemoryBankImpl.MEMORIES_CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()));
+        return FileUtil.saveToNbt(memoryBank.getMemories(), MemoryBankImpl.DATA_CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()));
     }
 
     @Override

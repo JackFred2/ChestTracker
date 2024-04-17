@@ -1,6 +1,5 @@
 package red.jackf.chesttracker.impl;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.BlockPos;
@@ -15,7 +14,7 @@ import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryKeyOverride;
+import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryLocation;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
 import red.jackf.jackfredlib.api.base.ResultHolder;
@@ -48,9 +47,21 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
 
         DefaultProviderScreenClose.EVENT.register(EventPhases.DEFAULT_PHASE, DefaultChestTrackerPlugin::enderChestMemoryCreator);
 
-        DefaultProviderMemoryKeyOverride.EVENT.register(cbs -> {
+        DefaultProviderMemoryLocation.EVENT.register(EventPhases.FALLBACK_PHASE, cbs -> {
+            var current = ProviderUtils.getPlayersCurrentKey();
+            if (current.isEmpty()) return ResultHolder.pass();
+
+            if (!ProviderUtils.defaultShouldRemember(cbs)) return ResultHolder.pass();
+
+            List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(cbs.level(), cbs.blockState(), cbs.pos());
+            BlockPos rootPos = connected.get(0);
+
+            return ResultHolder.value(MemoryLocation.inWorld(current.get(), rootPos));
+        });
+
+        DefaultProviderMemoryLocation.EVENT.register(EventPhases.DEFAULT_PHASE, cbs -> {
             if (cbs.blockState().getBlock() == Blocks.ENDER_CHEST) {
-                return ResultHolder.value(Pair.of(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
+                return ResultHolder.value(MemoryLocation.override(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
             }
 
             return ResultHolder.pass();
@@ -72,10 +83,8 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         var cbs = InteractionTracker.INSTANCE.getLastBlockSource();
         if (cbs.isEmpty()) return ResultHolder.pass();
 
-        var key = ProviderUtils.getPlayersCurrentKey();
-        if (key.isEmpty()) return ResultHolder.pass();
-
-        if (!ProviderUtils.defaultShouldRemember(cbs.get())) return ResultHolder.pass();
+        var memoryLocation = InteractionTracker.INSTANCE.getLastBlockSource().flatMap(provider::getMemoryLocation);
+        if (memoryLocation.isEmpty() || memoryLocation.get().isOverride()) return ResultHolder.pass();
 
         List<BlockPos> connectedBlocks = ConnectedBlocksGrabber.getConnected(cbs.get().level(), cbs.get()
                 .blockState(), cbs.get().pos());
@@ -87,7 +96,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
                 .otherPositions(connectedBlocks.stream()
                         .filter(pos -> !pos.equals(rootPos))
                         .toList())
-                .toResult(key.get(), rootPos));
+                .toResult(memoryLocation.get().memoryKey(), rootPos));
     }
 
     private static ResultHolder<DefaultProviderScreenClose.Result> enderChestMemoryCreator(ServerProvider provider, ScreenCloseContext context) {

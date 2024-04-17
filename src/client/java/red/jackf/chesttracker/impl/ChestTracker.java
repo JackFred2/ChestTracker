@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.ChestTrackerPlugin;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
-import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.DeveloperOverlay;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
@@ -29,6 +28,7 @@ import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.memory.MemoryIntegrity;
 import red.jackf.chesttracker.impl.providers.InteractionTrackerImpl;
 import red.jackf.chesttracker.impl.providers.ProviderHandler;
+import red.jackf.chesttracker.impl.providers.ScreenCloseContextImpl;
 import red.jackf.chesttracker.impl.rendering.NameRenderer;
 import red.jackf.chesttracker.impl.storage.ConnectionSettings;
 import red.jackf.chesttracker.impl.storage.Storage;
@@ -94,7 +94,7 @@ public class ChestTracker implements ClientModInitializer {
                 if (!ScreenBlacklist.isBlacklisted(screen.getClass()))
                     ScreenEvents.remove(screen).register(screen1 -> {
                         INSTANCE.getCurrentProvider().ifPresent(provider -> {
-                            provider.onScreenClose(ScreenCloseContext.createFor((AbstractContainerScreen<?>) screen1));
+                            provider.onScreenClose(ScreenCloseContextImpl.createFor((AbstractContainerScreen<?>) screen1));
                         });
                         InteractionTrackerImpl.INSTANCE.clear();
                     });

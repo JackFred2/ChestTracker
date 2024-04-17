@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
@@ -20,10 +21,12 @@ import red.jackf.chesttracker.impl.gui.invbutton.PositionExporter;
 import red.jackf.chesttracker.impl.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.impl.gui.invbutton.position.PositionUtils;
 import red.jackf.chesttracker.impl.gui.invbutton.position.RectangleUtils;
+import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.util.GuiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -48,7 +51,7 @@ public class InventoryButton extends AbstractWidget {
     private final List<SecondaryButton> secondaryButtons = new ArrayList<>();
     private ScreenRectangle expandedHoverArea = ScreenRectangle.empty();
 
-    public InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position) {
+    public InventoryButton(AbstractContainerScreen<?> parent, ButtonPosition position, Optional<MemoryLocation> target) {
         super(position.getX(parent), position.getY(parent), SIZE, SIZE, Component.translatable("chesttracker.title"));
         this.parent = parent;
         this.position = position;
@@ -58,11 +61,14 @@ public class InventoryButton extends AbstractWidget {
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
         // TODO only add ones relevant to the current screen - memory existing, etc.
-        if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra) {
-            //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
-            //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
-            this.secondaryButtons.add(new RememberContainerButton());
-        }
+        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
+            if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra && target.isPresent()) {
+                //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
+                //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
+
+                target.ifPresent(location -> this.secondaryButtons.add(new RememberContainerButton(bank, location)));
+            }
+        });
 
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExport) {
             this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/export"), Component.translatable("chesttracker.inventoryButton.export"), () ->

@@ -9,6 +9,8 @@ import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryKey;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
+import red.jackf.chesttracker.impl.memory.key.ManualMode;
+import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
 import red.jackf.chesttracker.impl.util.ItemStacks;
 import red.jackf.chesttracker.impl.util.Misc;
@@ -33,10 +35,10 @@ public class MemoryKeyImpl implements MemoryKey {
      */
     private final Map<BlockPos, BlockPos> connected = new HashMap<>();
 
-    private final Set<BlockPos> ignored = new HashSet<>();
+    private final Map<BlockPos, OverrideInfo> overrides = new HashMap<>();
     private MemoryBankImpl memoryBank = null;
 
-    public MemoryKeyImpl(Map<BlockPos, Memory> memories, Set<BlockPos> ignored) {
+    public MemoryKeyImpl(Map<BlockPos, Memory> memories, Map<BlockPos, OverrideInfo> ignored) {
         this.memories.putAll(memories);
 
         for (Map.Entry<BlockPos, Memory> entry : memories.entrySet()) {
@@ -47,7 +49,7 @@ public class MemoryKeyImpl implements MemoryKey {
                 this.connected.put(otherPosition, entry.getKey());
         }
 
-        this.ignored.addAll(ignored);
+        this.overrides.putAll(ignored);
     }
 
     public MemoryKeyImpl() {}
@@ -57,7 +59,7 @@ public class MemoryKeyImpl implements MemoryKey {
     }
 
     public boolean isEmpty() {
-        return this.memories.isEmpty();
+        return this.memories.isEmpty() && this.overrides.isEmpty();
     }
 
     public Map<BlockPos, Memory> getMemories() {
@@ -68,12 +70,21 @@ public class MemoryKeyImpl implements MemoryKey {
         return this.namedMemories;
     }
 
-    public Set<BlockPos> ignored() {
-        return this.ignored;
+    public Map<BlockPos, OverrideInfo> overrides() {
+        return this.overrides;
     }
 
-    @Override
     public void add(BlockPos position, Memory memory) {
+        // if blocked remove instead
+        OverrideInfo override = this.overrides.get(position);
+        ManualMode manualMode = override != null ? override.getManualMode() : ManualMode.DEFAULT;
+        boolean shouldAdd = manualMode == ManualMode.REMEMBER // force remember
+                || manualMode == ManualMode.DEFAULT && !this.memoryBank.getMetadata().getFilteringSettings().manualMode // no override but default is remember
+                || this.memories.containsKey(position); // already a memory
+        if (!shouldAdd) {
+            return;
+        }
+
         // if no name and we require names, remove instead
         if (this.memoryBank.getMetadata().getFilteringSettings().onlyRememberNamed && !memory.hasCustomName()) {
             remove(position);
@@ -89,7 +100,16 @@ public class MemoryKeyImpl implements MemoryKey {
         // TODO add context for gametime
         memory.touch(this.memoryBank.getMetadata().getLoadedTime(), Minecraft.getInstance().level.getGameTime());
 
-        memory.otherPositions().forEach(this::remove);
+        // Shuffle along an override from an existing position thats now connected to the original
+        OverrideInfo existingOverride = null;
+        for (BlockPos blockPos : memory.otherPositions()) {
+            if (this.overrides.containsKey(blockPos))
+                existingOverride = this.overrides.get(blockPos);
+            remove(blockPos);
+        }
+
+        if (existingOverride != null)
+            this.overrides.put(position, existingOverride);
 
         this.memories.put(position, memory);
         if (memory.hasCustomName())
@@ -98,13 +118,14 @@ public class MemoryKeyImpl implements MemoryKey {
             this.connected.put(otherPosition, position);
     }
 
-    @Override
     public boolean remove(BlockPos position) {
         BlockPos rootPosition = this.connected.getOrDefault(position, position);
         boolean success = this.memories.remove(rootPosition) != null;
         this.namedMemories.remove(rootPosition);
         //noinspection StatementWithEmptyBody
         while (this.connected.values().remove(rootPosition));
+
+        this.overrides.remove(position);
         return success;
     }
 
@@ -166,14 +187,14 @@ public class MemoryKeyImpl implements MemoryKey {
 
         // v2.3.3 and below
         // just a map of positions to memories
-        private static final Codec<MemoryKeyImpl> V2_3_3 = MEMORY_MAP.xmap(map -> new MemoryKeyImpl(map, Collections.emptySet()), MemoryKeyImpl::getMemories);
+        private static final Codec<MemoryKeyImpl> V2_3_3 = MEMORY_MAP.xmap(map -> new MemoryKeyImpl(map, Collections.emptyMap()), MemoryKeyImpl::getMemories);
 
         // v2.4.0 and up
         // moved to record; adds blocked set
         private static final Codec<MemoryKeyImpl> LATEST = RecordCodecBuilder.create(
                 instance -> instance.group(
                         MEMORY_MAP.fieldOf("memories").forGetter(MemoryKeyImpl::getMemories),
-                        ModCodecs.set(ModCodecs.BLOCK_POS_STRING).fieldOf("blocked").forGetter(MemoryKeyImpl::ignored)
+                        Codec.unboundedMap(ModCodecs.BLOCK_POS_STRING, OverrideInfo.CODEC).fieldOf("overrides").forGetter(MemoryKeyImpl::overrides)
                 ).apply(instance, MemoryKeyImpl::new)
         );
 

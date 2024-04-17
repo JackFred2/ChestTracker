@@ -1,7 +1,5 @@
 package red.jackf.chesttracker.api.providers.defaults;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -14,12 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
+import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
-import red.jackf.chesttracker.api.providers.MemoryBuilder;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
-import red.jackf.chesttracker.api.providers.ServerProvider;
+import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
 import red.jackf.chesttracker.impl.ChestTracker;
-import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
@@ -59,6 +56,11 @@ public class DefaultProvider extends ServerProvider {
     }
 
     @Override
+    public void onScreenOpen(ScreenOpenContext context) {
+        InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setTargetKeyAndPosition);
+    }
+
+    @Override
     public void onScreenClose(ScreenCloseContext context) {
         MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
             ResultHolder<DefaultProviderScreenClose.Result> memory = DefaultProviderScreenClose.EVENT.invoker().createMemory(this, context);
@@ -72,11 +74,10 @@ public class DefaultProvider extends ServerProvider {
     @Override
     public void onBlockPlaced(BlockPlacedContext context) {
         // if the block has an alternate mapping (i.e. ender chest) don't run
-        if (this.getMemoryKeyOverride(context.getBlockSource()).isPresent())
-            return;
+        Optional<MemoryLocation> memoryLocation = this.getMemoryLocation(context.getBlockSource());
+        if (memoryLocation.isEmpty() || memoryLocation.get().isOverride()) return;
 
-        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank ->
-                this.getPlayersCurrentKey(context.getBlockSource().level(), Minecraft.getInstance().player).ifPresent(currentKey -> {
+        MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
             List<ItemStack> items = null;
             Component name = null;
 
@@ -100,7 +101,8 @@ public class DefaultProvider extends ServerProvider {
                         context.getBlockSource().blockState(),
                         context.getBlockSource().pos()
                 );
-                connected.forEach(connectedPos -> bank.removeMemory(currentKey, connectedPos));
+
+                connected.forEach(connectedPos -> bank.removeMemory(memoryLocation.get().memoryKey(), connectedPos));
 
                 BlockPos rootPos = connected.get(0);
 
@@ -110,13 +112,13 @@ public class DefaultProvider extends ServerProvider {
                         .inContainer(context.getBlockSource().blockState().getBlock())
                         .build();
 
-                bank.addMemory(currentKey, rootPos, memory);
+                bank.addMemory(memoryLocation.get().memoryKey(), rootPos, memory);
             }
-        }));
+        });
     }
 
     @Override
-    public Optional<Pair<ResourceLocation, BlockPos>> getMemoryKeyOverride(ClientBlockSource cbs) {
-        return Optional.ofNullable(DefaultProviderMemoryKeyOverride.EVENT.invoker().getOverride(cbs).getNullable());
+    public Optional<MemoryLocation> getMemoryLocation(ClientBlockSource cbs) {
+        return Optional.ofNullable(DefaultProviderMemoryLocation.EVENT.invoker().getOverride(cbs).getNullable());
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
+import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.util.CachedClientBlockSource;
 
@@ -49,6 +50,19 @@ public interface MemoryBank {
      */
     default Optional<Memory> getMemory(Level level, BlockPos pos) {
         return this.getMemory(new CachedClientBlockSource(level, pos));
+    }
+
+    /**
+     * <p>Helper method for getting a memory from a key and position.</p>
+     *
+     * <p>This method does not look for an override, so looking up e.g. an ender chest in-world will return nothing. To
+     * look for overrides, see {@link #getMemory(ClientBlockSource)}.</p>
+     *
+     * @param location Memory key ID and position pair to lookup
+     * @return A memory at the given key and position, or an empty optional if not present.
+     */
+    default Optional<Memory> getMemory(MemoryLocation location) {
+        return getMemory(location.memoryKey(), location.position());
     }
 
     /**

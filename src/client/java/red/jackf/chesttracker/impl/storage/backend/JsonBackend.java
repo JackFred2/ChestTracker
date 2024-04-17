@@ -45,7 +45,7 @@ public class JsonBackend extends FileBasedBackend {
                 try {
                     var str = FileUtils.readFileToString(dataPath.toFile(), StandardCharsets.UTF_8);
                     var json = FileUtil.gson().fromJson(str, JsonElement.class);
-                    var loaded = MemoryBankImpl.MEMORIES_CODEC.decode(JsonOps.INSTANCE, json).get();
+                    var loaded = MemoryBankImpl.DATA_CODEC.decode(JsonOps.INSTANCE, json).get();
                     if (loaded.right().isPresent()) {
                         throw new IOException("Invalid Memories JSON: %s".formatted(loaded.right().get()));
                     } else {
@@ -76,7 +76,7 @@ public class JsonBackend extends FileBasedBackend {
 
         try {
             Files.createDirectories(path.getParent());
-            Optional<JsonElement> memoryJson = MemoryBankImpl.MEMORIES_CODEC.encodeStart(JsonOps.INSTANCE, memoryBank.getMemories())
+            Optional<JsonElement> memoryJson = MemoryBankImpl.DATA_CODEC.encodeStart(JsonOps.INSTANCE, memoryBank.getMemories())
                     .resultOrPartial(Util.prefix("Error encoding memories", LOGGER::error));
             if (memoryJson.isPresent()) {
                 FileUtils.write(path.toFile(), FileUtil.gson().toJson(memoryJson.get()), StandardCharsets.UTF_8);

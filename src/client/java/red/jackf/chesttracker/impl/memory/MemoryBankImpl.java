@@ -1,21 +1,21 @@
 package red.jackf.chesttracker.impl.memory;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBank;
 import red.jackf.chesttracker.api.memory.MemoryKey;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
+import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
-import red.jackf.chesttracker.api.providers.ServerProvider;
+import red.jackf.chesttracker.impl.memory.key.ManualMode;
+import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
 import red.jackf.chesttracker.impl.memory.metadata.Metadata;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -25,7 +25,7 @@ import red.jackf.whereisit.api.SearchResult;
 import java.util.*;
 
 public class MemoryBankImpl implements MemoryBank {
-    public static final Codec<Map<ResourceLocation, MemoryKeyImpl>> MEMORIES_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(ResourceLocation.CODEC, MemoryKeyImpl.Codecs.MAIN));
+    public static final Codec<Map<ResourceLocation, MemoryKeyImpl>> DATA_CODEC = JFLCodecs.mutableMap(Codec.unboundedMap(ResourceLocation.CODEC, MemoryKeyImpl.Codecs.MAIN));
 
     ////////////
     // OBJECT //
@@ -66,17 +66,6 @@ public class MemoryBankImpl implements MemoryBank {
      */
     public Map<ResourceLocation, MemoryKeyImpl> getMemories() {
         return memoryKeys;
-    }
-
-    /**
-     * Returns a specific memory key from this bank, or null if non-existent
-     *
-     * @param key Memory key to lookup
-     * @return Memories for the given key, or null if non-existent
-     */
-    @Nullable
-    public MemoryKeyImpl getMemories(ResourceLocation key) {
-        return memoryKeys.get(key);
     }
 
     /**
@@ -139,24 +128,10 @@ public class MemoryBankImpl implements MemoryBank {
 
     @Override
     public Optional<Memory> getMemory(ClientBlockSource cbs) {
-        Optional<ServerProvider> provider = ProviderUtils.getCurrentProvider();
-        if (provider.isEmpty()) return Optional.empty();
+        Optional<MemoryLocation> target = ProviderUtils.getCurrentProvider().flatMap(provider -> provider.getMemoryLocation(cbs));
+        if (target.isEmpty()) return Optional.empty();
 
-        Optional<Pair<ResourceLocation, BlockPos>> override = provider.get().getMemoryKeyOverride(cbs);
-        Optional<ResourceLocation> current = ProviderUtils.getPlayersCurrentKey();
-        ResourceLocation key;
-        BlockPos position;
-        if (override.isPresent()) {
-            key = override.get().getFirst();
-            position = override.get().getSecond();
-        } else if (current.isPresent()) {
-            key = current.get();
-            position = cbs.pos();
-        } else {
-            return Optional.empty();
-        }
-
-        return this.getMemory(key, position);
+        return this.getMemory(target.get().memoryKey(), target.get().position());
     }
 
     @Override
@@ -164,13 +139,21 @@ public class MemoryBankImpl implements MemoryBank {
         return Optional.ofNullable(this.memoryKeys.get(keyId));
     }
 
-    @Override
-    public void addMemory(ResourceLocation keyId, BlockPos location, Memory memory) {
-        MemoryKeyImpl key = this.memoryKeys.computeIfAbsent(keyId, ignored -> {
+    public Optional<MemoryKeyImpl> getKeyInternal(ResourceLocation key) {
+        return Optional.ofNullable(memoryKeys.get(key));
+    }
+
+    public MemoryKeyImpl getOrCreateKeyInternal(ResourceLocation key) {
+        return this.memoryKeys.computeIfAbsent(key, ignored -> {
             var newKey = new MemoryKeyImpl();
             newKey.setMemoryBank(this);
             return newKey;
         });
+    }
+
+    @Override
+    public void addMemory(ResourceLocation keyId, BlockPos location, Memory memory) {
+        MemoryKeyImpl key = this.getOrCreateKeyInternal(keyId);
 
         key.add(location, memory);
 
@@ -191,4 +174,21 @@ public class MemoryBankImpl implements MemoryBank {
         }
     }
 
+    public void setManualModeOverride(ResourceLocation key, BlockPos pos, ManualMode mode) {
+        if (mode == ManualMode.DEFAULT && !this.getKeys().contains(key)) return;
+
+        var keyImpl = this.getOrCreateKeyInternal(key);
+        var overrides = keyImpl.overrides();
+        if (mode == ManualMode.DEFAULT && !overrides.containsKey(pos)) return;
+
+        var override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
+        override.setManualMode(mode);
+
+        if (!override.shouldKeep()) {
+            overrides.remove(pos);
+            if (keyImpl.isEmpty()) {
+                this.removeKey(key);
+            }
+        }
+    }
 }

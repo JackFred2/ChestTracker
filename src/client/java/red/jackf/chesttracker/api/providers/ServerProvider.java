@@ -1,8 +1,6 @@
 package red.jackf.chesttracker.api.providers;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
+import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultIcons;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
@@ -102,6 +101,7 @@ public abstract class ServerProvider {
     ////////////
     // EVENTS //
     ////////////
+    public abstract void onScreenOpen(ScreenOpenContext context);
 
     /**
      * Called when a GUI with slots is closed. May be used to count items on a screen and submit them to a memory bank.
@@ -149,7 +149,7 @@ public abstract class ServerProvider {
      * @param cbs Block source being queried. Contains methods for getting the level, block state and position.
      * @return An optional containing a memory key and block position override for a given block, or an empty optional otherwise.
      */
-    public Optional<Pair<ResourceLocation, BlockPos>> getMemoryKeyOverride(ClientBlockSource cbs) {
+    public Optional<MemoryLocation> getMemoryLocation(ClientBlockSource cbs) {
         return Optional.empty();
     }
 

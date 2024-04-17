@@ -4,9 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.providers.ServerProvider;
-import red.jackf.chesttracker.impl.providers.ScreenCloseContextImpl;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -44,9 +42,4 @@ public interface ScreenCloseContext {
      * @return A list of slots to non-empty ItemStacks in this screen.
      */
     List<Pair<Integer, ItemStack>> getItemsAndSlots();
-
-    @ApiStatus.Internal
-    static ScreenCloseContext createFor(AbstractContainerScreen<?> screen) {
-        return new ScreenCloseContextImpl(screen);
-    }
 }

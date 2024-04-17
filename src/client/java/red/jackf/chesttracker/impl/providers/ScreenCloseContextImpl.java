@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 
@@ -11,6 +12,11 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implements ScreenCloseContext {
+    @ApiStatus.Internal
+    public static ScreenCloseContext createFor(AbstractContainerScreen<?> screen) {
+        return new ScreenCloseContextImpl(screen);
+    }
+
     @Override
     public AbstractContainerScreen<?> getScreen() {
         return this.screen;

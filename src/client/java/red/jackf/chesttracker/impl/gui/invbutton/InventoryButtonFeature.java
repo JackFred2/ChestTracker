@@ -6,9 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.server.packs.PackType;
+import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.invbutton.data.InventoryButtonPositionLoader;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
+import red.jackf.chesttracker.impl.providers.ScreenOpenContextImpl;
+
+import java.util.Optional;
 
 /**
  * Handles data loading and screen events for the button.
@@ -23,7 +27,15 @@ public class InventoryButtonFeature {
         if (screen instanceof AbstractContainerScreen<?> menuScreen) {
             var position = ButtonPositionMap.getPositionFor(menuScreen);
 
-            InventoryButton button = new InventoryButton(menuScreen, position);
+            var target = ProviderUtils.getCurrentProvider().flatMap(provider -> {
+                ScreenOpenContextImpl openContext = ScreenOpenContextImpl.createFor(menuScreen);
+
+                provider.onScreenOpen(openContext);
+
+                return Optional.ofNullable(openContext.getTarget());
+            });
+
+            InventoryButton button = new InventoryButton(menuScreen, position, target);
 
             ((CTButtonScreenDuck) menuScreen).chesttracker$setButton(button);
 

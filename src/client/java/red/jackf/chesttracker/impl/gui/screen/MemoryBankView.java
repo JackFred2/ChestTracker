@@ -53,7 +53,7 @@ public interface MemoryBankView {
 
             @Override
             public @Nullable MemoryKeyImpl getMemories(ResourceLocation memoryKey) {
-                return bank.getMemories(memoryKey);
+                return bank.getKeyInternal(memoryKey).orElse(null);
             }
 
             @Override
