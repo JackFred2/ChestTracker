@@ -1,8 +1,6 @@
 package red.jackf.chesttracker.impl;
 
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
-import net.minecraft.client.gui.screens.inventory.BeaconScreen;
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -38,9 +36,17 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         }));
 
         ScreenBlacklist.add(
-                AnvilScreen.class,
-                EffectRenderingInventoryScreen.class,
-                BeaconScreen.class
+                // workstations with no item retention
+                CartographyTableScreen.class,
+                EnchantmentScreen.class,
+                GrindstoneScreen.class,
+                ItemCombinerScreen.class,
+                LoomScreen.class,
+                StonecutterScreen.class,
+                BeaconScreen.class,
+
+                // inventory (surv & creative)
+                EffectRenderingInventoryScreen.class
         );
 
         ProviderUtils.registerProvider(DefaultProvider.INSTANCE);

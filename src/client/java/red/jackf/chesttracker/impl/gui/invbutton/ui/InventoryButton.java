@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
@@ -61,14 +62,16 @@ public class InventoryButton extends AbstractWidget {
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
         // TODO only add ones relevant to the current screen - memory existing, etc.
-        MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
-            if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra && target.isPresent()) {
-                //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
-                //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
+        if (!ScreenBlacklist.isBlacklisted(parent.getClass())) {
+            MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
+                if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra && target.isPresent()) {
+                    //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
+                    //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
 
-                target.ifPresent(location -> this.secondaryButtons.add(new RememberContainerButton(bank, location)));
-            }
-        });
+                    target.ifPresent(location -> this.secondaryButtons.add(new RememberContainerButton(bank, location)));
+                }
+            });
+        }
 
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExport) {
             this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/export"), Component.translatable("chesttracker.inventoryButton.export"), () ->
