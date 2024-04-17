@@ -57,7 +57,7 @@ public class DefaultProvider extends ServerProvider {
 
     @Override
     public void onScreenOpen(ScreenOpenContext context) {
-        InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setTargetKeyAndPosition);
+        InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setMemoryLocation);
     }
 
     @Override

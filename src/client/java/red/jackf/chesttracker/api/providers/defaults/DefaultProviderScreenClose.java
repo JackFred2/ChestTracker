@@ -14,14 +14,19 @@ import red.jackf.jackfredlib.api.base.ResultHolder;
 /**
  * <p>Called by the default provider in order to build memories from different screens. Handlers should make use of the
  * {@link InteractionTracker} as well as the screen context in order to differentiate between what should be handled.</p>
+ *
  * <p>Registering to this event instead of a custom provider should be done if possible as to allow other providers
  * to make use of the default provider's methods.</p>
+ *
+ * @see DefaultProvider
  */
 public interface DefaultProviderScreenClose {
     /**
      * Event for building memories on screen close for the default provider. Uses the phases in {@link EventPhases} in order
      * to allow for overridable defaults; if this isn't enough use {@link Event#addPhaseOrdering(ResourceLocation, ResourceLocation)}
      * with your own.
+     *
+     * @see EventPhases
      */
     Event<DefaultProviderScreenClose> EVENT = EventFactory.createWithPhases(DefaultProviderScreenClose.class, listeners -> (provider, context) -> {
         for (DefaultProviderScreenClose listener : listeners) {
@@ -42,7 +47,7 @@ public interface DefaultProviderScreenClose {
      * <p><b>If this callback does handle the given context</b>, it should return a {@link ResultHolder#value(Object)} containing
      * a given Memory built from the screen. If there is no memory to be created, it should return {@link ResultHolder#empty()}.</p>
      *
-     * @param provider
+     * @param provider Provider instance loaded when creating a memory.
      * @param context  Screen closing context
      * @return A result holder possibly containing a given memory.
      * @see InteractionTracker#INSTANCE

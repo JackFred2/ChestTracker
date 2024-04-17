@@ -25,7 +25,7 @@ public final class ScreenOpenContextImpl implements ScreenOpenContext {
     }
 
     @Override
-    public void setTargetKeyAndPosition(MemoryLocation memoryLocation) {
+    public void setMemoryLocation(MemoryLocation memoryLocation) {
         this.target = memoryLocation;
     }
 
