@@ -134,6 +134,7 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                                                                       font.lineHeight + 3,
                                                                       this.nameEditBox,
                                                                       CommonComponents.EMPTY));
+        this.nameEditBox.setMaxLength(80);
         this.nameEditBox.setResponder(s -> {
             if (s.isEmpty() && !ChestTrackerConfig.INSTANCE.instance().gui.hideMemoryIds) {
                 this.nameEditBox.setHint(literal(CreateMemoryBankScreen.getNameFromId(this.memoryBank.id())));
