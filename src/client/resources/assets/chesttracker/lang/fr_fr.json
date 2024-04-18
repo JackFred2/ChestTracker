@@ -6,7 +6,6 @@
   "chesttracker.inventoryButton.rename.remove": "Remove",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "This will only rename the container on your client, not the server.",
   "chesttracker.inventoryButton.forget": "Retirer",
-  "chesttracker.inventoryButton.rememberContainer": "Mémoriser le conteneur : %s",
   "chesttracker.inventoryButton.rememberContainer.remember": "Toujours",
   "chesttracker.inventoryButton.rememberContainer.block": "Jamais",
   "chesttracker.inventoryButton.export": "Position de l'export",
