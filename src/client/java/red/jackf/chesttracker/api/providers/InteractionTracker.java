@@ -27,4 +27,10 @@ public interface InteractionTracker {
      * the last interaction wasn't a block.
      */
     Optional<ClientBlockSource> getLastBlockSource();
+
+    /**
+     * Clear the interaction tracker. This should generally be used after adding a memory in order to prevent desync -
+     * think a player right-clicking a random block with no GUi then the server opens one from their end separately.
+     */
+    void clear();
 }

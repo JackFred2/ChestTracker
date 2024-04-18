@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.MemoryLocation;
+import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.memory.MemoryKeyImpl;
 import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
@@ -44,6 +45,8 @@ public class RenameButton extends SecondaryButton {
                 current = overrideInfo.getCustomName();
             }
         }
+
+        ChestTracker.skipProviderForNextGuiClose();
 
         Minecraft.getInstance().setScreen(new RenameInputScreen(memoryLocation,
                 current,

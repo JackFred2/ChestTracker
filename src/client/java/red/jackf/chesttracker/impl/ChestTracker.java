@@ -45,6 +45,8 @@ public class ChestTracker implements ClientModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
+    private static boolean shouldSkipProviderForNextGuiClose = false;
+
     public static Logger getLogger(String suffix) {
         return LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/" + suffix);
     }
@@ -55,6 +57,10 @@ public class ChestTracker implements ClientModInitializer {
 
     public static void openInGame(Minecraft client, @Nullable Screen parent) {
         client.setScreen(new ChestTrackerScreen(parent));
+    }
+
+    public static void skipProviderForNextGuiClose() {
+        shouldSkipProviderForNextGuiClose = true;
     }
 
     @Override
@@ -93,10 +99,14 @@ public class ChestTracker implements ClientModInitializer {
                 // counting items after screen close
                 if (!ScreenBlacklist.isBlacklisted(screen.getClass()))
                     ScreenEvents.remove(screen).register(screen1 -> {
-                        INSTANCE.getCurrentProvider().ifPresent(provider -> {
-                            provider.onScreenClose(ScreenCloseContextImpl.createFor((AbstractContainerScreen<?>) screen1));
-                        });
-                        InteractionTrackerImpl.INSTANCE.clear();
+                        if (!shouldSkipProviderForNextGuiClose) {
+                            INSTANCE.getCurrentProvider().ifPresent(provider -> {
+                                provider.onScreenClose(ScreenCloseContextImpl.createFor((AbstractContainerScreen<?>) screen1));
+                            });
+                            InteractionTrackerImpl.INSTANCE.clear();
+                        } else {
+                            shouldSkipProviderForNextGuiClose = false;
+                        }
                     });
                 else
                     LOGGER.debug("Blacklisted screen class, ignoring");
