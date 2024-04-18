@@ -206,6 +206,16 @@ public class MemoryBankImpl implements MemoryBank {
         var override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
         override.setCustomName(name);
 
+        // set to keep when adding a custom name
+        if (!shouldRemove) {
+            var manualMode = this.getMetadata().getFilteringSettings().manualMode;
+            if (manualMode) {
+                override.setManualMode(ManualMode.REMEMBER);
+            } else if (override.getManualMode() == ManualMode.BLOCK) {
+                override.setManualMode(ManualMode.DEFAULT);
+            }
+        }
+
         if (!override.shouldKeep()) {
             overrides.remove(pos);
             if (keyImpl.isEmpty()) {

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Secondary feature button. Only appears when the primary Chest Tracker button is hovered.
  */
 public class SecondaryButton extends AbstractWidget {
-    private static final long TWEEN_TIME = 100;
+    private static final long TWEEN_TIME = 60;
     private final WidgetSprites sprites;
     protected Runnable onClick;
     private long startTweenTime = -1;
