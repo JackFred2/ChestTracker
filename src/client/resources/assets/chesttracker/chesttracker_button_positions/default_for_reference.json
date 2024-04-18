@@ -2,8 +2,9 @@
   "class_names": [
     "DEFAULT"
   ],
-  "__comment": "The default for any screen which doesn't have either a user preference or a datapack override.",
-  "__comment2": "A copy of this will be loaded from code if this JSON file cannot load.",
+  "__comment1": "If a screen doesn't have either a user-supplied override or a position file with it's class name, then",
+  "__comment2": "it will look for one under the 'DEFAULT' class name (i.e. this file).",
+  "__comment3": "A copy of this will be loaded from code if this JSON file cannot load.",
   "position": {
     "x_align": "right",
     "x_offset": 14,

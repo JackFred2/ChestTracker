@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import red.jackf.chesttracker.api.events.AfterPlayerDestroyBlock;
-import red.jackf.chesttracker.util.CachedClientBlockSource;
+import red.jackf.chesttracker.impl.events.AfterPlayerDestroyBlock;
+import red.jackf.chesttracker.impl.util.CachedClientBlockSource;
 
 @Mixin(Block.class)
 public class BlockMixin {
