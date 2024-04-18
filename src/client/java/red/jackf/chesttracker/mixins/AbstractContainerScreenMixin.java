@@ -10,13 +10,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
+import red.jackf.chesttracker.impl.providers.ScreenOpenContextImpl;
 
-// adds mouse dragged and release callbacks for the inv button
+/**
+ * Mixin does a few things:
+ * <ul>
+ *     <li>Adds early mouse dragging and released callbacks used to drag around the CT button</li>
+ *     <li>Adds dimension grabbing for positioning the CT button</li>
+ * </ul>
+ */
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin implements CTButtonScreenDuck {
     @Unique
     @Nullable
     private InventoryButton ctButton = null;
+
+    @Unique
+    @Nullable
+    private ScreenOpenContextImpl openContext = null;
 
     @Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
     private void tryDragInvButton(double mouseX, double mouseY, int button, double dragX, double dragY, CallbackInfoReturnable<Boolean> cir) {
@@ -51,5 +62,15 @@ public abstract class AbstractContainerScreenMixin implements CTButtonScreenDuck
     @Override
     public void chesttracker$setButton(InventoryButton button) {
         this.ctButton = button;
+    }
+
+    @Override
+    public void chesttracker$setContext(ScreenOpenContextImpl openContext) {
+        this.openContext = openContext;
+    }
+
+    @Override
+    public @Nullable ScreenOpenContextImpl chesttracker$getContext() {
+        return this.openContext;
     }
 }

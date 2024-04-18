@@ -76,6 +76,9 @@ public class ChestTrackerConfig {
         @SerialEntry(comment = "How to scale the text in-GUI, relative to Minecraft's GUI scale? Minimum of 1.")
         public int itemListTextScale = 0;
 
+        @SerialEntry(comment = "Whether to replace GUI titles with custom names when present.")
+        public boolean useCustomNameInGUIs = true;
+
         @SerialEntry
         public InventoryButton inventoryButton = new InventoryButton();
         public static class InventoryButton {

@@ -225,6 +225,20 @@ public class ChestTrackerConfigScreenBuilder {
                                          () -> instance.instance().gui.itemListTextScale,
                                          i -> instance.instance().gui.itemListTextScale = i)
                                 .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.gui.useCustomNamesInGUIs"))
+                        .description(b -> OptionDescription.createBuilder()
+                                .image(getDescriptionImage("use_custom_names_in_gui", b), 600, 400)
+                                .text(translatable("chesttracker.config.gui.useCustomNamesInGUIs.description"))
+                                .build())
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.defaults().gui.useCustomNameInGUIs,
+                                () -> instance.instance().gui.useCustomNameInGUIs,
+                                b -> instance.instance().gui.useCustomNameInGUIs = b)
+                        .build())
                 .build();
     }
 
@@ -244,12 +258,11 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.instance().gui.inventoryButton.enabled,
                                 b -> instance.instance().gui.inventoryButton.enabled = b
                         ).build())
-                /*
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.showExtra"))
                         .description(b -> OptionDescription.createBuilder()
                                 .text(translatable("chesttracker.config.inventoryButton.showExtra.description"))
-                                .image(getDescriptionImage("inventory_button_show_extra", b), 256, 192)
+                                .image(getDescriptionImage("inventory_button_show_extra", b), 344, 224)
                                 .build())
                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                 .yesNoFormatter()
@@ -258,7 +271,7 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.defaults().gui.inventoryButton.showExtra,
                                 () -> instance.instance().gui.inventoryButton.showExtra,
                                 b -> instance.instance().gui.inventoryButton.showExtra = b
-                        ).build())*/
+                        ).build())
                 .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.export"))
                         .description(OptionDescription.of(translatable("chesttracker.config.inventoryButton.export.description",

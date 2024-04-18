@@ -101,6 +101,15 @@ public abstract class ServerProvider {
     ////////////
     // EVENTS //
     ////////////
+
+    /**
+     * Called when a screen is opened, <b>before initialization</b>. This should use {@link ScreenOpenContext#setMemoryLocation(MemoryLocation)}
+     * in order to get correct information for user-facing overrides, such as custom names and manual mode.
+     *
+     * @see ScreenOpenContext
+     * @see net.fabricmc.fabric.api.client.screen.v1.ScreenEvents#BEFORE_INIT
+     * @param context Context for the screen opening.
+     */
     public abstract void onScreenOpen(ScreenOpenContext context);
 
     /**

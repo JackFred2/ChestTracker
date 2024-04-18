@@ -6,11 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.server.packs.PackType;
-import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.invbutton.data.InventoryButtonPositionLoader;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
-import red.jackf.chesttracker.impl.providers.ScreenOpenContextImpl;
 
 import java.util.Optional;
 
@@ -27,13 +25,9 @@ public class InventoryButtonFeature {
         if (screen instanceof AbstractContainerScreen<?> menuScreen) {
             var position = ButtonPositionMap.getPositionFor(menuScreen);
 
-            var target = ProviderUtils.getCurrentProvider().flatMap(provider -> {
-                ScreenOpenContextImpl openContext = ScreenOpenContextImpl.createFor(menuScreen);
+            var context = Optional.ofNullable(((CTButtonScreenDuck) menuScreen).chesttracker$getContext());
 
-                provider.onScreenOpen(openContext);
-
-                return Optional.ofNullable(openContext.getTarget());
-            });
+            var target = context.flatMap(ctx -> Optional.ofNullable(ctx.getTarget()));
 
             InventoryButton button = new InventoryButton(menuScreen, position, target);
 

@@ -12,7 +12,7 @@ import red.jackf.chesttracker.api.providers.MemoryLocation;
  */
 public interface ScreenOpenContext {
     /**
-     * The screen that has been opened. This is called during {@link net.fabricmc.fabric.api.client.screen.v1.ScreenEvents#AFTER_INIT}.
+     * The screen that has been opened. <b>This is called during {@link net.fabricmc.fabric.api.client.screen.v1.ScreenEvents#BEFORE_INIT}</b>.
      *
      * @return The screen that has been opened.
      */
