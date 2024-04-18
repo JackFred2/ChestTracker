@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl.gui.invbutton.ui;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.impl.ChestTracker;
@@ -23,6 +25,7 @@ import red.jackf.chesttracker.impl.gui.invbutton.position.ButtonPosition;
 import red.jackf.chesttracker.impl.gui.invbutton.position.PositionUtils;
 import red.jackf.chesttracker.impl.gui.invbutton.position.RectangleUtils;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
+import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.util.GuiUtil;
 
 import java.util.ArrayList;
@@ -35,12 +38,16 @@ import java.util.stream.Stream;
  */
 public class InventoryButton extends AbstractWidget {
     private static final WidgetSprites TEXTURE = GuiUtil.twoSprite("inventory_button/button");
-    static final int Z_OFFSET = 400;
+    protected static final int Z_OFFSET = 400;
     private static final int MS_BEFORE_DRAG_START = 200;
     private static final int EXPANDED_HOVER_INFLATE = 5;
     private static final int EXTRA_BUTTON_SPACING = 3;
     public static final int SIZE = 9;
-    static final int IMAGE_SIZE = 11;
+    protected static final int IMAGE_SIZE = 11;
+
+    // used for the rename button to keep the target
+    private static @Nullable Pair<AbstractContainerScreen<?>, MemoryLocation> locationToRestore = null;
+
     private final AbstractContainerScreen<?> parent;
     private ButtonPosition lastPosition;
     private ButtonPosition position;
@@ -61,16 +68,24 @@ public class InventoryButton extends AbstractWidget {
 
         this.setTooltip(Tooltip.create(Component.translatable("chesttracker.title")));
 
+        if (locationToRestore != null) {
+            if (locationToRestore.getFirst() == parent) { // just to make sure
+                target = Optional.of(locationToRestore.getSecond());
+            }
+            locationToRestore = null;
+        }
+
         // TODO only add ones relevant to the current screen - memory existing, etc.
         if (!ScreenBlacklist.isBlacklisted(parent.getClass())) {
-            MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
+            if (MemoryBankAccessImpl.INSTANCE.getLoadedInternal().isPresent()) {
+                MemoryBankImpl bank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal().get();
                 if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExtra && target.isPresent()) {
-                    //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/forget"), Component.translatable("chesttracker.inventoryButton.forget"), () -> {}));
-                    //this.secondaryButtons.add(new SecondaryButton(GuiUtil.twoSprite("inventory_button/rename"), Component.translatable("chesttracker.inventoryButton.rename"), () -> {}));
+                    MemoryLocation location = target.get();
 
-                    target.ifPresent(location -> this.secondaryButtons.add(new RememberContainerButton(bank, location)));
+                    this.secondaryButtons.add(new RememberContainerButton(bank, location));
+                    this.secondaryButtons.add(new RenameButton(parent, bank, location));
                 }
-            });
+            }
         }
 
         if (ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.showExport) {
@@ -83,6 +98,10 @@ public class InventoryButton extends AbstractWidget {
         }
 
         this.applyPosition(true);
+    }
+
+    protected static void setRestoreLocation(AbstractContainerScreen<?> screen, MemoryLocation location) {
+        locationToRestore = Pair.of(screen, location);
     }
 
     @Override

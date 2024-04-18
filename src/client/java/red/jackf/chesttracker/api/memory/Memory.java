@@ -14,8 +14,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.providers.MemoryBuilder;
-import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
-import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
+import red.jackf.chesttracker.impl.memory.MemoryKeyImpl;
+import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.util.Misc;
 import red.jackf.chesttracker.impl.util.ModCodecs;
 
@@ -69,24 +69,6 @@ public final class Memory {
     private Long inGameTimestamp;
     private Instant realTimestamp;
 
-    @ApiStatus.Internal
-    public Memory(
-            List<ItemStack> items,
-            @Nullable Component name,
-            List<BlockPos> otherPositions,
-            Optional<Block> container,
-            long loadedTimestamp,
-            long inGameTimestamp,
-            Instant realTimestamp) {
-        this.items = ImmutableList.copyOf(items);
-        this.name = name;
-        this.otherPositions = ImmutableList.copyOf(otherPositions);
-        this.loadedTimestamp = loadedTimestamp;
-        this.inGameTimestamp = inGameTimestamp;
-        this.realTimestamp = realTimestamp;
-        this.container = container;
-    }
-
     /**
      * Whether this memory contains no items. Used internally to check if it should be removed.
      *
@@ -114,12 +96,16 @@ public final class Memory {
      * @return The custom name associated with this memory, or null if no custom name.
      */
     public @Nullable Component renderName() {
-        if (name == null) return null;
-        Optional<MemoryBankImpl> bank = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
-        if (bank.isEmpty()) return name;
-        Component filtered = bank.get().getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(name);
-        if (filtered.getString().isBlank()) return null;
-        return filtered;
+        if (this.memoryKey == null) return null;
+        OverrideInfo overrideInfo = this.memoryKey.overrides().get(this.position);
+        if (overrideInfo != null && overrideInfo.getCustomName() != null) {
+            return Component.literal(overrideInfo.getCustomName());
+        } else if (name != null) {
+            Component filtered = this.memoryKey.getMemoryBank().getMetadata().getCompatibilitySettings().nameFilterMode.filter.apply(name);
+            if (!filtered.getString().isBlank()) return filtered;
+        }
+
+        return null;
     }
 
     /**
@@ -139,7 +125,10 @@ public final class Memory {
      * @return Whether this memory has a custom name.
      */
     public boolean hasCustomName() {
-        return this.name != null;
+        if (this.name != null)
+            return true;
+        OverrideInfo override = this.memoryKey.overrides().get(this.position);
+        return override != null && override.getCustomName() != null;
     }
 
     /**
@@ -203,5 +192,32 @@ public final class Memory {
      */
     public Instant realTimestamp() {
         return realTimestamp;
+    }
+
+    @ApiStatus.Internal
+    private MemoryKeyImpl memoryKey = null;
+    private BlockPos position = null;
+
+    @ApiStatus.Internal
+    public Memory(
+            List<ItemStack> items,
+            @Nullable Component name,
+            List<BlockPos> otherPositions,
+            Optional<Block> container,
+            long loadedTimestamp,
+            long inGameTimestamp,
+            Instant realTimestamp) {
+        this.items = ImmutableList.copyOf(items);
+        this.name = name;
+        this.otherPositions = ImmutableList.copyOf(otherPositions);
+        this.loadedTimestamp = loadedTimestamp;
+        this.inGameTimestamp = inGameTimestamp;
+        this.realTimestamp = realTimestamp;
+        this.container = container;
+    }
+
+    public void populate(MemoryKeyImpl key, BlockPos pos) {
+        this.memoryKey = key;
+        this.position = pos;
     }
 }

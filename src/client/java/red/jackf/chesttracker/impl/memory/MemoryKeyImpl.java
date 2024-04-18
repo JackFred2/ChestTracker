@@ -38,24 +38,30 @@ public class MemoryKeyImpl implements MemoryKey {
     private final Map<BlockPos, OverrideInfo> overrides = new HashMap<>();
     private MemoryBankImpl memoryBank = null;
 
-    public MemoryKeyImpl(Map<BlockPos, Memory> memories, Map<BlockPos, OverrideInfo> ignored) {
+    public MemoryKeyImpl(Map<BlockPos, Memory> memories, Map<BlockPos, OverrideInfo> overrides) {
         this.memories.putAll(memories);
 
+        this.overrides.putAll(overrides);
+
         for (Map.Entry<BlockPos, Memory> entry : memories.entrySet()) {
+            BlockPos pos = entry.getKey();
             Memory memory = entry.getValue();
+            memory.populate(this, entry.getKey());
             if (memory.hasCustomName())
                 this.namedMemories.put(entry.getKey(), memory);
             for (BlockPos otherPosition : memory.otherPositions())
                 this.connected.put(otherPosition, entry.getKey());
         }
-
-        this.overrides.putAll(ignored);
     }
 
     public MemoryKeyImpl() {}
 
     protected void setMemoryBank(MemoryBankImpl bank) {
         this.memoryBank = bank;
+    }
+
+    public MemoryBankImpl getMemoryBank() {
+        return memoryBank;
     }
 
     public boolean isEmpty() {
@@ -84,6 +90,8 @@ public class MemoryKeyImpl implements MemoryKey {
         if (!shouldAdd) {
             return;
         }
+
+        memory.populate(this, position);
 
         // if no name and we require names, remove instead
         if (this.memoryBank.getMetadata().getFilteringSettings().onlyRememberNamed && !memory.hasCustomName()) {

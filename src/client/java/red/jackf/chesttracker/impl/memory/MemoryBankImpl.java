@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBank;
@@ -183,6 +184,27 @@ public class MemoryBankImpl implements MemoryBank {
 
         var override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
         override.setManualMode(mode);
+
+        if (!override.shouldKeep()) {
+            overrides.remove(pos);
+            if (keyImpl.isEmpty()) {
+                this.removeKey(key);
+            }
+        }
+    }
+
+    public void setNameOverride(ResourceLocation key, BlockPos pos, @NotNull String name) {
+        boolean shouldRemove = name.isBlank();
+        if (shouldRemove && !this.getKeys().contains(key)) return;
+
+        var keyImpl = this.getOrCreateKeyInternal(key);
+        var overrides = keyImpl.overrides();
+        if (shouldRemove && !overrides.containsKey(pos)) return;
+
+        name = shouldRemove ? null : name.strip();
+
+        var override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
+        override.setCustomName(name);
 
         if (!override.shouldKeep()) {
             overrides.remove(pos);
