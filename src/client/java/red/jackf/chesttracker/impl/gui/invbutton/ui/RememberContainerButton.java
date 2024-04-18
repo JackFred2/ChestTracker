@@ -2,9 +2,9 @@ package red.jackf.chesttracker.impl.gui.invbutton.ui;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import red.jackf.chesttracker.api.providers.MemoryLocation;
+import red.jackf.chesttracker.impl.gui.util.SpriteSet;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.memory.MemoryKeyImpl;
 import red.jackf.chesttracker.impl.memory.key.ManualMode;
@@ -41,7 +41,7 @@ public class RememberContainerButton extends SecondaryButton {
     }
 
     @Override
-    protected WidgetSprites getSprites() {
+    protected SpriteSet getSprites() {
         return this.state.sprites;
     }
 
@@ -76,10 +76,10 @@ public class RememberContainerButton extends SecondaryButton {
         BLOCK(GuiUtil.twoSprite("inventory_button/remember_container/never"),
                 () -> Component.translatable("chesttracker.inventoryButton.rememberContainer.block").withStyle(ChatFormatting.RED));
 
-        private final WidgetSprites sprites;
+        private final SpriteSet sprites;
         private final Supplier<Component> tooltip;
 
-        State(WidgetSprites sprites, Supplier<Component> tooltip) {
+        State(SpriteSet sprites, Supplier<Component> tooltip) {
             this.sprites = sprites;
             this.tooltip = tooltip;
         }

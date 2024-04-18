@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl.gui.invbutton.ui;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
@@ -112,7 +113,6 @@ public class RenameInputScreen extends Screen {
             Button button = bottomButtons.get(i);
             button.setPosition(left + i * (buttonWidth + BUTTON_GAP), buttonTop);
             button.setWidth(buttonWidth);
-            button.setHeight(20);
             this.addRenderableWidget(button);
         }
     }
@@ -121,6 +121,12 @@ public class RenameInputScreen extends Screen {
         if (this.returned) return;
         this.returned = true;
         this.callback.accept(result);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package red.jackf.chesttracker.gui.util;
+package red.jackf.chesttracker.impl.gui.util;
 
 import net.minecraft.resources.ResourceLocation;
 

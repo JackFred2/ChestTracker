@@ -6,8 +6,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import red.jackf.chesttracker.impl.gui.util.SpriteSet;
-import red.jackf.chesttracker.impl.gui.widget.SpriteButton;
 import red.jackf.chesttracker.impl.ChestTracker;
+import red.jackf.chesttracker.impl.gui.widget.SpriteButton;
 
 public class GuiUtil {
     public static final NinePatch BACKGROUND_SPRITE = new GuiUtil.NinePatch("nine_patch/background_1.20.1", 6, 30, 30);

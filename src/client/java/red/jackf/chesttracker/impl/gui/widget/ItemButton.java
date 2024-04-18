@@ -3,7 +3,6 @@ package red.jackf.chesttracker.impl.gui.widget;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

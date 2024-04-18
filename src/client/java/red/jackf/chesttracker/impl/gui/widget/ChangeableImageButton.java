@@ -4,33 +4,34 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import red.jackf.chesttracker.impl.gui.util.SpriteSet;
+import red.jackf.chesttracker.impl.util.GuiUtil;
 
 public class ChangeableImageButton extends Button {
-    private WidgetSprites sprites;
+    private SpriteSet sprites;
 
     public ChangeableImageButton(
             int x,
             int y,
             int width,
             int height,
-            WidgetSprites initialSprites,
+            SpriteSet initialSprites,
             Component message,
             OnPress onPress) {
         super(x, y, width, height, message, b -> onPress.onPress((ChangeableImageButton) b), DEFAULT_NARRATION);
         this.sprites = initialSprites;
     }
 
-    public void setSprites(WidgetSprites sprites) {
+    public void setSprites(SpriteSet sprites) {
         this.sprites = sprites;
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation resourceLocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
-        guiGraphics.blitSprite(resourceLocation, this.getX(), this.getY(), this.width, this.height);
+        GuiUtil.blit(guiGraphics, resourceLocation, this.getX(), this.getY(), this.width, this.height);
     }
 
     @Environment(EnvType.CLIENT)

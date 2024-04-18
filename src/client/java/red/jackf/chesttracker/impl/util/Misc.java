@@ -24,6 +24,13 @@ public class Misc {
     }
 
     /**
+     * Lerps between two integers for a given factor, and returns an integer.
+     */
+    public static int lerpDiscrete(float factor, int a, int b) {
+        return (int) (a + (b - a) * factor);
+    }
+
+    /**
      * Returns a sorter that brings elements in a given "head" list to the front, in the given order.
      * @param head List to check elements for and bring forwards
      * @return Comparator bringing specified elements to the front

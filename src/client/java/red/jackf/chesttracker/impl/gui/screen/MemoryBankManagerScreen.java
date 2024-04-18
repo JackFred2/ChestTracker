@@ -14,6 +14,7 @@ import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
 import red.jackf.chesttracker.impl.gui.util.TextColours;
 import red.jackf.chesttracker.impl.gui.widget.CustomEditBox;
+import red.jackf.chesttracker.impl.gui.widget.SpriteButton;
 import red.jackf.chesttracker.impl.gui.widget.StringSelectorWidget;
 import red.jackf.chesttracker.impl.gui.widget.TextWidget;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;

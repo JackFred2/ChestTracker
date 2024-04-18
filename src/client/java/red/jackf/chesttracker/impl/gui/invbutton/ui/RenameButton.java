@@ -1,7 +1,6 @@
 package red.jackf.chesttracker.impl.gui.invbutton.ui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.impl.ChestTracker;
+import red.jackf.chesttracker.impl.gui.util.SpriteSet;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.memory.MemoryKeyImpl;
 import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
@@ -17,7 +17,7 @@ import red.jackf.chesttracker.impl.util.GuiUtil;
 import java.util.Optional;
 
 public class RenameButton extends SecondaryButton {
-    private static final WidgetSprites SPRITES = GuiUtil.twoSprite("inventory_button/rename");
+    private static final SpriteSet SPRITES = GuiUtil.twoSprite("inventory_button/rename");
     private final AbstractContainerScreen<?> parent;
     private final MemoryBankImpl bank;
     private final MemoryLocation memoryLocation;
