@@ -2,7 +2,7 @@ package red.jackf.chesttracker.api;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.resources.ResourceLocation;
-import red.jackf.chesttracker.ChestTracker;
+import red.jackf.chesttracker.impl.ChestTracker;
 
 public class EventPhases {
     /**
