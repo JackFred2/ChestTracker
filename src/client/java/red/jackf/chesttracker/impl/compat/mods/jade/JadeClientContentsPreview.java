@@ -69,7 +69,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
             Component name = memory.get().renderName();
             if (name != null) {
-                tooltip.replace(Identifiers.CORE_OBJECT_NAME, IThemeHelper.get().title(name));
+                tooltip.remove(Identifiers.CORE_OBJECT_NAME);
+                tooltip.add(0, IThemeHelper.get().title(name), Identifiers.CORE_OBJECT_NAME);
             }
 
             if (accessor.showDetails() && config.get(ChestTrackerJadePlugin.CONFIG_SHOW_TEXT)) {

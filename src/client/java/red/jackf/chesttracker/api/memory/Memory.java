@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +37,7 @@ public final class Memory {
             instance.group(
                             ItemStack.CODEC.listOf().fieldOf("items")
                                     .forGetter(Memory::items),
-                            ComponentSerialization.CODEC.optionalFieldOf("name")
+                            ExtraCodecs.COMPONENT.optionalFieldOf("name")
                                                   .forGetter(m -> Optional.ofNullable(m.name)),
                             ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
                                     .forGetter(Memory::otherPositions),

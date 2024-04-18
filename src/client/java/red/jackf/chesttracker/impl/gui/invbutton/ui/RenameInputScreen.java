@@ -110,7 +110,9 @@ public class RenameInputScreen extends Screen {
 
         for (int i = 0; i < bottomButtons.size(); i++) {
             Button button = bottomButtons.get(i);
-            button.setRectangle(buttonWidth, 20, left + i * (buttonWidth + BUTTON_GAP), buttonTop);
+            button.setPosition(left + i * (buttonWidth + BUTTON_GAP), buttonTop);
+            button.setWidth(buttonWidth);
+            button.setHeight(20);
             this.addRenderableWidget(button);
         }
     }
