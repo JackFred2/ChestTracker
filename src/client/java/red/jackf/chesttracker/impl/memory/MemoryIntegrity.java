@@ -16,6 +16,7 @@ import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.events.AfterPlayerDestroyBlock;
+import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.metadata.IntegritySettings;
 import red.jackf.jackfredlib.api.base.Memoizer;
 import red.jackf.jackfredlib.client.api.toasts.*;
@@ -121,9 +122,12 @@ public class MemoryIntegrity {
             BlockPos currentPos = currentEntry.getKey();
             Memory currentMemory = currentEntry.getValue();
 
+            Optional<OverrideInfo> override = memoryBank.getKeyInternal(currentMemoryKeyId).flatMap(key -> Optional.ofNullable(key.overrides().get(currentPos)));
+            final boolean hasOverride = override.isPresent() && override.get().shouldKeep();
+
             // check if time has expired
             // exempt named from the check
-            if (!integrity.preserveNamed || !currentMemory.hasCustomName()) {
+            if (!(integrity.preserveNamed && currentMemory.hasCustomName()) && !hasOverride) {
                 final Long expirySeconds = integrity.memoryLifetime.seconds;
                 if (expirySeconds != null) {
                     final long secondsPastExpiry = switch (integrity.lifetimeCountMode) {
@@ -146,7 +150,8 @@ public class MemoryIntegrity {
             if (integrity.checkPeriodicallyForMissingBlocks) {
                 LocalPlayer player = Minecraft.getInstance().player;
                 ResourceLocation playerCurrentKey = ProviderUtils.getPlayersCurrentKey().orElse(null);
-                if (player != null
+
+                if (player != null // check if we can reasonably check for existence
                         && playerCurrentKey != null
                         && playerCurrentKey.equals(currentMemoryKeyId)
                         && level.isLoaded(currentPos)
