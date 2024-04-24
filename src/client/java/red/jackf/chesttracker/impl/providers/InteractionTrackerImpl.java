@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.impl.providers;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +26,8 @@ public class InteractionTrackerImpl implements InteractionTracker {
             }
             return InteractionResult.PASS;
         });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> INSTANCE.clear());
     }
 
     @Override
