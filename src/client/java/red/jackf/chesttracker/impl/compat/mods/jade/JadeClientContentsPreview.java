@@ -16,9 +16,9 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.Identifiers;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.theme.IThemeHelper;
-import snownee.jade.api.ui.Direction2D;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.ui.ScreenDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
             var stacks = ItemStacks.flattenStacks(memory.get().items(), true);
 
-            int max = config.getInt(accessor.showDetails() ? Identifiers.MC_ITEM_STORAGE_DETAILED_AMOUNT : Identifiers.MC_ITEM_STORAGE_NORMAL_AMOUNT);
-            int perLine = config.getInt(Identifiers.MC_ITEM_STORAGE_ITEMS_PER_LINE);
+            int max = config.getInt(accessor.showDetails() ? Identifiers.UNIVERSAL_ITEM_STORAGE_DETAILED_AMOUNT : Identifiers.UNIVERSAL_ITEM_STORAGE_NORMAL_AMOUNT);
+            int perLine = config.getInt(Identifiers.UNIVERSAL_ITEM_STORAGE_ITEMS_PER_LINE);
 
             List<List<IElement>> lines = new ArrayList<>();
             List<IElement> currentLine = new ArrayList<>(perLine);
@@ -64,7 +64,7 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
             if (!currentLine.isEmpty()) lines.add(currentLine);
             for (int i = 0; i < lines.size(); i++) {
                 tooltip.add(lines.get(i));
-                if (i < lines.size() - 1) tooltip.setLineMargin(-1, Direction2D.DOWN, -1);
+                if (i < lines.size() - 1) tooltip.setLineMargin(-1, ScreenDirection.DOWN, -1);
             }
 
             Component name = memory.get().renderName();
