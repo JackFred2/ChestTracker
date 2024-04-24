@@ -41,9 +41,7 @@ jobs:
   publish:
     strategy:
       matrix:
-        # Use these Java versions
-        java: [17]
-        # and run on both Linux and Windows
+        java: [21]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
 
