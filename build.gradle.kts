@@ -222,7 +222,7 @@ tasks.withType<ProcessResources>().configureEach {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-	options.release.set(17)
+	options.release.set(21)
 }
 
 tasks.jar {
