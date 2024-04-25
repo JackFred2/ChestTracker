@@ -2,6 +2,7 @@ package red.jackf.chesttracker.api.providers.defaults;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -9,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
+import org.apache.commons.lang3.stream.Streams;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
@@ -78,22 +81,17 @@ public class DefaultProvider extends ServerProvider {
         if (memoryLocation.isEmpty() || memoryLocation.get().isOverride()) return;
 
         MemoryBankAccess.INSTANCE.getLoaded().ifPresent(bank -> {
+            ItemStack stack = context.getPlacementStack();
+
+            Component name = stack.get(DataComponents.CUSTOM_NAME);
+
             List<ItemStack> items = null;
-            Component name = null;
+            ItemContainerContents itemComponent = stack.get(DataComponents.CONTAINER);
 
-            // check for items
-            CompoundTag stackBeData = BlockItem.getBlockEntityData(context.getPlacementStack());
-            if (stackBeData != null && stackBeData.contains("Items", Tag.TAG_LIST)) {
-                var loadedItems = NonNullList.withSize(27, ItemStack.EMPTY);
-                ContainerHelper.loadAllItems(stackBeData, loadedItems);
-                if (!loadedItems.isEmpty()) items = loadedItems;
+            if (itemComponent != null) {
+                List<ItemStack> itemList = Streams.of(itemComponent.nonEmptyItemsCopy()).toList();
+                if (!itemList.isEmpty()) items = itemList;
             }
-
-            // check for names
-            if (context.getPlacementStack().hasCustomHoverName())
-                name = context.getPlacementStack().getHoverName();
-            else if (stackBeData != null && stackBeData.contains("CustomName"))
-                name = Component.Serializer.fromJson(stackBeData.getString("CustomName"));
 
             if (items != null || name != null) {
                 List<BlockPos> connected = ConnectedBlocksGrabber.getConnected(

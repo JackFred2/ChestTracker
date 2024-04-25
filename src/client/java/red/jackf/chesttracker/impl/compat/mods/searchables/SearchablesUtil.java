@@ -6,6 +6,8 @@ import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +41,7 @@ public class SearchablesUtil {
     }
 
     private static Optional<String> stackNameSuggestions(ItemStack stack) {
-        if (stack.hasCustomHoverName() || ChestTrackerConfig.INSTANCE.instance().gui.autocompleteShowsRegularNames)
+        if (stack.has(DataComponents.CUSTOM_NAME) || ChestTrackerConfig.INSTANCE.instance().gui.autocompleteShowsRegularNames)
             return Optional.of(stack.getHoverName().getString());
         return Optional.empty();
     }

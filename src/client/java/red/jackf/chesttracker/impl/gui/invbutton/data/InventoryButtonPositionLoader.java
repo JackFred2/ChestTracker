@@ -11,6 +11,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.include.com.google.gson.JsonParseException;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.impl.gui.invbutton.position.ButtonPosition;
@@ -40,9 +41,9 @@ public class InventoryButtonPositionLoader implements SimpleResourceReloadListen
                 Resource resource = entry.getValue();
                 try (Reader reader = resource.openAsReader()) {
                     JsonElement jsonElement = JsonParser.parseReader(reader);
-                    ButtonPositionDataFile result = ButtonPositionDataFile.CODEC.parse(
-                            new Dynamic<>(JsonOps.INSTANCE, jsonElement)
-                    ).getOrThrow(false, LOGGER::error);
+                    ButtonPositionDataFile result = ButtonPositionDataFile.CODEC
+                            .parse(JsonOps.INSTANCE, jsonElement)
+                            .getOrThrow(JsonParseException::new);
 
                     for (String className : result.classNames()) {
                         positions.put(className, result.position());

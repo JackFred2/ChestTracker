@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ExtraCodecs;
@@ -45,19 +46,19 @@ public class ModCodecs {
     /**
      * Compact codec for an ItemStack. Ignores the count on both serialization and deserialization
      */
-    public static final Codec<ItemStack> ITEM_STACK_IGNORE_COUNT = ExtraCodecs.xor(
+    public static final Codec<ItemStack> ITEM_STACK_IGNORE_COUNT = Codec.xor(
             Codec.pair(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("id").codec(),
-                    CompoundTag.CODEC.fieldOf("tag").codec()
+                    DataComponentPatch.CODEC.fieldOf("patch").codec()
             ),
             BuiltInRegistries.ITEM.byNameCodec()
-    ).xmap(ModCodecs::decodeEitherItemStack, stack -> stack.hasTag() ? Either.left(Pair.of(stack.getItem(), stack.getTag())) : Either.right(stack.getItem()));
+    ).xmap(ModCodecs::decodeEitherItemStack, stack -> !stack.getComponentsPatch().isEmpty() ? Either.left(Pair.of(stack.getItem(), stack.getComponentsPatch())) : Either.right(stack.getItem()));
 
-    private static ItemStack decodeEitherItemStack(Either<Pair<Item, CompoundTag>, Item> either) {
+    private static ItemStack decodeEitherItemStack(Either<Pair<Item, DataComponentPatch>, Item> either) {
         if (either.left().isPresent()) {
             var pair = either.left().get();
             var stack = new ItemStack(pair.getFirst());
-            stack.setTag(pair.getSecond());
+            stack.applyComponents(pair.getSecond());
             return stack;
         } else {
             return new ItemStack(either.right().orElseThrow());

@@ -45,12 +45,13 @@ public class JsonBackend extends FileBasedBackend {
                 try {
                     var str = FileUtils.readFileToString(dataPath.toFile(), StandardCharsets.UTF_8);
                     var json = FileUtil.gson().fromJson(str, JsonElement.class);
-                    var loaded = MemoryBankImpl.DATA_CODEC.decode(JsonOps.INSTANCE, json).get();
-                    if (loaded.right().isPresent()) {
-                        throw new IOException("Invalid Memories JSON: %s".formatted(loaded.right().get()));
+                    var decoded = MemoryBankImpl.DATA_CODEC.decode(JsonOps.INSTANCE, json);
+                    if (decoded.isError()) {
+                        //noinspection OptionalGetWithoutIsPresent
+                        throw new IOException("Invalid Memories JSON: %s".formatted(decoded.error().get().message()));
                     } else {
                         //noinspection OptionalGetWithoutIsPresent
-                        return loaded.left().get().getFirst();
+                        return decoded.result().get().getFirst();
                     }
                 } catch (JsonParseException | IOException ex) {
                     LOGGER.error("Error loading %s".formatted(dataPath), ex);

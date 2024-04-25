@@ -2,11 +2,10 @@ package red.jackf.chesttracker.impl.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtOps;
+import com.mojang.serialization.DataResult;
+import net.minecraft.nbt.*;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
@@ -35,19 +34,19 @@ public class FileUtil {
      * @param <T>    Type of the serialized object
      * @return Whether the save was successful
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public static <T> boolean saveToNbt(T object, Codec<T> codec, Path path) {
         try {
             Files.createDirectories(path.getParent());
-            var tag = codec.encodeStart(NbtOps.INSTANCE, object).get();
-            var result = tag.left();
-            var err = tag.right();
-            if (err.isPresent()) {
-                throw new IOException("Error encoding to NBT %s".formatted(err.get()));
-            } else if (result.isPresent() && result.get() instanceof CompoundTag compound) {
+            DataResult<Tag> tag = codec.encodeStart(NbtOps.INSTANCE, object);
+
+            if (tag.isError()) {
+                throw new IOException("Error encoding to NBT %s".formatted(tag.error().get()));
+            } else if (tag.isSuccess() && tag.result().get() instanceof CompoundTag compound) {
                 NbtIo.writeCompressed(compound, path);
                 return true;
-            } else { //noinspection OptionalGetWithoutIsPresent
-                throw new IOException("Error encoding to NBT: not a compound tag: %s".formatted(result.get()));
+            } else {
+                throw new IOException("Error encoding to NBT: not a compound tag: %s".formatted(tag.result().get()));
             }
         } catch (IOException ex) {
             LOGGER.error("Error saving object", ex);
@@ -67,12 +66,12 @@ public class FileUtil {
         if (Files.isRegularFile(path)) {
             try {
                 var tag = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
-                var loaded = codec.decode(NbtOps.INSTANCE, tag).get();
-                if (loaded.right().isPresent()) {
-                    throw new IOException("Invalid NBT: %s".formatted(loaded.right().get()));
-                } else {
+                var loaded = codec.decode(NbtOps.INSTANCE, tag);
+                if (loaded.isError()) {
                     //noinspection OptionalGetWithoutIsPresent
-                    return Optional.ofNullable(loaded.left().get().getFirst());
+                    throw new IOException("Invalid NBT: %s".formatted(loaded.error().get().message()));
+                } else {
+                    return loaded.result().map(Pair::getFirst);
                 }
             } catch (IOException ex) {
                 LOGGER.error("Error loading object at {}", path, ex);

@@ -212,7 +212,7 @@ dependencies {
 	// Jade
 	modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
 
-	modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
+	//modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {
