@@ -20,19 +20,22 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "red.jackf.chesttracker.ChestTracker"
+      "red.jackf.chesttracker.impl.ChestTracker"
+    ],
+    "chesttracker": [
+      "red.jackf.chesttracker.impl.DefaultChestTrackerPlugin"
     ],
     "modmenu": [
-      "red.jackf.chesttracker.compat.mods.ChestTrackerModMenu"
+      "red.jackf.chesttracker.impl.compat.mods.ChestTrackerModMenu"
     ],
     "whereisit_client": [
-      "red.jackf.chesttracker.compat.mods.ChestTrackerWhereIsItPlugin"
+      "red.jackf.chesttracker.impl.compat.mods.ChestTrackerWhereIsItPlugin"
     ],
     "shulkerboxtooltip": [
-      "red.jackf.chesttracker.compat.mods.shulkerboxtooltip.ChestTrackerShulkerBoxTooltip"
+      "red.jackf.chesttracker.impl.compat.mods.shulkerboxtooltip.ChestTrackerShulkerBoxTooltip"
     ],
     "jade": [
-      "red.jackf.chesttracker.compat.mods.jade.ChestTrackerJadePlugin"
+      "red.jackf.chesttracker.impl.compat.mods.jade.ChestTrackerJadePlugin"
     ]
   },
   "mixins": [

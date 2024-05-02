@@ -3,12 +3,13 @@
   "package": "red.jackf.chesttracker.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AbstractContainerScreenMixin",
     "AbstractWidgetAccessor",
     "BlockItemMixin",
     "BlockMixin",
     "ClientPacketListenerMixin",
     "EditBoxAccessor",
-    "AbstractContainerScreenMixin"
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

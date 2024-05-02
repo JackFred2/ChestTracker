@@ -9,7 +9,7 @@ import red.jackf.UpdateDependenciesTask
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.5-SNAPSHOT"
+	id("fabric-loom") version "1.6-SNAPSHOT"
 	id("com.github.breadmoirai.github-release") version "2.4.1"
 	id("org.ajoberstar.grgit") version "5.2.1"
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
@@ -68,7 +68,7 @@ repositories {
 		name = "Xander Maven"
 		url = uri("https://maven.isxander.dev/releases")
 		content {
-			includeGroup("dev.isxander.yacl")
+			includeGroupAndSubgroups("dev.isxander")
 			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
@@ -78,7 +78,7 @@ repositories {
 		name = "Xander Snapshot Maven"
 		url = uri("https://maven.isxander.dev/snapshots")
 		content {
-			includeGroup("dev.isxander.yacl")
+			includeGroupAndSubgroups("dev.isxander")
 			includeGroupAndSubgroups("org.quiltmc")
 		}
 	}
@@ -140,9 +140,6 @@ repositories {
 
 java {
 	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
 }
 
 loom {
@@ -179,7 +176,7 @@ dependencies {
 	include("red.jackf:whereisit:${properties["where-is-it_version"]}")
 
 	// Config
-	modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${properties["yacl_version"]}") {
+	modImplementation("dev.isxander:yet-another-config-lib:${properties["yacl_version"]}") {
 		exclude(group = "com.terraformersmc", module = "modmenu")
 	}
 
