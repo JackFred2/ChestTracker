@@ -9,7 +9,7 @@ import red.jackf.UpdateDependenciesTask
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.5-SNAPSHOT"
+	id("fabric-loom") version "1.6-SNAPSHOT"
 	id("com.github.breadmoirai.github-release") version "2.4.1"
 	id("org.ajoberstar.grgit") version "5.2.1"
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
@@ -140,9 +140,6 @@ repositories {
 
 java {
 	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
 }
 
 loom {
@@ -202,8 +199,9 @@ dependencies {
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
-	modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
-	modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:${properties["clothconfig_version"]}")
+
+	//modLocalRuntime("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")
+	//modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:${properties["clothconfig_version"]}")
 
 	// WTHIT
 	modCompileOnly("mcp.mobius.waila:wthit-api:${properties["wthit_version"]}")
@@ -213,6 +211,7 @@ dependencies {
 
 	// Jade
 	modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
+
 	modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
 }
 
