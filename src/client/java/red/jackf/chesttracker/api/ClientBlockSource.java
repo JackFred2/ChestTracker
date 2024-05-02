@@ -1,7 +1,7 @@
 package red.jackf.chesttracker.api;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -50,5 +50,5 @@ public interface ClientBlockSource {
      * Level that the position is in.
      * @return Level that the position is in.
      */
-    ClientLevel level();
+    Level level();
 }
