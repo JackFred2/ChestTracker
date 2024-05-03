@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,6 +16,7 @@ import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Codecs for classes that aren't ours
@@ -80,5 +83,28 @@ public class ModCodecs {
 
     public static <T> Codec<Set<T>> set(Codec<T> base) {
         return base.listOf().xmap(Set::copyOf, List::copyOf);
+    }
+
+    public static <T> Codec<T> predicate(Predicate<Dynamic<?>> decodingPredicate, Codec<T> base) {
+        return new Codec<>() {
+            @Override
+            public <A> DataResult<Pair<T, A>> decode(DynamicOps<A> ops, A input) {
+                Dynamic<A> dynamic = new Dynamic<>(ops, input);
+                if (decodingPredicate.test(dynamic)) {
+                    return base.decode(dynamic);
+                }
+                return DataResult.error(() -> "Did not match predicate: " + input);
+            }
+
+            @Override
+            public <A> DataResult<A> encode(T input, DynamicOps<A> ops, A prefix) {
+                return base.encode(input, ops, prefix);
+            }
+
+            @Override
+            public String toString() {
+                return "DecoderPredicateCodec[" + base + "]";
+            }
+        };
     }
 }

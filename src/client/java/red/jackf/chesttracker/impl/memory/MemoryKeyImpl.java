@@ -196,16 +196,24 @@ public class MemoryKeyImpl implements MemoryKey {
 
         // v2.3.3 and below
         // just a map of positions to memories
-        private static final Codec<MemoryKeyImpl> V2_3_3 = MEMORY_MAP.xmap(map -> new MemoryKeyImpl(map, Collections.emptyMap()), MemoryKeyImpl::getMemories);
+        private static final Codec<MemoryKeyImpl> V2_3_3 = Types.wrapInFixer(Types.MEMORY_DATA_2_3_3,
+                MEMORY_MAP.xmap(map -> new MemoryKeyImpl(map, Collections.emptyMap()), MemoryKeyImpl::getMemories),
+                3700); // Data Version 3700 -> Minecraft 1.20.4
 
         // v2.4.0 and up
         // moved to record; adds blocked set
-        private static final Codec<MemoryKeyImpl> LATEST = Types.wrap(Types.MEMORY_DATA, RecordCodecBuilder.create(
-                instance -> instance.group(
-                        MEMORY_MAP.fieldOf("memories").forGetter(MemoryKeyImpl::getMemories),
-                        Codec.unboundedMap(ModCodecs.BLOCK_POS_STRING, OverrideInfo.CODEC).fieldOf("overrides").forGetter(MemoryKeyImpl::overrides)
-                ).apply(instance, MemoryKeyImpl::new)
-        ), 3700); // Data Version 3700 -> Minecraft 1.20.4
+        private static final Codec<MemoryKeyImpl> LATEST = ModCodecs.predicate( // we wrap in predicate because otherwise DFU dumps the whole bank into the console even though its fine
+                dyn -> dyn.get("memories").result().isPresent(),
+                Types.wrapInFixer(
+                        Types.MEMORY_DATA,
+                        RecordCodecBuilder.create(
+                        instance -> instance.group(
+                                MEMORY_MAP.fieldOf("memories").forGetter(MemoryKeyImpl::getMemories),
+                                Codec.unboundedMap(ModCodecs.BLOCK_POS_STRING, OverrideInfo.CODEC).fieldOf("overrides").forGetter(MemoryKeyImpl::overrides)
+                        ).apply(instance, MemoryKeyImpl::new)),
+                        3700 // Data Version 3700 -> Minecraft 1.20.4
+                )
+        );
 
         public static final Codec<MemoryKeyImpl> MAIN = JFLCodecs.firstInList(LATEST, V2_3_3);
     }
