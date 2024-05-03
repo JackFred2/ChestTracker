@@ -7,8 +7,6 @@ import com.mojang.serialization.DataResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
@@ -44,7 +42,7 @@ public class ModCodecs {
     );
 
     /**
-     * Compact codec for an ItemStack. Ignores the count on both serialization and deserialization
+     * Compact codec for an ItemStack. Ignores the count on both serialization and deserialization. Deprecated.
      */
     public static final Codec<ItemStack> ITEM_STACK_IGNORE_COUNT = Codec.xor(
             Codec.pair(
