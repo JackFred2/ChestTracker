@@ -1,14 +1,9 @@
 package red.jackf.chesttracker.api.providers.defaults;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import org.apache.commons.lang3.stream.Streams;
@@ -55,7 +50,7 @@ public class DefaultProvider extends ServerProvider {
 
     @Override
     public void onConnect(Coordinate coordinate) {
-        MemoryBankAccess.INSTANCE.loadOrCreate(coordinate.id(), coordinate.userFriendlyName());
+        MemoryBankAccess.INSTANCE.loadWithDefaults(coordinate);
     }
 
     @Override
