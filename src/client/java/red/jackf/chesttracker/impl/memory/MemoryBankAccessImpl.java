@@ -57,10 +57,10 @@ public class MemoryBankAccessImpl implements MemoryBankAccess {
     // Internal
 
     // Load from a coordinate's ID, checking the override file if necessary.
-    public void loadFromCoordinate(Coordinate coordinate) {
+    public boolean loadWithDefaults(Coordinate coordinate) {
         // not in-game; don't load
         var settings = ConnectionSettings.getOrCreate(coordinate.id());
         var id = settings.memoryBankIdOverride().orElse(coordinate.id());
-        loadOrCreate(id, coordinate.userFriendlyName());
+        return loadOrCreate(id, coordinate.userFriendlyName());
     }
 }

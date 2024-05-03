@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.api.memory;
 
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
+import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.Optional;
 
@@ -22,6 +23,15 @@ public interface MemoryBankAccess {
      * @return Whether loading or creating the memory bank was successful.
      */
     boolean loadOrCreate(String memoryBankId, String userFriendlyName);
+
+    /**
+     * Load a memory bank from a given coordinate using default behavior. This will use a user's default overrides if
+     * present.
+     *
+     * @param coordinate Coordinate to load from.
+     * @return Whether loading or creating the memory bank was successful.
+     */
+    boolean loadWithDefaults(Coordinate coordinate);
 
     /**
      * Save and unload the current memory bank, if one is loaded.
