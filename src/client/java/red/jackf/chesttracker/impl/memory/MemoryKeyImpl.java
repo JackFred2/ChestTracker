@@ -9,6 +9,7 @@ import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryKey;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
+import red.jackf.chesttracker.impl.datafix.Types;
 import red.jackf.chesttracker.impl.memory.key.ManualMode;
 import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
@@ -199,12 +200,12 @@ public class MemoryKeyImpl implements MemoryKey {
 
         // v2.4.0 and up
         // moved to record; adds blocked set
-        private static final Codec<MemoryKeyImpl> LATEST = RecordCodecBuilder.create(
+        private static final Codec<MemoryKeyImpl> LATEST = Types.wrap(Types.MEMORY_DATA, RecordCodecBuilder.create(
                 instance -> instance.group(
                         MEMORY_MAP.fieldOf("memories").forGetter(MemoryKeyImpl::getMemories),
                         Codec.unboundedMap(ModCodecs.BLOCK_POS_STRING, OverrideInfo.CODEC).fieldOf("overrides").forGetter(MemoryKeyImpl::overrides)
                 ).apply(instance, MemoryKeyImpl::new)
-        );
+        ), 3700); // Data Version 3700 -> Minecraft 1.20.4
 
         public static final Codec<MemoryKeyImpl> MAIN = JFLCodecs.firstInList(LATEST, V2_3_3);
     }
