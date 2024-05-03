@@ -52,7 +52,7 @@ public class DefaultProvider extends ServerProvider {
 
     @Override
     public void onConnect(Coordinate coordinate) {
-        MemoryBankAccess.INSTANCE.loadOrCreate(coordinate.id(), coordinate.userFriendlyName());
+        MemoryBankAccess.INSTANCE.loadWithDefaults(coordinate);
     }
 
     @Override
