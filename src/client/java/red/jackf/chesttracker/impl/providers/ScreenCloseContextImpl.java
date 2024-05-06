@@ -2,13 +2,16 @@ package red.jackf.chesttracker.impl.providers;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implements ScreenCloseContext {
@@ -20,6 +23,11 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     @Override
     public AbstractContainerScreen<?> getScreen() {
         return this.screen;
+    }
+
+    @Override
+    public Optional<Component> getTitle() {
+        return GetCustomName.EVENT.invoker().getName(screen).asOptional();
     }
 
     @Override
