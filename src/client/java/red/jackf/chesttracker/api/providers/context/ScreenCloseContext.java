@@ -22,19 +22,27 @@ public interface ScreenCloseContext {
      *
      * <p>Note that it's not recommended to use {@link Screen#getTitle()} for memory names, as custom names may be returned
      * from {@link red.jackf.chesttracker.api.gui.GetCustomName#EVENT}. Additionally, that method will return user-set
-     * custom names if present, which shouldn't be stored as part of a memory. For a replacement, see {@link ScreenCloseContext#getTitle()}.</p>
+     * custom names if present, which shouldn't be stored as part of a memory. For a replacement, see {@link ScreenCloseContext#getCustomTitle()}.</p>
      *
      * @return Gets the screen that has closed.
      */
     AbstractContainerScreen<?> getScreen();
 
     /**
-     * Returns the custom title of this screen. Usage of this method is preferred over {@link Screen#getTitle()} as it will not
+     * Gets the title of this screen. Usage of this method is preferred over {@link Screen#getTitle()}, as it will not return
+     * any override set by the user.
+     *
+     * @return The title of this screen.
+     */
+    Component getTitle();
+
+    /**
+     * Returns the custom (i.e. anvil renamed) title of this screen. Usage of this method is preferred over {@link Screen#getTitle()} as it will not
      * return any override set by the user.
      *
      * @return The custom title of this screen, or an empty optional if no custom title is present.
      */
-    Optional<Component> getTitle();
+    Optional<Component> getCustomTitle();
 
     /**
      * Returns all non-{@link ItemStack#isEmpty()}, non-player inventory stacks in the slots of this screen.
