@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.memory.Memory;
-import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.providers.MemoryBuilderImpl;
 
@@ -54,11 +53,11 @@ public interface MemoryBuilder {
     MemoryBuilder otherPositions(List<BlockPos> otherPositions);
 
     /**
-     * Convert this builder to an result, to be returned from {@link ServerProvider#onScreenClose(ScreenCloseContext)} )}.
+     * Convert this builder to an result, to be used with the default provider's {@link DefaultProviderScreenClose} event.
      *
      * @param key Memory Key that this entry is located in.
      * @param position Position that this entry is located at.
-     * @return An entry representing this builder and the given key and position.
+     * @return A result representing this builder and the given key and position.
      */
     DefaultProviderScreenClose.Result toResult(ResourceLocation key, BlockPos position);
 

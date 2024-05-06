@@ -9,6 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.gui.GetCustomName;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
+import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,12 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     }
 
     @Override
-    public Optional<Component> getTitle() {
+    public Component getTitle() {
+        return GetCustomName.EVENT.invoker().getName(screen).asOptional().orElse(((CTTitleOverrideDuck) screen).chesttracker$getOriginalTitle());
+    }
+
+    @Override
+    public Optional<Component> getCustomTitle() {
         return GetCustomName.EVENT.invoker().getName(screen).asOptional();
     }
 

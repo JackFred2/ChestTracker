@@ -35,7 +35,7 @@ public class ProviderHandler {
         }
 
         REGISTERED_PROVIDERS.stream()
-                .sorted(Comparator.comparingInt(ServerProvider::getPriority))
+                .sorted(Comparator.comparingInt(ServerProvider::getPriority).reversed())
                 .filter(provider -> provider.appliesTo(coordinate))
                 .findFirst()
                 .ifPresent(serverProvider -> {

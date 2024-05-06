@@ -16,6 +16,7 @@ import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryLocation;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
+import red.jackf.chesttracker.impl.compat.servers.hypixel.HypixelProvider;
 import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
@@ -51,6 +52,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         );
 
         ProviderUtils.registerProvider(DefaultProvider.INSTANCE);
+        ProviderUtils.registerProvider(new HypixelProvider());
 
         DefaultProviderScreenClose.EVENT.register(EventPhases.FALLBACK_PHASE, DefaultChestTrackerPlugin::defaultMemoryCreator);
 
@@ -100,7 +102,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         BlockPos rootPos = connectedBlocks.get(0);
 
         return ResultHolder.value(MemoryBuilder.create(context.getItems())
-                .withCustomName(context.getTitle().orElse(null))
+                .withCustomName(context.getCustomTitle().orElse(null))
                 .inContainer(cbs.get().blockState().getBlock())
                 .otherPositions(connectedBlocks.stream()
                         .filter(pos -> !pos.equals(rootPos))
