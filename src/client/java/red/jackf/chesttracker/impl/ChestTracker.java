@@ -29,6 +29,8 @@ import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
 import red.jackf.chesttracker.impl.gui.util.ImagePixelReader;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.memory.MemoryIntegrity;
+import red.jackf.chesttracker.impl.memory.MemoryKeyImpl;
+import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.providers.InteractionTrackerImpl;
 import red.jackf.chesttracker.impl.providers.ProviderHandler;
 import red.jackf.chesttracker.impl.providers.ScreenCloseContextImpl;
@@ -37,6 +39,8 @@ import red.jackf.chesttracker.impl.rendering.NameRenderer;
 import red.jackf.chesttracker.impl.storage.ConnectionSettings;
 import red.jackf.chesttracker.impl.storage.Storage;
 import red.jackf.whereisit.client.api.events.ShouldIgnoreKey;
+
+import java.util.Optional;
 
 public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
@@ -93,11 +97,17 @@ public class ChestTracker implements ClientModInitializer {
                     if (ChestTrackerConfig.INSTANCE.instance().gui.useCustomNameInGUIs) {
                         MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
                             if (openContext.getTarget() != null) {
-                                var key = bank.getKeyInternal(openContext.getTarget().memoryKey());
+                                Optional<MemoryKeyImpl> key = bank.getKeyInternal(openContext.getTarget().memoryKey());
                                 if (key.isPresent()) {
-                                    var override = key.get().overrides().get(openContext.getTarget().position());
-                                    if (override != null && override.getCustomName() != null) {
-                                        ((CTTitleOverrideDuck) containerScreen).chesttracker$setTitle(Component.literal(override.getCustomName()));
+                                    OverrideInfo override = key.get().overrides().get(openContext.getTarget().position());
+                                    if (override != null) {
+                                        if (override.getCustomName() != null) {
+                                            ((CTTitleOverrideDuck) containerScreen).chesttracker$setTitleOverride(Component.literal(override.getCustomName()));
+                                        } else {
+                                            ((CTTitleOverrideDuck) containerScreen).chesttracker$clearTitleOverride();
+                                        }
+                                    } else {
+                                        ((CTTitleOverrideDuck) containerScreen).chesttracker$clearTitleOverride();
                                     }
                                 }
                             }
