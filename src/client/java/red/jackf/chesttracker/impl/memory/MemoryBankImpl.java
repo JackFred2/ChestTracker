@@ -197,13 +197,13 @@ public class MemoryBankImpl implements MemoryBank {
         boolean shouldRemove = name.isBlank();
         if (shouldRemove && !this.getKeys().contains(key)) return;
 
-        var keyImpl = this.getOrCreateKeyInternal(key);
-        var overrides = keyImpl.overrides();
+        MemoryKeyImpl keyImpl = this.getOrCreateKeyInternal(key);
+        Map<BlockPos, OverrideInfo> overrides = keyImpl.overrides();
         if (shouldRemove && !overrides.containsKey(pos)) return;
 
         name = shouldRemove ? null : name.strip();
 
-        var override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
+        OverrideInfo override = overrides.computeIfAbsent(pos, pos1 -> new OverrideInfo());
         override.setCustomName(name);
 
         // set to keep when adding a custom name
