@@ -16,6 +16,7 @@ import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryLocation;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
+import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
@@ -25,15 +26,15 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
 
     @Override
     public void load() {
-        GetCustomName.EVENT.register(EventPhases.FALLBACK_PHASE, ((source, screen) -> {
-            Component title = screen.getTitle();
+        GetCustomName.EVENT.register(EventPhases.FALLBACK_PHASE, (screen) -> {
+            Component title = ((CTTitleOverrideDuck) screen).chesttracker$getOriginalTitle();
 
             if (containsTranslatable(title))
                 return ResultHolder.pass();
 
             // if it's not translatable, it's very likely a custom name
             return ResultHolder.value(title);
-        }));
+        });
 
         ScreenBlacklist.add(
                 // workstations with no item retention
@@ -99,7 +100,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         BlockPos rootPos = connectedBlocks.get(0);
 
         return ResultHolder.value(MemoryBuilder.create(context.getItems())
-                .withCustomName(GetCustomName.EVENT.invoker().getName(cbs.get(), context.getScreen()).getNullable())
+                .withCustomName(context.getTitle().orElse(null))
                 .inContainer(cbs.get().blockState().getBlock())
                 .otherPositions(connectedBlocks.stream()
                         .filter(pos -> !pos.equals(rootPos))

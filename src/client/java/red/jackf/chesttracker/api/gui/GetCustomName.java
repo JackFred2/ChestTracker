@@ -4,17 +4,16 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.EventPhases;
 import red.jackf.jackfredlib.api.base.ResultHolder;
 
 /**
- * Gets the custom name of a container from a given source, block entity and screen.
+ * Gets the custom name of a container from a given screen.
  */
 public interface GetCustomName {
-    Event<GetCustomName> EVENT = EventFactory.createWithPhases(GetCustomName.class, invokers -> (source, screen) -> {
+    Event<GetCustomName> EVENT = EventFactory.createWithPhases(GetCustomName.class, invokers -> (screen) -> {
         for (var invoker : invokers) {
-            var result = invoker.getName(source, screen);
+            var result = invoker.getName(screen);
             if (result.shouldTerminate()) return result;
         }
         return ResultHolder.empty();
@@ -22,14 +21,15 @@ public interface GetCustomName {
 
     /**
      * Get a custom (player-defined) name of a screen. This method should return:
-     * <li>{@link ResultHolder#pass()} if this handler does not handle the screen + source combination</li>
-     * <li>{@link ResultHolder#empty()} if this handler does the screen + source combination, but it hasn't been renamed</li>
-     * <li>{@link ResultHolder#value(Object)} if this handler does handle the screen + source combination, and it has
+     * <li>{@link ResultHolder#pass()} if this handler does not handle the screen</li>
+     * <li>{@link ResultHolder#empty()} if this handler does the screen, but it hasn't been renamed</li>
+     * <li>{@link ResultHolder#value(Object)} if this handler does handle the screen, and it has
      * been renamed.</li>
      *
-     * @param source ClientBlockSource containing the details of where the block was interacted with.
-     * @param screen Screen to pull the custom name from
+     * @see red.jackf.chesttracker.api.providers.InteractionTracker Interaction Tracker, containing information
+     * about an interacted block if needed.
+     * @param screen Screen to pull the custom name from.
      * @return A result holder possibly containing a custom name for the given screen.
      */
-    ResultHolder<Component> getName(ClientBlockSource source, AbstractContainerScreen<?> screen);
+    ResultHolder<Component> getName(AbstractContainerScreen<?> screen);
 }
