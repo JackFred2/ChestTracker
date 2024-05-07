@@ -15,13 +15,13 @@ import red.jackf.chesttracker.api.memory.MemoryBankAccess;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -49,11 +49,6 @@ public class HypixelProvider extends ServerProvider {
     @Override
     public List<MemoryKeyIcon> getMemoryKeyIcons() {
         return ICONS;
-    }
-
-    @Override
-    public void onConnect(Coordinate coordinate) {
-        DefaultProvider.INSTANCE.onConnect(coordinate);
     }
 
     @Override
@@ -118,5 +113,13 @@ public class HypixelProvider extends ServerProvider {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void addDebugInformation(Consumer<String> reciever) {
+        if (Skyblock.isPlayerOn()) {
+            reciever.accept("On Skyblock");
+            reciever.accept("Area: " + Skyblock.getArea().orElse("<unknown>"));
+        }
     }
 }

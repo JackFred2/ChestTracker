@@ -51,11 +51,6 @@ public class DefaultProvider extends ServerProvider {
     }
 
     @Override
-    public void onConnect(Coordinate coordinate) {
-        MemoryBankAccess.INSTANCE.loadWithDefaults(coordinate);
-    }
-
-    @Override
     public void onScreenOpen(ScreenOpenContext context) {
         InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setMemoryLocation);
     }
