@@ -11,10 +11,12 @@ import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultIcons;
+import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * <p>Server providers allow for custom Chest Tracker behavior when connected to a server. This allows for more specialized
@@ -79,7 +81,9 @@ public abstract class ServerProvider {
      * @param coordinate Coordinate loaded in with.
      */
     @ApiStatus.OverrideOnly
-    public abstract void onConnect(Coordinate coordinate);
+    public void onConnect(Coordinate coordinate) {
+        DefaultProvider.INSTANCE.onConnect(coordinate);
+    }
 
     /**
      * Called when a player respawns or changes level. May be used in multi-world servers or servers with hubs such as
@@ -185,4 +189,11 @@ public abstract class ServerProvider {
     public List<MemoryKeyIcon> getMemoryKeyIcons() {
         return ProviderUtils.getDefaultIcons();
     }
+
+    /**
+     * Adds a list of information to the developer overlay.
+     *
+     * @param reciever Consumer where lines should be added.
+     */
+    public void addDebugInformation(Consumer<String> reciever) {}
 }
