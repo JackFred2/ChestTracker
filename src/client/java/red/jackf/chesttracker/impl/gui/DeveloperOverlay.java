@@ -27,31 +27,33 @@ public class DeveloperOverlay {
             lines.add("");
             lines.add("Provider: " + (provider != null ? provider.id() : "<none>"));
             lines.add("");
-            MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresentOrElse(bank -> {
-                var currentKey = ProviderUtils.getPlayersCurrentKey();
-                lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
-                var loadedStr = "Loaded: " + bank.getId();
-                if (bank.getMetadata().getName() != null)
-                    loadedStr += " (" + bank.getMetadata().getName() + ")";
-                lines.add(loadedStr);
-                lines.add("Keys: " + bank.getKeys().size());
-                lines.add("Current key: " + currentKey);
-                if (currentKey.isPresent()) {
-                    Optional<MemoryKey> currentMemoryKey = bank.getKey(currentKey.get());
-                    if (currentMemoryKey.isPresent())
-                        lines.add("Memories in current key: " + currentMemoryKey.get().getMemories().size());
-                    else
-                        lines.add("No memories in current key");
-                }
-                lines.add("");
-                var source = InteractionTracker.INSTANCE.getLastBlockSource();
-                var sourceStr = source.map(blockSource -> blockSource.pos()
-                        .toShortString() + "@" + blockSource.level()
-                        .dimension().location()).orElse("<none>");
-                lines.add("Location: " + sourceStr);
-            }, () -> {
-                lines.add("No memory bank loaded");
-            });
+            if (provider != null) {
+                MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresentOrElse(bank -> {
+                    var currentKey = ProviderUtils.getPlayersCurrentKey();
+                    lines.add("Storage Backend: " + ChestTrackerConfig.INSTANCE.instance().storage.storageBackend.toString());
+                    var loadedStr = "Loaded: " + bank.getId();
+                    if (bank.getMetadata().getName() != null)
+                        loadedStr += " (" + bank.getMetadata().getName() + ")";
+                    lines.add(loadedStr);
+                    lines.add("Keys: " + bank.getKeys().size());
+                    lines.add("Current key: " + currentKey);
+                    if (currentKey.isPresent()) {
+                        Optional<MemoryKey> currentMemoryKey = bank.getKey(currentKey.get());
+                        if (currentMemoryKey.isPresent())
+                            lines.add("Memories in current key: " + currentMemoryKey.get().getMemories().size());
+                        else
+                            lines.add("No memories in current key");
+                    }
+                    lines.add("");
+                    provider.addDebugInformation(lines::add);
+                    lines.add("");
+                    var source = InteractionTracker.INSTANCE.getLastBlockSource();
+                    var sourceStr = source.map(blockSource -> blockSource.pos()
+                            .toShortString() + "@" + blockSource.level()
+                            .dimension().location()).orElse("<none>");
+                    lines.add("Location: " + sourceStr);
+                }, () -> lines.add("No memory bank loaded"));
+            }
 
 
             for (int i = 0; i < lines.size(); i++) {
