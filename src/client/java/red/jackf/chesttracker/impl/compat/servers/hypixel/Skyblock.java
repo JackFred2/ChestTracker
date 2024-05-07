@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 interface Skyblock {
     static boolean isPlayerOn() {
-        return ScoreboardSnapshot.take().map(snapshot -> snapshot.title().getString().toLowerCase().startsWith("SKYBLOCK"))
+        return ScoreboardSnapshot.take().map(snapshot -> snapshot.title().getString().startsWith("SKYBLOCK"))
                 .orElse(false);
     }
 
