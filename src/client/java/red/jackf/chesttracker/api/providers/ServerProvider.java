@@ -7,11 +7,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.ClientBlockSource;
+import red.jackf.chesttracker.api.memory.MemoryBankAccess;
 import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultIcons;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 
 import java.util.List;
@@ -82,7 +82,7 @@ public abstract class ServerProvider {
      */
     @ApiStatus.OverrideOnly
     public void onConnect(Coordinate coordinate) {
-        DefaultProvider.INSTANCE.onConnect(coordinate);
+        MemoryBankAccess.INSTANCE.loadWithDefaults(coordinate);
     }
 
     /**
