@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
@@ -20,6 +21,8 @@ public class ProviderHandler {
     public static final ProviderHandler INSTANCE = new ProviderHandler();
     private final Set<ServerProvider> REGISTERED_PROVIDERS = Sets.newHashSet();
     private ServerProvider currentProvider = null;
+
+    private @Nullable Coordinate lastCoordinate = null;
 
     private ProviderHandler() {
     }
@@ -58,13 +61,20 @@ public class ProviderHandler {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> {
             Optional<Coordinate> coord = Coordinate.getCurrent();
             if (coord.isPresent()) {
-                this.load(coord.get());
+                // For servers like hypixel, transferring between sub-servers triggers JOIN each time but not DISCONNECT.
+                if (!coord.get().equals(this.lastCoordinate)) {
+                    this.lastCoordinate = coord.get();
+                    this.load(coord.get());
+                }
             } else {
                 this.unload();
             }
         }));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(this::unload));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            this.lastCoordinate = null;
+            client.execute(this::unload);
+        });
 
         AfterPlayerPlaceBlock.EVENT.register((clientLevel, pos, state, placementStack) ->
             getCurrentProvider().ifPresent(provider ->
