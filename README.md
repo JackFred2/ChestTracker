@@ -1,3 +1,5 @@
+# 1.20.5 is no longer supported. Please move to 1.20.6
+
 # Chest Tracker
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/ni4SrKmq?style=flat-square&label=Modrinth&color=%2316AF54)
