@@ -15,6 +15,7 @@ import red.jackf.chesttracker.api.memory.MemoryBankAccess;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
+import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
@@ -52,7 +53,7 @@ public class HypixelProvider extends ServerProvider {
 
     @Override
     public void onConnect(Coordinate coordinate) {
-
+        DefaultProvider.INSTANCE.onConnect(coordinate);
     }
 
     @Override
