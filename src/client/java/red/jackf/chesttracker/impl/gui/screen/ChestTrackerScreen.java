@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
@@ -142,6 +141,7 @@ public class ChestTrackerScreen extends Screen {
         this.search.setTextColor(TextColours.getTextColour());
         this.search.setBordered(false);
         this.search.setValue(this.search.getValue());
+        this.search.setTabOrderGroup(-1);
         ifSearchables(() -> this.addRenderableWidget(SearchablesUtil.getWrappedAutocomplete(this.search)));
 
         if (shouldFocusSearch)
@@ -370,12 +370,12 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         this.ignoreTextInput = false;
-        if (this.getFocused() == search) {
+        /*if (this.getFocused() == search) {
             if (keyCode == GLFW.GLFW_KEY_TAB) {
                 this.setFocused(null);
                 return true;
             }
-        }
+        }*/
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
