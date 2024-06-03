@@ -18,7 +18,7 @@ public class SearchSettings {
     public static final List<Integer> SEARCH_RANGES = makeSearchRanges(true);
     public static final List<Integer> SEARCH_RANGES_NO_INFINITE = makeSearchRanges(false);
 
-    private static final Codec<Either<Integer, String>> RANGE_CODEC = Codec.either(JFLCodecs.oneOf(Codec.INT, SEARCH_RANGES), ModCodecs.singular(Codec.STRING, "infinite"));
+    private static final Codec<Either<Integer, String>> RANGE_CODEC = Codec.either(Codec.intRange(4, 1024), ModCodecs.singular(Codec.STRING, "infinite"));
 
     protected static final Codec<SearchSettings> CODEC = RecordCodecBuilder.create(instance -> {
         final var def = new SearchSettings();
