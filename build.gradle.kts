@@ -189,13 +189,17 @@ dependencies {
 	////////////////
 
 	// Searchables
-	modCompileOnly("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
-	modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
+	modCompileOnly("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}") {
+		exclude(group = "net.fabricmc.fabric-api", module = "fabric-api")
+	}
+	modLocalRuntime("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}") {
+		exclude(group = "net.fabricmc.fabric-api", module = "fabric-api")
+	}
 	if (isBundlingSearchables) include("com.blamejared.searchables:Searchables-fabric-${properties["searchables_version"]}")
 
 	// Mod Menu
 	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
-	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	//modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")

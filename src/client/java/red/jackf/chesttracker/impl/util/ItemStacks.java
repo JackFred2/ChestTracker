@@ -1,15 +1,11 @@
 package red.jackf.chesttracker.impl.util;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,7 +18,6 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -46,8 +41,11 @@ public class ItemStacks {
     }
 
     private static boolean testLang(String key, String filter) {
-        return Language.getInstance().has(key) &&
-                Language.getInstance().getOrDefault(key).toLowerCase().contains(filter);
+        return Language.getInstance().has(key) && Language.getInstance().getOrDefault(key).toLowerCase().contains(filter);
+    }
+
+    private static boolean testHolder(Holder<?> holder, String filter) {
+        return holder.unwrapKey().map(key -> key.location().toString().toLowerCase().contains(filter)).orElse(false);
     }
 
     public static boolean defaultPredicate(ItemStack stack, String filter) {
@@ -96,9 +94,8 @@ public class ItemStacks {
 
         return enchantments.keySet().stream()
                 .anyMatch(ench -> {
-                    if (testLang(ench.value().getDescriptionId(), filter)) return true;
-                    var resloc = BuiltInRegistries.ENCHANTMENT.getKey(ench.value());
-                    return resloc != null && resloc.toString().contains(filter);
+                    if (ench.value().description().getString().toLowerCase().contains(filter)) return true;
+                    return testHolder(ench, filter);
                 });
     }
 

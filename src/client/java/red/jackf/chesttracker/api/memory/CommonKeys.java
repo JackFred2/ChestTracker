@@ -25,5 +25,5 @@ public interface CommonKeys {
     ///////////////////////
 
     // Share Ender Chest - https://modrinth.com/mod/share-ender-chest
-    ResourceLocation SHARE_ENDER_CHEST = new ResourceLocation("shareenderchest", "contents");
+    ResourceLocation SHARE_ENDER_CHEST = ResourceLocation.fromNamespaceAndPath("shareenderchest", "contents");
 }

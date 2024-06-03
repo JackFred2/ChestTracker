@@ -13,11 +13,11 @@ public class GuiUtil {
     public static final ResourceLocation SEARCH_BAR_SPRITE = sprite("nine_patch/search_bar");
 
     public static ResourceLocation sprite(String path) {
-        return new ResourceLocation(ChestTracker.ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ChestTracker.ID, path);
     }
 
     public static ResourceLocation png(String path) {
-        return new ResourceLocation(ChestTracker.ID, "textures/gui/sprites/" + path + ".png");
+        return ResourceLocation.fromNamespaceAndPath(ChestTracker.ID, "textures/gui/sprites/" + path + ".png");
     }
 
     public static WidgetSprites twoSprite(String path) {

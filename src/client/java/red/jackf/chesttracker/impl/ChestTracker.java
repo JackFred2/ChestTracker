@@ -46,7 +46,7 @@ public class ChestTracker implements ClientModInitializer {
     public static final String ID = "chesttracker";
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
     public static final Logger LOGGER = LogManager.getLogger();

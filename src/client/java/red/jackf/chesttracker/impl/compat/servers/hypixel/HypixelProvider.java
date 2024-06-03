@@ -33,8 +33,8 @@ import java.util.stream.Stream;
  * Provider for Hypixel SMP and Hypixel Skyblock.
  */
 public class HypixelProvider extends ServerProvider {
-    public static final ResourceLocation SKYBLOCK_PRIVATE_ISLAND = new ResourceLocation("hypixel", "skyblock_private");
-    public static final ResourceLocation SKYBLOCK_ENDER_CHEST = new ResourceLocation("hypixel", "skyblock_ender_chest");
+    public static final ResourceLocation SKYBLOCK_PRIVATE_ISLAND = ResourceLocation.fromNamespaceAndPath("hypixel", "skyblock_private");
+    public static final ResourceLocation SKYBLOCK_ENDER_CHEST = ResourceLocation.fromNamespaceAndPath("hypixel", "skyblock_ender_chest");
 
     private static final List<MemoryKeyIcon> ICONS = Streams.concat(Stream.of(
             new MemoryKeyIcon(SKYBLOCK_PRIVATE_ISLAND, Items.OAK_SAPLING.getDefaultInstance()),
