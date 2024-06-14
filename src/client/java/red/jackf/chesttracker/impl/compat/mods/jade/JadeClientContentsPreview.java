@@ -13,7 +13,7 @@ import red.jackf.chesttracker.impl.util.ItemStacks;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
-import snownee.jade.api.Identifiers;
+import snownee.jade.api.JadeIds;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.theme.IThemeHelper;
 import snownee.jade.api.ui.IElement;
@@ -33,9 +33,9 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (config.get(Identifiers.UNIVERSAL_ITEM_STORAGE) && accessor.getServerData().contains("JadeItemStorage"))
+        if (config.get(JadeIds.UNIVERSAL_ITEM_STORAGE) && accessor.getServerData().contains("JadeItemStorage"))
             return; // don't do it if jade is handling it
-        if (config.get(Identifiers.MC_FURNACE)
+        if (config.get(JadeIds.MC_FURNACE)
                 && accessor.getBlock() instanceof AbstractFurnaceBlock
                 && accessor.getServerData()
                 .contains("furnace", Tag.TAG_LIST))
@@ -48,8 +48,8 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
             var stacks = ItemStacks.flattenStacks(memory.get().items(), true);
 
-            int max = config.getInt(accessor.showDetails() ? Identifiers.UNIVERSAL_ITEM_STORAGE_DETAILED_AMOUNT : Identifiers.UNIVERSAL_ITEM_STORAGE_NORMAL_AMOUNT);
-            int perLine = config.getInt(Identifiers.UNIVERSAL_ITEM_STORAGE_ITEMS_PER_LINE);
+            int max = config.getInt(accessor.showDetails() ? JadeIds.UNIVERSAL_ITEM_STORAGE_DETAILED_AMOUNT : JadeIds.UNIVERSAL_ITEM_STORAGE_NORMAL_AMOUNT);
+            int perLine = config.getInt(JadeIds.UNIVERSAL_ITEM_STORAGE_ITEMS_PER_LINE);
 
             List<List<IElement>> lines = new ArrayList<>();
             List<IElement> currentLine = new ArrayList<>(perLine);
@@ -69,7 +69,7 @@ public enum JadeClientContentsPreview implements IBlockComponentProvider {
 
             Component name = memory.get().renderName();
             if (name != null) {
-                tooltip.replace(Identifiers.CORE_OBJECT_NAME, IThemeHelper.get().title(name));
+                tooltip.replace(JadeIds.CORE_OBJECT_NAME, IThemeHelper.get().title(name));
             }
 
             if (accessor.showDetails() && config.get(ChestTrackerJadePlugin.CONFIG_SHOW_TEXT)) {
