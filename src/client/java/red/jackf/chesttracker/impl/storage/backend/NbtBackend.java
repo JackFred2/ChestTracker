@@ -1,10 +1,6 @@
 package red.jackf.chesttracker.impl.storage.backend;
 
-import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +31,6 @@ public class NbtBackend extends FileBasedBackend {
 
     @Override
     public boolean save(MemoryBankImpl memoryBank, @Nullable HolderLookup.Provider registries) {
-        DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
-
         LOGGER.debug("Saving {}", memoryBank.getId());
         memoryBank.getMetadata().updateModified();
         if (!saveMetadata(memoryBank.getId(), memoryBank.getMetadata())) return false;
