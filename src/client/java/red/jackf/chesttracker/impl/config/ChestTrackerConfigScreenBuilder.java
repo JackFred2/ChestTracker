@@ -345,7 +345,9 @@ public class ChestTrackerConfigScreenBuilder {
     ////////////
     private static OptionGroup makeMemoryGroup(@SuppressWarnings("unused") ConfigClassHandler<ChestTrackerConfig> instance, Screen parent) {
         var builder = OptionGroup.createBuilder()
-                .name(translatable("chesttracker.config.memory"))
+                .name(translatable("chesttracker.config.memory"));
+                // TODO: disabled until profile system is done
+                /*
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.gui.memoryManager"))
                         .text(translatable("chesttracker.config.open"))
@@ -356,7 +358,7 @@ public class ChestTrackerConfigScreenBuilder {
                             };
                             Minecraft.getInstance().setScreen(new MemoryBankManagerScreen(lambda, lambda));
                         }))
-                        .build());
+                        .build());*/
 
         if (MemoryBankAccessImpl.INSTANCE.getLoadedInternal().isEmpty())
             builder.option(LabelOption.create(translatable("chesttracker.config.memory.noMemoryBankLoaded")));
