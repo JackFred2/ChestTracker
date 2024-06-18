@@ -30,12 +30,12 @@ public record ConnectionSettings(Optional<String> memoryBankIdOverride) {
     private static Map<String, ConnectionSettings> settings = new HashMap<>();
 
     public static void load() {
-        FileUtil.loadFromNbt(FILE_CODEC, PATH)
+        FileUtil.loadFromNbt(FILE_CODEC, PATH, null)
                 .ifPresent(connectionSettingsMap -> settings = connectionSettingsMap);
     }
 
     public static void save() {
-        FileUtil.saveToNbt(settings, FILE_CODEC, PATH);
+        FileUtil.saveToNbt(settings, FILE_CODEC, PATH, null);
     }
 
     public static ConnectionSettings getOrCreate(String connectionId) {

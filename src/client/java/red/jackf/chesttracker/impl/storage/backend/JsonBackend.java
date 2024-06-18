@@ -2,8 +2,10 @@ package red.jackf.chesttracker.impl.storage.backend;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +38,9 @@ public class JsonBackend extends FileBasedBackend {
 
     @Nullable
     @Override
-    public MemoryBankImpl load(String id) {
+    public MemoryBankImpl load(String id, @Nullable HolderLookup.Provider registries) {
+        DynamicOps<JsonElement> ops = registries == null ? JsonOps.INSTANCE : registries.createSerializationContext(JsonOps.INSTANCE);
+
         Optional<Metadata> metadata = loadMetadata(id);
         if (metadata.isEmpty()) return null;
         Path dataPath = Constants.STORAGE_DIR.resolve(id + extension());
@@ -45,7 +49,7 @@ public class JsonBackend extends FileBasedBackend {
                 try {
                     var str = FileUtils.readFileToString(dataPath.toFile(), StandardCharsets.UTF_8);
                     var json = FileUtil.gson().fromJson(str, JsonElement.class);
-                    var decoded = MemoryBankImpl.DATA_CODEC.decode(JsonOps.INSTANCE, json);
+                    var decoded = MemoryBankImpl.DATA_CODEC.decode(ops, json);
                     if (decoded.isError()) {
                         //noinspection OptionalGetWithoutIsPresent
                         throw new IOException("Invalid Memories JSON: %s".formatted(decoded.error().get().message()));
@@ -66,8 +70,10 @@ public class JsonBackend extends FileBasedBackend {
     }
 
     @Override
-    public boolean save(MemoryBankImpl memoryBank) {
+    public boolean save(MemoryBankImpl memoryBank, @Nullable HolderLookup.Provider registries) {
         LOGGER.debug("Saving {}", memoryBank.getId());
+
+        DynamicOps<JsonElement> ops = registries == null ? JsonOps.INSTANCE : registries.createSerializationContext(JsonOps.INSTANCE);
 
         memoryBank.getMetadata().updateModified();
         boolean metaSaveSuccess = saveMetadata(memoryBank.getId(), memoryBank.getMetadata());
@@ -77,7 +83,7 @@ public class JsonBackend extends FileBasedBackend {
 
         try {
             Files.createDirectories(path.getParent());
-            Optional<JsonElement> memoryJson = MemoryBankImpl.DATA_CODEC.encodeStart(JsonOps.INSTANCE, memoryBank.getMemories())
+            Optional<JsonElement> memoryJson = MemoryBankImpl.DATA_CODEC.encodeStart(ops, memoryBank.getMemories())
                     .resultOrPartial(Util.prefix("Error encoding memories", LOGGER::error));
             if (memoryJson.isPresent()) {
                 FileUtils.write(path.toFile(), FileUtil.gson().toJson(memoryJson.get()), StandardCharsets.UTF_8);

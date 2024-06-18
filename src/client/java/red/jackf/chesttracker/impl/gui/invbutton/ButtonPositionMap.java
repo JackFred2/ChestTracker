@@ -43,7 +43,7 @@ public class ButtonPositionMap {
     public static void loadUserPositions() {
         userPositions.clear();
 
-        FileUtil.loadFromNbt(USER_CODEC, USER_PATH).ifPresent(userPositions::putAll);
+        FileUtil.loadFromNbt(USER_CODEC, USER_PATH, null).ifPresent(userPositions::putAll);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ButtonPositionMap {
      * Save the user position file.
      */
     private static void saveUserPositions() {
-        FileUtil.saveToNbt(userPositions, USER_CODEC, USER_PATH);
+        FileUtil.saveToNbt(userPositions, USER_CODEC, USER_PATH, null);
     }
 
     /**

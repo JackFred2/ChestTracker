@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl.storage.backend;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.impl.memory.MemoryBankImpl;
 import red.jackf.chesttracker.impl.memory.metadata.Metadata;
@@ -14,7 +15,7 @@ public class GameMemoryBackend implements Backend {
 
     @Nullable
     @Override
-    public MemoryBankImpl load(String id) {
+    public MemoryBankImpl load(String id, HolderLookup.Provider registries) {
         return storage.get(id);
     }
 
@@ -24,7 +25,7 @@ public class GameMemoryBackend implements Backend {
     }
 
     @Override
-    public boolean save(MemoryBankImpl memoryBank) {
+    public boolean save(MemoryBankImpl memoryBank, HolderLookup.Provider registries) {
         storage.put(memoryBank.getId(), memoryBank);
         return true;
     }

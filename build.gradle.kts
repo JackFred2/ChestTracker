@@ -199,7 +199,7 @@ dependencies {
 
 	// Mod Menu
 	modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
-	//modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
+	modLocalRuntime("com.terraformersmc:modmenu:${properties["modmenu_version"]}")
 
 	// Shulker Box Tooltip
 	modCompileOnly("com.misterpemodder:shulkerboxtooltip-fabric:${properties["shulkerboxtooltip_version"]}")

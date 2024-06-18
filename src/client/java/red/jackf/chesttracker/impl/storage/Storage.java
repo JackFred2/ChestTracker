@@ -1,7 +1,9 @@
 package red.jackf.chesttracker.impl.storage;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.impl.ChestTracker;
@@ -70,8 +72,16 @@ public class Storage {
         Optional<MemoryBankImpl> existing = MemoryBankAccessImpl.INSTANCE.getLoadedInternal();
         if (existing.isPresent() && id.equals(existing.get().getId()))
             return existing;
+
+        var level = Minecraft.getInstance().level;
+        HolderLookup.Provider registries = null;
+
+        if (level != null) {
+            registries = level.registryAccess();
+        }
+
         LOGGER.debug("Loading {} using {}", id, backend.getClass().getSimpleName());
-        var loaded = backend.load(id);
+        var loaded = backend.load(id, registries);
         if (loaded == null) return Optional.empty();
         loaded.setId(id);
         return Optional.of(loaded);
@@ -82,7 +92,15 @@ public class Storage {
             LOGGER.warn("Tried to save null Memory Bank");
             return;
         }
+
+        var level = Minecraft.getInstance().level;
+        HolderLookup.Provider registries = null;
+
+        if (level != null) {
+            registries = level.registryAccess();
+        }
+
         bank.getMetadata().updateModified();
-        backend.save(bank);
+        backend.save(bank, registries);
     }
 }

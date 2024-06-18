@@ -5,8 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 
@@ -35,10 +38,11 @@ public class FileUtil {
      * @return Whether the save was successful
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static <T> boolean saveToNbt(T object, Codec<T> codec, Path path) {
+    public static <T> boolean saveToNbt(T object, Codec<T> codec, Path path, @Nullable HolderLookup.Provider registries) {
         try {
+            DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
             Files.createDirectories(path.getParent());
-            DataResult<Tag> tag = codec.encodeStart(NbtOps.INSTANCE, object);
+            DataResult<Tag> tag = codec.encodeStart(ops, object);
 
             if (tag.isError()) {
                 throw new IOException("Error encoding to NBT %s".formatted(tag.error().get()));
@@ -62,11 +66,12 @@ public class FileUtil {
      * @param <T>   Type of deserialized object
      * @return An optional containing the deserialized object, or an empty optional if errored
      */
-    public static <T> Optional<T> loadFromNbt(Codec<T> codec, Path path) {
+    public static <T> Optional<T> loadFromNbt(Codec<T> codec, Path path, @Nullable HolderLookup.Provider registries) {
         if (Files.isRegularFile(path)) {
             try {
+                DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
                 var tag = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
-                var loaded = codec.decode(NbtOps.INSTANCE, tag);
+                var loaded = codec.decode(ops, tag);
                 if (loaded.isError()) {
                     //noinspection OptionalGetWithoutIsPresent
                     throw new IOException("Invalid NBT: %s".formatted(loaded.error().get().message()));

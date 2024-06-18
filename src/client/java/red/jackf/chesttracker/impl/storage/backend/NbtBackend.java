@@ -1,5 +1,10 @@
 package red.jackf.chesttracker.impl.storage.backend;
 
+import com.mojang.serialization.DynamicOps;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -15,11 +20,11 @@ public class NbtBackend extends FileBasedBackend {
     private static final Logger LOGGER = LogManager.getLogger(ChestTracker.class.getCanonicalName() + "/NBT");
 
     @Override
-    public @Nullable MemoryBankImpl load(String id) {
+    public @Nullable MemoryBankImpl load(String id, @Nullable HolderLookup.Provider registries) {
         var meta = loadMetadata(id);
         if (meta.isEmpty()) return null;
         var path = Constants.STORAGE_DIR.resolve(id + extension());
-        var result = Misc.time(() -> FileUtil.loadFromNbt(MemoryBankImpl.DATA_CODEC, path));
+        var result = Misc.time(() -> FileUtil.loadFromNbt(MemoryBankImpl.DATA_CODEC, path, registries));
         if (result.getFirst().isPresent()) {
             LOGGER.debug("Loaded {} in {}ns", path, result.getSecond());
             return new MemoryBankImpl(meta.get(), result.getFirst().get());
@@ -29,11 +34,13 @@ public class NbtBackend extends FileBasedBackend {
     }
 
     @Override
-    public boolean save(MemoryBankImpl memoryBank) {
+    public boolean save(MemoryBankImpl memoryBank, @Nullable HolderLookup.Provider registries) {
+        DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
+
         LOGGER.debug("Saving {}", memoryBank.getId());
         memoryBank.getMetadata().updateModified();
         if (!saveMetadata(memoryBank.getId(), memoryBank.getMetadata())) return false;
-        return FileUtil.saveToNbt(memoryBank.getMemories(), MemoryBankImpl.DATA_CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()));
+        return FileUtil.saveToNbt(memoryBank.getMemories(), MemoryBankImpl.DATA_CODEC, Constants.STORAGE_DIR.resolve(memoryBank.getId() + extension()), registries);
     }
 
     @Override

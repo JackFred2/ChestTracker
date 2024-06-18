@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl.storage.backend;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
@@ -17,11 +18,12 @@ public interface Backend {
     /**
      * Load a memory bank if it exists, or return null if not.
      *
-     * @param id ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
+     * @param id         ID of the memory bank to load. This is guaranteed to be safe as part of a windows path.
+     * @param registries
      * @return Loaded Memory Bank, or null if not available.
      */
     @Nullable
-    MemoryBankImpl load(String id);
+    MemoryBankImpl load(String id, @Nullable HolderLookup.Provider registries);
 
     /**
      * Delete a memory from this storage. Not reversible.
@@ -35,8 +37,9 @@ public interface Backend {
      * If an error occurs, an exception should be logged, but should not crash the game.
      *
      * @param memoryBank Memory bank to save to this storage.
+     * @param registries
      */
-    boolean save(MemoryBankImpl memoryBank);
+    boolean save(MemoryBankImpl memoryBank, @Nullable HolderLookup.Provider registries);
 
     /**
      * Returns a small label to show at the top of the "edit memory bank" screen.
