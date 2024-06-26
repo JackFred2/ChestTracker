@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import org.apache.commons.lang3.stream.Streams;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryBankAccess;
@@ -79,7 +78,8 @@ public class DefaultProvider extends ServerProvider {
             ItemContainerContents itemComponent = stack.get(DataComponents.CONTAINER);
 
             if (itemComponent != null) {
-                List<ItemStack> itemList = Streams.of(itemComponent.nonEmptyItemsCopy()).toList();
+                // List<ItemStack> itemList = Streams.of(itemComponent.nonEmptyItemsCopy()).toList();
+                List<ItemStack> itemList = itemComponent.nonEmptyStream().toList();
                 if (!itemList.isEmpty()) items = itemList;
             }
 
