@@ -97,7 +97,7 @@ public class ChestTrackerConfigScreenBuilder {
     private static ConfigCategory makeMemoryAndStorageCategory(ConfigClassHandler<ChestTrackerConfig> instance, Screen parent) {
         var builder = ConfigCategory.createBuilder()
                 .name(translatable("chesttracker.config.memoryAndStorage"))
-                .group(makeMemoryGroup(instance, parent))
+                //.group(makeMemoryGroup(instance, parent))
                 .group(makeStorageGroup(instance, parent));
         return builder.build();
     }
