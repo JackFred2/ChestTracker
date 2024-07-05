@@ -28,7 +28,10 @@ interface Skyblock {
 
     static Optional<Integer> getEnderChestPage(Component title) {
         var match = Pattern.compile("Ender Chest \\((?<current>\\d+)/\\d+\\)").matcher(title.getString());
-        if (!match.find()) return Optional.empty();
+        if (!match.find()) {
+            match = Pattern.compile("Backpack§r \\(Slot #(?<current>\\d+)\\)").matcher(title.getString());
+            if (!match.find()) return Optional.empty();
+        }
         return Optional.of(Integer.parseInt(match.group("current")));
     }
 
