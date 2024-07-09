@@ -18,7 +18,6 @@ import red.jackf.chesttracker.impl.compat.Compatibility;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.impl.gui.invbutton.PositionExporter;
-import red.jackf.chesttracker.impl.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.storage.backend.Backend;
 import red.jackf.chesttracker.impl.util.Constants;
@@ -472,6 +471,7 @@ public class ChestTrackerConfigScreenBuilder {
             case "net.minecraft.class_472" -> "net.minecraft.client.gui.screen.ingame.BrewingStandScreen";
             case "net.minecraft.class_3934" -> "net.minecraft.client.gui.screen.ingame.CartographyTableScreen";
             case "net.minecraft.class_476" -> "net.minecraft.client.gui.screen.ingame.GenericContainerScreen";
+            case "net.minecraft.class_8898" -> "net.minecraft.client.gui.screen.ingame.CrafterScreen";
             case "net.minecraft.class_479" -> "net.minecraft.client.gui.screen.ingame.CraftingScreen";
             case "net.minecraft.class_481" -> "net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen";
             case "net.minecraft.class_480" -> "net.minecraft.client.gui.screen.ingame.Generic3x3ContainerScreen";
