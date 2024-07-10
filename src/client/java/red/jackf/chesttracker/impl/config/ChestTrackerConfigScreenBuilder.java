@@ -18,6 +18,7 @@ import red.jackf.chesttracker.impl.compat.Compatibility;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.impl.gui.invbutton.PositionExporter;
+import red.jackf.chesttracker.impl.gui.screen.MemoryBankManagerScreen;
 import red.jackf.chesttracker.impl.memory.MemoryBankAccessImpl;
 import red.jackf.chesttracker.impl.storage.backend.Backend;
 import red.jackf.chesttracker.impl.util.Constants;
