@@ -23,13 +23,15 @@ import java.util.Optional;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class ClientEnderChestPreviewProvider implements PreviewProvider {
+    private static Optional<MemoryKey> getNonEmptyEnderChestMemoryKey() {
+        return MemoryBankAccess.INSTANCE.getLoaded()
+                .flatMap(bank -> bank.getKey(CommonKeys.ENDER_CHEST_KEY))
+                .filter(key -> !key.isEmpty());
+    }
+
     @Override
     public boolean shouldDisplay(@NotNull PreviewContext context) {
-        Optional<MemoryBank> bank = MemoryBankAccess.INSTANCE.getLoaded();
-        if (bank.isEmpty()) return false;
-
-        Optional<MemoryKey> key = bank.get().getKey(CommonKeys.ENDER_CHEST_KEY);
-        return key.map(MemoryKey::isEmpty).orElse(false);
+        return getNonEmptyEnderChestMemoryKey().isPresent();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
 
     @Override
     public List<Component> addTooltip(@NotNull PreviewContext context) {
-        if (ShulkerBoxTooltipApi.getCurrentPreviewType(true) == PreviewType.FULL)
+        if (ShulkerBoxTooltipApi.getCurrentPreviewType(true) == PreviewType.FULL && getNonEmptyEnderChestMemoryKey().isPresent())
             return List.of(
                     translatable("chesttracker.compatibility.brand", translatable("chesttracker.title").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY)
             );
