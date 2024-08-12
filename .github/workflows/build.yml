@@ -51,7 +51,7 @@ jobs:
           JACKFRED_MAVEN_PASS: ${{ secrets.JACKFRED_MAVEN_PASS }}
 
       - name: capture build artifacts
-        if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
+        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v3
         with:
           name: Artifacts
