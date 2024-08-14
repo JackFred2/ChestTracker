@@ -12,7 +12,6 @@
   "chesttracker.inventoryButton.export.toast": "%s'e dışa aktarıldı",
   "chesttracker.inventoryButton.export.errorToast": "Konum dışa aktarılırken hata oluştu; konsolu kontrol edin.",
   "config.jade.plugin_chesttracker.memory_preview": "Hafızaları Kullan",
-  "config.jade.plugin_chesttracker.show_mod_name": "Detaylı Mod Adını Göster",
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Chest Tracker'ın ikonunu göster",
   "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Vurgunun konumunu ve hafıza anahtarını göster",
