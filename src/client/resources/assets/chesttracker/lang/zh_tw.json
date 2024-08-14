@@ -12,7 +12,6 @@
   "chesttracker.inventoryButton.export.toast": "已匯出到 %s",
   "chesttracker.inventoryButton.export.errorToast": "匯出位置時發生錯誤；請檢查主控台。",
   "config.jade.plugin_chesttracker.memory_preview": "使用記憶體",
-  "config.jade.plugin_chesttracker.show_mod_name": "詳細資訊顯示模組名稱",
   "config.waila.plugin_chesttracker": "儲物箱追蹤器",
   "config.waila.plugin_chesttracker.show_icon": "顯示儲物箱追蹤器的圖示",
   "config.waila.plugin_chesttracker.show_key_and_location": "除錯：顯示高亮的座標和記憶體金鑰",
