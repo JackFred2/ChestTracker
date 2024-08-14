@@ -14,7 +14,6 @@
   "chesttracker.inventoryButton.export.errorToast": "Error exporting position; check the console.",
 
   "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
-  "config.jade.plugin_chesttracker.show_mod_name": "Show Mod Name when Detailed",
 
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Show Chest Tracker's icon",
