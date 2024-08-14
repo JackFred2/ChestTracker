@@ -12,7 +12,6 @@
   "chesttracker.inventoryButton.export.toast": "Експортовано у %s",
   "chesttracker.inventoryButton.export.errorToast": "Помилка експорту позиції; перевірте консоль.",
   "config.jade.plugin_chesttracker.memory_preview": "Use Memories",
-  "config.jade.plugin_chesttracker.show_mod_name": "Показувати назву моду в подробицях",
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Показувати іконку Chest Tracker",
   "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Показати позицію та ключ пам'яті",
