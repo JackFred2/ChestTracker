@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -64,7 +63,6 @@ public class NameRenderer {
             case EAST -> new Vec3(1, 0, 0);
             case UP -> new Vec3(0, 1, 0);
             case DOWN -> new Vec3(0, -1, 0);
-            default -> Vec3.ZERO;
         };
     }
 }
