@@ -44,7 +44,7 @@ public class NameRenderer {
                 if (name == null) continue;
 
                 BlockPos blockPos = entry.getKey();
-                Vec3 facingOffset = getFacingOffset(blockPos);
+                Vec3 facingOffset = getFacingOffset(context, blockPos);
                 Vec3 renderPos = entry.getValue().getCenterPosition(blockPos).add(facingOffset);
                 // RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(1, 0, 0), entry.getValue().renderName());
 
