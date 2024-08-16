@@ -46,7 +46,6 @@ public class NameRenderer {
                 BlockPos blockPos = entry.getKey();
                 Vec3 facingOffset = getFacingOffset(context, blockPos);
                 Vec3 renderPos = entry.getValue().getCenterPosition(blockPos).add(facingOffset);
-                // RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(1, 0, 0), entry.getValue().renderName());
 
                 RenderUtils.scheduleLabelRender(renderPos, name);
             }
@@ -59,16 +58,6 @@ public class NameRenderer {
         BlockState aboveBlockState = context.world().getBlockState(aboveBlockPos);
         if (aboveBlockState.isAir()) {
             return new Vec3(0,1,0);
-        } else {
-        if (blockState.is(Blocks.CHEST)) {
-            Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            return switch (facing) {
-                case NORTH -> new Vec3(0, 0, -1);
-                case SOUTH -> new Vec3(0, 0, 1);
-                case WEST -> new Vec3(-1, 0, 0);
-                case EAST -> new Vec3(1, 0, 0);
-                default -> Vec3.ZERO;
-            };
         } else if (blockState.hasProperty(BlockStateProperties.FACING)) {
             Direction facing = blockState.getValue(BlockStateProperties.FACING);
             return switch (facing) {
@@ -78,10 +67,16 @@ public class NameRenderer {
                 case EAST -> new Vec3(1, 0, 0);
                 case UP -> new Vec3(0, 1, 0);
                 case DOWN -> new Vec3(0, -1, 0);
+            };
+        } else {
+            Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            return switch (facing) {
+                case NORTH -> new Vec3(0, 0, -1);
+                case SOUTH -> new Vec3(0, 0, 1);
+                case WEST -> new Vec3(-1, 0, 0);
+                case EAST -> new Vec3(1, 0, 0);
                 default -> Vec3.ZERO;
             };
         }
-        }
-        return new Vec3(0,1,0);
     }
 }
