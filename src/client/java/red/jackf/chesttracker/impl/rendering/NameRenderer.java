@@ -55,6 +55,11 @@ public class NameRenderer {
 
     private static Vec3 getFacingOffset(WorldRenderContext context, BlockPos blockPos) {
         BlockState blockState = context.world().getBlockState(blockPos);
+        BlockPos aboveBlockPos = blockPos.above();
+        BlockState aboveBlockState = context.world().getBlockState(aboveBlockPos);
+        if (aboveBlockState.isAir()) {
+            return new Vec3(0,1,0);
+        } else {
         if (blockState.is(Blocks.CHEST)) {
             Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
             return switch (facing) {
@@ -75,9 +80,8 @@ public class NameRenderer {
                 case DOWN -> new Vec3(0, -1, 0);
                 default -> Vec3.ZERO;
             };
-        } else {
-            // Default offset if no specific handling is defined
-            return new Vec3(0, 0, 0);
         }
+        }
+        return new Vec3(0,1,0);
     }
 }
