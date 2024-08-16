@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryKey;
@@ -42,7 +43,7 @@ public class NameRenderer {
                 if (name == null) continue;
 
                 BlockPos blockPos = entry.getKey();
-                Vec3 facingOffset = getFacingOffset(blockpos);
+                Vec3 facingOffset = getFacingOffset(blockPos);
                 Vec3 renderPos = entry.getValue().getCenterPosition(blockPos).add(facingOffset);
                 // RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(1, 0, 0), entry.getValue().renderName());
             }
@@ -50,24 +51,18 @@ public class NameRenderer {
     }
 
     private static Vec3 getFacingOffset(BlockPos blockPos) {
-        BlockState blockState = context.world().getBlockState(blockPos);
+        BlockState blockState;
+        blockState = blockPos().getBlockState(blockPos);
         Direction facing = blockState.getValue(BlockStateProperties.FACING);
 
-        switch (facing) {
-            case NORTH:
-                return new Vec3(0, 0, -1);
-            case SOUTH:
-                return new Vec3(0, 0, 1);
-            case WEST:
-                return new Vec3(-1, 0, 0);
-            case EAST:
-                return new Vec3(1, 0, 0);
-            case UP:
-                return new Vec3(0, 1, 0);
-            case DOWN:
-                return new Vec3(0, -1, 0);
-            default:
-                return Vec3.ZERO;
-        }
+        return switch (facing) {
+            case NORTH -> new Vec3(0, 0, -1);
+            case SOUTH -> new Vec3(0, 0, 1);
+            case WEST -> new Vec3(-1, 0, 0);
+            case EAST -> new Vec3(1, 0, 0);
+            case UP -> new Vec3(0, 1, 0);
+            case DOWN -> new Vec3(0, -1, 0);
+            default -> Vec3.ZERO;
+        };
     }
 }
