@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class NameRenderer {
+    private static WorldRenderContext context;
+
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
             MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
@@ -51,8 +53,7 @@ public class NameRenderer {
     }
 
     private static Vec3 getFacingOffset(BlockPos blockPos) {
-        BlockState blockState;
-        blockState = blockPos().getBlockState(blockPos);
+        BlockState blockState = context.world().getBlockState(blockPos);
         Direction facing = blockState.getValue(BlockStateProperties.FACING);
 
         return switch (facing) {
