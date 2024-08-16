@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -54,15 +55,29 @@ public class NameRenderer {
 
     private static Vec3 getFacingOffset(WorldRenderContext context, BlockPos blockPos) {
         BlockState blockState = context.world().getBlockState(blockPos);
-        Direction facing = blockState.getValue(BlockStateProperties.FACING);
-
-        return switch (facing) {
-            case NORTH -> new Vec3(0, 0, -1);
-            case SOUTH -> new Vec3(0, 0, 1);
-            case WEST -> new Vec3(-1, 0, 0);
-            case EAST -> new Vec3(1, 0, 0);
-            case UP -> new Vec3(0, 1, 0);
-            case DOWN -> new Vec3(0, -1, 0);
-        };
+        if (blockState.is(Blocks.CHEST)) {
+            Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            return switch (facing) {
+                case NORTH -> new Vec3(0, 0, -1);
+                case SOUTH -> new Vec3(0, 0, 1);
+                case WEST -> new Vec3(-1, 0, 0);
+                case EAST -> new Vec3(1, 0, 0);
+                default -> Vec3.ZERO;
+            };
+        } else if (blockState.hasProperty(BlockStateProperties.FACING)) {
+            Direction facing = blockState.getValue(BlockStateProperties.FACING);
+            return switch (facing) {
+                case NORTH -> new Vec3(0, 0, -1);
+                case SOUTH -> new Vec3(0, 0, 1);
+                case WEST -> new Vec3(-1, 0, 0);
+                case EAST -> new Vec3(1, 0, 0);
+                case UP -> new Vec3(0, 1, 0);
+                case DOWN -> new Vec3(0, -1, 0);
+                default -> Vec3.ZERO;
+            };
+        } else {
+            // Default offset if no specific handling is defined
+            return new Vec3(0, 0, 0);
+        }
     }
 }
