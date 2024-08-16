@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class NameRenderer {
-    private static WorldRenderContext context;
 
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
@@ -48,11 +47,13 @@ public class NameRenderer {
                 Vec3 facingOffset = getFacingOffset(blockPos);
                 Vec3 renderPos = entry.getValue().getCenterPosition(blockPos).add(facingOffset);
                 // RenderUtils.scheduleLabelRender(entry.getValue().getCenterPosition(entry.getKey()).add(1, 0, 0), entry.getValue().renderName());
+
+                RenderUtils.scheduleLabelRender(renderPos, name);
             }
         }
     }
 
-    private static Vec3 getFacingOffset(BlockPos blockPos) {
+    private static Vec3 getFacingOffset(WorldRenderContext context, BlockPos blockPos) {
         BlockState blockState = context.world().getBlockState(blockPos);
         Direction facing = blockState.getValue(BlockStateProperties.FACING);
 
