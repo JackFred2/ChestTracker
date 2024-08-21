@@ -12,7 +12,6 @@
   "chesttracker.inventoryButton.export.toast": "Exporter vers %s",
   "chesttracker.inventoryButton.export.errorToast": "Erreur lors de l'export de la position ; vérifiez la console.",
   "config.jade.plugin_chesttracker.memory_preview": "Utiliser les mémoires",
-  "config.jade.plugin_chesttracker.show_mod_name": "Afficher le nom du mode quand détaillé",
   "config.waila.plugin_chesttracker": "Chest Tracker",
   "config.waila.plugin_chesttracker.show_icon": "Afficher l'icône Chest Tracker",
   "config.waila.plugin_chesttracker.show_key_and_location": "DEBUG: Show a highlight's position and memory key",
