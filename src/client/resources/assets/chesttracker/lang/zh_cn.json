@@ -12,7 +12,6 @@
   "chesttracker.inventoryButton.export.toast": "导出到%s",
   "chesttracker.inventoryButton.export.errorToast": "导出位置时出错；请检查控制台。",
   "config.jade.plugin_chesttracker.memory_preview": "使用记录",
-  "config.jade.plugin_chesttracker.show_mod_name": "详细显示时显示模组名称",
   "config.waila.plugin_chesttracker": "箱子追踪",
   "config.waila.plugin_chesttracker.show_icon": "显示Chest Tracker的图标",
   "config.waila.plugin_chesttracker.show_key_and_location": "调试:显示高亮显示的位置和库存键",
