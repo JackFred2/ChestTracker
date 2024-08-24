@@ -19,7 +19,7 @@ public class NameRenderer {
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
             MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
-                if (!bank.getMetadata().getCompatibilitySettings().displayContainerNames)
+                if (!bank.getMetadata().getCompatibilitySettings().displayContainerNames || !ChestTrackerConfig.INSTANCE.instance().rendering.displayContainerNames)
                     return;
                 bank.getKey(ProviderUtils.getPlayersCurrentKey()).ifPresent(key -> NameRenderer.renderNamesForKey(context, bank, key));
             });
