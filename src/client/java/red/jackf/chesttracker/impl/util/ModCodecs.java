@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +16,7 @@ import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -64,6 +67,9 @@ public class ModCodecs {
         }
     }
 
+    public static final Codec<ItemStack> OPTIONAL_ITEM_STACK = optionalEmptyMap(ItemStack.CODEC)
+            .xmap(optional -> optional.orElse(ItemStack.EMPTY), itemStack -> itemStack.isEmpty() ? Optional.empty() : Optional.of(itemStack));
+
     /////////////
     // METHODS //
     /////////////
@@ -81,5 +87,27 @@ public class ModCodecs {
 
     public static <T> Codec<Set<T>> set(Codec<T> base) {
         return base.listOf().xmap(Set::copyOf, List::copyOf);
+    }
+
+
+
+    public static <A> Codec<Optional<A>> optionalEmptyMap(Codec<A> codec) {
+        return new Codec<>() {
+            @Override
+            public <T> DataResult<Pair<Optional<A>, T>> decode(DynamicOps<T> dynamicOps, T object) {
+                return isEmptyMap(dynamicOps, object)
+                        ? DataResult.success(Pair.of(Optional.empty(), object))
+                        : codec.decode(dynamicOps, object).map(pair -> pair.mapFirst(Optional::of));
+            }
+
+            private static <T> boolean isEmptyMap(DynamicOps<T> ops, T value) {
+                Optional<MapLike<T>> optional = ops.getMap(value).result();
+                return optional.isPresent() && (optional.get()).entries().findAny().isEmpty();
+            }
+
+            public <T> DataResult<T> encode(Optional<A> input, DynamicOps<T> ops, T value) {
+                return input.isEmpty() ? DataResult.success(ops.emptyMap()) : codec.encode(input.get(), ops, value);
+            }
+        };
     }
 }
