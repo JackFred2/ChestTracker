@@ -12,9 +12,7 @@ import red.jackf.chesttracker.api.gui.ScreenBlacklist;
 import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProviderMemoryLocation;
-import red.jackf.chesttracker.api.providers.defaults.DefaultProviderScreenClose;
+import red.jackf.chesttracker.api.providers.defaults.*;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
 import red.jackf.chesttracker.impl.compat.servers.hypixel.HypixelProvider;
 import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
@@ -22,8 +20,11 @@ import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
+    private final AtomicBoolean fromEnderChestCommand = new AtomicBoolean(false);
 
     @Override
     public void load() {
@@ -54,9 +55,23 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         ProviderUtils.registerProvider(DefaultProvider.INSTANCE);
         ProviderUtils.registerProvider(new HypixelProvider());
 
+        // todo configurable
+        Set<String> enderChestCommands = Set.of("ec", "ender", "enderchest", "echest");
+
+        DefaultProviderCommandSent.EVENT.register((provider, command) -> fromEnderChestCommand.set(enderChestCommands.contains(command)));
+
+        DefaultProviderScreenOpen.EVENT.register((provider, context) -> {
+            if (fromEnderChestCommand.get()) {
+                context.setMemoryLocation(MemoryLocation.override(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
+                return true;
+            } else {
+                return false;
+            }
+        });
+
         DefaultProviderScreenClose.EVENT.register(EventPhases.FALLBACK_PHASE, DefaultChestTrackerPlugin::defaultMemoryCreator);
 
-        DefaultProviderScreenClose.EVENT.register(EventPhases.DEFAULT_PHASE, DefaultChestTrackerPlugin::enderChestMemoryCreator);
+        DefaultProviderScreenClose.EVENT.register(EventPhases.DEFAULT_PHASE, this::enderChestMemoryCreator);
 
         DefaultProviderMemoryLocation.EVENT.register(EventPhases.FALLBACK_PHASE, cbs -> {
             var current = ProviderUtils.getPlayersCurrentKey();
@@ -71,7 +86,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
         });
 
         DefaultProviderMemoryLocation.EVENT.register(EventPhases.DEFAULT_PHASE, cbs -> {
-            if (cbs.blockState().getBlock() == Blocks.ENDER_CHEST) {
+            if (cbs.blockState().getBlock() == Blocks.ENDER_CHEST || fromEnderChestCommand.get()) {
                 return ResultHolder.value(MemoryLocation.override(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
             }
 
@@ -110,11 +125,13 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
                 .toResult(memoryLocation.get().memoryKey(), rootPos));
     }
 
-    private static ResultHolder<DefaultProviderScreenClose.Result> enderChestMemoryCreator(ServerProvider provider, ScreenCloseContext context) {
-        var cbs = InteractionTracker.INSTANCE.getLastBlockSource();
-        if (cbs.isEmpty()) return ResultHolder.pass();
+    private ResultHolder<DefaultProviderScreenClose.Result> enderChestMemoryCreator(ServerProvider provider, ScreenCloseContext context) {
+        if (!this.fromEnderChestCommand.getAndSet(false)) {
+            var cbs = InteractionTracker.INSTANCE.getLastBlockSource();
+            if (cbs.isEmpty()) return ResultHolder.pass();
 
-        if (!cbs.get().blockState().is(Blocks.ENDER_CHEST)) return ResultHolder.pass();
+            if (!cbs.get().blockState().is(Blocks.ENDER_CHEST)) return ResultHolder.pass();
+        }
 
         return ResultHolder.value(MemoryBuilder.create(context.getItems())
                 .inContainer(Blocks.ENDER_CHEST)
