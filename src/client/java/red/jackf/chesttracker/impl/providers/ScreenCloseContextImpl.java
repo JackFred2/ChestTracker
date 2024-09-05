@@ -45,6 +45,22 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     }
 
     @Override
+    public List<ItemStack> getItemsWithEmpty() {
+        List<ItemStack> items = screen.getMenu().slots.stream()
+                .filter(slot -> !ProviderUtils.isPlayerSlot(slot))
+                .map(Slot::getItem)
+                .toList();
+
+        int lastIndex = -1;
+
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.get(i).isEmpty()) lastIndex = i;
+        }
+
+        return items.subList(0, lastIndex + 1);
+    }
+
+    @Override
     public List<ItemStack> getItemsMatching(Predicate<ItemStack> predicate) {
         return this.getItems().stream().filter(stack -> !stack.isEmpty() && predicate.test(stack)).toList();
     }

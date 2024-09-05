@@ -133,7 +133,7 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
             if (!cbs.get().blockState().is(Blocks.ENDER_CHEST)) return ResultHolder.pass();
         }
 
-        return ResultHolder.value(MemoryBuilder.create(context.getItems())
+        return ResultHolder.value(MemoryBuilder.create(context.getItemsWithEmpty())
                 .inContainer(Blocks.ENDER_CHEST)
                 .toResult(CommonKeys.ENDER_CHEST_KEY, BlockPos.ZERO));
     }
