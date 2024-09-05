@@ -52,6 +52,15 @@ public interface ScreenCloseContext {
     List<ItemStack> getItems();
 
     /**
+     * <p>Returns all item stacks, including {@link ItemStack#isEmpty()} stacks. You should generally prefer other methods
+     * unless a full representation of the empty slots are useful, i.e. with ender chests.</p>
+     *
+     * <p>The list of items gets trimmed after the last non-empty slot in order to save space.</p>
+     * @return All ItemStacks in this screen, including empty ones.
+     */
+    List<ItemStack> getItemsWithEmpty();
+
+    /**
      * Returns all non-{@link ItemStack#isEmpty()}, non-player inventory stacks in the slots of this screen matching the given predicate.
      *
      * @return All non-empty ItemStacks in this screen matching the predicate.

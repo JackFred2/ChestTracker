@@ -36,8 +36,8 @@ public final class Memory {
 
     public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                            ItemStack.CODEC.listOf().fieldOf("items")
-                                    .forGetter(Memory::items),
+                            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("items")
+                                    .forGetter(Memory::fullItems),
                             ComponentSerialization.CODEC.optionalFieldOf("name")
                                                   .forGetter(m -> Optional.ofNullable(m.name)),
                             ModCodecs.BLOCK_POS_STRING.listOf().optionalFieldOf("otherPositions", Collections.emptyList())
@@ -61,6 +61,7 @@ public final class Memory {
                     )));
 
 
+    private final List<ItemStack> fullItems;
     private final List<ItemStack> items;
     private final @Nullable Component name;
     private final List<BlockPos> otherPositions;
@@ -86,6 +87,10 @@ public final class Memory {
      */
     public List<ItemStack> items() {
         return items;
+    }
+
+    public List<ItemStack> fullItems() {
+        return fullItems;
     }
 
     /**
@@ -207,7 +212,8 @@ public final class Memory {
             long loadedTimestamp,
             long inGameTimestamp,
             Instant realTimestamp) {
-        this.items = ImmutableList.copyOf(items);
+        this.fullItems = ImmutableList.copyOf(items);
+        this.items = this.fullItems.stream().filter(stack -> !stack.isEmpty()).toList();
         this.name = name;
         this.otherPositions = ImmutableList.copyOf(otherPositions);
         this.loadedTimestamp = loadedTimestamp;
