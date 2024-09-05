@@ -7,7 +7,7 @@
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "Это будет переименовывать только контейнер на вашем клиенте, а не на сервере.",
   "chesttracker.inventoryButton.forget": "Забыть",
   "chesttracker.inventoryButton.rememberContainer.remember": "Запомнить контейнер",
-  "chesttracker.inventoryButton.rememberContainer.block": "Не помнить контейнер",
+  "chesttracker.inventoryButton.rememberContainer.block": "Забыть контейнер",
   "chesttracker.inventoryButton.export": "Экспорт позиции",
   "chesttracker.inventoryButton.export.toast": "Экспортировано в %s",
   "chesttracker.inventoryButton.export.errorToast": "Ошибка экспорта позиции, проверьте консоль.",
