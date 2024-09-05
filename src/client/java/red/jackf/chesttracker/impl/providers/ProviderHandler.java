@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.ClientBlockSource;
+import red.jackf.chesttracker.api.providers.InteractionTracker;
 import red.jackf.chesttracker.api.providers.context.BlockPlacedContext;
 import red.jackf.chesttracker.api.providers.ServerProvider;
 import red.jackf.chesttracker.impl.events.AfterPlayerPlaceBlock;
@@ -92,8 +93,10 @@ public class ProviderHandler {
                 getCurrentProvider().ifPresent(provider ->
                         provider.onGameMessageReceived(message, overlay)));
 
-        ClientSendMessageEvents.COMMAND.register(command ->
-                getCurrentProvider().ifPresent(provider ->
-                        provider.onCommandSent(command)));
+        ClientSendMessageEvents.COMMAND.register(command -> {
+            getCurrentProvider().ifPresent(provider -> provider.onCommandSent(command));
+
+            InteractionTracker.INSTANCE.clear();
+        });
     }
 }
