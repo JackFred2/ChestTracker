@@ -63,6 +63,14 @@ repositories {
 		}
 	}
 
+	maven {
+		name = "Nucleoid"
+		url = uri("https://maven.nucleoid.xyz/")
+		content {
+			includeGroup("eu.pb4")
+		}
+	}
+
 	// YACL
 	maven {
 		name = "Xander Maven"
