@@ -6,13 +6,11 @@ import com.misterpemodder.shulkerboxtooltip.api.ShulkerBoxTooltipApi;
 import com.misterpemodder.shulkerboxtooltip.api.color.ColorKey;
 import com.misterpemodder.shulkerboxtooltip.api.provider.PreviewProvider;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import red.jackf.chesttracker.api.memory.CommonKeys;
-import red.jackf.chesttracker.api.memory.MemoryBank;
-import red.jackf.chesttracker.api.memory.MemoryBankAccess;
-import red.jackf.chesttracker.api.memory.MemoryKey;
+import red.jackf.chesttracker.api.memory.*;
 import red.jackf.chesttracker.api.memory.counting.CountingPredicate;
 import red.jackf.chesttracker.api.memory.counting.StackMergeMode;
 
@@ -38,7 +36,14 @@ public class ClientEnderChestPreviewProvider implements PreviewProvider {
     public List<ItemStack> getInventory(@NotNull PreviewContext context) {
         Optional<MemoryBank> bank = MemoryBankAccess.INSTANCE.getLoaded();
         if (bank.isEmpty()) return Collections.emptyList();
-        return bank.get().getCounts(CommonKeys.ENDER_CHEST_KEY, CountingPredicate.TRUE, StackMergeMode.NEVER);
+        if (ShulkerBoxTooltipApi.getCurrentPreviewType(true) == PreviewType.FULL) {
+            return bank.get().getKey(CommonKeys.ENDER_CHEST_KEY)
+                    .flatMap(key -> key.get(BlockPos.ZERO))
+                    .map(Memory::fullItems)
+                    .orElse(List.of());
+        } else {
+            return bank.get().getCounts(CommonKeys.ENDER_CHEST_KEY, CountingPredicate.TRUE, StackMergeMode.NEVER);
+        }
     }
 
     @Override
