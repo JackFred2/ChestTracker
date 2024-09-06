@@ -107,6 +107,8 @@
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.all": "Об’єднати все",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers": "В контейнерах",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.never": "Ніколи не об'єднувати",
+  "chesttracker.gui.editMemoryBank.search.unpackNested": "Unpack Nested Items",
+  "chesttracker.gui.editMemoryBank.search.unpackNested.tooltip": "Whether items within containers (such as Shulker Boxes or Bundles) should be shown.",
   "chesttracker.gui.editMemoryKeys": "Редагувати ключі пам'яті",
   "chesttracker.gui.editMemoryKeys.hint": "Ключ пам'яті",
   "chesttracker.gui.editMemoryKeys.return": "Повернутись",
