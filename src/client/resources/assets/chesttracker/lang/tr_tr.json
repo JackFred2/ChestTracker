@@ -107,6 +107,8 @@
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.all": "Hepsini Birleştir",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers": "Kutular İçinde",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.never": "Asla Birleştirme",
+  "chesttracker.gui.editMemoryBank.search.unpackNested": "Unpack Nested Items",
+  "chesttracker.gui.editMemoryBank.search.unpackNested.tooltip": "Whether items within containers (such as Shulker Boxes or Bundles) should be shown.",
   "chesttracker.gui.editMemoryKeys": "Hafıza Anahtarlarını Düzenle",
   "chesttracker.gui.editMemoryKeys.hint": "Hafıza Anahtarı",
   "chesttracker.gui.editMemoryKeys.return": "Geri Dön",
