@@ -79,19 +79,6 @@ public class MemoryBankImpl implements MemoryBank {
     }
 
     /**
-     * <p>Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.</p>
-     *
-     * <p>This overload does not unpack nested items.</p>
-     *
-     * @param key            Memory key to pull from
-     * @param filter         Filter that memories must pass to be counted
-     * @param stackMergeMode How to merge identical stacks
-     */
-    public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode) {
-        return getCounts(key, filter, stackMergeMode, false);
-    }
-
-    /**
      * Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.
      *
      * @param key            Memory key to pull from
