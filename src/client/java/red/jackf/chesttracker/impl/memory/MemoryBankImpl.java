@@ -79,15 +79,29 @@ public class MemoryBankImpl implements MemoryBank {
     }
 
     /**
-     * Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.
+     * <p>Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.</p>
+     *
+     * <p>This overload does not unpack nested items.</p>
      *
      * @param key            Memory key to pull from
      * @param filter         Filter that memories must pass to be counted
      * @param stackMergeMode How to merge identical stacks
      */
     public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode) {
+        return getCounts(key, filter, stackMergeMode, false);
+    }
+
+    /**
+     * Returns a list of ItemStacks within a given key matching the given filter. Not sorted in a guaranteed order.
+     *
+     * @param key            Memory key to pull from
+     * @param filter         Filter that memories must pass to be counted
+     * @param stackMergeMode How to merge identical stacks
+     * @param unpackNested   Whether to count items within containers, such as Shulker Boxes
+     */
+    public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode, boolean unpackNested) {
         if (this.memoryKeys.containsKey(key)) {
-            return this.memoryKeys.get(key).getCounts(filter, stackMergeMode);
+            return this.memoryKeys.get(key).getCounts(filter, stackMergeMode, unpackNested);
         } else {
             return Collections.emptyList();
         }

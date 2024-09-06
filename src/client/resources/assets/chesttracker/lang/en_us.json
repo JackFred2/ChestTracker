@@ -114,6 +114,8 @@
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.all": "Merge All",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.withinContainers": "Within Containers",
   "chesttracker.gui.editMemoryBank.search.stackMergeMode.never": "Never Merge",
+  "chesttracker.gui.editMemoryBank.search.unpackNested": "Unpack Nested Items",
+  "chesttracker.gui.editMemoryBank.search.unpackNested.tooltip": "Whether items within containers (such as Shulker Boxes or Bundles) should be shown.",
 
   "chesttracker.gui.editMemoryKeys": "Edit Memory Keys",
   "chesttracker.gui.editMemoryKeys.hint": "Memory Key",

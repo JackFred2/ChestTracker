@@ -18,8 +18,10 @@ import red.jackf.chesttracker.impl.util.ModCodecs;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.SearchResult;
+import red.jackf.whereisit.api.search.NestedItemsGrabber;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class MemoryKeyImpl implements MemoryKey {
     private final Map<BlockPos, Memory> memories = new HashMap<>();
@@ -142,20 +144,23 @@ public class MemoryKeyImpl implements MemoryKey {
     }
 
     @Override
-    public List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode) {
+    public List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode, boolean unpackNested) {
+        List<List<ItemStack>> items = this.memories.entrySet().stream()
+                .filter(predicate)
+                .map(entry -> {
+                    if (unpackNested) {
+                        return entry.getValue().items().stream()
+                                .flatMap(stack -> Stream.concat(Stream.of(stack), NestedItemsGrabber.get(stack)))
+                                .toList();
+                    } else {
+                        return entry.getValue().items();
+                    }
+                }).toList();
+
         return switch (stackMergeMode) {
-            case ALL -> ItemStacks.flattenStacks(this.memories.entrySet().stream()
-                    .filter(predicate)
-                    .flatMap(data -> data.getValue().items().stream())
-                    .toList(), false);
-            case WITHIN_CONTAINERS -> this.memories.entrySet().stream()
-                    .filter(predicate)
-                    .flatMap(data -> ItemStacks.flattenStacks(data.getValue().items(), false).stream())
-                    .toList();
-            case NEVER -> this.memories.entrySet().stream()
-                    .filter(predicate)
-                    .flatMap(data -> data.getValue().items().stream())
-                    .toList();
+            case ALL -> ItemStacks.flattenStacks(items.stream().flatMap(Collection::stream).toList(), false);
+            case WITHIN_CONTAINERS -> items.stream().flatMap(list -> ItemStacks.flattenStacks(list, false).stream()).toList();
+            case NEVER -> items.stream().flatMap(Collection::stream).toList();
         };
     }
 

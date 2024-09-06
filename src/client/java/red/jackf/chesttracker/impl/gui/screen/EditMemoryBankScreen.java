@@ -571,6 +571,16 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         ((cycleButton, stackMergeMode) -> this.memoryBank.metadata()
                                 .getSearchSettings().stackMergeMode = stackMergeMode)
                 ), SettingsTab.SEARCH);
+
+        addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getSearchSettings().unpackNested)
+                .withTooltip(ignored -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.search.unpackNested.tooltip")))
+                .create(getSettingsX(0),
+                        getSettingsY(3),
+                        getSettingsWidth(2),
+                        BUTTON_HEIGHT,
+                        translatable("chesttracker.gui.editMemoryBank.search.unpackNested"),
+                        ((cycleButton, newValue) -> this.memoryBank.metadata().getSearchSettings().unpackNested = newValue)
+                ), SettingsTab.SEARCH);
     }
 
     ///////////
