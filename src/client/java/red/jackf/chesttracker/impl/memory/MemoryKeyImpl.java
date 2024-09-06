@@ -13,6 +13,7 @@ import red.jackf.chesttracker.impl.datafix.Types;
 import red.jackf.chesttracker.impl.memory.key.ManualMode;
 import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.key.SearchContext;
+import red.jackf.chesttracker.impl.rendering.NameRenderMode;
 import red.jackf.chesttracker.impl.util.ItemStacks;
 import red.jackf.chesttracker.impl.util.Misc;
 import red.jackf.chesttracker.impl.util.ModCodecs;
@@ -181,7 +182,7 @@ public class MemoryKeyImpl implements MemoryKey {
                     .item(matchingItem.get())
                     .otherPositions(entry.getValue().otherPositions());
 
-            if (context.metadata().getCompatibilitySettings().displayContainerNames)
+            if (context.metadata().getCompatibilitySettings().nameRenderMode == NameRenderMode.FULL)
                 result.name(
                         entry.getValue().renderName(),
                         Misc.getAverageOffsetFrom(entry.getKey(), entry.getValue().otherPositions()).add(0, 1, 0)
