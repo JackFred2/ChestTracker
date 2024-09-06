@@ -48,6 +48,7 @@ public class NameRenderer {
             final int maxRangeSq = ChestTrackerConfig.INSTANCE.instance().rendering.nameRange * ChestTrackerConfig.INSTANCE.instance().rendering.nameRange;
             Set<BlockPos> alreadyRendering = RenderUtils.getCurrentlyRenderedWithNames();
             for (var entry : named.entrySet()) {
+                if (entry.getValue() == focused) continue;
                 if (alreadyRendering.contains(entry.getKey())) continue;
                 if (entry.getKey().distToCenterSqr(context.camera().getPosition()) < maxRangeSq) {
                     Component name = entry.getValue().renderName();
