@@ -146,13 +146,12 @@ public final class Memory {
     }
 
     /**
-     * Helper method for returning the center position of a memory, including it's other positions.
+     * Helper method for returning the center position of a memory, factoring in it's other positions.
      *
-     * @param origin Central position of this memory.
      * @return A position in the world regarded as the 'center'.
      */
-    public Vec3 getCenterPosition(BlockPos origin) {
-        return Misc.getAverageOffsetFrom(origin, this.otherPositions()).add(origin.getCenter());
+    public Vec3 getCenterPosition() {
+        return Misc.getAverageOffsetFrom(this.position, this.otherPositions()).add(this.position.getCenter());
     }
 
     /**
@@ -200,6 +199,7 @@ public final class Memory {
 
     @ApiStatus.Internal
     private MemoryKeyImpl memoryKey = null;
+    @ApiStatus.Internal
     private BlockPos position = null;
 
     @ApiStatus.Internal
