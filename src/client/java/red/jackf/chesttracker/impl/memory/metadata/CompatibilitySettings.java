@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
+import red.jackf.chesttracker.impl.rendering.NameRenderMode;
 import red.jackf.jackfredlib.api.base.codecs.JFLCodecs;
 
 import java.util.Optional;
@@ -18,28 +18,28 @@ public class CompatibilitySettings {
         return instance.group(
                 JFLCodecs.forEnum(NameFilterMode.class).optionalFieldOf("nameFilterMode")
                         .forGetter(settings -> Optional.of(settings.nameFilterMode)),
-                Codec.BOOL.optionalFieldOf("displayContainerNames")
-                        .forGetter(settings -> Optional.of(settings.displayContainerNames))
+                JFLCodecs.forEnum(NameRenderMode.class).optionalFieldOf("nameRenderMode")
+                        .forGetter(settings -> Optional.of(settings.nameRenderMode))
         ).apply(instance, (nameFilterMode, displayContainerNames) -> new CompatibilitySettings(
                 nameFilterMode.orElse(def.nameFilterMode),
-                displayContainerNames.orElse(def.displayContainerNames)
+                displayContainerNames.orElse(def.nameRenderMode)
         ));
     });
 
     public NameFilterMode nameFilterMode = NameFilterMode.NO_FILTER;
-    public boolean displayContainerNames = ChestTrackerConfig.INSTANCE.instance().rendering.displayContainerNames;
+    public NameRenderMode nameRenderMode = NameRenderMode.FULL;
 
     protected CompatibilitySettings() {}
 
-    protected CompatibilitySettings(NameFilterMode nameFilterMode, boolean displayContainerNames) {
+    protected CompatibilitySettings(NameFilterMode nameFilterMode, NameRenderMode nameRenderMode) {
         this.nameFilterMode = nameFilterMode;
-        this.displayContainerNames = displayContainerNames;
+        this.nameRenderMode = nameRenderMode;
     }
 
     public CompatibilitySettings copy() {
         return new CompatibilitySettings(
                 this.nameFilterMode,
-                this.displayContainerNames
+                this.nameRenderMode
         );
     }
 
