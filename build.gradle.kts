@@ -287,7 +287,7 @@ if (canPublish) {
 			null
 		}
 
-		val changelogFileText = rootProject.file("changelogs/$version.md")
+		val changelogFileText = rootProject.file("changelogs/${properties["mod_version"]}.md")
 			.takeIf { it.exists() }
 			?.readText()
 
