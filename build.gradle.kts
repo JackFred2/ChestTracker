@@ -279,13 +279,17 @@ if (canPublish) {
 			val addonProp: String = properties["changelogHeaderAddon"]!!.toString()
 
 			if (addonProp.isNotBlank()) {
-				addonProp + "\n\n"
+				addonProp
 			} else {
-				""
+				null
 			}
 		} else {
-			""
+			null
 		}
+
+		val changelogFileText = rootProject.file("changelogs/$version.md")
+			.takeIf { it.exists() }
+			?.readText()
 
 		generateChangelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
 			this.lastTag.set(lastTag)
@@ -307,7 +311,7 @@ if (canPublish) {
             }
 
 			// Add a bundled block for each module version
-			prologue.set(changelogHeader + bundledText)
+			prologue.set(listOfNotNull(changelogHeader, changelogFileText, bundledText).joinToString(separator = "\n\n"))
 		}
 	}
 
