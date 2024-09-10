@@ -59,7 +59,10 @@ public class NameRenderer {
         }
 
         if (focused != null) {
-            RenderUtils.scheduleLabelRender(focused.getCenterPosition().add(0, 1, 0), focused.renderName(), true);
+            Component name = focused.renderName();
+            if (name != null) {
+                RenderUtils.scheduleLabelRender(focused.getCenterPosition().add(0, 1, 0), name, true);
+            }
         }
     }
 }
