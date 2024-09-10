@@ -24,6 +24,8 @@ public class RenameInputScreen extends Screen {
     private static final int PADDING = 15;
     private static final int GAP = 15;
 
+    private static final int MAX_NAME_LENGTH = 256;
+
     private final MemoryLocation location;
     private final @Nullable String currentName;
     private final ItemStack preview;
@@ -65,6 +67,7 @@ public class RenameInputScreen extends Screen {
                 this.nameInput,
                 Component.empty()));
 
+        this.nameInput.setMaxLength(MAX_NAME_LENGTH);
         this.nameInput.setCanLoseFocus(false);
         this.setFocused(this.nameInput);
 
