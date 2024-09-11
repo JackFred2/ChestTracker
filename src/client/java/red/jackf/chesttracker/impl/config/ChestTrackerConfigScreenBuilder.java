@@ -304,16 +304,6 @@ public class ChestTrackerConfigScreenBuilder {
                                 () -> instance.instance().rendering.nameRange,
                                 i -> instance.instance().rendering.nameRange = i
                         ).build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(translatable("chesttracker.config.rendering.displayContainerNames"))
-                        .description(OptionDescription.of(translatable("chesttracker.config.rendering.displayContainerNames.description")))
-                        .controller(opt -> BooleanControllerBuilder.create(opt)
-                                .yesNoFormatter())
-                        .binding(
-                                instance.defaults().rendering.displayContainerNames,
-                                () -> instance.instance().rendering.displayContainerNames,
-                                b -> instance.instance().rendering.displayContainerNames = b
-                        ).build())
                 .option(ButtonOption.createBuilder()
                         .name(translatable("chesttracker.config.whereisit"))
                         .description(OptionDescription.of(translatable("chesttracker.config.whereisit.description")))
@@ -335,6 +325,16 @@ public class ChestTrackerConfigScreenBuilder {
                                 instance.defaults().debug.showDevHud,
                                 () -> instance.instance().debug.showDevHud,
                                 b -> instance.instance().debug.showDevHud = b
+                        ).build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.dev.disableContainerNames"))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(
+                                instance.defaults().debug.disableContainerNames,
+                                () -> instance.instance().debug.disableContainerNames,
+                                b -> instance.instance().debug.disableContainerNames = b
                         ).build())
                 .build();
     }

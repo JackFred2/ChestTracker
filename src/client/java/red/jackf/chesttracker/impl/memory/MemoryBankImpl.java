@@ -84,10 +84,11 @@ public class MemoryBankImpl implements MemoryBank {
      * @param key            Memory key to pull from
      * @param filter         Filter that memories must pass to be counted
      * @param stackMergeMode How to merge identical stacks
+     * @param unpackNested   Whether to count items within containers, such as Shulker Boxes
      */
-    public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode) {
+    public List<ItemStack> getCounts(ResourceLocation key, CountingPredicate filter, StackMergeMode stackMergeMode, boolean unpackNested) {
         if (this.memoryKeys.containsKey(key)) {
-            return this.memoryKeys.get(key).getCounts(filter, stackMergeMode);
+            return this.memoryKeys.get(key).getCounts(filter, stackMergeMode, unpackNested);
         } else {
             return Collections.emptyList();
         }

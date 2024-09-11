@@ -92,9 +92,6 @@ public class ChestTrackerConfig {
     }
 
     public static class Rendering {
-        @SerialEntry(comment = "Whether to show names above containers in the world. This can be overridden per memory bank, under Compatibility.")
-        public boolean displayContainerNames = true;
-        
         @SerialEntry(comment = "Name Render Range. Range: [4, 24] blocks")
         public int nameRange = 12;
     }
@@ -102,6 +99,8 @@ public class ChestTrackerConfig {
     public static class Debug {
         @SerialEntry(comment = "DEBUG: Show Developer Hud")
         public boolean showDevHud = false;
+        @SerialEntry(comment = "DEBUG: Disable all container names")
+        public boolean disableContainerNames = false;
     }
 
     public static class Storage {

@@ -285,7 +285,7 @@ public class ChestTrackerScreen extends Screen {
     }
 
     /**
-     * Update the cached item list from the current Memory Bank, then runs a filter operation..
+     * Update the cached item list from the current Memory Bank, then runs a filter operation.
      */
     private void updateItems() {
         MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
@@ -293,7 +293,7 @@ public class ChestTrackerScreen extends Screen {
 
             CountingPredicate predicate = getItemListFilter(maxRange);
 
-            this.items = bank.getCounts(currentMemoryKey, predicate, bank.getMetadata().getSearchSettings().stackMergeMode)
+            this.items = bank.getCounts(currentMemoryKey, predicate, bank.getMetadata().getSearchSettings().stackMergeMode, bank.getMetadata().getSearchSettings().unpackNested)
                     .stream()
                     .sorted(itemSort.sort)
                     .toList();
