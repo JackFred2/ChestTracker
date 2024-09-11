@@ -11,10 +11,7 @@ import red.jackf.chesttracker.api.providers.MemoryLocation;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
 import red.jackf.chesttracker.impl.util.CachedClientBlockSource;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Interface for working with a loaded memory bank.
@@ -116,9 +113,7 @@ public interface MemoryBank {
     }
 
     /**
-     * <p>Helper method for getting a count of items in a given memory key matching a given predicate.</p>
-     *
-     * <p>This version does not unpack nested items.</p>
+     * Helper method for getting a count of items in a given memory key matching a given predicate.
      *
      * @param keyId          Memory key to look in; if non-existent an empty list will be returned.
      * @param predicate      Predicate to filter each memory against.
@@ -126,19 +121,10 @@ public interface MemoryBank {
      * @return A list of stacks from all memories in the given key matching the predicate, merged according to <code>stackMergeMode</code>.
      */
     default List<ItemStack> getCounts(ResourceLocation keyId, CountingPredicate predicate, StackMergeMode stackMergeMode) {
-        return getCounts(keyId, predicate, stackMergeMode, false);
+        Optional<MemoryKey> key = this.getKey(keyId);
+        if (key.isEmpty()) return Collections.emptyList();
+        return key.get().getCounts(predicate, stackMergeMode);
     }
-
-    /**
-     * Helper method for getting a count of items in a given memory key matching a given predicate.
-     *
-     * @param keyId          Memory key to look in; if non-existent an empty list will be returned.
-     * @param predicate      Predicate to filter each memory against.
-     * @param stackMergeMode How to merge stacks in the returned list - for more details, see {@link StackMergeMode}
-     * @param unpackNested   Whether to unpack nested items from within Shulker Boxes or bundles.
-     * @return A list of stacks from all memories in the given key matching the predicate, merged according to <code>stackMergeMode</code>.
-     */
-    List<ItemStack> getCounts(ResourceLocation keyId, CountingPredicate predicate, StackMergeMode stackMergeMode, boolean unpackNested);
 
     /**
      * Adds or updates a memory in this memory bank.

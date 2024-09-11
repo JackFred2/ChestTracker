@@ -23,7 +23,7 @@ public interface MemoryBuilder {
      * @return A new MemoryBuilder, containing the given items.
      */
     static MemoryBuilder create(List<ItemStack> items) {
-        return new MemoryBuilderImpl(items.stream().toList());
+        return new MemoryBuilderImpl(items.stream().filter(stack -> !stack.isEmpty()).toList());
     }
 
     /**

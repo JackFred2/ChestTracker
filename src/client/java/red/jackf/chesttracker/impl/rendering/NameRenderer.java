@@ -9,9 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.api.memory.Memory;
 import red.jackf.chesttracker.api.memory.MemoryKey;
 import red.jackf.chesttracker.api.providers.ProviderUtils;
@@ -27,12 +24,10 @@ public class NameRenderer {
 
     public static void setup() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
-            if (ChestTrackerConfig.INSTANCE.instance().debug.disableContainerNames) return true;
-
             MemoryBankAccessImpl.INSTANCE.getLoadedInternal().ifPresent(bank -> {
-                if (bank.getMetadata().getCompatibilitySettings().nameRenderMode == NameRenderMode.DISABLED)
+                if (!bank.getMetadata().getCompatibilitySettings().displayContainerNames)
                     return;
-                bank.getKey(ProviderUtils.getPlayersCurrentKey()).ifPresent(key -> NameRenderer.renderNamesForKey(context, bank, key, hitResult));
+                bank.getKey(ProviderUtils.getPlayersCurrentKey()).ifPresent(key -> NameRenderer.renderNamesForKey(context, bank, key));
             });
             return true;
         });

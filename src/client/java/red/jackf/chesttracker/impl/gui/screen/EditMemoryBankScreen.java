@@ -26,7 +26,6 @@ import red.jackf.chesttracker.impl.memory.metadata.CompatibilitySettings;
 import red.jackf.chesttracker.impl.memory.metadata.FilteringSettings;
 import red.jackf.chesttracker.impl.memory.metadata.IntegritySettings;
 import red.jackf.chesttracker.impl.memory.metadata.SearchSettings;
-import red.jackf.chesttracker.impl.rendering.NameRenderMode;
 import red.jackf.chesttracker.impl.storage.ConnectionSettings;
 import red.jackf.chesttracker.impl.storage.Storage;
 import red.jackf.chesttracker.impl.util.GuiUtil;
@@ -266,16 +265,13 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         (cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().nameFilterMode = newValue
                 ), SettingsTab.COMPATIBILITY);
 
-        addSetting(CycleButton.<NameRenderMode>builder(mode -> mode.label)
-                .withTooltip(mode -> Tooltip.create(mode.tooltip))
-                .withValues(NameRenderMode.values())
-                .withInitialValue(this.memoryBank.metadata().getCompatibilitySettings().nameRenderMode)
+        addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getCompatibilitySettings().displayContainerNames)
                 .create(getSettingsX(0),
                         getSettingsY(1),
                         getSettingsWidth(2),
                         BUTTON_HEIGHT,
-                        translatable("chesttracker.gui.editMemoryBank.compatibility.nameRenderMode"),
-                        (cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().nameRenderMode = newValue
+                        translatable("chesttracker.gui.editMemoryBank.compatibility.displayContainerNames"),
+                        ((cycleButton, newValue) -> this.memoryBank.metadata().getCompatibilitySettings().displayContainerNames = newValue)
                 ), SettingsTab.COMPATIBILITY);
     }
 
@@ -574,16 +570,6 @@ public class EditMemoryBankScreen extends BaseUtilScreen {
                         translatable("chesttracker.gui.editMemoryBank.search.stackMergeMode"),
                         ((cycleButton, stackMergeMode) -> this.memoryBank.metadata()
                                 .getSearchSettings().stackMergeMode = stackMergeMode)
-                ), SettingsTab.SEARCH);
-
-        addSetting(CycleButton.onOffBuilder(this.memoryBank.metadata().getSearchSettings().unpackNested)
-                .withTooltip(ignored -> Tooltip.create(translatable("chesttracker.gui.editMemoryBank.search.unpackNested.tooltip")))
-                .create(getSettingsX(0),
-                        getSettingsY(3),
-                        getSettingsWidth(2),
-                        BUTTON_HEIGHT,
-                        translatable("chesttracker.gui.editMemoryBank.search.unpackNested"),
-                        ((cycleButton, newValue) -> this.memoryBank.metadata().getSearchSettings().unpackNested = newValue)
                 ), SettingsTab.SEARCH);
     }
 

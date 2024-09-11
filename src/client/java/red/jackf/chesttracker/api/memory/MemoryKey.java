@@ -51,29 +51,13 @@ public interface MemoryKey {
     Optional<Memory> get(BlockPos position);
 
     /**
-     * <p>Returns a list of all memories in this key that match the given predicate.</p>
-     *
-     * <p>This overload defaults to not unpacking nested items.</p>
-     *
-     * @see CountingPredicate
-     * @see StackMergeMode
-     * @param predicate Predicate to test each memory against - this tests the in-key block position and memory itself.
-     * @param stackMergeMode How to merge stacks that pass the predicate - for more details, see {@link StackMergeMode}.
-     * @return A list of ItemStacks that pass the predicate in this memory key, merged according to stackMergeMode.
-     */
-    default List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode) {
-        return getCounts(predicate, stackMergeMode, false);
-    }
-
-    /**
      * Returns a list of all memories in this key that match the given predicate.
      *
      * @see CountingPredicate
      * @see StackMergeMode
      * @param predicate Predicate to test each memory against - this tests the in-key block position and memory itself.
      * @param stackMergeMode How to merge stacks that pass the predicate - for more details, see {@link StackMergeMode}.
-     * @param unpackNested Whether to unpack any nested items, such as within shulker boxes.
      * @return A list of ItemStacks that pass the predicate in this memory key, merged according to stackMergeMode.
      */
-    List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode, boolean unpackNested);
+    List<ItemStack> getCounts(CountingPredicate predicate, StackMergeMode stackMergeMode);
 }

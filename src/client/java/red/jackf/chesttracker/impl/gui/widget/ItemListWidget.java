@@ -74,7 +74,7 @@ public class ItemListWidget extends AbstractWidget {
         int index = (y * gridWidth) + x;
         if (index >= items.size()) return;
         var request = new SearchRequest();
-        SearchRequestPopulator.addItemStack(request, items.get(index), Screen.hasShiftDown() ? SearchRequestPopulator.Context.FAVOURITE : SearchRequestPopulator.Context.INVENTORY_PRECISE);
+        SearchRequestPopulator.addItemStack(request, items.get(index), SearchRequestPopulator.Context.FAVOURITE);
         SearchInvoker.doSearch(request);
     }
 
