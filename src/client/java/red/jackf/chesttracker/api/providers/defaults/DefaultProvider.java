@@ -49,11 +49,7 @@ public class DefaultProvider extends ServerProvider {
 
     @Override
     public void onScreenOpen(ScreenOpenContext context) {
-        if (DefaultProviderScreenOpen.EVENT.invoker().handleScreenOpen(this, context)) return;
-
-        InteractionTracker.INSTANCE.getLastBlockSource()
-                .flatMap(this::getMemoryLocation)
-                .ifPresent(context::setMemoryLocation);
+        InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setMemoryLocation);
     }
 
     @Override
@@ -65,11 +61,6 @@ public class DefaultProvider extends ServerProvider {
                 bank.addMemory(memory.get().key(), memory.get().position(), memory.get().memory());
             }
         });
-    }
-
-    @Override
-    public void onCommandSent(String command) {
-        DefaultProviderCommandSent.EVENT.invoker().onDefaultCommandSend(this, command);
     }
 
     @Override

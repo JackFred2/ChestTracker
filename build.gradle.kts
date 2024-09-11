@@ -9,7 +9,7 @@ import red.jackf.UpdateDependenciesTask
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.7-SNAPSHOT"
+	id("fabric-loom") version "1.6-SNAPSHOT"
 	id("com.github.breadmoirai.github-release") version "2.4.1"
 	id("org.ajoberstar.grgit") version "5.2.1"
 	id("me.modmuss50.mod-publish-plugin") version "0.3.3"
@@ -275,17 +275,13 @@ if (canPublish) {
 			val addonProp: String = properties["changelogHeaderAddon"]!!.toString()
 
 			if (addonProp.isNotBlank()) {
-				addonProp
+				addonProp + "\n\n"
 			} else {
-				null
+				""
 			}
 		} else {
-			null
+			""
 		}
-
-		val changelogFileText = rootProject.file("changelogs/${properties["mod_version"]}.md")
-			.takeIf { it.exists() }
-			?.readText()
 
 		generateChangelogTask = tasks.register<GenerateChangelogTask>("generateChangelog") {
 			this.lastTag.set(lastTag)
@@ -307,7 +303,7 @@ if (canPublish) {
             }
 
 			// Add a bundled block for each module version
-			prologue.set(listOfNotNull(changelogHeader, changelogFileText, bundledText).joinToString(separator = "\n\n"))
+			prologue.set(changelogHeader + bundledText)
 		}
 	}
 

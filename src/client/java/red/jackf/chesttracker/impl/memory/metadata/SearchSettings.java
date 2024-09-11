@@ -28,14 +28,11 @@ public class SearchSettings {
                 RANGE_CODEC.optionalFieldOf("searchRange")
                            .forGetter(settings -> Optional.of(settings.searchRange == Integer.MAX_VALUE ? Either.right("infinite") : Either.left(settings.searchRange))),
                 JFLCodecs.forEnum(StackMergeMode.class).optionalFieldOf("stackMergeMode")
-                        .forGetter(settings -> Optional.of(settings.stackMergeMode)),
-                Codec.BOOL.optionalFieldOf("unpackNested")
-                        .forGetter(settings -> Optional.of(settings.unpackNested))
-        ).apply(instance, (itemListRange, searchRange, stackMergeMode, unpackNested) -> new SearchSettings(
+                        .forGetter(settings -> Optional.of(settings.stackMergeMode))
+        ).apply(instance, (itemListRange, searchRange, stackMergeMode) -> new SearchSettings(
                 itemListRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.itemListRange))).orElse(def.itemListRange),
                 searchRange.map(either -> collapse(either.mapRight(s -> s.equals("infinite") ? Integer.MAX_VALUE : def.searchRange))).orElse(def.searchRange),
-                stackMergeMode.orElse(def.stackMergeMode),
-                unpackNested.orElse(def.unpackNested)
+                stackMergeMode.orElse(def.stackMergeMode)
         ));
     });
 
@@ -68,19 +65,17 @@ public class SearchSettings {
     public int itemListRange = 256;
     public int searchRange = 256;
     public StackMergeMode stackMergeMode = StackMergeMode.ALL;
-    public boolean unpackNested = true;
 
     SearchSettings() {
     }
 
-    public SearchSettings(int itemListRange, int searchRange, StackMergeMode stackMergeMode, boolean unpackNested) {
+    public SearchSettings(int itemListRange, int searchRange, StackMergeMode stackMergeMode) {
         this.itemListRange = itemListRange;
         this.searchRange = searchRange;
         this.stackMergeMode = stackMergeMode;
-        this.unpackNested = unpackNested;
     }
 
     public SearchSettings copy() {
-        return new SearchSettings(itemListRange, searchRange, stackMergeMode, unpackNested);
+        return new SearchSettings(itemListRange, searchRange, stackMergeMode);
     }
 }
