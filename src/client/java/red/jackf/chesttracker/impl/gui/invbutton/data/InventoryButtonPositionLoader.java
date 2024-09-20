@@ -2,7 +2,6 @@ package red.jackf.chesttracker.impl.gui.invbutton.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resources.FileToIdConverter;
@@ -11,7 +10,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.include.com.google.gson.JsonParseException;
+import com.google.gson.JsonParseException;
 import red.jackf.chesttracker.impl.ChestTracker;
 import red.jackf.chesttracker.impl.gui.invbutton.ButtonPositionMap;
 import red.jackf.chesttracker.impl.gui.invbutton.position.ButtonPosition;
