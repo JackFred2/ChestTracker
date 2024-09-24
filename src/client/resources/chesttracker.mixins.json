@@ -9,12 +9,12 @@
     "BlockMixin",
     "ClientPacketListenerMixin",
     "EditBoxAccessor",
-    "ScreenMixin"
+    "ScreenMixin",
+    "compat.litematica.GuiMaterialListMixin",
+    "compat.litematica.WidgetMaterialListEntryMixin",
+    "datafix.V1460Mixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "datafix.V1460Mixin"
-  ]
+  }
 }
