@@ -16,6 +16,9 @@ import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
 
+/**
+ * Adds a 'Search' button to each individual material entry on the material list.
+ */
 @Mixin(value = WidgetMaterialListEntry.class, remap = false)
 public abstract class WidgetMaterialListEntryMixin extends WidgetListEntrySortable<MaterialListEntry> {
     private WidgetMaterialListEntryMixin(int x, int y, int width, int height, MaterialListEntry entry, int listIndex) {
@@ -24,15 +27,15 @@ public abstract class WidgetMaterialListEntryMixin extends WidgetListEntrySortab
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void doInit(int x, int y, int width, int height, boolean isOdd, MaterialListBase materialList, MaterialListEntry entry, int listIndex, WidgetListMaterialList listWidget, CallbackInfo ci) {
-        int ignoreWidth = StringUtils.getStringWidth(StringUtils.translate("litematica.gui.button.material_list.ignore"));
+        int ignoreButtonWidth = StringUtils.getStringWidth(StringUtils.translate("litematica.gui.button.material_list.ignore"));
 
         if (entry != null) {
-            var searchButton = new ButtonGeneric(x + width - ignoreWidth - 10, y + 1, -1, true, "Search");
+            ButtonGeneric searchButton = new ButtonGeneric(x + width - ignoreButtonWidth - 10, y + 1, -1, true, "Search");
 
             ItemStack stack = entry.getStack();
 
             this.addButton(searchButton, (buttonBase, i) -> {
-                var request = new SearchRequest();
+                SearchRequest request = new SearchRequest();
                 SearchRequestPopulator.addItemStack(request, stack, SearchRequestPopulator.Context.INVENTORY_PRECISE);
                 SearchInvoker.doSearch(request);
             });

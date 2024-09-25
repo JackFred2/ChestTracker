@@ -3,6 +3,8 @@
 
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via %s",
+  "chesttracker.compatibility.litematica.search": "Search",
+  "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
   "chesttracker.inventoryButton.rename": "Rename Container",
   "chesttracker.inventoryButton.rename.remove": "Remove",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "This will only rename the container on your client, not the server.",

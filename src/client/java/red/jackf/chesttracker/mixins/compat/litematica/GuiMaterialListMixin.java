@@ -20,16 +20,18 @@ import red.jackf.whereisit.api.criteria.builtin.AnyOfCriterion;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
 
+/**
+ * Adds a 'Search Missing' button to the top of the material list screen.
+ */
 @Mixin(value = GuiMaterialList.class, remap = false)
 public abstract class GuiMaterialListMixin extends GuiListBase<MaterialListEntry, WidgetMaterialListEntry, WidgetListMaterialList> {
-
     @Shadow @Final private MaterialListBase materialList;
 
-    protected GuiMaterialListMixin(int listX, int listY) {
+    private GuiMaterialListMixin(int listX, int listY) {
         super(listX, listY);
     }
 
-    // bad mixin
+    // bad mixin @At ik
     @Inject(method = "initGui",
             at = @At(value = "INVOKE",
                     target = "Lfi/dy/masa/litematica/gui/GuiMaterialList;createButton(IIILfi/dy/masa/litematica/gui/GuiMaterialList$ButtonListener$Type;)I",
@@ -38,18 +40,22 @@ public abstract class GuiMaterialListMixin extends GuiListBase<MaterialListEntry
     private void addSearchAllButton(CallbackInfo ci, @Local(ordinal = 0) int x, @Local(ordinal = 1) int y) {
         x += StringUtils.getStringWidth(StringUtils.translate("litematica.gui.button.material_list.write_to_file")) + 10 + 1;
 
-        var searchButton = new ButtonGeneric(x, y, -1, 20, "Search Missing", "Via Chest Tracker");
+        ButtonGeneric searchButton = new ButtonGeneric(x, y, -1, 20,
+                StringUtils.translate("chesttracker.compatibility.litematica.searchMissing"),
+                StringUtils.translate("chesttracker.title"));
 
         this.addButton(searchButton, ((buttonBase, i) -> {
-            var request = new SearchRequest();
-            var any = new AnyOfCriterion();
+            SearchRequest request = new SearchRequest();
+            AnyOfCriterion any = new AnyOfCriterion();
 
             for (MaterialListEntry missing : this.materialList.getMaterialsMissingOnly(true)) {
                 SearchRequestPopulator.addItemStack(any, missing.getStack(), SearchRequestPopulator.Context.INVENTORY_PRECISE);
             }
 
-            request.accept(any);
-            SearchInvoker.doSearch(request);
+            if (any.valid()) {
+                request.accept(any.compact());
+                SearchInvoker.doSearch(request);
+            }
         }));
     }
 }
