@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.apache.logging.log4j.Logger;
 import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.impl.ChestTracker;
@@ -18,6 +18,7 @@ import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.events.AfterPlayerDestroyBlock;
 import red.jackf.chesttracker.impl.memory.key.OverrideInfo;
 import red.jackf.chesttracker.impl.memory.metadata.IntegritySettings;
+import red.jackf.chesttracker.mixins.BlockEntityTypeAccessor;
 import red.jackf.jackfredlib.api.base.Memoizer;
 import red.jackf.jackfredlib.client.api.toasts.*;
 
@@ -155,8 +156,10 @@ public class MemoryIntegrity {
                         && playerCurrentKey != null
                         && playerCurrentKey.equals(currentMemoryKeyId)
                         && level.isLoaded(currentPos)
-                        && currentPos.distSqr(player.blockPosition()) < PERIODIC_CHECK_RANGE_SQUARED) {
-                    if (!(level.getBlockEntity(currentPos) instanceof MenuProvider)) {
+                        && currentPos.distSqr(player.blockPosition()) < PERIODIC_CHECK_RANGE_SQUARED
+                        && currentMemory.container().isPresent()) {
+                    BlockEntity be = level.getBlockEntity(currentPos);
+                    if (be == null || !((BlockEntityTypeAccessor) be.getType()).getValidBlocks().contains(currentMemory.container().get())) {
                         memoryBank.removeMemory(playerCurrentKey, currentPos);
                         LOGGER.debug("Periodic Check: Removing {}@{}", currentPos, currentMemoryKeyId);
                     }
