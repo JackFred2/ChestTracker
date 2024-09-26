@@ -1,6 +1,9 @@
 package red.jackf.chesttracker.impl.compat.mods;
 
 import compasses.expandedstorage.api.ExpandedStorageAccessors;
+import compasses.expandedstorage.impl.client.gui.AbstractScreen;
+import red.jackf.chesttracker.api.gui.GetCustomName;
+import red.jackf.jackfredlib.api.base.ResultHolder;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
 
 /**
@@ -13,6 +16,13 @@ public class ExpandedStorageIntegration {
             ExpandedStorageAccessors.getAttachedChestDirection(state).ifPresent(direction -> {
                 positions.add(pos.relative(direction));
             });
+        });
+
+        GetCustomName.EVENT.register(screen -> {
+            if (screen instanceof AbstractScreen) {
+                return ResultHolder.empty();
+            }
+            return ResultHolder.pass();
         });
     }
 }
