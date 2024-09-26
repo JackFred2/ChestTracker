@@ -6,6 +6,7 @@
   "client": [
     "AbstractContainerScreenMixin",
     "AbstractWidgetAccessor",
+    "BlockEntityTypeAccessor",
     "BlockItemMixin",
     "BlockMixin",
     "ClientPacketListenerMixin",
