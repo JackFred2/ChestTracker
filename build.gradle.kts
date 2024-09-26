@@ -224,6 +224,13 @@ dependencies {
 	modCompileOnly("maven.modrinth:jade:${properties["jade_version"]}")
 
 	modLocalRuntime("maven.modrinth:jade:${properties["jade_version"]}")
+
+	// Litematica
+	modCompileOnly("maven.modrinth:litematica:${properties["litematica_version"]}")
+	modCompileOnly("maven.modrinth:malilib:${properties["malilib_version"]}")
+
+	//modLocalRuntime("maven.modrinth:litematica:${properties["litematica_version"]}")
+	//modLocalRuntime("maven.modrinth:malilib:${properties["malilib_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {
