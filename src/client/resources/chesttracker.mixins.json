@@ -2,6 +2,7 @@
   "required": true,
   "package": "red.jackf.chesttracker.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "red.jackf.chesttracker.impl.mixinplugin.ChestTrackerMixinPlugin",
   "client": [
     "AbstractContainerScreenMixin",
     "AbstractWidgetAccessor",
@@ -9,12 +10,13 @@
     "BlockMixin",
     "ClientPacketListenerMixin",
     "EditBoxAccessor",
-    "ScreenMixin"
+    "ScreenMixin",
+    "compat.litematica.GuiMaterialListMixin",
+    "compat.litematica.WidgetMaterialListEntryMixin",
+    "compat.litematica.MaterialListUtilsMixin",
+    "datafix.V1460Mixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "datafix.V1460Mixin"
-  ]
+  }
 }

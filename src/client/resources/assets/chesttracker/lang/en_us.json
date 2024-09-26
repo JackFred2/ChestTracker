@@ -3,6 +3,9 @@
 
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side preview via %s",
+  "chesttracker.compatibility.litematica.search": "Search",
+  "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
+  "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "Rename Container",
   "chesttracker.inventoryButton.rename.remove": "Remove",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "This will only rename the container on your client, not the server.",
@@ -186,6 +189,13 @@
   "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker overwrites Shulker Box Tooltip's server-side preview for ender chests with it's own client-side one, reading from the current Memory Bank. This functions on Realms and servers without Shulker Box Tooltip installed.",
   "chesttracker.config.compatibility.wthit": "WTHIT Integration",
   "chesttracker.config.compatibility.wthit.description": "Allows you to use the current Memory Bank to show highlights in WTHIT. There are additional settings under the WTHIT's plugin manager.",
+  "chesttracker.config.compatibility.litematica": "Litematica",
+  "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Add Search Buttons to Material List",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Count Ender Chest Materials",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "Whether to add materials in your Ender Chest to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Count Nearby Materials",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Whether to add materials in nearby containers to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "The range is 48 blocks from the player.",
   "chesttracker.config.searchables.required": "Requires Searchables.",
   "chesttracker.config.searchables.notInstalled": "Searchables not loaded."
 }
