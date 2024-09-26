@@ -21,7 +21,7 @@ import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 /**
  * Adds the ender chest memories or the nearby container memories to the item count.
  */
-@Mixin(MaterialListUtils.class)
+@Mixin(value = MaterialListUtils.class)
 public abstract class MaterialListUtilsMixin {
 
     @WrapOperation(method = {"updateAvailableCounts", "getMaterialList"},

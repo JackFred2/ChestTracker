@@ -8,6 +8,7 @@ import fi.dy.masa.litematica.materials.MaterialListBase;
 import fi.dy.masa.litematica.materials.MaterialListEntry;
 import fi.dy.masa.malilib.gui.GuiListBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.widgets.WidgetInfoIcon;
 import fi.dy.masa.malilib.util.StringUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import red.jackf.chesttracker.impl.compat.mods.litematica.ModIcon;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.criteria.builtin.AnyOfCriterion;
@@ -22,7 +24,7 @@ import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
 
 /**
- * Adds a 'Search Missing' button to the top of the material list screen.
+ * Adds a 'Search Missing' button to the top of the material list screen. Also adds an info button to the top right letting the user know
  */
 @Mixin(value = GuiMaterialList.class, remap = false)
 public abstract class GuiMaterialListMixin extends GuiListBase<MaterialListEntry, WidgetMaterialListEntry, WidgetListMaterialList> {
@@ -61,4 +63,23 @@ public abstract class GuiMaterialListMixin extends GuiListBase<MaterialListEntry
             }
         }));
     }
+
+    @Inject(method = "initGui", at = @At(value = "INVOKE", target = "Lfi/dy/masa/litematica/gui/GuiMaterialList;addWidget(Lfi/dy/masa/malilib/gui/widgets/WidgetBase;)Lfi/dy/masa/malilib/gui/widgets/WidgetBase;"))
+    private void addCTInfo(CallbackInfo ci) {
+        var config = ChestTrackerConfig.INSTANCE.instance().compatibility.litematica;
+
+        if (config.anyEnabled()) {
+            String yes = StringUtils.translate("gui.yes");
+            String no = StringUtils.translate("gui.no");
+
+            var args = new Object[] {
+                    config.materialListSearchButtons ? yes : no,
+                    config.countEnderChestMaterials ? yes : no,
+                    config.countNearbyMaterials ? yes : no
+            };
+
+            this.addWidget(new WidgetInfoIcon(this.width - 36, 10, ModIcon.INSTANCE, "chesttracker.compatibility.litematica.info", args));
+        }
+    }
+
 }

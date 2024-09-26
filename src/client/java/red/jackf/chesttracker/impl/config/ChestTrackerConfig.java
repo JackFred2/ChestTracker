@@ -129,6 +129,10 @@ public class ChestTrackerConfig {
 
             @SerialEntry
             public boolean countNearbyMaterials = false;
+
+            public boolean anyEnabled() {
+                return materialListSearchButtons || countNearbyMaterials || countEnderChestMaterials;
+            }
         }
     }
 

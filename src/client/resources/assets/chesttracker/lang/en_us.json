@@ -5,6 +5,7 @@
   "chesttracker.compatibility.brand": "Client-side preview via %s",
   "chesttracker.compatibility.litematica.search": "Search",
   "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
+  "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "Rename Container",
   "chesttracker.inventoryButton.rename.remove": "Remove",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "This will only rename the container on your client, not the server.",
