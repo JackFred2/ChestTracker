@@ -231,6 +231,11 @@ dependencies {
 
 	//modLocalRuntime("maven.modrinth:litematica:${properties["litematica_version"]}")
 	//modLocalRuntime("maven.modrinth:malilib:${properties["malilib_version"]}")
+
+	// Expanded Storage
+	modCompileOnly("maven.modrinth:expanded-storage:${properties["expandedstorage_version"]}")
+
+	//modLocalRuntime("maven.modrinth:expanded-storage:${properties["expandedstorage_version"]}")
 }
 
 tasks.withType<ProcessResources>().configureEach {

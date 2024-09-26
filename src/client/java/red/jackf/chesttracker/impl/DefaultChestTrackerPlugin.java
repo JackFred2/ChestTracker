@@ -1,5 +1,6 @@
 package red.jackf.chesttracker.impl;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import red.jackf.chesttracker.api.memory.CommonKeys;
 import red.jackf.chesttracker.api.providers.*;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.defaults.*;
+import red.jackf.chesttracker.impl.compat.mods.ExpandedStorageIntegration;
 import red.jackf.chesttracker.impl.compat.mods.ShareEnderChestIntegration;
 import red.jackf.chesttracker.impl.compat.servers.hypixel.HypixelProvider;
 import red.jackf.chesttracker.impl.gui.util.CTTitleOverrideDuck;
@@ -92,6 +94,10 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
 
             return ResultHolder.pass();
         });
+
+        if (FabricLoader.getInstance().isModLoaded("expandedstorage")) {
+            ExpandedStorageIntegration.setup();
+        }
 
         ShareEnderChestIntegration.setup();
     }
