@@ -13,8 +13,7 @@
     "ScreenMixin",
     "compat.litematica.GuiMaterialListMixin",
     "compat.litematica.WidgetMaterialListEntryMixin",
-    "compat.litematica.MaterialListUtilsMixin",
-    "datafix.V1460Mixin"
+    "compat.litematica.MaterialListUtilsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
