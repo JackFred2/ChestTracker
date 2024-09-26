@@ -116,6 +116,20 @@ public class ChestTrackerConfig {
         public boolean shulkerBoxTooltipIntegration = true;
         @SerialEntry
         public boolean wthitIntegration = true;
+
+        @SerialEntry
+        public Litematica litematica = new Litematica();
+
+        public static class Litematica {
+            @SerialEntry
+            public boolean materialListSearchButtons = true;
+
+            @SerialEntry
+            public boolean countEnderChestMaterials = true;
+
+            @SerialEntry
+            public boolean countNearbyMaterials = false;
+        }
     }
 
     public void validate() {

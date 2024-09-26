@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
 import red.jackf.whereisit.client.api.events.SearchRequestPopulator;
@@ -27,6 +28,8 @@ public abstract class WidgetMaterialListEntryMixin extends WidgetListEntrySortab
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void doInit(int x, int y, int width, int height, boolean isOdd, MaterialListBase materialList, MaterialListEntry entry, int listIndex, WidgetListMaterialList listWidget, CallbackInfo ci) {
+        if (!ChestTrackerConfig.INSTANCE.instance().compatibility.litematica.materialListSearchButtons) return;
+
         int ignoreButtonWidth = StringUtils.getStringWidth(StringUtils.translate("litematica.gui.button.material_list.ignore"));
 
         if (entry != null) {

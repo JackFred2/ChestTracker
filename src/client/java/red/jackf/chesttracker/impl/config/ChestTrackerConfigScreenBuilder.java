@@ -458,6 +458,49 @@ public class ChestTrackerConfigScreenBuilder {
                                         b -> instance.instance().compatibility.wthitIntegration = b
                                 )
                                 .build())
+                .group(OptionGroup.createBuilder()
+                        .name(translatable("chesttracker.config.compatibility.litematica"))
+                        .option(Option.<Boolean>createBuilder()
+                                .name(translatable("chesttracker.config.compatibility.litematica.materialListSearchButtons"))
+                                .controller(opt -> BooleanControllerBuilder.create(opt)
+                                        .onOffFormatter()
+                                        .coloured(true))
+                                .binding(
+                                        instance.defaults().compatibility.litematica.materialListSearchButtons,
+                                        () -> instance.instance().compatibility.litematica.materialListSearchButtons,
+                                        b -> instance.instance().compatibility.litematica.materialListSearchButtons = b
+                                )
+                                .build()
+                        )
+                        .option(Option.<Boolean>createBuilder()
+                                .name(translatable("chesttracker.config.compatibility.litematica.countEnderChestMaterials"))
+                                .description(OptionDescription.of(translatable("chesttracker.config.compatibility.litematica.countEnderChestMaterials.description")))
+                                .controller(opt -> BooleanControllerBuilder.create(opt)
+                                        .onOffFormatter()
+                                        .coloured(true))
+                                .binding(
+                                        instance.defaults().compatibility.litematica.countEnderChestMaterials,
+                                        () -> instance.instance().compatibility.litematica.countEnderChestMaterials,
+                                        b -> instance.instance().compatibility.litematica.countEnderChestMaterials = b
+                                )
+                                .build()
+                        )
+                        .option(Option.<Boolean>createBuilder()
+                                .name(translatable("chesttracker.config.compatibility.litematica.countNearbyMaterials"))
+                                .description(OptionDescription.of(
+                                        translatable("chesttracker.config.compatibility.litematica.countNearbyMaterials.description1"),
+                                        translatable("chesttracker.config.compatibility.litematica.countNearbyMaterials.description2")))
+                                .controller(opt -> BooleanControllerBuilder.create(opt)
+                                        .onOffFormatter()
+                                        .coloured(true))
+                                .binding(
+                                        instance.defaults().compatibility.litematica.countNearbyMaterials,
+                                        () -> instance.instance().compatibility.litematica.countNearbyMaterials,
+                                        b -> instance.instance().compatibility.litematica.countNearbyMaterials = b
+                                )
+                                .build()
+                        )
+                        .build())
                 .build();
     }
 

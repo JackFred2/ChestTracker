@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.whereisit.api.SearchRequest;
 import red.jackf.whereisit.api.criteria.builtin.AnyOfCriterion;
 import red.jackf.whereisit.client.api.events.SearchInvoker;
@@ -38,6 +39,8 @@ public abstract class GuiMaterialListMixin extends GuiListBase<MaterialListEntry
                     ordinal = 4,
                     shift = At.Shift.AFTER))
     private void addSearchAllButton(CallbackInfo ci, @Local(ordinal = 0) int x, @Local(ordinal = 1) int y) {
+        if (!ChestTrackerConfig.INSTANCE.instance().compatibility.litematica.materialListSearchButtons) return;
+
         x += StringUtils.getStringWidth(StringUtils.translate("litematica.gui.button.material_list.write_to_file")) + 10 + 1;
 
         ButtonGeneric searchButton = new ButtonGeneric(x, y, -1, 20,
