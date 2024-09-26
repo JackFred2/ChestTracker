@@ -6,14 +6,15 @@
   "client": [
     "AbstractContainerScreenMixin",
     "AbstractWidgetAccessor",
+    "BlockEntityTypeAccessor",
     "BlockItemMixin",
     "BlockMixin",
     "ClientPacketListenerMixin",
     "EditBoxAccessor",
     "ScreenMixin",
     "compat.litematica.GuiMaterialListMixin",
-    "compat.litematica.WidgetMaterialListEntryMixin",
     "compat.litematica.MaterialListUtilsMixin",
+    "compat.litematica.WidgetMaterialListEntryMixin",
     "datafix.V1460Mixin"
   ],
   "injectors": {
