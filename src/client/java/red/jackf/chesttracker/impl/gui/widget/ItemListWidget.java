@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
+import red.jackf.chesttracker.impl.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.impl.util.GuiUtil;
 import red.jackf.chesttracker.impl.util.Strings;
 import red.jackf.whereisit.api.SearchRequest;
@@ -133,7 +134,11 @@ public class ItemListWidget extends AbstractWidget {
 
             // render count text scaled down
             String text = Strings.magnitude(item.getCount(), 0);
-            graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
+            if (ChestTrackerScreen.currentMemoryKey.toString().equals("hypixel:skyblock_sacks")) {
+                graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, "0"); // Count
+            } else {
+                graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
+            }
             graphics.pose().popPose();
         }
     }
