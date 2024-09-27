@@ -7,6 +7,7 @@
     "AbstractContainerScreenMixin",
     "AbstractWidgetAccessor",
     "BlockEntityTypeAccessor",
+    "AbstractContainerScreenAccessor",
     "BlockItemMixin",
     "BlockMixin",
     "ClientPacketListenerMixin",
