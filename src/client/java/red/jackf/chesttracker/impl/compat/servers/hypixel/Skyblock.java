@@ -82,7 +82,7 @@ interface Skyblock {
                 || (stack.is(Items.ARROW) && name.contains("Back"))
                 || (stack.is(Items.CAULDRON) && name.contains("Pickup"))
                 || (stack.is(Items.CHEST) && name.contains("Insert"))
-                || (stack.is(Items.GRAY_DYE) && name.contains("Undiscovered"))
+                || (stack.is(Items.GRAY_DYE))
                 || (stack.is(Items.ENDER_EYE) && name.contains("Filter"))
                 || (stack.is(Items.BARRIER) && name.contains("Close"));
     }

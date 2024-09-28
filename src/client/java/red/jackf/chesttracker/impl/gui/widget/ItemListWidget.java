@@ -131,6 +131,7 @@ public class ItemListWidget extends AbstractWidget {
             Pair<Integer, Integer> scales = getScales();
             int textScale = scales.getFirst();
             int guiScale = scales.getSecond();
+            int amount = 0;
             float scaleFactor = (float) textScale / guiScale;
             graphics.pose().scale(scaleFactor, scaleFactor, 1f);
             String text;
@@ -138,7 +139,7 @@ public class ItemListWidget extends AbstractWidget {
             if (ChestTrackerScreen.currentMemoryKey.toString().equals("hypixel:skyblock_sacks")) {
                 String line = item.getComponentsPatch().get(DataComponents.LORE).get().lines().get(2).getSiblings().get(1).getString().replace(",", "");
                 if (NumberUtils.isParsable(line) && !line.equals("0")) {
-                    int amount = Integer.parseInt(line);
+                    amount = Integer.parseInt(line);
                     text = Strings.magnitude(amount, 0);
                     graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
                 }
