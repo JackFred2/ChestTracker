@@ -7,11 +7,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
@@ -131,12 +133,17 @@ public class ItemListWidget extends AbstractWidget {
             int guiScale = scales.getSecond();
             float scaleFactor = (float) textScale / guiScale;
             graphics.pose().scale(scaleFactor, scaleFactor, 1f);
-
+            String text;
             // render count text scaled down
-            String text = Strings.magnitude(item.getCount(), 0);
             if (ChestTrackerScreen.currentMemoryKey.toString().equals("hypixel:skyblock_sacks")) {
-                graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, "0"); // Count
+                String line = item.getComponentsPatch().get(DataComponents.LORE).get().lines().get(2).getSiblings().get(1).getString().replace(",", "");
+                if (NumberUtils.isParsable(line) && !line.equals("0")) {
+                    int amount = Integer.parseInt(line);
+                    text = Strings.magnitude(amount, 0);
+                    graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
+                }
             } else {
+                text = Strings.magnitude(item.getCount(), 0);
                 graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
             }
             graphics.pose().popPose();
