@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import red.jackf.chesttracker.api.ClientBlockSource;
 import red.jackf.chesttracker.api.memory.Memory;
@@ -35,12 +36,16 @@ import java.util.stream.Stream;
 public class HypixelProvider extends ServerProvider {
     public static final ResourceLocation SKYBLOCK_PRIVATE_ISLAND = new ResourceLocation("hypixel", "skyblock_private");
     public static final ResourceLocation SKYBLOCK_ENDER_CHEST = new ResourceLocation("hypixel", "skyblock_ender_chest");
-    public static final ResourceLocation SKYBLOCK_SHULKER_BOX = new ResourceLocation("hypixel", "skyblock_shulker_box");
+    public static final ResourceLocation SKYBLOCK_BACKBACKS = new ResourceLocation("hypixel", "skyblock_backpacks");
+    public static final ResourceLocation SKYBLOCK_SACKS = new ResourceLocation("hypixel", "skyblock_sacks");
+    public static final ResourceLocation SKYBLOCK_VAULT = new ResourceLocation("hypixel", "skyblock_vault");
 
     private static final List<MemoryKeyIcon> ICONS = Streams.concat(Stream.of(
             new MemoryKeyIcon(SKYBLOCK_PRIVATE_ISLAND, Items.OAK_SAPLING.getDefaultInstance()),
             new MemoryKeyIcon(SKYBLOCK_ENDER_CHEST, Items.ENDER_CHEST.getDefaultInstance()),
-            new MemoryKeyIcon(SKYBLOCK_SHULKER_BOX, Items.SHULKER_BOX.getDefaultInstance())
+            new MemoryKeyIcon(SKYBLOCK_BACKBACKS, Items.SHULKER_BOX.getDefaultInstance()),
+            new MemoryKeyIcon(SKYBLOCK_SACKS, Items.BUNDLE.getDefaultInstance()),
+            new MemoryKeyIcon(SKYBLOCK_VAULT, Items.IRON_DOOR.getDefaultInstance())
     ), ProviderUtils.getDefaultIcons().stream()).toList();
 
     private boolean isOnSMP = false;
@@ -112,27 +117,50 @@ public class HypixelProvider extends ServerProvider {
                 }
             }
 
-            if (context.getTitle().getString().startsWith("Ender Chest") || context.getTitle().getString().contains("Backpack")) {
+            if (context.getTitle().getString().startsWith("Ender Chest")) {
                 Optional<Integer> page = Skyblock.getEnderChestPage(context.getTitle());
                 if (page.isPresent()) {
-                    if (context.getTitle().getString().contains("Backpack")) {
-                        List<ItemStack> items = Skyblock.getEnderChestItems(context);
+                    List<ItemStack> items = Skyblock.getEnderChestItems(context);
 
-                        Memory memory = MemoryBuilder.create(items)
-                                .inContainer(Blocks.SHULKER_BOX)
-                                .build();
+                    Memory memory = MemoryBuilder.create(items)
+                            .inContainer(Blocks.ENDER_CHEST)
+                            .build();
 
-                        bank.addMemory(SKYBLOCK_SHULKER_BOX, new BlockPos(page.get(), 0, 0), memory);
-                    }
-                    else {
-                        List<ItemStack> items = Skyblock.getEnderChestItems(context);
+                    bank.addMemory(SKYBLOCK_ENDER_CHEST, new BlockPos(page.get(), 0, 0), memory);
+                }
+            }
+            if (context.getTitle().getString().contains("Backpack")) {
+                Optional<Integer> page = Skyblock.getBackPackSlot(context.getTitle());
+                if (page.isPresent()) {
+                    List<ItemStack> items = Skyblock.getBackPackItems(context);
+                    Memory memory = MemoryBuilder.create(items)
+                            .inContainer(Blocks.SHULKER_BOX)
+                            .build();
 
-                        Memory memory = MemoryBuilder.create(items)
-                                .inContainer(Blocks.ENDER_CHEST)
-                                .build();
+                    bank.addMemory(SKYBLOCK_BACKBACKS, new BlockPos(page.get(), 0, 0), memory);
+                }
+            }
+            if (context.getTitle().getString().contains("Sack")) {
+                if (context.getTitle().getString().contains("Sack of Sacks")) {
+                    return;
+                }
+                BlockPos fakePosition = Skyblock.getFakePosForSackType(context.getTitle());
+                List<ItemStack> items = Skyblock.getSackItems(context);
+                Memory memory = MemoryBuilder.create(items)
+                        .inContainer(Block.byItem(Items.BUNDLE))
+                        .build();
 
-                        bank.addMemory(SKYBLOCK_ENDER_CHEST, new BlockPos(page.get(), 0, 0), memory);
-                    }
+                bank.addMemory(SKYBLOCK_SACKS, fakePosition, memory);
+            }
+            if (context.getTitle().getString().contains("Personal Vault")) {
+                Optional<Integer> page = Skyblock.getPersonalVault(context.getTitle());
+                if (page.isPresent()) {
+                    List<ItemStack> items = Skyblock.getPersonalVaultItems(context);
+                    Memory memory = MemoryBuilder.create(items)
+                            .inContainer(Block.byItem(Items.IRON_DOOR))
+                            .build();
+
+                    bank.addMemory(SKYBLOCK_VAULT, new BlockPos(page.get(), 0, 0), memory);
                 }
             }
         } else if (this.isOnSMP) {

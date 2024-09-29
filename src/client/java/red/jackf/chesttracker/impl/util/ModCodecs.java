@@ -6,8 +6,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapLike;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
@@ -23,6 +25,19 @@ import java.util.Set;
  * Codecs for classes that aren't ours
  */
 public class ModCodecs {
+    /**
+     * Identical to {@link ItemStack#OPTIONAL_CODEC}, but will not enforce a max stack size of 99.
+     */
+    public static final Codec<ItemStack> OPTIONAL_ITEMSTACK_UNCAPPED_SIZE = ExtraCodecs.<ItemStack>optionalEmptyMap(Codec.lazyInitialized(
+            () -> RecordCodecBuilder.create(
+                    instance -> instance.group(
+                            ItemStack.ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+                            ExtraCodecs.POSITIVE_INT.fieldOf("count").orElse(1).forGetter(ItemStack::getCount),
+                            DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
+                    ).apply(instance, ItemStack::new)
+            )
+    )).xmap(opt -> opt.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+
     /**
      * Short form block pos codec
      */
