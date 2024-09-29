@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,10 +19,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ItemStacks {
     /**
@@ -66,21 +64,12 @@ public class ItemStacks {
     }
 
     private static boolean lorePredicate(ItemStack stack, String filter) {
-        var tag = stack.getTag();
-        if (tag == null) return false;
-        if (!tag.contains(ItemStack.TAG_DISPLAY, Tag.TAG_COMPOUND)) return false;
-        var display = tag.getCompound(ItemStack.TAG_DISPLAY);
-        if (!display.contains(ItemStack.TAG_LORE, Tag.TAG_LIST)) return false;
-        var lore = tag.getList(ItemStack.TAG_LORE, Tag.TAG_STRING);
-        for (int i = 0; i < lore.size(); i++) {
-            String line = lore.getString(i);
-            try {
-                var component = Component.Serializer.fromJson(line);
-                if (component != null && component.getString().toLowerCase().contains(filter)) return true;
-            } catch (Exception ex) {
-                return false;
-            }
+        var lore = getLore(stack);
+
+        for (Component line : lore) {
+            if (line.getString().toLowerCase().contains(filter)) return true;
         }
+
         return false;
     }
 
@@ -169,5 +158,28 @@ public class ItemStacks {
             stack.setTag(tag);
             return stack;
         }
+    }
+
+    public static List<Component> getLore(ItemStack stack) {
+        List<Component> lore = new ArrayList<>();
+
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(ItemStack.TAG_DISPLAY, Tag.TAG_COMPOUND)) {
+            CompoundTag displayTag = tag.getCompound(ItemStack.TAG_DISPLAY);
+            if (displayTag.contains(ItemStack.TAG_LORE, Tag.TAG_LIST)) {
+                ListTag loreTag = displayTag.getList(ItemStack.TAG_LORE, Tag.TAG_STRING);
+                for (int i = 0; i < loreTag.size(); i++) {
+                    String line = loreTag.getString(i);
+                    try {
+                        Component component = Component.Serializer.fromJson(line);
+                        if (component != null) {
+                            lore.add(component);
+                        }
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        return lore;
     }
 }

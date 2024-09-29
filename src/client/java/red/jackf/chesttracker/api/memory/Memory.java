@@ -35,7 +35,7 @@ public final class Memory {
 
     public static final Codec<Memory> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                            ModCodecs.OPTIONAL_ITEMSTACK_UNCAPPED_SIZE.listOf().fieldOf("items")
+                            ModCodecs.OPTIONAL_ITEM_STACK.listOf().fieldOf("items")
                                     .forGetter(Memory::fullItems),
                             ExtraCodecs.COMPONENT.optionalFieldOf("name")
                                                   .forGetter(m -> Optional.ofNullable(m.name)),
