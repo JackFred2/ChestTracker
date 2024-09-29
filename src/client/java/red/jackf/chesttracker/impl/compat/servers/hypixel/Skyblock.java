@@ -1,12 +1,11 @@
 package red.jackf.chesttracker.impl.compat.servers.hypixel;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ItemLore;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
+import red.jackf.chesttracker.impl.util.ItemStacks;
 import red.jackf.jackfredlib.client.api.gps.PlayerListSnapshot;
 import red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot;
 
@@ -78,7 +77,7 @@ interface Skyblock {
     private static Optional<Integer> getSizeOfSack(ItemStack sack) {
         var pattern = Pattern.compile("Stored: (?<amount>\\d+)/.+");
 
-        for (Component line : sack.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines()) {
+        for (Component line : ItemStacks.getLore(sack)) {
             var match = pattern.matcher(line.getString().replace(",", ""));
             if (!match.find()) continue;
 
