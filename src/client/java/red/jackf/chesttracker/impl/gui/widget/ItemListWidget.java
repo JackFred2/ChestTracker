@@ -7,17 +7,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import red.jackf.chesttracker.impl.config.ChestTrackerConfig;
 import red.jackf.chesttracker.impl.gui.GuiConstants;
-import red.jackf.chesttracker.impl.gui.screen.ChestTrackerScreen;
 import red.jackf.chesttracker.impl.util.GuiUtil;
 import red.jackf.chesttracker.impl.util.Strings;
 import red.jackf.whereisit.api.SearchRequest;
@@ -131,22 +128,12 @@ public class ItemListWidget extends AbstractWidget {
             Pair<Integer, Integer> scales = getScales();
             int textScale = scales.getFirst();
             int guiScale = scales.getSecond();
-            int amount = 0;
             float scaleFactor = (float) textScale / guiScale;
             graphics.pose().scale(scaleFactor, scaleFactor, 1f);
-            String text;
+
             // render count text scaled down
-            if (ChestTrackerScreen.currentMemoryKey.toString().equals("hypixel:skyblock_sacks")) {
-                String line = item.getComponentsPatch().get(DataComponents.LORE).get().lines().get(2).getSiblings().get(1).getString().replace(",", "");
-                if (NumberUtils.isParsable(line) && !line.equals("0")) {
-                    amount = Integer.parseInt(line);
-                    text = Strings.magnitude(amount, 0);
-                    graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
-                }
-            } else {
-                text = Strings.magnitude(item.getCount(), 0);
-                graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
-            }
+            String text = Strings.magnitude(item.getCount(), 0);
+            graphics.renderItemDecorations(Minecraft.getInstance().font, DUMMY_ITEM_FOR_COUNT, offset, offset, text); // Count
             graphics.pose().popPose();
         }
     }

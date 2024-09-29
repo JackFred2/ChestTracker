@@ -64,14 +64,14 @@ public class ChestTrackerScreen extends Screen {
     @Nullable
     private ResizeWidget resize = null;
     private VerticalScrollWidget scroll;
-    public static ResourceLocation currentMemoryKey;
+    private ResourceLocation currentMemoryKey;
     private List<ItemStack> items = Collections.emptyList();
 
     public ChestTrackerScreen(@Nullable Screen parent) {
         super(TITLE);
         ChestTracker.LOGGER.debug("Open Screen");
         this.parent = parent;
-        currentMemoryKey = ProviderUtils.getPlayersCurrentKey().orElseGet(() -> ChestTracker.id("unknown"));
+        this.currentMemoryKey = ProviderUtils.getPlayersCurrentKey().orElseGet(() -> ChestTracker.id("unknown"));
     }
 
     @Override
