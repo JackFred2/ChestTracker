@@ -3,7 +3,7 @@
   "id": "chesttracker",
   "version": "${version}",
   "name": "Chest Tracker",
-  "description": "Remember items on the client; addon for Where Is It.",
+  "description": "Client-side storage management and searching.",
   "authors": [
     "JackFred"
   ],
@@ -50,8 +50,8 @@
       "links": {
         "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/chest-tracker",
         "modmenu.github_releases": "https://github.com/JackFred2/ChestTracker/releases",
-        "modmenu.modrinth": "https://modrinth.com/mod/chest-tracker",
-        "modmenu.wiki": "https://github.com/JackFred2/ChestTracker/wiki"
+        "modmenu.wiki": "https://docs.jackf.red/chest-tracker",
+        "modmenu.donate": "https://ko-fi.com/jackfred"
       }
     }
   },
