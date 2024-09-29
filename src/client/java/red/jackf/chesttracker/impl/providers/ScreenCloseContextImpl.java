@@ -3,7 +3,6 @@ package red.jackf.chesttracker.impl.providers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.chesttracker.api.gui.GetCustomName;
@@ -40,7 +39,7 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     public List<ItemStack> getItems() {
         return screen.getMenu().slots.stream()
                 .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && slot.hasItem())
-                .map(Slot::getItem)
+                .map(slot -> slot.getItem().copy())
                 .toList();
     }
 
@@ -48,7 +47,7 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     public List<ItemStack> getItemsWithEmpty() {
         List<ItemStack> items = screen.getMenu().slots.stream()
                 .filter(slot -> !ProviderUtils.isPlayerSlot(slot))
-                .map(Slot::getItem)
+                .map(slot -> slot.getItem().copy())
                 .toList();
 
         int lastIndex = -1;
@@ -69,7 +68,7 @@ public record ScreenCloseContextImpl(AbstractContainerScreen<?> screen) implemen
     public List<Pair<Integer, ItemStack>> getItemsAndSlots() {
         return screen.getMenu().slots.stream()
                 .filter(slot -> !ProviderUtils.isPlayerSlot(slot) && slot.hasItem())
-                .map(slot -> Pair.of(slot.index, slot.getItem()))
+                .map(slot -> Pair.of(slot.index, slot.getItem().copy()))
                 .toList();
     }
 }
