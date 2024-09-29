@@ -2,8 +2,6 @@ package red.jackf.chesttracker.impl.compat.servers.hypixel;
 
 import com.google.common.collect.Streams;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,7 +21,6 @@ import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
 import red.jackf.chesttracker.api.providers.context.ScreenOpenContext;
 import red.jackf.chesttracker.api.providers.defaults.DefaultProvider;
 import red.jackf.chesttracker.impl.ChestTracker;
-import red.jackf.chesttracker.mixins.AbstractContainerScreenAccessor;
 import red.jackf.jackfredlib.client.api.gps.Coordinate;
 import red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot;
 import red.jackf.whereisit.api.search.ConnectedBlocksGrabber;
@@ -42,7 +39,6 @@ public class HypixelProvider extends ServerProvider {
     public static final ResourceLocation SKYBLOCK_BACKBACKS = ResourceLocation.fromNamespaceAndPath("hypixel", "skyblock_backpacks");
     public static final ResourceLocation SKYBLOCK_SACKS = ResourceLocation.fromNamespaceAndPath("hypixel", "skyblock_sacks");
     public static final ResourceLocation SKYBLOCK_VAULT = ResourceLocation.fromNamespaceAndPath("hypixel", "skyblock_vault");
-    public static int LastClickedSlot = 999;
 
     private static final List<MemoryKeyIcon> ICONS = Streams.concat(Stream.of(
             new MemoryKeyIcon(SKYBLOCK_PRIVATE_ISLAND, Items.OAK_SAPLING.getDefaultInstance()),
@@ -99,14 +95,6 @@ public class HypixelProvider extends ServerProvider {
         MemoryBank bank = MemoryBankAccess.INSTANCE.getLoaded().orElse(null);
         if (bank == null) return;
 
-        assert Minecraft.getInstance().screen != null;
-        Screen screen = Minecraft.getInstance().screen;
-        if (Minecraft.getInstance().screen.getTitle().getString().contains("Sack of Sacks")) {
-            assert Minecraft.getInstance().player != null;
-            if (((AbstractContainerScreenAccessor) screen).getLastClickSlot() != null){
-                LastClickedSlot = ((AbstractContainerScreenAccessor) screen).getLastClickSlot().index;
-            }
-        }
         if (Skyblock.isPlayerOn()) {
             if (Skyblock.isOnPrivateIsland()) {
                 Optional<ClientBlockSource> cbs = InteractionTracker.INSTANCE.getLastBlockSource();
@@ -156,15 +144,13 @@ public class HypixelProvider extends ServerProvider {
                 if (context.getTitle().getString().contains("Sack of Sacks")) {
                     return;
                 }
-                Optional<Integer> page = Skyblock.getSack(context.getTitle());
-                if (page.isPresent()) {
-                    List<ItemStack> items = Skyblock.getSackItems(context);
-                    Memory memory = MemoryBuilder.create(items)
-                            .inContainer(Block.byItem(Items.BUNDLE))
-                            .build();
+                BlockPos fakePosition = Skyblock.getFakePosForSackType(context.getTitle());
+                List<ItemStack> items = Skyblock.getSackItems(context);
+                Memory memory = MemoryBuilder.create(items)
+                        .inContainer(Block.byItem(Items.BUNDLE))
+                        .build();
 
-                    bank.addMemory(SKYBLOCK_SACKS, new BlockPos(LastClickedSlot, 0, 0), memory);
-                }
+                bank.addMemory(SKYBLOCK_SACKS, fakePosition, memory);
             }
             if (context.getTitle().getString().contains("Personal Vault")) {
                 Optional<Integer> page = Skyblock.getPersonalVault(context.getTitle());

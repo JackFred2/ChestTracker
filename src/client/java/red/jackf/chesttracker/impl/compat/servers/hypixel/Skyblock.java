@@ -1,12 +1,10 @@
 package red.jackf.chesttracker.impl.compat.servers.hypixel;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import red.jackf.chesttracker.api.providers.context.ScreenCloseContext;
-import red.jackf.chesttracker.mixins.AbstractContainerScreenAccessor;
 import red.jackf.jackfredlib.client.api.gps.PlayerListSnapshot;
 import red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot;
 
@@ -42,16 +40,11 @@ interface Skyblock {
         return Optional.of(Integer.parseInt(match.group("current")));
     }
 
-    static Optional<Integer> getSack(Component title) {
-        assert Minecraft.getInstance().screen != null;
-        Screen screen = Minecraft.getInstance().screen;
-        if (!Minecraft.getInstance().screen.getTitle().getString().contains("Sack of Sacks")) {
-            assert Minecraft.getInstance().player != null;
-            if (((AbstractContainerScreenAccessor) screen).getLastClickSlot() != null) {
-                return Optional.of(0);
-            }
-        }
-        return Optional.empty();
+    // Actual sacks (not the Sack of Sacks) of the same type always show the same title, regardless of size
+    // i.e. 'Large Mining Sack' and 'Small Mining Sack' both have the title 'Mining Sack'
+    // Combined with the fact that no item can be in more than one sack type, we can add use these as 'pages'.
+    static BlockPos getFakePosForSackType(Component title) {
+        return BlockPos.of(title.getString().hashCode());
     }
 
     static Optional<Integer> getPersonalVault(Component title) {
