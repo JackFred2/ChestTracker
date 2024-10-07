@@ -2,6 +2,9 @@
   "key.chesttracker.open_gui": "Chest Tracker GUI'yi Aç",
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Client-side önizleme: %s",
+  "chesttracker.compatibility.litematica.search": "Search",
+  "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
+  "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "Kutu Adını Değiştir",
   "chesttracker.inventoryButton.rename.remove": "Kaldır",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "Bu yalnızca sizin istemcinizdeki konteynerin adını değiştirecektir, sunucudaki değil.",
@@ -173,6 +176,13 @@
   "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker, kendi istemci tarafındaki önizlemesiyle Shulker Box Tooltip'in ender sandıklar için sunucu tarafındaki önizlemesini üzerine yazar. Bu, Shulker Box Tooltip yüklü olmayan Realms ve sunucularda çalışır.",
   "chesttracker.config.compatibility.wthit": "WTHIT Entegrasyonu",
   "chesttracker.config.compatibility.wthit.description": "Mevcut Hafıza Bankasını WTHIT'te vurguları göstermek için kullanmanıza olanak tanır. WTHIT'nin eklenti yönetimi altında ek ayarlar bulunmaktadır.",
+  "chesttracker.config.compatibility.litematica": "Litematica",
+  "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Add Search Buttons to Material List",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Count Ender Chest Materials",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "Whether to add materials in your Ender Chest to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Count Nearby Materials",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Whether to add materials in nearby containers to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "The range is 48 blocks from the player.",
   "chesttracker.config.searchables.required": "Arama yapılabilecek bir özelliği gerektirir.",
   "chesttracker.config.searchables.notInstalled": "Arama özellikleri yüklenmedi."
 }

@@ -2,6 +2,9 @@
   "key.chesttracker.open_gui": "開啟儲物箱追蹤器介面",
   "chesttracker.title": "儲物箱追蹤器",
   "chesttracker.compatibility.brand": "透過 %s 的用戶端預覽",
+  "chesttracker.compatibility.litematica.search": "搜尋",
+  "chesttracker.compatibility.litematica.searchMissing": "搜尋遺漏",
+  "chesttracker.compatibility.litematica.info": "儲物箱追蹤整合：\n搜尋按鈕：%s\n包含終界箱：%s\n包含鄰近（48 格）： %s",
   "chesttracker.inventoryButton.rename": "重新命名容器",
   "chesttracker.inventoryButton.rename.remove": "移除",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "這只會在你的用戶端重新命名容器，而不是伺服器。",
@@ -173,6 +176,13 @@
   "chesttracker.config.compatibility.shulkerboxtooltip.description": "儲物箱追蹤器會使用它自己的用戶端預覽覆寫界伏盒工具提示的伺服器端預覽，並從目前的記憶庫中讀取。這適用於沒有安裝界伏盒工具提示的 Realms 和伺服器。",
   "chesttracker.config.compatibility.wthit": "WTHIT 整合",
   "chesttracker.config.compatibility.wthit.description": "允許你使用目前的記憶庫在 WTHIT 中顯示高亮。WTHIT 的外掛管理器中還有其他設定。",
+  "chesttracker.config.compatibility.litematica": "Litematica",
+  "chesttracker.config.compatibility.litematica.materialListSearchButtons": "將搜尋按鈕新增至材料清單",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "計算終界箱中的材料",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "是否將你的終界箱中的材料新增到 Litematica 的材料計算中。",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials": "計算鄰近的材料",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "是否將鄰近容器中的材料新增到 Litematica 的材料計算中。",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "範圍是玩家周圍 48 格。",
   "chesttracker.config.searchables.required": "需要 Searchables。",
   "chesttracker.config.searchables.notInstalled": "未載入 Searchables。"
 }
