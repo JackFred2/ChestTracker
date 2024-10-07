@@ -2,6 +2,9 @@
   "key.chesttracker.open_gui": "Deschide Interfața Chest Tracker",
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "Previzualizare client prin %s",
+  "chesttracker.compatibility.litematica.search": "Caută",
+  "chesttracker.compatibility.litematica.searchMissing": "Caută Lipsă",
+  "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "Redenumește Containerul",
   "chesttracker.inventoryButton.rename.remove": "Elimină",
   "chesttracker.inventoryButton.rename.clientOnlyWarning": "Aceasta va schimba numele containerului doar pe clientul tău, nu pe server.",
@@ -173,6 +176,13 @@
   "chesttracker.config.compatibility.shulkerboxtooltip.description": "Chest Tracker suprascrie previzualizarea server-side a Tooltip Shulker Box pentru cuferele Ender cu propria previzualizare client-side, citind din Bancă de Memorie curentă. Aceasta funcționează pe Realms și pe servere fără Shulker Box Tooltip instalat.",
   "chesttracker.config.compatibility.wthit": "Integrarea WTHIT",
   "chesttracker.config.compatibility.wthit.description": "Îți permite să folosești Bancă de Memorie curentă pentru a arăta evidențierile în WTHIT. Există setări suplimentare în gestionarul de plugin-uri WTHIT.",
+  "chesttracker.config.compatibility.litematica": "Litematica",
+  "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Add Search Buttons to Material List",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Count Ender Chest Materials",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "Whether to add materials in your Ender Chest to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Count Nearby Materials",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Whether to add materials in nearby containers to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "The range is 48 blocks from the player.",
   "chesttracker.config.searchables.required": "Necesită Searchables.",
   "chesttracker.config.searchables.notInstalled": "Searchables nu este încărcat."
 }
