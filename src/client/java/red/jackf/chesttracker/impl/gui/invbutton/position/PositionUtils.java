@@ -4,11 +4,11 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.chesttracker.impl.gui.invbutton.CTButtonScreenDuck;
 import red.jackf.chesttracker.impl.gui.invbutton.ui.InventoryButton;
+import red.jackf.chesttracker.mixins.AbstractRecipeBookScreenAccessor;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,8 +20,8 @@ public interface PositionUtils {
     /**
      * Gets the recipe book component current visible on screen, if any.
      */
-    static @Nullable RecipeBookComponent getVisibleRecipe(AbstractContainerScreen<?> screen) {
-        if (screen instanceof RecipeUpdateListener recipeHolder && recipeHolder.getRecipeBookComponent().isVisible()) {
+    static @Nullable RecipeBookComponent<?> getVisibleRecipe(AbstractContainerScreen<?> screen) {
+        if (screen instanceof AbstractRecipeBookScreenAccessor recipeHolder && recipeHolder.getRecipeBookComponent().isVisible()) {
             return recipeHolder.getRecipeBookComponent();
         } else {
             return null;

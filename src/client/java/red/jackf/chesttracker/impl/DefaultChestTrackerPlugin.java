@@ -50,8 +50,9 @@ public class DefaultChestTrackerPlugin implements ChestTrackerPlugin {
                 StonecutterScreen.class,
                 BeaconScreen.class,
 
-                // inventory (surv & creative)
-                EffectRenderingInventoryScreen.class
+                // inventory
+                InventoryScreen.class,
+                CreativeModeInventoryScreen.class
         );
 
         ProviderUtils.registerProvider(DefaultProvider.INSTANCE);

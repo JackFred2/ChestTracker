@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -80,7 +81,7 @@ public class ItemListWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
+        graphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight()); // background
         this.renderItems(graphics); // item models
         this.renderItemDecorations(graphics); // stack size and durability
         this.renderAdditional(graphics, mouseX, mouseY); // tooltips

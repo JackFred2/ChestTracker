@@ -8,7 +8,6 @@ import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
 import com.google.gson.JsonParseException;
 import red.jackf.chesttracker.impl.ChestTracker;
@@ -28,7 +27,6 @@ public class InventoryButtonPositionLoader implements SimpleResourceReloadListen
 
     @Override
     public CompletableFuture<Map<String, ButtonPosition>> load(ResourceManager manager,
-                                                          ProfilerFiller profiler,
                                                           Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             Map<String, ButtonPosition> positions = new HashMap<>();
@@ -59,7 +57,6 @@ public class InventoryButtonPositionLoader implements SimpleResourceReloadListen
     @Override
     public CompletableFuture<Void> apply(Map<String, ButtonPosition> data,
                                          ResourceManager manager,
-                                         ProfilerFiller profiler,
                                          Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             ButtonPositionMap.loadDatapackPositions(data);

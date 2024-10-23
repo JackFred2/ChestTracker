@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -30,7 +31,7 @@ public class ChangeableImageButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation resourceLocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
-        guiGraphics.blitSprite(resourceLocation, this.getX(), this.getY(), this.width, this.height);
+        guiGraphics.blitSprite(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.width, this.height);
     }
 
     @Environment(EnvType.CLIENT)

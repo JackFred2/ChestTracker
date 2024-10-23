@@ -12,7 +12,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -105,7 +104,8 @@ public class ItemStacks {
         if (potionContents == null) return false;
 
         if (potionContents.potion().isPresent()) {
-            String langKey = Potion.getName(potionContents.potion(), stack.getDescriptionId() + ".effect.");
+            String potionName = potionContents.customName().or(() -> potionContents.potion().map(holder -> holder.value().name())).orElse("empty");
+            String langKey = stack.getItem().getDescriptionId() + ".effect." + potionName;
             if (testLang(langKey, filter)) return true;
             ResourceLocation resloc = BuiltInRegistries.POTION.getKey(potionContents.potion().get().value());
             if (resloc != null && resloc.toString().contains(filter)) return true;

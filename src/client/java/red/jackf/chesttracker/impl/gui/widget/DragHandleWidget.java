@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,7 @@ public class DragHandleWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(this.isHoveredOrFocused() ? TEXTURE.enabledFocused() : TEXTURE.enabled(), this.getX(), this.getY(), WIDTH, HEIGHT);
+        graphics.blitSprite(RenderType::guiTextured, this.isHoveredOrFocused() ? TEXTURE.enabledFocused() : TEXTURE.enabled(), this.getX(), this.getY(), WIDTH, HEIGHT);
 
         if (this.target != null) {
             int y = this.highlightStartY + yHeight * this.target;

@@ -16,6 +16,7 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
     private final Component name;
     private final OptionDescription description;
     private final BiConsumer<YACLScreen, HoldToConfirmButtonOption> action;
+    private final StateManager<BiConsumer<YACLScreen, HoldToConfirmButtonOption>> stateManager;
     private boolean available;
     private final int holdTimeTicks;
     private final Controller<BiConsumer<YACLScreen, HoldToConfirmButtonOption>> controller;
@@ -34,6 +35,7 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
         this.description = description == null ? OptionDescription.EMPTY : description;
         this.action = action;
         this.available = available;
+        this.stateManager = StateManager.createImmutable(action);
         this.holdTimeTicks = holdTimeTicks;
         this.controller = text != null ? new HoldToConfirmActionController(this, text) : new HoldToConfirmActionController(this);
         this.binding = new EmptyBinderImpl();
@@ -61,6 +63,11 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
     @Override
     public @NotNull Controller<BiConsumer<YACLScreen, HoldToConfirmButtonOption>> controller() {
         return controller;
+    }
+
+    @Override
+    public @NotNull StateManager<BiConsumer<YACLScreen, HoldToConfirmButtonOption>> stateManager() {
+        return this.stateManager;
     }
 
     @Override
@@ -115,6 +122,9 @@ public class HoldToConfirmButtonOption implements Option<BiConsumer<YACLScreen, 
     public boolean isPendingValueDefault() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void addEventListener(OptionEventListener<BiConsumer<YACLScreen, HoldToConfirmButtonOption>> listener) {}
 
     @Override
     public void addListener(BiConsumer<Option<BiConsumer<YACLScreen, HoldToConfirmButtonOption>>, BiConsumer<YACLScreen, HoldToConfirmButtonOption>> changedListener) {

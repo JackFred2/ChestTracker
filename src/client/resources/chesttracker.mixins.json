@@ -5,6 +5,7 @@
   "plugin": "red.jackf.chesttracker.impl.mixinplugin.ChestTrackerMixinPlugin",
   "client": [
     "AbstractContainerScreenMixin",
+    "AbstractRecipeBookScreenAccessor",
     "AbstractWidgetAccessor",
     "BlockEntityTypeAccessor",
     "BlockItemMixin",

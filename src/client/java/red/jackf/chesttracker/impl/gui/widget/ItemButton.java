@@ -4,6 +4,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ public class ItemButton extends Button {
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         switch (background) {
             case VANILLA -> super.renderWidget(graphics, mouseX, mouseY, partialTick);
-            case CUSTOM -> graphics.blitSprite(this.highlighted || this.isHovered() ? TEXTURE.enabledFocused() : TEXTURE.enabled(),
+            case CUSTOM -> graphics.blitSprite(RenderType::guiTextured, this.highlighted || this.isHovered() ? TEXTURE.enabledFocused() : TEXTURE.enabled(),
                                            getX(),
                                            getY(),
                                            SIZE,
