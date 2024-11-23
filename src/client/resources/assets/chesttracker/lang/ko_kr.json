@@ -130,7 +130,7 @@
   "chesttracker.config.gui": "Gui",
   "chesttracker.config.gui.autofocusSearchBar": "Auto-focus Search Bar",
   "chesttracker.config.gui.autofocusSearchBar.description": "Whether to automatically focus the search bar when the GUI is opened.",
-  "chesttracker.config.gui.showAutocomplete": "Show Autocomplete for Search Bar",
+  "chesttracker.config.gui.showAutocomplete": "검색 표시줄에 자동 완성 표시",
   "chesttracker.config.gui.autocompleteShowsRegularNames": "Show Unnamed Items in Autocomplete",
   "chesttracker.config.gui.showResizeWidget": "Show Resize Widget",
   "chesttracker.config.gui.gridWidth": "Grid Width",
