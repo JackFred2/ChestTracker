@@ -88,7 +88,7 @@
   "chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.yes": "켜짐",
   "chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.shulkerBoxesOnly": "셜커 상자",
   "chesttracker.gui.editMemoryBank.filtering.autoAddPlacedBlocks.no": "꺼짐",
-  "chesttracker.gui.editMemoryBank.integrity": "Integrity",
+  "chesttracker.gui.editMemoryBank.integrity": "무결성",
   "chesttracker.gui.editMemoryBank.integrity.blockBreak": "Block Break",
   "chesttracker.gui.editMemoryBank.integrity.blockBreak.tooltip": "Whether to remove memories when the block at that position is broken.",
   "chesttracker.gui.editMemoryBank.integrity.preserveNamed": "Preserve Named",
