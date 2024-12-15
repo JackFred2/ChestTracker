@@ -86,6 +86,11 @@ public class HypixelProvider extends ServerProvider {
     }
 
     @Override
+    public void onDisconnect() {
+        this.isOnSMP = false;
+    }
+
+    @Override
     public void onScreenOpen(ScreenOpenContext context) {
         InteractionTracker.INSTANCE.getLastBlockSource().flatMap(this::getMemoryLocation).ifPresent(context::setMemoryLocation);
     }
