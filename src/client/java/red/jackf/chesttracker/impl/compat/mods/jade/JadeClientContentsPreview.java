@@ -30,12 +30,15 @@ public class JadeClientContentsPreview implements IBlockComponentProvider {
     public static final ResourceLocation ID = ChestTracker.id("memory_preview");
 
     private static void possiblyAddItems(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config, Memory memory) {
-        if (config.get(JadeIds.UNIVERSAL_ITEM_STORAGE) && accessor.getServerData().contains("JadeItemStorage"))
+        if (config.get(JadeIds.UNIVERSAL_ITEM_STORAGE) &&
+                (accessor.getServerData().contains("JadeItemStorage") // < 15.8.0
+                || accessor.getServerData().contains(JadeIds.UNIVERSAL_ITEM_STORAGE.toString())) // >= 15.8.0
+        )
             return; // don't do it if jade is handling it
         if (config.get(JadeIds.MC_FURNACE)
-                && accessor.getBlock() instanceof AbstractFurnaceBlock
-                && accessor.getServerData()
-                .contains("furnace", Tag.TAG_LIST))
+                && accessor.getBlock() instanceof AbstractFurnaceBlock &&
+                (accessor.getServerData().contains("furnace", Tag.TAG_LIST) // < 15.7.0
+                || accessor.getServerData().contains(JadeIds.MC_FURNACE.toString()))) // >=15.7.0
             return; // don't do furnaces if handled so progress still shows
 
         var stacks = ItemStacks.flattenStacks(memory.items(), true);
