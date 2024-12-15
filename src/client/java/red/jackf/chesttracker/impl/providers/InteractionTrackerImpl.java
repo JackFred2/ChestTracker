@@ -1,6 +1,7 @@
 package red.jackf.chesttracker.impl.providers;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,6 +25,11 @@ public class InteractionTrackerImpl implements InteractionTracker {
             if (hand == InteractionHand.MAIN_HAND && level instanceof ClientLevel clientLevel) {
                 INSTANCE.setLastBlockSource(new CachedClientBlockSource(clientLevel, hitResult.getBlockPos()));
             }
+            return InteractionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            INSTANCE.clear();
             return InteractionResult.PASS;
         });
 
