@@ -2,7 +2,7 @@
   "key.chesttracker.open_gui": "打开Chest Tracker的GUI",
   "chesttracker.title": "箱子追踪",
   "chesttracker.compatibility.brand": "通过%s进行客户端预览",
-  "chesttracker.compatibility.litematica.search": "Search",
+  "chesttracker.compatibility.litematica.search": "查找",
   "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
   "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "重命名容器",
