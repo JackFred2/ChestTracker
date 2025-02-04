@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Toon Inventaris knop",
   "chesttracker.config.inventoryButton.showExtra": "Toon Extra Knoppen",
   "chesttracker.config.inventoryButton.showExtra.description": "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "Manage Custom Button Positions",
   "chesttracker.config.inventoryButton.export": "Toon Exporteer Knop",
   "chesttracker.config.inventoryButton.export.description": "Whether to show an export button for custom button positions. Files get placed in %s.",
