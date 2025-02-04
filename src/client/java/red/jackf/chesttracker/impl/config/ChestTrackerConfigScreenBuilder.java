@@ -272,6 +272,15 @@ public class ChestTrackerConfigScreenBuilder {
                                 b -> instance.instance().gui.inventoryButton.showExtra = b
                         ).build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(translatable("chesttracker.config.inventoryButton.alwaysShowExtra"))
+                        .controller(opt -> BooleanControllerBuilder.create(opt)
+                                .yesNoFormatter()
+                                .coloured(true))
+                        .binding(instance.defaults().gui.inventoryButton.alwaysShowExtra,
+                                () -> instance.instance().gui.inventoryButton.alwaysShowExtra,
+                                b -> instance.instance().gui.inventoryButton.alwaysShowExtra = b)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(translatable("chesttracker.config.inventoryButton.export"))
                         .description(OptionDescription.of(translatable("chesttracker.config.inventoryButton.export.description",
                                 literal(PositionExporter.getExportPath().toString()).withStyle(ChatFormatting.GOLD))))

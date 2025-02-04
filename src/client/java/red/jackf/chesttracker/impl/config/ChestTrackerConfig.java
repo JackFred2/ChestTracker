@@ -81,11 +81,17 @@ public class ChestTrackerConfig {
 
         @SerialEntry
         public InventoryButton inventoryButton = new InventoryButton();
+
         public static class InventoryButton {
             @SerialEntry(comment = "Whether to enable the button that appears in inventory screens.")
             public boolean enabled = true;
+
             @SerialEntry(comment = "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.")
             public boolean showExtra = true;
+
+            @SerialEntry(comment = "Always show the extra buttons, if available.")
+            public boolean alwaysShowExtra = false;
+
             @SerialEntry(comment = "Whether to show an export button for custom button positions. Files get placed in <gamedir>/chesttracker/export.")
             public boolean showExport = false;
         }
