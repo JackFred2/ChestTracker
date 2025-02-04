@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Показати кнопку інвентарю",
   "chesttracker.config.inventoryButton.showExtra": "Показувати додаткові кнопки",
   "chesttracker.config.inventoryButton.showExtra.description": "Якщо доречно, показувати додаткові кнопки після наведення на головну кнопку, наприклад, ручне перемикання режимів та імена на стороні клієнта.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "Керування користувацькими позиціями кнопок",
   "chesttracker.config.inventoryButton.export": "Показувати кнопку експорту",
   "chesttracker.config.inventoryButton.export.description": "Чи показувати кнопку експорту для користувацьких позицій кнопок. Файли розміщуються в %s.",
