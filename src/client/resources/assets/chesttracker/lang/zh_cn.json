@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "显示库存按钮",
   "chesttracker.config.inventoryButton.showExtra": "显示额外按钮",
   "chesttracker.config.inventoryButton.showExtra.description": "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "管理自定义按钮位置",
   "chesttracker.config.inventoryButton.export": "显示导出按钮",
   "chesttracker.config.inventoryButton.export.description": "是否显示自定义按钮位置的导出按钮。文件放置在%s中",
