@@ -157,6 +157,7 @@
   "chesttracker.config.inventoryButton.enabled": "Show Inventory Button",
   "chesttracker.config.inventoryButton.showExtra": "Show Extra Buttons",
   "chesttracker.config.inventoryButton.showExtra.description": "If relevant, show additional buttons after hovering over the main button, such as manual mode toggling and client-sided names.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "Manage Custom Button Positions",
   "chesttracker.config.inventoryButton.export": "Show Export Button",
   "chesttracker.config.inventoryButton.export.description": "Whether to show an export button for custom button positions. Files get placed in %s.",

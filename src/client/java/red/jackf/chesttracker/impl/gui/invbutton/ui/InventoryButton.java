@@ -104,11 +104,15 @@ public class InventoryButton extends AbstractWidget {
         locationToRestore = Pair.of(screen, location);
     }
 
+    private static boolean alwaysShowExtra() {
+        return ChestTrackerConfig.INSTANCE.instance().gui.inventoryButton.alwaysShowExtra;
+    }
+
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!this.isDragging) {
             this.applyPosition(false);
-            this.showExtraButtons(this.isHovered() || this.isExpandedHover(mouseX, mouseY));
+            this.showExtraButtons(alwaysShowExtra() || this.isHovered() || this.isExpandedHover(mouseX, mouseY));
         } else {
             this.showExtraButtons(false);
         }
