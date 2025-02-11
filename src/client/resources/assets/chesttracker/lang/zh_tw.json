@@ -146,7 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "顯示物品欄按鈕",
   "chesttracker.config.inventoryButton.showExtra": "顯示額外按鈕",
   "chesttracker.config.inventoryButton.showExtra.description": "如果相關，將在將游標懸停在主按鈕上後顯示其他按鈕，例如手動模式切換和用戶端名稱。",
-  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "總是顯示額外按鈕",
   "chesttracker.config.inventoryButton.manageCustom": "管理自訂按鈕位置",
   "chesttracker.config.inventoryButton.export": "顯示匯出按鈕",
   "chesttracker.config.inventoryButton.export.description": "是否顯示自訂按鈕位置的匯出按鈕。檔案將放置在 %s 中。",
