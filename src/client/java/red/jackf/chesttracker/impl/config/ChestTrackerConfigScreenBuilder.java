@@ -509,6 +509,15 @@ public class ChestTrackerConfigScreenBuilder {
                                 )
                                 .build()
                         )
+                        .option(Option.<Integer>createBuilder()
+                                .name(translatable("chesttracker.config.gui.searchradius"))
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                                        .range(4, 64)
+                                        .step(1))
+                                .binding(instance.defaults().gui.itemListTextScale,
+                                        () -> instance.instance().compatibility.litematica.searchradius,
+                                        i -> instance.instance().compatibility.litematica.searchradius = i)
+                                .build())
                         .build())
                 .build();
     }

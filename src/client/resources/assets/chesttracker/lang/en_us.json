@@ -191,6 +191,7 @@
   "chesttracker.config.compatibility.wthit": "WTHIT Integration",
   "chesttracker.config.compatibility.wthit.description": "Allows you to use the current Memory Bank to show highlights in WTHIT. There are additional settings under the WTHIT's plugin manager.",
   "chesttracker.config.compatibility.litematica": "Litematica",
+  "chesttracker.config.gui.compatibility.litematica.searchradius": "Radius of blocks for Chest tracker to search",
   "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Add Search Buttons to Material List",
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Count Ender Chest Materials",
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "Whether to add materials in your Ender Chest to Litematica's material calculations.",
