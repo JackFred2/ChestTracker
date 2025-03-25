@@ -41,7 +41,7 @@ public abstract class MaterialListUtilsMixin {
 
                 if (config.countNearbyMaterials) {
                     ProviderUtils.getPlayersCurrentKey().ifPresent(currentKey -> {
-                        for (ItemStack stack : bank.getCounts(currentKey, CountingPredicate.within(player.position(), 48), StackMergeMode.ALL, true)) {
+                        for (ItemStack stack : bank.getCounts(currentKey, CountingPredicate.within(player.position(), config.searchradius), StackMergeMode.ALL, true)) {
                             inventoryStacks.addTo(new ItemType(stack, true, false), stack.getCount());
                         }
                     });
