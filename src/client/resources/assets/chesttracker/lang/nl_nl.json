@@ -7,7 +7,7 @@
   "chesttracker.compatibility.litematica.info": "Chest Tracker Integraties: \nZoek knoppen: %s \nInclusief enderkisten: %s \nInclusief dichtbij (48 blokken): %s",
   "chesttracker.inventoryButton.rename": "Hernoem Opslag",
   "chesttracker.inventoryButton.rename.remove": "Verwijder",
-  "chesttracker.inventoryButton.rename.clientOnlyWarning": "This will only rename the container on your client, not the server.",
+  "chesttracker.inventoryButton.rename.clientOnlyWarning": "Dit zal alleen de container hernoemen op je client, niet op de server.",
   "chesttracker.inventoryButton.forget": "Vergeet",
   "chesttracker.inventoryButton.rememberContainer.remember": "Container onthouden",
   "chesttracker.inventoryButton.rememberContainer.block": "Container niet onthouden",
