@@ -180,7 +180,7 @@
   "chesttracker.config.compatibility.litematica": "Litematica",
   "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Добавить кнопки поиска в список материалов",
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Счетчик Эндер-сундуков",
-  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "Whether to add materials in your Ender Chest to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Количество ближайших материалов",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Whether to add materials in nearby containers to Litematica's material calculations.",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "Размах составляет 48 блоков от игрока.",
