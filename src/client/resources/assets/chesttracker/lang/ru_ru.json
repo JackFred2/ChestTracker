@@ -70,7 +70,7 @@
   "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.full": "Полный",
   "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.full.tooltip": "Отображать все имена в диапазоне.",
   "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.hoveredOnly": "Только в руках",
-  "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.hoveredOnly.tooltip": "Показывать имена только, когда прицел находится над ними.",
+  "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.hoveredOnly.tooltip": "Показывать имена только при нацеливании курсором.",
   "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.disabled": "Отключено",
   "chesttracker.gui.editMemoryBank.compatibility.nameRenderMode.disabled.tooltip": "Не отображать имена контейнеров.",
   "chesttracker.gui.editMemoryBank.filtering": "Фильтрация",
@@ -182,7 +182,7 @@
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Счетчик Эндер-сундуков",
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Количество ближайших материалов",
-  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Whether to add materials in nearby containers to Litematica's material calculations.",
+  "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Стоит ли добавлять к подсчёту материалов Litematica из контейнеров поблизости.",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials.description2": "Размах составляет 48 блоков от игрока.",
   "chesttracker.config.searchables.required": "Требуется поиск.",
   "chesttracker.config.searchables.notInstalled": "Поисковые данные не загружены."
