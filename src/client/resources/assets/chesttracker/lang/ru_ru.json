@@ -179,7 +179,7 @@
   "chesttracker.config.compatibility.wthit.description": "Allows you to use the current Memory Bank to show highlights in WTHIT. There are additional settings under the WTHIT's plugin manager.",
   "chesttracker.config.compatibility.litematica": "Litematica",
   "chesttracker.config.compatibility.litematica.materialListSearchButtons": "Добавить кнопки поиска в список материалов",
-  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Счетчик Эндер-сундуков",
+  "chesttracker.config.compatibility.litematica.countEnderChestMaterials": "Считать кол-во материалов в Эндер-сундуке",
   "chesttracker.config.compatibility.litematica.countEnderChestMaterials.description": "",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials": "Количество ближайших материалов",
   "chesttracker.config.compatibility.litematica.countNearbyMaterials.description1": "Стоит ли добавлять к подсчёту материалов Litematica из контейнеров поблизости.",
