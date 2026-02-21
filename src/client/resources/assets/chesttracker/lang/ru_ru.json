@@ -145,7 +145,7 @@
   "chesttracker.config.inventoryButton": "Доп. Кнопка инвентаря",
   "chesttracker.config.inventoryButton.enabled": "Доп. Кнопка инвентаря",
   "chesttracker.config.inventoryButton.showExtra": "Показывать Доп. Кнопку",
-  "chesttracker.config.inventoryButton.showExtra.description": "Если необходимо, покажите дополнительные кнопки после наведения курсора на основную кнопку, например, переключение ручного режима и имена на стороне клиента.",
+  "chesttracker.config.inventoryButton.showExtra.description": "Если применимо, разворачивать дополнительные кнопки при наведении на основную - например, клиентские имена или переключение ручного режима.",
   "chesttracker.config.inventoryButton.alwaysShowExtra": "Всегда показывать дополнительные кнопки",
   "chesttracker.config.inventoryButton.manageCustom": "Управление положением кнопок",
   "chesttracker.config.inventoryButton.export": "Показывать Доп. Кнопку",
