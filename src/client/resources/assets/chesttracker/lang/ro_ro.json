@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Afișează Butonul de Inventar",
   "chesttracker.config.inventoryButton.showExtra": "Afișează Butoane Suplimentare",
   "chesttracker.config.inventoryButton.showExtra.description": "Dacă este cazul, afișează butoane suplimentare după trecerea cu mouse-ul peste butonul principal, cum ar fi comutarea modului manual și numele client-side.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Arată Mereu Butoane Suplimentare",
   "chesttracker.config.inventoryButton.manageCustom": "Gestionează Pozițiile Butonului Personalizat",
   "chesttracker.config.inventoryButton.export": "Arată Butonul de Exportare",
   "chesttracker.config.inventoryButton.export.description": "Dacă se afișează un buton de export pentru pozițiile personalizate ale butoanelor. Fișierele sunt plasate în %s.",
