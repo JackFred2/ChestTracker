@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Mostrar botón en el inventario",
   "chesttracker.config.inventoryButton.showExtra": "Mostrar botones extra",
   "chesttracker.config.inventoryButton.showExtra.description": "If relevant, show additional buttons after hovering over the main button, such as deletion and filtering.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "Administrar las posiciones de los botones personalizados",
   "chesttracker.config.inventoryButton.export": "Mostrar botón de exportar",
   "chesttracker.config.inventoryButton.export.description": "Si se debe mostrar un botón de exportación para posiciones de botones personalizadas. Los archivos se colocan en %s.",
