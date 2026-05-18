@@ -3,7 +3,7 @@
   "chesttracker.title": "Chest Tracker",
   "chesttracker.compatibility.brand": "%sによるクライアントサイドのプレビュー",
   "chesttracker.compatibility.litematica.search": "検索",
-  "chesttracker.compatibility.litematica.searchMissing": "Search Missing",
+  "chesttracker.compatibility.litematica.searchMissing": "検索が見つかりません",
   "chesttracker.compatibility.litematica.info": "Chest Tracker Integrations: \nSearch Buttons: %s \nInclude Ender Chest: %s \nInclude Nearby (48 blocks): %s",
   "chesttracker.inventoryButton.rename": "コンテナ名を変更",
   "chesttracker.inventoryButton.rename.remove": "削除",
