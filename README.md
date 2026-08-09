@@ -1,3 +1,7 @@
+# Archival Notice
+
+https://gist.github.com/JackFred2/58d267bd7043fd92442a451315bbd6d5
+
 # Chest Tracker
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/ni4SrKmq?style=flat-square&label=Modrinth&color=%2316AF54)
