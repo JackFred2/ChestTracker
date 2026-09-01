@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -354,8 +355,8 @@ public class ChestTrackerScreen extends Screen {
     @Override
     public void renderBackground(@NotNull GuiGraphics graphics, int i, int j, float f) {
         super.renderBackground(graphics, i, j, f);
-        graphics.blitSprite(RenderType::guiTextured, GuiUtil.BACKGROUND_SPRITE, left, top, menuWidth, menuHeight);
-        ifSearchables(() -> graphics.blitSprite(RenderType::guiTextured, GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight()));
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiUtil.BACKGROUND_SPRITE, left, top, menuWidth, menuHeight);
+        ifSearchables(() -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiUtil.SEARCH_BAR_SPRITE, search.getX() - 2, search.getY() - 2, search.getWidth() + 4, search.getHeight()));
     }
 
     @Override

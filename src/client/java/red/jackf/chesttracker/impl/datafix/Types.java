@@ -21,7 +21,7 @@ public class Types {
 
     public static <T> Codec<T> wrapInFixer(DSL.TypeReference type, Codec<T> codec, int fallbackVersion) {
         final DataFixer fixer = Minecraft.getInstance().getFixerUpper();
-        final int currentVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
+        final int currentVersion = SharedConstants.getCurrentVersion().dataVersion().version();
 
         return new Codec<>() {
             @Override

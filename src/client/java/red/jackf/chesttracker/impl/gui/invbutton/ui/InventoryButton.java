@@ -11,6 +11,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -120,7 +121,7 @@ public class InventoryButton extends AbstractWidget {
         // NOTE: texture is 11x11 while button is 9x9
 
         ResourceLocation texture = TEXTURE.get(this.isActive(), this.isHoveredOrFocused());
-        graphics.blitSprite(RenderType::guiTextured, texture, this.getX() - 1, this.getY() - 1, IMAGE_SIZE, IMAGE_SIZE);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX() - 1, this.getY() - 1, IMAGE_SIZE, IMAGE_SIZE);
 
         for (AbstractWidget secondary : this.secondaryButtons) {
             secondary.render(graphics, mouseX, mouseY, partialTick);

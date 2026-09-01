@@ -9,7 +9,7 @@ import red.jackf.UpdateDependenciesTask
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.9-SNAPSHOT"
+	id("fabric-loom") version "1.10-SNAPSHOT"
 	id("com.github.breadmoirai.github-release") version "2.5.2"
 	id("org.ajoberstar.grgit") version "5.3.0"
 	id("me.modmuss50.mod-publish-plugin") version "0.8.3"

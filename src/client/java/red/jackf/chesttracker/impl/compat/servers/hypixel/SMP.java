@@ -7,6 +7,6 @@ interface SMP {
     static boolean isSMPJoinMessage(Component message) {
         return message.getString().startsWith("SMP ID: ")
                 && message.getStyle().getClickEvent() != null
-                && message.getStyle().getClickEvent().getAction() == ClickEvent.Action.SUGGEST_COMMAND;
+                && message.getStyle().getClickEvent().action() == ClickEvent.Action.SUGGEST_COMMAND;
     }
 }

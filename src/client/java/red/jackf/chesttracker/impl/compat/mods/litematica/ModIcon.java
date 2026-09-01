@@ -9,30 +9,34 @@ import red.jackf.chesttracker.impl.ChestTracker;
 public enum ModIcon implements IGuiIcon {
     INSTANCE;
 
+    private final int u = 0;
+    private final int v = 0;
+    private final int w = 11;
+    private final int h = 11;
+
     @Override
     public int getWidth() {
-        return 11;
+        return this.w;
     }
 
     @Override
     public int getHeight() {
-        return 11;
+        return this.h;
     }
 
     @Override
     public int getU() {
-        return 0;
+        return this.u;
     }
 
     @Override
     public int getV() {
-        return 0;
+        return this.v;
     }
 
     @Override
-    public void renderAt(int x, int y, float z, boolean enabled, boolean selected, GuiGraphics guiGraphics) {
-        RenderUtils.drawTexturedRect(x, y, getU(), getV(), getWidth(), getHeight(), z);
-        RenderUtils.forceDraw(guiGraphics);
+    public void renderAt(GuiGraphics graphics, int x, int y, float zLevel, boolean enabled, boolean selected) {
+        RenderUtils.drawTexturedRect(graphics, this.getTexture(), x, y, this.u, this.v, this.w, this.h, zLevel);
     }
 
     @Override

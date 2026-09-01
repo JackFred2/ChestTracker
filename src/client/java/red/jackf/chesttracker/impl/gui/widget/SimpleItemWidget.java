@@ -11,10 +11,10 @@ public record SimpleItemWidget(ItemStack stack, int x, int y, int size) implemen
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         final float factor = (float) this.size / DEFAULT_ITEM_SIZE;
 
-        graphics.pose().pushPose();
-        graphics.pose().translate(x, y, 0);
-        graphics.pose().scale(factor, factor, factor);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(x, y);
+        graphics.pose().scale(factor, factor);
         graphics.renderFakeItem(stack, 0, 0);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 }
