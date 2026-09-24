@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Envanter Düğmesini Göster",
   "chesttracker.config.inventoryButton.showExtra": "Ek Düğmeleri Göster",
   "chesttracker.config.inventoryButton.showExtra.description": "Geçiş yapılan ana düğmenin üzerine gelindiğinde silme ve filtreleme gibi ek düğmeleri gösterme durumunda.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Ek Düğmeleri Her Zaman Göster",
   "chesttracker.config.inventoryButton.manageCustom": "Özel Düğme Pozisyonlarını Yönet",
   "chesttracker.config.inventoryButton.export": "Dışa Aktarma Düğmesini Göster",
   "chesttracker.config.inventoryButton.export.description": "Özel düğme pozisyonları için bir dışa aktarma düğmesi gösterip göstermemek. Dosyalar %s içine yerleştirilir.",

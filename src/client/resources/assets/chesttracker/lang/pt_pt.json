@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Mostrar Botão do Inventário",
   "chesttracker.config.inventoryButton.showExtra": "Mostrar Botões Extras",
   "chesttracker.config.inventoryButton.showExtra.description": "Se relevante, exibir botões adicionais após passar o mouse sobre o botão principal, como a alternância do modo manual e nomes do lado do cliente.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Sempre Mostrar Botões Extras",
   "chesttracker.config.inventoryButton.manageCustom": "Gerenciar Posições de Botão Personalizado",
   "chesttracker.config.inventoryButton.export": "Mostrar Botão de Exportação",
   "chesttracker.config.inventoryButton.export.description": "Se deve mostrar um botão de exportação para posições de botões personalizadas. Os arquivos são colocados em %s.",

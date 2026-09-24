@@ -146,6 +146,7 @@
   "chesttracker.config.inventoryButton.enabled": "Show Inventory Button",
   "chesttracker.config.inventoryButton.showExtra": "Show Extra Buttons",
   "chesttracker.config.inventoryButton.showExtra.description": "해당하는 경우 기본 버튼 위로 마우스를 가져간 후 삭제, 필터링 등 추가 버튼을 표시합니다.",
+  "chesttracker.config.inventoryButton.alwaysShowExtra": "Always Show Extra Buttons",
   "chesttracker.config.inventoryButton.manageCustom": "Manage Custom Button Positions",
   "chesttracker.config.inventoryButton.export": "Show Export Button",
   "chesttracker.config.inventoryButton.export.description": "Whether to show an export button for custom button positions. Files get placed in %s.",
